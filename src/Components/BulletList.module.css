@@ -1,0 +1,19 @@
+.bullet-list {
+    list-style: none; /* Remove default bullet points */
+    padding: 0; /* Remove default padding */
+    margin: 0; /* Remove default margin */
+  }
+  
+  .bullet-item {
+    display: flex; 
+    align-items: center;
+    font-size: 1.25rem; 
+    color: #fff; 
+    margin: 1rem 0;
+  }
+  
+  .bulletIcon {
+    margin-right: .5rem; 
+    color: #667185;
+  }
+  

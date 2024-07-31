@@ -1,0 +1,99 @@
+.expert_transformation_flex{
+    display: block;
+    grid-template-columns: 2fr 2fr 2fr;
+    gap: 1rem;
+    padding: 3rem;
+}
+
+.expert_transformation_content {
+    background-image: url("../../assets/images/big-team.png");
+    width: 100%; /* Adjust as needed */
+    height: 60vh; /* Adjust as needed */
+    color: white; /* Text color for better visibility against the background */
+    font-size: 2em; /* Adjust font size as needed */
+    /* text-align: center; */
+    border-radius: 2rem;
+    position: relative;
+    background-color: red;
+    overflow: hidden;
+}
+
+.expert_transformation_content1 {
+    background-image: url("../../assets/images/big-team.png");
+    width: 100%; /* Adjust as needed */
+    height: 100%; /* Adjust as needed */
+    color: white; /* Text color for better visibility against the background */
+    border-radius: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.expert_transformation_content2 {
+    width: 100%; /* Adjust as needed */
+    height: 100%; /* Adjust as needed */
+    color: white; /* Text color for better visibility against the background */
+    border-radius: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.expert_transform:first-child{
+    position: absolute;
+    background-color: brown;
+    border-radius: 2rem;
+    padding: 1rem 2rem;
+    top: 80px;
+    width: 70%;
+    height: 60vh;
+}
+
+.expert_transform2{
+    position: absolute;
+    background-color: rgb(186, 151, 151);
+    border-radius: 2rem;
+    transform: translateY(180px); 
+    transition: transform 0.3s ease; 
+    top: 80px;
+    width: 70%;
+    height: 60vh;
+    padding: 0rem 2rem;
+}
+
+.expert_transform2:hover {
+    transform: translateX(0); /* Moves the element back to its original position on hover */
+    background-color: brown;
+}
+
+.expert_transform p:first-child {
+    font-size: 1.5rem;
+    font-weight: 200; 
+    line-height: 1px;
+
+}
+
+.expert_transform p:nth-child(2) {
+    font-size: 1.5rem; /* Increases the font size of the second paragraph */
+}
+
+.expert_transform p:nth-child(3) {
+    font-size: 1rem; 
+    font-weight: 300; 
+    text-align: justify;
+}
+
+
+@media only screen and (max-width: 1100px){
+    
+}
+
+
+@media only screen and (max-width: 450px){
+    .expert_transformation_flex{
+        display: grid;
+        grid-template-columns: 1fr ;
+        gap: 1rem;
+        padding: 3rem;
+    }
+
+    
+}

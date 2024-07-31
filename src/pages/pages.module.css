@@ -1,0 +1,198 @@
+/* .welcome_avenue h2{
+    font-size: 40px;
+}
+
+   */
+
+.welcome_avenue_flex{
+    display: grid;
+    grid-template-columns: 2fr 2fr 2fr;
+    text-align: justify;
+    gap: 2rem;
+}
+
+.career_mentoring_flex{
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    text-align: justify;
+    gap: 4rem;
+}
+
+.career_content{
+    font-size: 1rem;
+}
+
+.career_content:nth-of-type(2){
+    line-height: 2;
+}
+
+
+
+
+.checkoutCoursesFlex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0px;
+    /* background-color: #f9f9f9; */
+    border-radius: 8px;
+}
+
+.checkoutCourses1 {
+    flex: 1;
+}
+
+.checkoutCourses2 {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.searchLabel {
+    margin-right: 10px;
+    font-size: 16px;
+    color: #CC1747;
+}
+
+.inputField {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.2s;
+}
+
+.inputField:focus {
+    border-color: #23314A;
+    outline: none;
+}
+
+
+.previewCoursesFlex{
+    display: grid;
+    grid-template-columns: 2fr 2fr 2fr;
+    gap: 2rem;
+}
+
+.team_skills{
+    display: grid;
+    grid-template-columns: 2fr 2fr;
+    align-items: center;
+    /* gap: 1rem; */
+}
+
+.project_consultFlex{
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    align-items: center;
+    gap: 2rem;
+    /* background-color: #23314A; */
+}
+
+
+
+.overviewFlex{
+    display: grid;
+    grid-template-columns: 2fr 2fr;
+    /* justify-content: end; */
+    gap: 3rem;
+}
+
+
+
+.overviewCourses1 .AvenueList{
+    padding: .5rem 0rem;
+}
+
+
+
+
+
+
+
+
+
+
+/* Tablet view */
+@media only screen and (max-width: 1100px){
+    
+    
+      .welcome_avenue p {
+        font-size: 1.25rem; /* Font size for tablet */
+        padding: 0 1.5rem; /* Padding for tablet */
+      }
+  
+      .welcome_avenue_flex, .career_mentoring_flex{
+          display: grid;
+          grid-template-columns: 1fr ;
+          gap: 1rem;
+      }
+
+      .project_consultFlex{
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .checkoutCoursesFlex {
+        display: block;
+        padding: 0px;
+      }
+
+      .overviewFlex{
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+
+      .searchLabel {display: none;}
+
+      .checkoutCourses2 {display: block;}
+
+      .inputField {max-width: 100%; }
+      .checkoutCourses2{margin: 1rem 0rem;}
+      
+      .previewCoursesFlex{
+        display: grid;
+        grid-template-columns: 2fr 2fr;      
+     }
+
+      
+     /* .team_skills_content h3{
+        font-size: 40px;
+        font-weight: 500;
+        padding-bottom: 1rem;
+     } */
+
+     
+     .team_skills{
+        display: block;
+      }
+    
+      
+}
+
+
+@media only screen and (max-width: 450px) {
+    .career_content:nth-last-of-type(1){
+        text-align: left;
+        font-size: .8rem;
+    }
+
+    .previewCoursesFlex{
+        display: grid;    
+        grid-template-columns: 2fr;
+    }
+
+    .team_skills{
+        display: flex;
+        flex-direction: column-reverse;
+      }
+
+      .project_consultFlex{
+        display: block;
+      }
+
+}
