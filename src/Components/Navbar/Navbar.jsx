@@ -36,10 +36,14 @@ const Navbar = () => {
 
   return (
     <div className="group absolute left-0 top-0 z-20 w-full">
-      <div className="flex justify-between overflow-x-hidden px-8 py-4 transition-all duration-300 ease-linear group-hover:bg-white md:px-12">
+      <div className="flex justify-between overflow-x-hidden px-8 py-4 transition-all duration-300 ease-linear group-hover:bg-white md:px-12 lg:py-[25.72px] 2xl:px-20">
         <div className="nav-logo">
-          <WhiteLogo className="block lg:w-[200px] lg:h-[40.55px] w-[155.05px] h-[34.45px] group-hover:hidden " />
-          <DarkLogo className={"hidden  group-hover:block lg:w-[200px] lg:h-[40.55px] w-[155.05px] h-[34.45px]"} />
+          <WhiteLogo className="block h-[34.45px] w-[155.05px] group-hover:hidden lg:h-[40.55px] lg:w-[200px]" />
+          <DarkLogo
+            className={
+              "hidden h-[34.45px] w-[155.05px] group-hover:block lg:h-[40.55px] lg:w-[200px]"
+            }
+          />
         </div>
         <div>
           <div

@@ -59,9 +59,7 @@ const AVI = () => {
 
         <div className="mt-2 h-[1px] w-full bg-[#C7D7F4]" />
 
-            <div
-              className={`${styles.career_content} w-full py-8 text-[#667185] lg:w-1/2`}
-            >
+            <div className={`${styles.career_content} w-full py-8 text-[#667185] lg:w-1/2`}>
               <p>
                 {" "}
                 Discover our most popular courses, carefully curated to enhance
@@ -71,7 +69,7 @@ const AVI = () => {
             </div>
 
             {/* Preview this Course */}
-            <div className={styles.previewCoursesFlex}>
+            <div className={`${styles.previewCoursesFlex} overflow-visible`}>
               <CourseCard
                 imgSrc={joinTeam}
                 altText="joinTeam"
@@ -155,6 +153,35 @@ const AVI = () => {
                 numRatings="45,345"
                 previewButtonText="Preview this course"
               />
+
+              <CourseCard
+                imgSrc={joinTeam}
+                altText="joinTeam"
+                title={
+                  <>
+                    {" "}
+                    Project Consultant <br /> Training Programme (Bundle)
+                  </>
+                }
+                rating="4.3"
+                numRatings="45,345"
+                previewButtonText="Preview this course"
+              />
+
+              <CourseCard
+                imgSrc={joinTeam}
+                altText="joinTeam"
+                title={
+                  <>
+                    {" "}
+                    Project Consultant <br /> Training Programme (Bundle)
+                  </>
+                }
+                rating="4.3"
+                numRatings="45,345"
+                previewButtonText="Preview this course"
+              />
+
             </div>
 
             {/* Enhance your team's skills */}
@@ -168,7 +195,7 @@ const AVI = () => {
               </div>
 
               <div className={styles.team_skills_content}>
-                <h3 className="lg:text-[40px] text-[24px] leading-9 font-normal capitalize text-[#385d9e]">
+                <h3 className="lg:text-[40px] text-[24px] leading-9 font-[300] capitalize text-[#3A4C6C]">
                   Enhance your team's skills <br /> with Avenue Impact Academy.
                 </h3>
                 <p className="text-justify py-7">
@@ -199,6 +226,9 @@ const AVI = () => {
 
             {/* Preview this Course */}
             <div className={`${styles.previewCoursesFlex} py-8`}>
+              <div>
+                <img src={certificate} alt="" />
+              </div>
               <div>
                 <img src={certificate} alt="" />
               </div>

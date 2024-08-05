@@ -1,4 +1,3 @@
-import React from "react";
 import ImageHero from "./ImageHero";
 import footerImg from "../assets/images/footer-img.jpg";
 import HeroHeading from "./MainContent/HeroHeading";
@@ -7,27 +6,22 @@ import { WhiteLogo } from "./Logo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SocialMediaLinks, { socialMediaData } from "./SocialMediaLink";
 
-const Footer = () => {
+const Footer = ({ heading, description }) => {
   return (
-    <ImageHero imageSrc={footerImg}>
+    <ImageHero imageSrc={footerImg} className={"items-start md:items-end"}>
       <div className="flex h-full lg:items-end lg:justify-end">
         <footer className="h-max">
-          <HeroHeading>
-            Interested in a Free <br className="hidden md:block" /> Introductory
-            Call?
-          </HeroHeading>
+          <HeroHeading className={"2xl:w-[1060px]"}>{heading}</HeroHeading>
 
-          <div className="my-6 h-[1px] w-full bg-white lg:my-16" />
+          <div className="my-6 h-[2px] w-full bg-white lg:mb-8 lg:mt-12 2xl:mb-7 2xl:mt-[127px]" />
 
-          <div className="grid place-items-center items-center gap-y-7 lg:grid-cols-[5fr_1fr]">
-            <p className="text-sm font-light text-white lg:text-2xl">
-              Please provide your email address. During this call, we will
-              discuss your business requirements and goals, and determine how we
-              can support you in reaching your objectives
+          <div className="grid items-start gap-y-5 md:mb-0 lg:grid-cols-[5fr_2fr]">
+            <p className="text-sm font-light text-white md:text-lg lg:w-[860px] 2xl:text-2xl">
+              {description}
             </p>
-            <Button>send us a message</Button>
+            <Button className={""}>send us a message</Button>
           </div>
-          <div className="mt-14 flex flex-wrap items-center justify-between gap-y-10 text-white">
+          <div className="mt-28 flex flex-wrap items-center justify-between gap-y-4 text-white md:mt-10 2xl:mt-[31px] 2xl:px-8 2xl:py-10">
             <div>
               <SocialMediaLinks data={socialMediaData} />
             </div>

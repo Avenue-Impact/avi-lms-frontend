@@ -16,21 +16,21 @@ const EmptyPage = () => {
 
 
   return (
-    <div className='bg-gray-50'>
+    <div>
 
         <div className=" flex ">
-          <div className="flex flex-col md:flex-row p-6 rounded-lg w-full max-w-5xl space-y-6 md:space-y-0 md:space-x-6">
+          <div className="flex flex-col md:flex-row  rounded-lg w-full max-w-5xl space-y-6 md:space-y-0 md:space-x-6">
             <div className="w-full md:w-1/3  text-justify mb-4 md:mb-0">
                 <h3 className="text-xl font-semibold mb-2">Learning Reminders</h3>
                 <p className="mb-4 text-sm">Use push notifications or calendar events to stay on top of your learning goals.</p>
                 <DashButton onClick={()=>setShowModal(prev=>!prev)} className="mt-2 text-sm">Add a learning reminder</DashButton>
             </div>
             <div className="flex  w-full md:w-3/5 justify-around">
-              <div className="flex-1 border-2 border-gray-300 p-4 rounded-lg mx-2">
+              <div className="flex-1 border-2 bg-white border-gray-300 p-4 rounded-lg mx-2">
                 <p className="text-gray-600 ">Completed Courses</p>
                 <h1 className="text-6xl pt-4 ">0</h1>
               </div>
-              <div className="flex-1 border-2 border-gray-300 p-4 rounded-lg mx-2">
+              <div className="flex-1 border-2 bg-white border-gray-300 p-4 rounded-lg mx-2">
                 <p className="text-gray-600">In Progress Courses</p>
                 <h1 className="text-6xl pt-4 ">0</h1>
               </div>
@@ -59,13 +59,13 @@ const EmptyPage = () => {
 
 
       {/* ON DEMAND */}
-      <div className='border-2 border-white-300 my-6 bg-white p-6 rounded-lg mx-3'>
+      <div className='border-2 border-white-300 my-6 bg-white p-6 rounded-lg'>
           <div className="flex flex-col md:flex-row items-center justify-between p-2 bg-white rounded-lg">
               <div className="flex-1 mb-4 md:mb-0">
                   <h3 className="text-l font-semibold text-gray-800">On Demand Courses (Pre Recorded Sessions)</h3>
               </div>
               <div className="flex items-center space-x-2">
-                  <p className="text-gray-600">Sort by</p>
+                  <p className="text-gray-600">Filter by</p>
                   <DashSelect />
               </div>
         </div>

@@ -16,7 +16,7 @@ import RegisterFail from "./components/RegisterFail";
 import PasswordResetSucess from "./components/PasswordResetSucess";
 
 const loginSchema = z.object({
-  email: z.string().email(),
+  username: z.string().email(),
   password: z
     .string()
     .min(4, { message: "Name must be at least 4 characters long" }),
@@ -28,7 +28,7 @@ const Login = () => {
   const form = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "",
+      username: "",
       password: "",
     },
   });
@@ -43,7 +43,11 @@ const Login = () => {
             <Paragraph>Use your email to sign in to your dashboard</Paragraph>
           </div>
           <Form {...form}>
-            <form action="" className="space-y-2">
+            <form
+              action=""
+              className="space-y-2"
+              onSubmit={form.handleSubmit(() => console.log("fill"))}
+            >
               <FormInput
                 name="username"
                 label="Username/Email"

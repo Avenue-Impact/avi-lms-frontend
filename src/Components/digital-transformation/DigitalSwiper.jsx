@@ -10,9 +10,9 @@ const DigitalSwiper = ({ data }) => {
       <Swiper className="mySwiper" spaceBetween={2} slidesPerView={1.2}>
         {data.map((item) => (
           <SwiperSlide key={item.heading}>
-            <Card heading={item.heading} className={"min-h-[330px]"}>
+            <Card heading={item.heading} className={"mx-4 min-h-[330px]"}>
               {item.lists.map((list, i) => (
-                <li key={i} className="font-poppins ml-6">
+                <li key={i} className="ml-6 font-poppins text-[17px]">
                   {list}
                 </li>
               ))}

@@ -36,7 +36,7 @@ function StudentSettings() {
         <Avatar className="">
           <AvatarImage src="https://github.com/shadcn.png" />
           <AvatarFallback className="mx-auto block w-fit rounded-full bg-primary-color-100 p-2 text-sm text-primary-color-600 md:p-4">
-            CN
+            MS
           </AvatarFallback>
         </Avatar>
         <Form {...form}>
@@ -62,7 +62,7 @@ function StudentSettings() {
                 name="lastname"
                 id="lastname"
                 label="Last Name"
-                placeholder="@maxwell02"
+                // placeholder="@maxwell02"
                 type="text"
                 control={form.control}
               />
@@ -71,7 +71,7 @@ function StudentSettings() {
               name="email"
               id="email"
               label="Email Address"
-              placeholder="@maxwell02@gmail.com"
+              // placeholder="@maxwell02@gmail.com"
               type="email"
               control={form.control}
             />
@@ -82,7 +82,7 @@ function StudentSettings() {
                 label="password"
                 name="password"
                 control={form.control}
-                placeholder="Change Password"
+                // placeholder="Change Password"
               />
               <PasswordInput
                 id="confirmPassword"
@@ -93,7 +93,7 @@ function StudentSettings() {
                 placeholder="Enter password"
               />
             </div>
-            <CommonButton>Update Profile</CommonButton>
+            <CommonButton className="bg-[#CC1747] flex items-center">Update Profile</CommonButton>
           </form>
         </Form>
       </BorderCard>

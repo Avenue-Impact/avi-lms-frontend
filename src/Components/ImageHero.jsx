@@ -1,28 +1,21 @@
+import { cn } from "@/lib/utils";
 import React from "react";
 
-const ImageHero = ({ children, imageSrc }) => {
-  const style = {
-    background: ` linear-gradient(45deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),  url(${imageSrc})`,
-    backgroundSize: "cover",
-    backgroundRepeat: "no-repeat",
-    backgroundPosition: "center center",
-  };
+const ImageHero = ({ children, imageSrc, className }) => {
   return (
     <>
       <div
-        className="footer min-h-screen px-6 py-8 text-left lg:px-12"
-        style={style}
+        className={cn(
+          "relative flex min-h-screen bg-black/45 px-6 py-8 pb-[80px] text-left lg:px-12 2xl:px-20",
+          className,
+        )}
       >
-        <div className="flex w-full items-center justify-center *:w-full">
-          {children}
-        </div>
+        <div className="w-full *:w-full">{children}</div>
+        <img
+          src={imageSrc}
+          className="absolute left-0 top-0 -z-[2] h-full w-full object-cover"
+        />
       </div>
-      {/*<div className="relative min-h-screen bg-white/80 text-center">
-			<div className="absolute left-0 top-0 h-full w-full bg-black/70"></div>
-			<div>
-				<img src={imageSrc} className="min-h-screen w-full object-cover" />
-				</div>
-		</div> */}
     </>
   );
 };

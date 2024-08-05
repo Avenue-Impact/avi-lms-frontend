@@ -28,7 +28,7 @@ const Home = () => {
       <MainContent />
       <section className="bg-[#f4f5f7] py-12 text-center">
         <div className="px-6">
-          <h2 className="mb-4 text-center text-2xl font-light capitalize text-[#23314A] md:text-3xl">
+          <h2 className="mb-4 text-center text-2xl font-light capitalize text-[#23314A] md:text-3xl 2xl:text-[40px]">
             we deliver real results
           </h2>
           <p className="m-auto max-w-3xl text-base text-[#23314A] md:text-xl">
@@ -63,11 +63,13 @@ const Home = () => {
         </div>
       </section>
       <Container>
-        <section className="grid gap-3 md:grid-cols-2  font-[300] ">
-          <h2 className="lg:text-[40px]  text-[#cc1747] text-[24px]">
+
+        <section className="grid gap-3 font-[300] md:grid-cols-2 2xl:gap-0">
+          <h2 className="text-[24px] text-[#23314A] lg:text-[40px] 2xl:w-[558px]">
+
             Avenue Impact Empowers Your Business Growth
           </h2>
-          <p className="text-justify lg:text-[20px] text-[#667185] md:text-xl">
+          <p className="text-justify text-[#667185] md:text-xl lg:text-[20px]">
             Whether you are looking to expand into new markets, streamline
             operations, or simply need support navigating {"today's"} complex
             business landscape, we are here to help. Let us help you grow your
@@ -104,14 +106,16 @@ const Home = () => {
           />
         </div>
       </Container>
-      <img src={group} alt="" />
+
+      <img src={group} alt="" className="w-full" />
+
       <div>
         <ImageOverlay>
           <Container className="z-50">
-            <h3 className="mb-8 font-light text-[#f4f5f7] lg:text-[40px] text-[24px]">
+            <h3 className="mb-8 text-[24px] font-light text-[#f4f5f7] lg:text-[40px]">
               Our certified professionals in various disciplines
             </h3>
-            <div className="flex text-[] gap-3 flex-wrap items-center  lg:space-x-[34px] ">
+            <div className="flex flex-wrap items-center gap-3 text-[] lg:space-x-[34px]">
               <div className="space-y-3">
                 <AvenueList src={iconLight} textColor={"#f4f5f7"}>
                   Agile and Digital Business Analysis{" "}
@@ -131,7 +135,7 @@ const Home = () => {
                 <AvenueList src={iconLight} textColor={"#f4f5f7"}>
                   Software Development{" "}
                 </AvenueList>
-              </div> 
+              </div>
               <div className="space-y-3">
                 <AvenueList src={iconLight} textColor={"#f4f5f7"}>
                   Digital Transformation Solution{" "}
@@ -156,14 +160,18 @@ const Home = () => {
           </Container>
         </ImageOverlay>
       </div>
-      <img src={professional} alt="people sitting round a table" />
+      <img
+        src={professional}
+        alt="people sitting round a table"
+        className="w-full"
+      />
       <Container className="bg-#f4f5f7">
         <div className="ml-auto max-w-4xl">
-          <h3 className="mb-4 font-light text-[#23314A] lg:text-[40px] text-[24px]">
+          <h3 className="mb-4 text-[24px] font-light text-[#23314A] lg:text-[40px]">
             Industries we serve
           </h3>
-          <div className="flex lg:gap-0 gap-3 flex-wrap items-center justify-between lg:space-x-[34px]">
-            <div className="space-y-3 lg:text-[24px] text-[26px]">
+          <div className="flex flex-wrap items-center justify-between gap-3 lg:gap-0 lg:space-x-[34px]">
+            <div className="space-y-3 text-[26px] lg:text-[24px]">
               <AvenueList src={iconDark} textColor={"#667185"}>
                 Business Transormation & Advisory{" "}
               </AvenueList>
@@ -202,11 +210,11 @@ const Home = () => {
       </Container>
       <ImageOverlay>
         <Container>
-          <HeroHeading className={"font-[300]"}>
-            Ready to Connect with an Expert at Avenue Impact?
+          <HeroHeading >
+           <h1 className={"font-[300] text-[40px] lg:text-[80px]"}>Ready to Connect with an Expert at Avenue Impact?</h1> 
           </HeroHeading>
-          <p className="lg:text-[24px] text-[14px] lg:max-w-3xl mb-10 mt-3 font-poppins font-[300] text-[#f4f5f7]">
-            Receive bespoke support from our experienced consultants and  elevate
+          <p className="mb-10 mt-3 font-poppins text-[14px] font-[300] text-[#f4f5f7] lg:max-w-3xl lg:text-[24px]">
+            Receive bespoke support from our experienced consultants and elevate
             your business to new heights.
           </p>
 
@@ -215,11 +223,12 @@ const Home = () => {
       </ImageOverlay>
       <Container>
         <div className="grid gap-3 gap-y-6 md:grid-cols-2">
-          <h3 className="lg:text-[40px] text-[24px] text-[#23314A]">
+          <h3 className="text-[24px] text-[#23314A] lg:text-[40px]">
             About Avenue Impact
           </h3>
 
-          <p className="text-justify  text-[#667185] lg:text-[18px] text-[14px]">
+          <p className="text-justify text-[14px] text-[#667185] lg:text-[18px]">
+
             Our drive is to make a noticeable difference in everything we
             undertake. At Avenue Impact, our focus is on supporting established
             and growing companies in the best possible way. Our team of business
@@ -232,11 +241,10 @@ const Home = () => {
         </div>
         <div className="mt-6">
           <ImageSwiper slideMobile={1.3} slideDesk={2.2}>
-          <img src={slider1} alt="" className="mx-3 block lg:h-[320px] h-[201px] w-[325px]" />
-          <img src={slider2} alt="" className="mx-3 block lg:h-[320px] h-[201px] w-[325px]" />
-          <img src={slider3} alt="" className="mx-3 block lg:h-[320px] h-[201px] w-[325px]" />
-          <img src={slider4} alt="" className="mx-3 block lg:h-[320px] h-[201px] w-[325px]" />
-
+          <img src={slider1} alt="" className="mx-3 block rounded-tl-3xl rounded-tr-3xl px-2" />
+          <img src={slider2} alt="" className="mx-3 block rounded-tl-3xl rounded-tr-3xl px-2" />
+          <img src={slider3} alt="" className="mx-3 block rounded-tl-3xl rounded-tr-3xl px-2" />
+          <img src={slider4} alt="" className="mx-3 block rounded-tl-3xl rounded-tr-3xl px-2" />
           </ImageSwiper>
         </div>
       </Container>

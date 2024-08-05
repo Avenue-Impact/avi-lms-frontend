@@ -3,7 +3,7 @@
   /* max-width: 800px; */
   margin: 50px auto;
   overflow: hidden;
-  background-color: #fff;
+  background-color: #FAFCFF;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   border-radius: 10px;
 }
@@ -68,9 +68,20 @@ button i {
 
 
 @media only screen and (max-width: 768px) {
+  .slideshowContainer {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0);
+    background-color: #fff;
+  }
+  
   .slide {
     flex-direction: column;
   }
+
+  .contentContainer {
+    padding: 20px 0px;
+  }
+
+
 }
 
 

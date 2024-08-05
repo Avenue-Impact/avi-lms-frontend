@@ -1,11 +1,8 @@
-
 import { GrHomeRounded } from "react-icons/gr";
 // import { BiBell } from "react-icons/bi";
 import { FaRegHeart, FaRegBell } from "react-icons/fa";
 
-import { faBell, faHeart, faHome } from "@fortawesome/free-solid-svg-icons";
-
-import React, { useState } from "react";
+import { useState } from "react";
 import { Sidebar, SidebarItem } from "./SideNav";
 const navItem = [
   {

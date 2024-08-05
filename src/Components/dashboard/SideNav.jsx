@@ -1,6 +1,5 @@
 import mobileLogo from "../../assets/images/mobile-dark.png";
 
-
 import { LucideLogOut, MoreVertical } from "lucide-react";
 import { PiGearThin } from "react-icons/pi";
 import { IoGiftOutline } from "react-icons/io5";
@@ -10,7 +9,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { NavLink, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
-
 const SidebarContext = createContext();
 
 export function Sidebar({ children }) {
@@ -18,11 +16,9 @@ export function Sidebar({ children }) {
 
   const location = useLocation();
 
-
   // fixed left-0 top-0 z-10
 
   return (
-
     <aside className="fixed left-0 top-0 h-screen w-min lg:w-[272px]">
       <nav className="flex h-full w-full flex-col border-r bg-white shadow-sm">
         <div className="mb-3 flex items-center justify-center p-4 pb-2 lg:ml-4 lg:justify-start">
@@ -132,10 +128,6 @@ export function SidebarItem({ icon, text, alert, path, onClick, active }) {
         >
           {text}
         </span>
-
-  
-          
-
       </NavLink>
     </li>
   );

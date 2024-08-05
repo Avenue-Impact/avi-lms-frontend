@@ -7,22 +7,25 @@ import HeroHeading from "./HeroHeading";
 import Button from "../Button";
 const MainContent = () => {
   return (
-    <Hero videoSrc={bgVideo} className={"pt-12"}>
-      <div className="flex h-fit items-end justify-end">
-        <div className="h-max justify-self-end align-bottom">
-          <HeroHeading className={"leading-snug"}>
-            Expert Consultants for Sustainable Success
-          </HeroHeading>
+    <Hero videoSrc={bgVideo} className={"items-center pb-12"}>
+      <div className="mt-32 h-fit lg:mt-28">
 
-          <div className="my-4 h-[1px] w-full bg-white md:mb-6 md:mt-16" />
+        <HeroHeading className={"font leading-snug 2xl:w-[1060px]"}>
+          Expert Consultants for Sustainable Success
 
-          <div className="grid place-items-center items-center gap-y-6 lg:grid-cols-[5fr_1fr]">
-            <p className="text-justify text-white font-[300] lg:text-[23px] md:text-left md:text-2xl" >
-              We provide customized solutions to address commercial, technical, and operational challenges for sustained profitability. Our certified professionals cover various disciplines, including Product Management, Data Analytics, and more.
-            </p>
-            <Button>Contact Us</Button>
-          </div>
+        </HeroHeading>
 
+        <div className="my-4 h-[2px] w-full bg-white md:mb-5 md:mt-14" />
+
+        <div className="grid gap-y-6 lg:grid-cols-[5fr_1fr]">
+          <p className="text-justify font-[300] text-white md:text-left md:text-xl lg:text-xl 2xl:w-[1034px] 2xl:text-2xl">
+            
+            We provide customized solutions to address commercial, technical,
+            and operational challenges for sustained profitability. Our
+            certified professionals cover various disciplines, including Product
+            Management, Data Analytics, and more.
+          </p>
+          <Button className={"2xl:w-[200px]"}>Contact Us</Button>
         </div>
       </div>
     </Hero>

@@ -1,10 +1,11 @@
 const P = ({ children, className }) => {
-	return (
-		<p
-			className={`text-[#667185] font-poppins font-normal md:text-xl ${className}`}>
-			{children}
-		</p>
-	);
+  return (
+    <p
+      className={`font-poppins font-normal text-[#667185] md:text-xl 2xl:text-xl${className}`}
+    >
+      {children}
+    </p>
+  );
 };
 
 export default P;

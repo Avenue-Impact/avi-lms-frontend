@@ -9,14 +9,19 @@ module.exports = {
   ],
   prefix: "",
   theme: {
+
     container: {
       center: true,
       padding: "2rem",
       screens: {
-        "2xl": "1400px",
+        "2xll": "1400px",
       },
     },
     extend: {
+      screens: {
+        "2xl": '1440px',
+        "xll": '1366px'
+      },
       fontFamily: {
         poppins: ['Poppins', 'sans-serif']
       },
@@ -28,6 +33,7 @@ module.exports = {
         "tertiary-color-700": "#667185 ",
         "tertiary-color-800": "#3A4C6C",
         "tertiary-color-900": "#23314A",
+        "tertiary-color-300": "#D6E3FA",
         'primary-color-100': "#FFEBF0",
         'primary-color-600': "#CC1747",
         'primary-color-500': "#F53366",

@@ -5,20 +5,21 @@ import Card from "../Components/digital-transformation/Card";
 import { digitalData } from "../assets/lib/data";
 import ImpactCard from "../Components/digital-transformation/ImpactCard";
 import DigitalSwiper from "@/Components/digital-transformation/DigitalSwiper";
+import ServiceHeading from "@/Components/ServiceHeading";
 
 const DigitalTransformation = () => {
   return (
     <>
-      <ImageHero imageSrc={img}>
-        <div>
-          <div className="mt-32 flex items-center gap-8 lg:mt-16">
-            <div className="hidden h-px w-36 bg-white lg:block" />
-            <HeroHeading>
-              digital <br /> transformation
-            </HeroHeading>
+      <ImageHero imageSrc={img} className={"items-end lg:items-start"}>
+        <div className="mt-28">
+          <div className="flex items-center gap-8 lg:my-20 2xl:mb-32 2xl:mt-[225px]">
+            <div className="hidden h-[3px] w-36 bg-white lg:block" />
+            <ServiceHeading className={"lg:w-[641px]"}>
+              digital transformation
+            </ServiceHeading>
           </div>
           <div className="mb-8 mt-6 block h-px w-full bg-white lg:hidden" />
-          <p className="ml-auto mt-0 max-w-[45.375rem] text-base text-white md:text-xl lg:mt-20 lg:text-xl">
+          <p className="ml-auto mt-0 max-w-[45.375rem] text-base text-white md:text-lg lg:text-lg 2xl:text-2xl">
             <span className="font-medium">
               Navigating the Future with Avenue Impact Consulting
             </span>
@@ -33,15 +34,19 @@ const DigitalTransformation = () => {
         </div>
       </ImageHero>
       <section className="px-0 py-24 lg:px-20">
-        <h2 className="px-6 font-poppins font-[300] lg:text-[40px] text-[24px] text-[#3A4C6C] md:text-3xl lg:px-0 ">
+        <h2 className="px-6 font-poppins text-[24px] font-[300] text-[#3A4C6C] md:text-3xl lg:px-0 lg:text-[40px]">
           Our Digital Transformation <br /> Offerings{" "}
         </h2>
         <div className="mt-10">
           <div className="hidden overflow-hidden md:grid md:grid-cols-2 md:gap-6 lg:grid-cols-3">
             {digitalData.map((item) => (
-              <Card key={item.heading} heading={item.heading}>
+              <Card
+                key={item.heading}
+                heading={item.heading}
+                className={"w-full"}
+              >
                 {item.lists.map((list, i) => (
-                  <li key={i} className="font-poppins">
+                  <li key={i} className="ml-7 font-poppins text-lg 2xl:text-xl">
                     {list}
                   </li>
                 ))}
@@ -52,7 +57,7 @@ const DigitalTransformation = () => {
         </div>
       </section>
       <section className="md:px-20 md:py-24">
-        <h2 className="text-center lg:text-left font-poppins  font-light text-[#3A4C6C] leading-9 md:text-center lg:text-[40px] text-[24px]">
+        <h2 className="text-center font-poppins text-[24px] font-light leading-9 text-[#3A4C6C] md:text-center lg:text-left lg:text-[40px]">
           Why Choose Avenue <br className="hidden md:block" /> Impact?
         </h2>
         <div className="mt-10 grid gap-0 md:grid-cols-2">
