@@ -34,7 +34,10 @@ function StudentSettings() {
       </header>
       <BorderCard className="mt-4 bg-white py-3">
         <Avatar className="">
-          <AvatarImage src="https://github.com/shadcn.png" />
+          <AvatarImage
+            src="https://github.com/shadcn.png"
+            className="m-auto block h-10 w-10 rounded-full"
+          />
           <AvatarFallback className="mx-auto block w-fit rounded-full bg-primary-color-100 p-2 text-sm text-primary-color-600 md:p-4">
             MS
           </AvatarFallback>

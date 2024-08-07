@@ -2,7 +2,7 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AviNav from "@/Components/avi/AviNav";
 import BorderCard from "@/Components/BorderCard";
 import { Heading, Paragraph } from "./components/Text";
@@ -16,7 +16,7 @@ import RegisterFail from "./components/RegisterFail";
 import PasswordResetSucess from "./components/PasswordResetSucess";
 
 const loginSchema = z.object({
-  username: z.string().email(),
+  username: z.string().min(1, { message: "name is required" }),
   password: z
     .string()
     .min(4, { message: "Name must be at least 4 characters long" }),
@@ -24,6 +24,7 @@ const loginSchema = z.object({
 
 const Login = () => {
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const form = useForm({
     resolver: zodResolver(loginSchema),
@@ -46,7 +47,7 @@ const Login = () => {
             <form
               action=""
               className="space-y-2"
-              onSubmit={form.handleSubmit(() => console.log("fill"))}
+              onSubmit={() => navigate("/dashboard")}
             >
               <FormInput
                 name="username"

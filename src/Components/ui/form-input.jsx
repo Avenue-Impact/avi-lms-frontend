@@ -23,7 +23,8 @@ import { cn } from "../../lib/utils";
 FormInput.propTypes = {
   label: PropTypes.string,
   name: PropTypes.string.isRequired,
-  type: PropTypes.oneOf(["text", "number", "password", "file"]).isRequired,
+  type: PropTypes.oneOf(["text", "number", "password", "file", "email"])
+    .isRequired,
   control: PropTypes.any,
   className: PropTypes.string,
   placeholder: PropTypes.string.isRequired,
@@ -49,7 +50,7 @@ export default function FormInput({
           {label && (
             <FormLabel
               className={cn(
-                "font-poppins text-label text-sm font-semibold capitalize",
+                "font-poppins text-sm font-semibold capitalize text-label",
               )}
             >
               {label}

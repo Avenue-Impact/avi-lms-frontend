@@ -4,7 +4,7 @@ import { FaRegHeart, FaRegBell } from "react-icons/fa";
 
 import { useState } from "react";
 import { Sidebar, SidebarItem } from "./SideNav";
-const navItem = [
+export const navItem = [
   {
     id: 1,
     text: "Dashboard",

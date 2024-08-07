@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import DashButton from '../auth/ButtonDash';
 import DashSelect from '../auth/components/DashSelect';
-import NoCoursesMessage from '../auth/components/NoCourses';
+// import NoCoursesMessage from '../auth/components/NoCourses';
 import Modal from '../auth/components/Modal';
 import BorderCard from '@/Components/BorderCard';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

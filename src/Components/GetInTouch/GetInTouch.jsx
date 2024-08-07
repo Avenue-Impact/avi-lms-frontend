@@ -90,9 +90,10 @@ const GetInTouch = () => {
           onChange={handleChange}
         />
 
-        <Button className={"mt-8 lg:mt-11"} type="submit">
+        <Button className="mt-8 lg:mt-11 " type="submit">
           Send a message
         </Button>
+
       </form>
     </div>
   );

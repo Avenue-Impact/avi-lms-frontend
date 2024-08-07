@@ -27,6 +27,7 @@ module.exports = {
       },
       colors: {
         "lms-border": "#D0D5DD",
+        "btn-bg": "#D6E3FA",
         heading: "#1B1818",
         desc: '#645D5D',
         label: '#101928',
@@ -35,6 +36,7 @@ module.exports = {
         "tertiary-color-900": "#23314A",
         "tertiary-color-300": "#D6E3FA",
         'primary-color-100': "#FFEBF0",
+        'primary-color-300': "#FF7EA0",
         'primary-color-600': "#CC1747",
         'primary-color-500': "#F53366",
         border: "hsl(var(--border))",

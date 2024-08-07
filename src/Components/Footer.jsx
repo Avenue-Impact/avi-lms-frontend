@@ -9,7 +9,7 @@ import SocialMediaLinks, { socialMediaData } from "./SocialMediaLink";
 const Footer = ({ heading, description }) => {
   return (
     <ImageHero imageSrc={footerImg} className={"items-start md:items-end"}>
-      <div className="flex h-full lg:items-end lg:justify-end">
+      <div className="flex h-full lg:items-end">
         <footer className="h-max">
           <HeroHeading className={"2xl:w-[1060px]"}>{heading}</HeroHeading>
 

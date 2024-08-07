@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import AviNav from "@/Components/avi/AviNav";
 import BorderCard from "@/Components/BorderCard";
@@ -16,21 +16,28 @@ const loginSchema = z.object({
   password: z
     .string()
     .min(4, { message: "Name must be at least 4 characters long" }),
+  referralCode: z
+    .string()
+    .min(4, { message: "Name must be at least 4 characters long" }),
+  connfirmPassword: z
+    .string()
+    .min(4, { message: "Name must be at least 4 characters long" }),
   firstname: z
     .string()
-    .email({ message: "Please enter a valid email address." }),
+    .min(1, { message: " first name must be at least 4 characters long" }),
   lastname: z
     .string()
-    .email({ message: "Please enter a valid email address." }),
+    .min(1, { message: "last name must be at least 4 characters long" }),
   username: z
     .string()
-    .email({ message: "Please enter a valid email address." }),
+    .min(1, { message: " username must be at least 4 characters long" }),
 });
 
 const SignUp = () => {
   // const [currentPassword, setCurrentPassword] = useState("");
   const [password, setPassword] = useState("");
   // const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const navigate = useNavigate();
 
   const form = useForm({
     resolver: zodResolver(loginSchema),
@@ -41,6 +48,7 @@ const SignUp = () => {
       lastname: "",
       username: "",
       connfirmPassword: "",
+      referralCode: "",
     },
   });
 
@@ -55,9 +63,10 @@ const SignUp = () => {
           </div>
           <Form {...form}>
             <form
-              onSubmit={form.handleSubmit(() => {
-                console.log("form validated");
-              })}
+              onSubmit={() => {
+                console.log("clicked");
+                navigate("/dashboard");
+              }}
             >
               <div className="space-y-[4px]">
                 <FormInput

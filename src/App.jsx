@@ -13,6 +13,7 @@ import DataSolution from "./pages/DataSolution";
 import AvenueImpactDevelopment from "./pages/AvenueImpactDevelopment";
 import AVI from "./pages/AVI";
 import PreviewCourse from "./pages/previewCourse";
+import PreviewVideoCourse from "./pages/previewVideoCourse";
 import Component from "./Components/Component";
 import Login from "./pages/auth/Login";
 import SignUp from "./pages/auth/Signup";
@@ -24,6 +25,11 @@ import Wishlist from "./pages/dashboard/Wishlist";
 
 import StudentSettings from "./pages/dashboard/StudentSettings";
 import Referral from "./pages/dashboard/Referral";
+import OtherLayout from "./layouts/OtherLayout";
+import ShareDocument from "./pages/dashboard/ShareDocument";
+import Documents from "./pages/dashboard/Documents";
+import Assignment from "./pages/dashboard/Assignment";
+import Overview from "./pages/dashboard/Overview";
 
 import DashboardDiscover from "./pages/dashboard/DashboardDiscover";
 import JoinProjectTeam from "./pages/dashboard/JoinProjectTeam";
@@ -32,15 +38,17 @@ import EmptyGetCertificate from "./pages/dashboard/EmptyGetCertificate";
 import GetCertificate from "./pages/dashboard/GetCertificate";
 import LeaveRating from "./pages/dashboard/LeaveRating";
 
-
 import ServiceLayout from "./layouts/ServiceLayout";
-
 
 function App() {
   const routes = createBrowserRouter([
     {
       path: "/preview-course",
       element: <PreviewCourse />,
+    },
+    {
+      path: "/PreviewVideoCourse",
+      element: <PreviewVideoCourse />,
     },
     {
       path: "/",
@@ -126,25 +134,51 @@ function App() {
           path: "Dashboard_Discover",
           element: <DashboardDiscover />,
         },
-        {
-          path: "joinProjectTeam",
-          element: <JoinProjectTeam />,
-        },
+
         {
           path: "EmptyJoinProjectTeam",
           element: <EmptyJoinProjectTeam />,
         },
-         {
+        {
           path: "EmptyGetCertificate",
           element: <EmptyGetCertificate />,
         },
-        {
-          path: "GetCertificate",
-          element: <GetCertificate />,
-        },
+
         {
           path: "LeaveRating",
           element: <LeaveRating />,
+        },
+      ],
+    },
+    {
+      element: <OtherLayout />,
+      path: "/dashboard",
+      children: [
+        {
+          element: <ShareDocument />,
+          path: "/dashboard",
+          children: [
+            {
+              path: "share-documents",
+              element: <Documents />,
+            },
+            {
+              path: "assignments",
+              element: <Assignment />,
+            },
+            {
+              path: "overview",
+              element: <Overview />,
+            },
+          ],
+        },
+        {
+          path: "certificate",
+          element: <GetCertificate />,
+        },
+        {
+          path: "projects",
+          element: <JoinProjectTeam />,
         },
       ],
     },
