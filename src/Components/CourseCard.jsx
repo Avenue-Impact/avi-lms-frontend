@@ -5,6 +5,7 @@ import styles from "../pages/pages.module.css"; // Ensure this imports the corre
 import PreviewButton, { EnrollPreviewButton } from "./PreviewButton";
 import joinTeam from "../assets/images/join_team.png";
 import { Link } from "react-router-dom";
+// import previewVideoCourse from "../Components/previewVideoCourse";
 
 
 export const renderStars = () => {
@@ -24,9 +25,11 @@ export const CourseCardPreview = ({ imgSrc, previewButtonText }) => {
         <img className="rounded-lg" src={imgSrc} alt="Course" />
       </div>
       <div className="pt-4 text-center">
-        <EnrollPreviewButton className="bg-[#ffffff]">
-          {previewButtonText}
-        </EnrollPreviewButton>
+          <Link to="/previewVideoCourse">
+            <EnrollPreviewButton className="bg-[#b84646]">
+              {previewButtonText}
+            </EnrollPreviewButton>
+          </Link>
       </div>
     </div>
   );
@@ -62,7 +65,7 @@ export const DashboardDiscover = ({
       </div>
       
       <div className={`rounded-b-lg text-[#667185] md:px-3 md:py-2 lg:py-[4px] `}>
-        <p className="text-[12px]">{title}</p>
+        <p className="text-[12px] font-[500]">{title}</p>
         <div className={`${styles.courseNumber} mb-2 mt-[6px] flex items-center justify-start gap-2 lg:mb-2 lg:mt-[10px]`}>
           <p className="text-[12px]">{rating}</p>
           <div className="flex text-sm md:text-base lg:text-sm">
@@ -79,7 +82,9 @@ export const DashboardDiscover = ({
                 {leaveRating}
               </p>
 
-              <p className="text-[10px]">{continueLearning}</p>
+              <Link to="/Dashboard/share-documents">
+                <p className="text-[10px] hover:underline">{continueLearning}</p>
+              </Link>
         </div>
 
       </div>

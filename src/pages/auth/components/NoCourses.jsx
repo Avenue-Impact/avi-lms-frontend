@@ -1,7 +1,9 @@
 import React from 'react';
 import DashButton from '../../auth/ButtonDash';
 import NoCoursesImg from '../../../assets/images/no_courses.png'; 
-
+import { Link } from 'react-router-dom';
+// import EmptyJoinProjectTeam from '../components/EmptyJoinProjectTeam';
+// import EmptyJoinProjectTeam from '../../../assets/images/no_courses.png'; 
 
 
 const NoCoursesMessage = () => {
@@ -12,7 +14,11 @@ const NoCoursesMessage = () => {
       <p className="text-center text-sm text-gray-600 mb-4">
         It looks like you haven't enrolled in any courses yet. <br/> Explore our wide range of courses and start learning today!
       </p>
-      <DashButton className="mt-2 bg-[#CC1747] text-white hover:bg-[#b30e3b]">Discover Our Courses</DashButton>
+      <Link to="/Dashboard/Dashboard_Discover">
+        <DashButton className="mt-2 bg-[#CC1747] text-white hover:bg-[#b30e3b]">
+          Discover Our Courses
+        </DashButton>
+      </Link>
     </div>
   );
 };

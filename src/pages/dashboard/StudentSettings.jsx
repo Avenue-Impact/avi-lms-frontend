@@ -57,7 +57,7 @@ function StudentSettings() {
                 name="firstname"
                 id="firstname"
                 label="First Name"
-                placeholder="@maxwell02"
+                // placeholder="@maxwell02"
                 type="text"
                 control={form.control}
               />
@@ -93,7 +93,7 @@ function StudentSettings() {
                 label="confirm password"
                 name="confirmPassword"
                 control={form.control}
-                placeholder="Enter password"
+                // placeholder="Enter password"
               />
             </div>
             <CommonButton className="bg-[#CC1747] flex items-center">Update Profile</CommonButton>
