@@ -26,15 +26,15 @@ const ModalContent = ({ setShowModal }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white rounded-lg shadow-lg p-6 relative max-w-xl w-full">
+      <div className="bg-white rounded-lg shadow-lg lg:p-10 p-6 relative lg:max-w-[840px] max-w-xl w-full">
         <button
           onClick={() => setShowModal(false)}
           className="absolute top-2 right-2 text-gray-600 hover:text-red-600"
         >
           <FontAwesomeIcon icon={faTimes} />
         </button>
-        <h1 className="text-xl font-bold mb-2">Learning reminders</h1>
-        <p className="text-md font-medium mb-2">Frequency</p>
+        <h1 className="lg:text-[28.8px] text-[20px] font-[500] mb-2">Learning reminders</h1>
+        <p className="text-md font-medium mb-2">Add to calendar (Optional)</p>
 
         {!showAdditionalContent ? (
           <>
@@ -111,9 +111,12 @@ const ModalContent = ({ setShowModal }) => {
                 <div className="flex items-center ">
                   <p className="mr-2 text-black">Time</p>
                   <div className="flex items-center w-full">
-                    <input type="time" className="border border-gray-300 rounded px-2 py-1 w-full mr-2" />
-                    
-                  </div>
+                  <input 
+                    type="time" 
+                    className="border border-gray-300 rounded-lg px-4 py-2 w-full mr-2 text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  />
+                </div>
+
                 </div>
                 <div className="flex items-center">
                   <p className="mr-2 text-black">Date</p>
@@ -144,8 +147,8 @@ const ModalContent = ({ setShowModal }) => {
               </button>
             </div>
             <p className="mb-4 text-sm text-[#667185]">
-              Please follow all calendar prompts and save your progress before proceeding. Apple and Outlook will
-              download an ICS file; open this file to add the event to your calendar.
+              Please follow all calendar prompts and save your progress before proceeding. 
+              <span className='lg:block'> Apple and Outlook will download an ICS file; open this file to add the event to </span> your calendar.
             </p>
             <div className="flex justify-end space-x-2">
               <button onClick={handleBackClick} className="border border-gray-500 text-gray-800 py-2 px-4 rounded">Back</button>

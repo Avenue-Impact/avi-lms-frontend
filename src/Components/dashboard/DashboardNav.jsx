@@ -2,6 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FaRegBell } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 function DashboardNav() {
   return (
@@ -20,9 +21,9 @@ function DashboardNav() {
             View all Courses
           </p>
 
-          <span className="text-xl">
+          <Link to={"/dashboard/notification"} className="text-xl">
             <FaRegBell />
-          </span>
+          </Link>
         </div>
         <div className="relative">
           <div className="absolute right-0 top-0 z-10 h-2 w-2 rounded-full bg-[#008000] md:h-3 md:w-3"></div>

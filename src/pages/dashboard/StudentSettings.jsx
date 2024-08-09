@@ -1,6 +1,3 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Heading } from "../auth/components/Text";
 import BorderCard from "@/Components/BorderCard";
 import { Form } from "@/Components/ui/form";
@@ -8,97 +5,62 @@ import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import FormInput from "@/Components/ui/form-input";
 import { PasswordInput } from "@/Components/ui/password-input";
 import { CommonButton } from "@/Components/ui/button";
-
-const loginSchema = z.object({
-  email: z.string().email(),
-  password: z
-    .string()
-    .min(4, { message: "Name must be at least 4 characters long" }),
-});
+import { useState } from "react";
+import Modal from "../auth/components/Modal";
+import ConfirmDelete from "@/Components/dashboard/ConfirmDelete";
+import EditProfile from "@/Components/dashboard/EditProfile";
+import { Link } from "react-router-dom";
+import { cn } from "@/lib/utils";
+import ChangePassword from "@/Components/dashboard/ChangePassword";
 
 function StudentSettings() {
-  const form = useForm({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  });
+  const [showModal, setShowModal] = useState(false);
+  const [page, setPage] = useState("edit");
+
   return (
-    <div>
+    <div className="">
+      {showModal && (
+        <Modal>
+          <ConfirmDelete setShowModal={setShowModal} />
+        </Modal>
+      )}
       <header className="flex items-center justify-between">
         <Heading className="text-left">Account settings </Heading>
-        <button className="text-nowrap border-0 bg-transparent text-primary-color-600 underline md:text-xl lg:text-2xl">
+        <button
+          className="text-nowrap border-0 bg-transparent text-primary-color-600 underline md:text-xl lg:text-2xl"
+          onClick={() => setShowModal((prev) => !prev)}
+        >
           Delete Account
         </button>
       </header>
-      <BorderCard className="mt-4 bg-white py-3">
-        <Avatar className="">
-          <AvatarImage
-            src="https://github.com/shadcn.png"
-            className="m-auto block h-10 w-10 rounded-full"
-          />
-          <AvatarFallback className="mx-auto block w-fit rounded-full bg-primary-color-100 p-2 text-sm text-primary-color-600 md:p-4">
-            MS
-          </AvatarFallback>
-        </Avatar>
-        <Form {...form}>
-          <form className="space-y-4">
-            <FormInput
-              name="username"
-              id="username"
-              label="Username"
-              placeholder="@maxwell02"
-              type="text"
-              control={form.control}
-            />
-            <div className="grid gap-x-4 md:grid-cols-2">
-              <FormInput
-                name="firstname"
-                id="firstname"
-                label="First Name"
-                // placeholder="@maxwell02"
-                type="text"
-                control={form.control}
-              />
-              <FormInput
-                name="lastname"
-                id="lastname"
-                label="Last Name"
-                // placeholder="@maxwell02"
-                type="text"
-                control={form.control}
-              />
-            </div>
-            <FormInput
-              name="email"
-              id="email"
-              label="Email Address"
-              // placeholder="@maxwell02@gmail.com"
-              type="email"
-              control={form.control}
-            />
-            <div className="grid gap-x-4 md:grid-cols-2">
-              <PasswordInput
-                id="password"
-                autoComplete="new-password"
-                label="password"
-                name="password"
-                control={form.control}
-                // placeholder="Change Password"
-              />
-              <PasswordInput
-                id="confirmPassword"
-                autoComplete="new-password"
-                label="confirm password"
-                name="confirmPassword"
-                control={form.control}
-                // placeholder="Enter password"
-              />
-            </div>
-            <CommonButton className="bg-[#CC1747] flex items-center">Update Profile</CommonButton>
-          </form>
-        </Form>
+
+      <div className="h-full border-b-[2px] border-b-[#E4E7EC] px-4">
+        <ul className="flex gap-4 *:text-nowrap">
+          <li
+            className={cn(
+              "after:contents-[''] relative h-full cursor-pointer py-4 text-sm font-medium capitalize text-[#344054] transition-colors duration-150 *:capitalize after:absolute after:-bottom-[2px] after:left-0 after:m-auto after:h-[2px] after:w-0 after:bg-primary-color-600 after:transition-all after:duration-150 hover:text-primary-color-600 hover:after:w-full",
+              page === "edit" ? "text-primary-color-600 after:w-full" : "",
+            )}
+          >
+            <button onClick={() => setPage("edit")}>edit profile</button>
+          </li>
+          <li
+            className={cn(
+              "after:contents-[''] relative h-full cursor-pointer py-4 text-sm font-medium capitalize text-[#344054] transition-colors duration-150 *:capitalize after:absolute after:-bottom-[2px] after:left-0 after:m-auto after:h-[2px] after:w-0 after:bg-primary-color-600 after:transition-all after:duration-150 hover:text-primary-color-600 hover:after:w-full",
+              page === "change-password"
+                ? "text-primary-color-600 after:w-full"
+                : "",
+            )}
+          >
+            <button onClick={() => setPage("change-password")}>
+              change password
+            </button>
+          </li>
+        </ul>
+      </div>
+      <BorderCard className="mt-4 h-full bg-white py-3">
+        {page === "edit" ? <EditProfile /> : <ChangePassword />}
+
       </BorderCard>
     </div>
   );

@@ -6,13 +6,14 @@ import { IoGiftOutline } from "react-icons/io5";
 import { useContext, createContext, useState } from "react";
 import { DarkLogo } from "../Logo";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 const SidebarContext = createContext();
 
 export function Sidebar({ children }) {
   const [expanded, setExpanded] = useState(false);
+  const navigate = useNavigate();
 
   const location = useLocation();
 
@@ -97,7 +98,9 @@ export function Sidebar({ children }) {
                 <h4 className="text-[#101928]">Maxwell Samantha</h4>
                 <span className="text-xs text-gray-600">johndoe@gmail.com</span>
               </div>
-              <LucideLogOut />
+              <button onClick={() => navigate("/login")}>
+                <LucideLogOut />
+              </button>
             </div>
           </div>
         </div>

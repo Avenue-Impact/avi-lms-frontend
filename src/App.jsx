@@ -39,6 +39,7 @@ import GetCertificate from "./pages/dashboard/GetCertificate";
 import LeaveRating from "./pages/dashboard/LeaveRating";
 
 import ServiceLayout from "./layouts/ServiceLayout";
+import NewPassword from "./pages/auth/NewPassword";
 
 function App() {
   const routes = createBrowserRouter([
@@ -101,6 +102,10 @@ function App() {
     {
       path: "/signup",
       element: <SignUp />,
+    },
+    {
+      path: "/new-password",
+      element: <NewPassword />,
     },
     {
       path: "/forgot-password",

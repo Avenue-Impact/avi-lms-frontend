@@ -94,6 +94,15 @@ const previewVideoCourse = () => {
                           <PreviewVideoSelect />
                        </div>
 
+                        <div class="space-y-2 mt-6">
+                          <p class="font-semibold">Enter a promo code</p>
+                            <div class="flex">
+                                <input type="text" class="border border-gray-300 focus:outline-none px-4 py-2 w-full" placeholder="Promo code" />
+                                <DashButton className="text-white rounded-r-sm rounded-none px-4 py-2">
+                                  Apply
+                                </DashButton>
+                            </div>
+                        </div>
 
                         <div className="grid grid-cols-12 py-4 gap-3 w-full">
                             <DashButton className="col-span-10 mt-4 text-white ">
@@ -108,15 +117,7 @@ const previewVideoCourse = () => {
 
                         </div>
 
-                        <div class="space-y-2 mt-14">
-                          <p class="font-semibold">Enter a promo code</p>
-                            <div class="flex">
-                                <input type="text" class="border border-gray-300 focus:outline-none px-4 py-2 w-full" placeholder="Promo code" />
-                                <DashButton className="text-white rounded-r-sm rounded-none px-4 py-2">
-                                  Apply
-                                </DashButton>
-                            </div>
-                        </div>
+                       
 
                     </div>
 

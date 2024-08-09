@@ -10,6 +10,9 @@ import { Form } from "@/Components/ui/form";
 import FormInput from "@/Components/ui/form-input";
 import { PasswordInput } from "@/Components/ui/password-input";
 import { Heading, Paragraph } from "./components/Text";
+import OtpComponent from "@/Components/about/OtpComponent";
+import Modal from "./components/Modal";
+import RegisterSuccess from "./components/RegisterSuccess";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
@@ -37,6 +40,10 @@ const SignUp = () => {
   // const [currentPassword, setCurrentPassword] = useState("");
   const [password, setPassword] = useState("");
   // const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [success, setSuccess] = useState("");
+  const [confirm, setConfirm] = useState(false);
+  const [modal, setModal] = useState(false);
+
   const navigate = useNavigate();
 
   const form = useForm({
@@ -55,6 +62,38 @@ const SignUp = () => {
   return (
     <>
       <AviNav />
+      {confirm && (
+        <Modal>
+          <BorderCard className="rounded-xl bg-white px-[72px] py-11 text-center">
+            <div className="px-4">
+              <p className="text-xl font-semibold text-[#23314A]">
+                Confirm your email address
+              </p>
+              <p className="mx-auto mb-6 mt-3 max-w-[284px] text-center text-sm leading-[18px] text-[#98A2B3]">
+                Please enter code we sent now to aviplatform@gmail.com{" "}
+                <span className="text-primary-color-600">Edit</span>
+              </p>
+              <OtpComponent />
+              <p className="mb-[31px] mt-6 text-sm">
+                <span className="text-[#645D5D]"> Didn’t receive a code?</span>{" "}
+                <span className="font-medium text-primary-color-600">
+                  Resend
+                </span>
+              </p>
+            </div>
+            <CommonButton
+              className="w-full bg-primary-color-600"
+              onClick={() => {
+                setConfirm((prev) => !prev);
+                setModal((prev) => !prev);
+                setSuccess("success");
+              }}
+            >
+              Confirm
+            </CommonButton>
+          </BorderCard>
+        </Modal>
+      )}
       <div className="py-6">
         <BorderCard className="mx-auto max-w-[465px]">
           <div className="mb-6 space-y-1">
@@ -63,9 +102,9 @@ const SignUp = () => {
           </div>
           <Form {...form}>
             <form
-              onSubmit={() => {
-                console.log("clicked");
-                navigate("/dashboard");
+              onSubmit={(e) => {
+                e.preventDefault();
+                setConfirm((prev) => !prev);
               }}
             >
               <div className="space-y-[4px]">
@@ -166,6 +205,22 @@ const SignUp = () => {
           </Link>
         </p>
       </div>
+      {modal && (
+        <Modal>
+          {success === "success" ? (
+            <RegisterSuccess
+              title={"Registration Successful!"}
+              text={
+                "You have successfully registered and can now start using your account. Enjoy your experience with us!"
+              }
+              setModal={setModal}
+              path={"/dashboard"}
+            />
+          ) : (
+            <RegisterSuccess />
+          )}
+        </Modal>
+      )}
     </>
   );
 };

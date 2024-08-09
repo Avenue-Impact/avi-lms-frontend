@@ -4,17 +4,24 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Heading, Paragraph } from "./Text";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { CommonButton } from "@/Components/ui/button";
+import { useNavigate } from "react-router-dom";
 
-function RegisterSuccess() {
+function RegisterSuccess({ title, text, setModal, path }) {
+  const navigate = useNavigate();
+  const handleModal = () => {
+    setModal((prev) => !prev);
+    navigate(path);
+  };
   return (
     <BorderCard className="relative bg-white px-24 py-12">
       <button
         type="button"
         className="absolute right-4 top-4 w-fit cursor-pointer"
+        onClick={handleModal}
       >
         <FontAwesomeIcon
           icon={faClose}
-          className="text-tertiary-color-700 text-2xl"
+          className="text-2xl text-tertiary-color-700"
         />
       </button>
       <div className="mx-auto max-w-[430px] space-y-8 text-center">
@@ -22,13 +29,14 @@ function RegisterSuccess() {
           <FontAwesomeIcon icon={faCheck} />
         </p>
         <div className="space-y-6">
-          <Heading>Registration Successful!</Heading>
-          <Paragraph>
-            You have successfully registered and can now start using your
-            account. Enjoy your experience with us!
-          </Paragraph>
+          <Heading>{title}</Heading>
+          <Paragraph>{text}</Paragraph>
         </div>
-        <CommonButton className="bg-primary-color-600" size="lg">
+        <CommonButton
+          className="bg-primary-color-600"
+          size="lg"
+          onClick={handleModal}
+        >
           OK
         </CommonButton>
       </div>
