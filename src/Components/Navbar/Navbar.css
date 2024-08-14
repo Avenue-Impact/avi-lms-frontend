@@ -1,13 +1,13 @@
 .navbar {
-	display: flex;
-	justify-content: space-between;
-	padding: 16px 3rem;
-	/* box-shadow: 0 1px 3px -2px black; */
-	position: absolute;
-	top: 0;
-	left: 0;
-	z-index: 5;
-	width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 3rem;
+  /* box-shadow: 0 1px 3px -2px black; */
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  width: 100%;
 }
 
 /* .nav-menu {
@@ -24,10 +24,10 @@
 } */
 
 .nav-logo img {
-	height: auto; /* Adjust the height as needed */
-	width: 80%; /* Maintain aspect ratio */
+  height: auto; /* Adjust the height as needed */
+  width: 80%; /* Maintain aspect ratio */
 }
-
+/* 
 .nav-menu li a .active {
 	border-bottom: 2px solid red;
-}
+} */

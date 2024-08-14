@@ -6,7 +6,7 @@ import card from "../assets/images/card-img.png";
 import card2 from "../assets/images/card-img_2.png";
 import card3 from "../assets/images/card-img_3.png";
 import professional from "../assets/images/proffessional.png";
-import group from "../assets/images/big-team.png";
+import group from "../assets/images/big-team.jpg";
 import MainContent from "../Components/MainContent/MainContent";
 import AvenueList from "../Components/Assets/AvenueList";
 import iconLight from "../assets/icons/icon.png";

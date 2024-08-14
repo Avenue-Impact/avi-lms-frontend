@@ -5,6 +5,8 @@ import Hero from "../Hero";
 import HeroHeading from "./HeroHeading";
 // import arrow from "../../assets/images/arrow-up.png";
 import Button from "../Button";
+
+
 const MainContent = () => {
   return (
     <Hero videoSrc={bgVideo} className={"items-center pb-12"}>

@@ -14,7 +14,7 @@ const NoCoursesMessage = () => {
       <p className="text-center text-sm text-gray-600 mb-4">
         It looks like you haven't enrolled in any courses yet. <span className='lg:block'> Explore our wide range of courses and start learning today!</span>
       </p>
-      <Link to="/Dashboard/Dashboard_Discover">
+      <Link to="/discover-courses">
         <DashButton className="mt-2 bg-[#CC1747] text-white hover:bg-[#b30e3b]">
           Discover Our Courses
         </DashButton>

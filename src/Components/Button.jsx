@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import arrow from "../assets/images/arrow-up.png";
 import { cn } from "@/lib/utils";
 
-const Button = ({ children, className, type = "button", hover = false }) => {
+const Button = ({ children, className, type = "button", hover = true }) => {
   const navigate = useNavigate();
   return (
     <button

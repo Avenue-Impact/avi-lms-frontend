@@ -1,7 +1,3 @@
-// import Home from './Components/pages/Home'; // Ensure these components exist
-// import About from './Components/pages/About';
-// import Contact from './Components/pages/Contact';
-
 import "./App.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AppLayout from "./layouts/AppLayout";
@@ -40,6 +36,8 @@ import LeaveRating from "./pages/dashboard/LeaveRating";
 
 import ServiceLayout from "./layouts/ServiceLayout";
 import NewPassword from "./pages/auth/NewPassword";
+import SliderNav from "./pages/dashboard/SliderNav";
+import DiscoverCourses from "./pages/dashboard/DiscoverCourses";
 
 function App() {
   const routes = createBrowserRouter([
@@ -104,12 +102,20 @@ function App() {
       element: <SignUp />,
     },
     {
+      path: "/slider",
+      element: <SliderNav />,
+    },
+    {
       path: "/new-password",
       element: <NewPassword />,
     },
     {
       path: "/forgot-password",
       element: <ForgotPassword />,
+    },
+    {
+      path: "/discover-courses",
+      element: <DiscoverCourses />,
     },
     {
       path: "/dashboard",

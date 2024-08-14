@@ -1,8 +1,6 @@
-import React from "react";
-
 const Overview = () => {
   return (
-    <section className="mt-2 bg-white px-[25px] py-6 md:px-8 lg:px-10 lg:py-8">
+    <section className="bg-white px-[25px] pb-6 pt-0 md:px-8 lg:mt-2 lg:px-10 lg:py-8">
       <h3 className="mb-3 text-xl font-light capitalize text-black lg:mb-5 lg:text-2xl lg:font-medium">
         Project Consultant Training Programme (Bundle)
       </h3>
@@ -24,7 +22,7 @@ const Overview = () => {
 
       <button
         type="button"
-        className="bg-btn-bg/25 rounded-md px-4 py-[10px] capitalize text-tertiary-color-900"
+        className="rounded-md bg-btn-bg/25 px-4 py-[10px] capitalize text-tertiary-color-900"
       >
         {" "}
         download certificate

@@ -23,7 +23,7 @@ export const navItem = [
 
     active: false,
     alert: "alert",
-    path: "notification",
+    path: "/dashboard/notification",
   },
   {
     id: 3,
@@ -33,14 +33,14 @@ export const navItem = [
 
     active: false,
     alert: "alert",
-    path: "wishlists",
+    path: "/dashboard/wishlists",
   },
 ];
-function DashboardSideNav() {
+function DashboardSideNav({ toggleNav, setTogglNav }) {
   const [active, setActive] = useState(navItem);
   const hadleClick = (id) => {};
   return (
-    <Sidebar>
+    <Sidebar toggleNav={toggleNav} setToggleNav={setTogglNav}>
       {navItem.map((item) => (
         <SidebarItem
           key={item.text}
@@ -49,6 +49,7 @@ function DashboardSideNav() {
           path={item.path}
           onClick={() => hadleClick(item.id)}
           active={item.active}
+          setToggleNav={setTogglNav}
         />
       ))}
     </Sidebar>

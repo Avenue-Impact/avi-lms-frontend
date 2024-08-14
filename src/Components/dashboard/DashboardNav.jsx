@@ -1,13 +1,23 @@
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FaRegBell } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { DarkLogo } from "../Logo";
+import { Link} from "react-router-dom";
 
-function DashboardNav() {
+function DashboardNav({ setToggleNav }) {
   return (
-    <nav className="flex w-full items-center justify-between bg-white py-4 pl-6 pr-6 md:grid md:grid-cols-[3fr_1fr] md:gap-36 md:px-16 md:py-6 md:pl-10 md:pr-4 lg:gap-10 lg:px-[70px] lg:pl-16">
-      <div className="flex w-max items-center gap-3 rounded-lg bg-[#FDFDFD] px-4 py-2 lg:w-full">
+    <nav className="flex w-full flex-nowrap items-center justify-between bg-white py-4 pl-6 pr-6 md:grid md:grid-cols-[3fr_1fr] md:gap-36 md:px-16 md:py-6 md:pl-10 md:pr-4 lg:gap-10 lg:px-[70px] lg:pl-16">
+      <span className="flex items-center gap-2 lg:hidden">
+        <button
+          className="self-end lg:hidden"
+          onClick={() => setToggleNav((prev) => !prev)}
+        >
+          <FontAwesomeIcon icon={faBars} className="text-2xl text-[#23314A]" />
+        </button>
+        <DarkLogo />
+      </span>
+      <div className="hidden w-max items-center gap-3 rounded-lg bg-[#FDFDFD] px-4 py-2 lg:flex lg:w-full">
         <FontAwesomeIcon icon={faSearch} className="text-[#475367]" />
         <input
           type="text"
@@ -20,10 +30,19 @@ function DashboardNav() {
           <p className="hidden text-sm text-[#667185] md:block md:text-nowrap">
             View all Courses
           </p>
+          <span className="lg:hidden">
+            <FontAwesomeIcon icon={faSearch} className="text-[#475367]" />
+          </span>
+          
+          <Link to={"/dashboard/notification"} >
+                <span className="text-xl">
+                  <FaRegBell />
+                </span>
+              </Link>
 
-          <Link to={"/dashboard/notification"} className="text-xl">
-            <FaRegBell />
-          </Link>
+
+
+
         </div>
         <div className="relative">
           <div className="absolute right-0 top-0 z-10 h-2 w-2 rounded-full bg-[#008000] md:h-3 md:w-3"></div>

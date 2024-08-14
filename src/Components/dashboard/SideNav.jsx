@@ -1,5 +1,3 @@
-import mobileLogo from "../../assets/images/mobile-dark.png";
-
 import { LucideLogOut, MoreVertical } from "lucide-react";
 import { PiGearThin } from "react-icons/pi";
 import { IoGiftOutline } from "react-icons/io5";
@@ -8,10 +6,12 @@ import { DarkLogo } from "../Logo";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClose } from "@fortawesome/free-solid-svg-icons";
 
 const SidebarContext = createContext();
 
-export function Sidebar({ children }) {
+export function Sidebar({ children, toggleNav, setToggleNav }) {
   const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
 
@@ -20,24 +20,31 @@ export function Sidebar({ children }) {
   // fixed left-0 top-0 z-10
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-min lg:w-[272px]">
+    <aside
+      className={cn(
+        "fixed left-0 top-0 z-20 h-screen w-[272px] transition-transform duration-200",
+        toggleNav ? "-translate-x-full lg:translate-x-0" : "translate-x-0",
+      )}
+    >
       <nav className="flex h-full w-full flex-col border-r bg-white shadow-sm">
-        <div className="mb-3 flex items-center justify-center p-4 pb-2 lg:ml-4 lg:justify-start">
-          <img src={mobileLogo} alt="" className="w-8 lg:hidden" />
-
-          <DarkLogo
-            className={`hidden overflow-hidden transition-all lg:block lg:w-40`}
-          />
+        <div className="mb-3 flex items-center justify-between p-4 pb-2 lg:ml-4 lg:justify-start">
+          <DarkLogo className={`overflow-hidden transition-all lg:w-40`} />
+          <button onClick={() => setToggleNav((prev) => !prev)}>
+            <FontAwesomeIcon
+              icon={faClose}
+              className="text-2xl text-tertiary-color-700 lg:hidden"
+            />
+          </button>
         </div>
 
         <SidebarContext.Provider value={{ expanded }}>
-          <ul className="flex-1 px-3">{children}</ul>
+          <ul className="flex-1 px-2 md:px-3">{children}</ul>
         </SidebarContext.Provider>
         <div>
           <ul className="flex-1 px-3">
             <li
               className={"dashboard"}
-              onClick={() => console.log(location.pathname)}
+              onClick={() => setToggleNav((prev) => !prev)}
             >
               <NavLink
                 to={"student-settings"}
@@ -51,16 +58,14 @@ export function Sidebar({ children }) {
                 <span className={"text-xl"}>
                   <PiGearThin />
                 </span>
-                <span
-                  className={`hidden overflow-hidden transition-all md:ml-3 lg:block`}
-                >
+                <span className={`ml-3 overflow-hidden transition-all`}>
                   Account Setting
                 </span>
               </NavLink>
             </li>
             <li
               className={"dashboard"}
-              onClick={() => console.log(location.pathname)}
+              onClick={() => setToggleNav((prev) => !prev)}
             >
               <NavLink
                 to={"referral"}
@@ -74,9 +79,7 @@ export function Sidebar({ children }) {
                 <span className={"text-xl"}>
                   <IoGiftOutline />
                 </span>
-                <span
-                  className={`hidden overflow-hidden transition-all md:ml-3 lg:block`}
-                >
+                <span className={`ml-3 overflow-hidden transition-all`}>
                   Referrals
                 </span>
               </NavLink>
@@ -92,13 +95,18 @@ export function Sidebar({ children }) {
             </Avatar>
 
             <div
-              className={`ml-3 hidden w-full items-center justify-between overflow-hidden transition-all lg:flex`}
+              className={`ml-3 flex w-full items-center justify-between overflow-hidden transition-all`}
             >
               <div className="leading-4">
                 <h4 className="text-[#101928]">Maxwell Samantha</h4>
                 <span className="text-xs text-gray-600">johndoe@gmail.com</span>
               </div>
-              <button onClick={() => navigate("/login")}>
+              <button
+                onClick={() => {
+                  navigate("/login");
+                  setToggleNav(true);
+                }}
+              >
                 <LucideLogOut />
               </button>
             </div>
@@ -109,26 +117,24 @@ export function Sidebar({ children }) {
   );
 }
 
-export function SidebarItem({ icon, text, alert, path, onClick, active }) {
+export function SidebarItem({ icon, text, path, setToggleNav }) {
   const { expanded } = useContext(SidebarContext);
 
   const location = useLocation();
 
   return (
-    <li className={"dashboard"} onClick={() => console.log(location.pathname)}>
+    <li className={"dashboard"} onClick={() => setToggleNav((prev) => !prev)}>
       <NavLink
         to={path}
         className={cn(
           "group relative my-1 flex cursor-pointer items-center border-4 border-transparent px-3 py-2 text-gray-600 transition-colors hover:border-l-primary-color-600 hover:bg-primary-color-100/30 hover:text-primary-color-600",
-          location.pathname === `/dashboard/${path}`
+          location.pathname === path
             ? "border-l-4 border-l-primary-color-600 bg-primary-color-100/30 font-medium text-primary-color-600"
             : "",
         )}
       >
         <span className={"text-xl"}>{icon}</span>
-        <span
-          className={`hidden overflow-hidden transition-all md:ml-3 lg:block`}
-        >
+        <span className={`ml-3 overflow-hidden transition-all lg:block`}>
           {text}
         </span>
       </NavLink>
