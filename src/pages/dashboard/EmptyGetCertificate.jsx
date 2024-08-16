@@ -5,7 +5,7 @@ import DashButton from "../auth/ButtonDash";
 export const EmptyGetCertificate = () => {
   return (
     <>
-      <div>
+      <div className="px-3 md:px-5">
         <div className="w-full grid-cols-12 gap-6 rounded-lg lg:grid">
           {/* Certificate Image */}
           <div className="order-1 col-span-7 mb-4 text-justify md:mb-0">
@@ -26,7 +26,6 @@ export const EmptyGetCertificate = () => {
             </div>
           </div>
         </div>
-
         {/* Live Session */}
         <div className="order-3 col-span-5 mb-4 h-[480.95px] rounded-lg py-4 md:mb-0 lg:order-2 lg:border-2 lg:border-gray-100 lg:bg-white lg:px-8">
           <h3 className="mb-2 text-[18px] font-[400] text-gray-800">
@@ -50,11 +49,11 @@ export const EmptyGetCertificate = () => {
             <p className="mt-2 text-gray-600">Every Monday to Friday 7PM</p>
           </div>
 
-          <div>
-            <DashButton className="mt-4 h-[40px] w-[100%] bg-[#7a88a0] text-white hover:bg-[#7a88a0]">
-              Download Certificate
-            </DashButton>
-          </div>
+          {/* <div>
+                <DashButton className="mt-4 h-[40px] w-[100%] bg-[#7a88a0] text-white hover:bg-[#7a88a0]">
+                  Download Certificate
+                </DashButton>
+              </div> */}
         </div>
 
         {/* Certificate Recipient Content */}
@@ -76,11 +75,12 @@ export const EmptyGetCertificate = () => {
         </div>
         <p className="mt-2 text-gray-600">Every Monday to Friday 7PM</p>
       </div>
-      <div>
+
+      {/* <div>
         <DashButton className="mt-4 h-[40px] w-[100%] bg-[#91a6ca] text-white hover:bg-[#a0b2d2]">
           Download Certificate
         </DashButton>
-      </div>
+      </div> */}
     </>
   );
 };

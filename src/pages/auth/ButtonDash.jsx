@@ -1,9 +1,11 @@
-import React from 'react';
+import React from "react";
 
-const DashButton = ({ children, className, onClick }) => {
+const DashButton = ({ children, className, onClick, disabled }) => {
   return (
-    <button onClick={onClick}
-      className={`px-4 py-2 rounded  bg-[#CC1747] text-white hover:bg-[#B3123F] transition duration-300 ${className}`}
+    <button
+      onClick={onClick}
+      className={`cursor-pointer rounded bg-[#CC1747] px-4 py-2 transition duration-300 disabled:hover:bg-slate-200 lg:hover:bg-[#B3123F] ${className}`}
+      disabled={disabled}
     >
       {children}
     </button>
@@ -11,6 +13,3 @@ const DashButton = ({ children, className, onClick }) => {
 };
 
 export default DashButton;
-
-
-

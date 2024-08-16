@@ -22,9 +22,12 @@ const Documents = () => {
                 <p className="text-[10px] font-light text-tertiary-color-700 md:text-sm">
                   {document.title}
                 </p>
-                <span className="cursor-pointer rounded-full bg-[#FFEBF0] p-1 text-primary-color-600 md:p-3 md:text-xl">
+                <button
+                  type="button"
+                  className="cursor-pointer rounded-full bg-[#FFEBF0] p-1 text-primary-color-600 md:p-3 md:text-xl"
+                >
                   <RxDownload />
-                </span>
+                </button>
               </div>
             </div>
           );

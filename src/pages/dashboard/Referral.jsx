@@ -211,7 +211,7 @@ const Referral = () => {
 
         {modal && (
           <Modal>
-            <ReferralModalForm />
+            <ReferralModalForm setModal={setShowModal} />
           </Modal>
         )}
       </div>

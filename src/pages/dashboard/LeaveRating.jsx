@@ -1,9 +1,17 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { faStar, faTimes } from "@fortawesome/free-solid-svg-icons";
 import BorderCard from "@/Components/BorderCard";
 
 const LeaveRating = ({ setShowModal }) => {
+
+
+  // Function to handle close button
+  const handleClose = () =>{
+    setShowModal(false);
+  }
+
+
   // Function to render stars
   const renderStars = () => {
     const stars = [];
@@ -19,7 +27,15 @@ const LeaveRating = ({ setShowModal }) => {
     setShowModal((prev) => !prev);
   };
   return (
-    <BorderCard className="mx-auto max-w-2xl bg-white p-6 shadow-md">
+    <BorderCard className="relative mx-auto max-w-2xl bg-white p-6 shadow-md">
+
+      <button 
+        onClick={handleClose} 
+        className="absolute top-4 right-6 text-gray-500 hover:text-gray-800 focus:outline-none hidden lg:block">
+        <FontAwesomeIcon icon={faTimes} />
+      </button>
+
+
       <h3 className="mb-2 text-2xl font-semibold text-gray-800">
         How would you rate this course?
       </h3>

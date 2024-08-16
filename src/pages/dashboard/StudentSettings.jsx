@@ -58,9 +58,8 @@ function StudentSettings() {
           </li>
         </ul>
       </div>
-      <BorderCard className="mt-4 h-full bg-white py-3">
+      <BorderCard className="mt-4 h-full bg-white py-3 lg:py-6 lg:pb-10">
         {page === "edit" ? <EditProfile /> : <ChangePassword />}
-
       </BorderCard>
     </div>
   );

@@ -5,12 +5,20 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 const OtherTopNav = ({ setShowModal }) => {
+
   const handleModal = () => setShowModal((prev) => !prev);
   const location = useLocation();
+  const navigate = useNavigate();
+
+
+  const handleBack = () =>{
+    navigate(-1)
+  }
+
   return (
     <nav className="flex gap-[97px] px-3 py-[25px] md:px-5">
       <div className="flex w-full items-center justify-between gap-1 md:gap-6 lg:w-max lg:justify-normal">
-        <button type="button" className="flex items-center gap-1">
+        <button onClick={handleBack} type="button" className="flex items-center gap-1">
           <span className="flex items-center justify-center rounded-sm border-[#E4E7EC] text-base text-black md:h-6 md:w-6 md:border md:text-[10px]">
             <FaLongArrowAltLeft />
           </span>

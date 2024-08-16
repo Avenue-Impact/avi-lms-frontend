@@ -67,71 +67,74 @@ const EditProfile = () => {
         </Modal>
       )}
       <div className="mx-auto max-w-[716px]">
-        <Avatar className="mx-auto block">
+        <Avatar className="mx-auto block h-14 w-14 md:h-20 md:w-20">
           <AvatarImage
             src="https://github.com/shadcn.png"
-            className="m-auto block h-10 w-10 rounded-full"
+            className="m-auto block rounded-full"
           />
-          <AvatarFallback className="mx-auto w-fit rounded-full bg-primary-color-100 p-2 text-sm text-primary-color-600 md:p-4">
+          <AvatarFallback className="mx-auto w-full rounded-full bg-primary-color-100 p-2 text-sm text-primary-color-600 md:p-4">
             MS
           </AvatarFallback>
         </Avatar>
         <Form {...form}>
-          <form className="space-y-4">
-            <FormInput
-              name="username"
-              id="username"
-              label="Username"
-              placeholder="@maxwell02"
-              type="text"
-              control={form.control}
-            />
-            <div className="grid gap-x-4 md:grid-cols-2">
+          <form className="">
+            <div className="space-y-4">
               <FormInput
-                name="firstname"
-                id="firstname"
-                label="First Name"
+                name="username"
+                id="username"
+                label="Username"
                 placeholder="@maxwell02"
                 type="text"
                 control={form.control}
               />
+              <div className="grid gap-x-4 md:grid-cols-2">
+                <FormInput
+                  name="firstname"
+                  id="firstname"
+                  label="First Name"
+                  placeholder="@maxwell02"
+                  type="text"
+                  control={form.control}
+                />
+                <FormInput
+                  name="lastname"
+                  id="lastname"
+                  label="Last Name"
+                  placeholder="@maxwell02"
+                  type="text"
+                  control={form.control}
+                />
+              </div>
               <FormInput
-                name="lastname"
-                id="lastname"
-                label="Last Name"
-                placeholder="@maxwell02"
-                type="text"
+                name="email"
+                id="email"
+                label="Email Address"
+                placeholder="@maxwell02@gmail.com"
+                type="email"
                 control={form.control}
               />
+              <div className="grid gap-x-4 md:grid-cols-2">
+                <PasswordInput
+                  id="password"
+                  autoComplete="new-password"
+                  label="password"
+                  name="password"
+                  control={form.control}
+                  placeholder="Change Password"
+                />
+                <PasswordInput
+                  id="confirmPassword"
+                  autoComplete="new-password"
+                  label="confirm password"
+                  name="confirmPassword"
+                  control={form.control}
+                  placeholder="Enter password"
+                />
+              </div>
             </div>
-            <FormInput
-              name="email"
-              id="email"
-              label="Email Address"
-              placeholder="@maxwell02@gmail.com"
-              type="email"
-              control={form.control}
-            />
-            <div className="grid gap-x-4 md:grid-cols-2">
-              <PasswordInput
-                id="password"
-                autoComplete="new-password"
-                label="password"
-                name="password"
-                control={form.control}
-                placeholder="Change Password"
-              />
-              <PasswordInput
-                id="confirmPassword"
-                autoComplete="new-password"
-                label="confirm password"
-                name="confirmPassword"
-                control={form.control}
-                placeholder="Enter password"
-              />
-            </div>
+
             <CommonButton
-              className="mx-auto mt-48 block w-[55.865%] items-center bg-[#CC1747]"
+              className="mx-auto mt-6 block w-[55.865%] items-center bg-[#CC1747]"
               type="submit"
               onClick={handleSubmit}
             >

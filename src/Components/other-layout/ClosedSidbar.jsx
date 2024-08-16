@@ -19,7 +19,7 @@ export function ClosedSidnav({ children }) {
   // fixed left-0 top-0 z-10
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-min">
+    <aside className="hidden lg:fixed lg:block left-0 top-0 h-screen w-min">
       <nav className="flex h-full w-full flex-col border-r bg-white shadow-sm">
         <div className="mb-3 flex items-center justify-center pt-6 lg:ml-4 lg:justify-start">
           <img src={mobileLogo} alt="" className="w-8" />

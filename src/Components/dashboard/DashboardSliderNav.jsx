@@ -1,13 +1,50 @@
 import { cn } from "@/lib/utils";
 import { Link, useLocation } from "react-router-dom";
-import Courses from "./Courses";
 
-const DashboardSliderNav = () => {
-  const location = useLocation();
+const desktopNav = [
+  {
+    id: "1",
+    name: "share documents",
+  },
+  {
+    id: "2",
+    name: "assignments",
+  },
+  {
+    id: "3",
+    name: "overview",
+  },
+];
+
+const DashboardSliderNav = ({ desktopSection, setDesktopSection }) => {
   return (
     <div className="border-b-[2px] border-b-[#E4E7EC] px-4">
       <ul className="flex gap-4 *:text-nowrap">
-        <li
+        {desktopNav.map((item) => {
+          return (
+            <li
+              key={item.id}
+              className={cn(
+                "after:contents-[''] relative h-full cursor-pointer py-4 text-sm font-medium capitalize text-[#344054] transition-colors duration-150 after:absolute after:-bottom-[2px] after:left-0 after:m-auto after:h-[2px] after:w-0 after:bg-primary-color-600 after:transition-all after:duration-150 hover:text-primary-color-600 hover:after:w-full",
+                desktopSection === item.name
+                  ? "text-primary-color-600 after:w-full"
+                  : "",
+              )}
+            >
+              <button
+                className="capitalize"
+                onClick={() =>
+                  setDesktopSection((prev) => {
+                    return { ...prev, desktop: item.name };
+                  })
+                }
+              >
+                {item.name}
+              </button>
+            </li>
+          );
+        })}
+        {/* <li
           className={cn(
             "after:contents-[''] relative h-full cursor-pointer py-4 text-sm font-medium capitalize text-[#344054] transition-colors duration-150 after:absolute after:-bottom-[2px] after:left-0 after:m-auto after:h-[2px] after:w-0 after:bg-primary-color-600 after:transition-all after:duration-150 hover:text-primary-color-600 hover:after:w-full",
             location.pathname === "/dashboard/share-documents"
@@ -36,17 +73,16 @@ const DashboardSliderNav = () => {
           )}
         >
           <Link to={"overview"}>overview</Link>
-        </li>
+        </li> */}
       </ul>
     </div>
   );
 };
 
-export const mobileNav = [
+const mobileNav = [
   {
     id: "1",
     name: "course sections",
-    component: <Courses />,
   },
   {
     id: "2",
@@ -69,11 +105,11 @@ export const mobileNav = [
     name: "overview",
   },
   {
-    id: "5",
+    id: "7",
     name: "leave a review",
   },
 ];
-export const MobileSlideNave = ({ active, setactive }) => {
+export const MobileSlideNav = ({ active, setactive }) => {
   return (
     <div className="relative mb-6 w-full overflow-x-hidden px-4">
       <div className="absolute bottom-0 left-0 h-[2px] w-full bg-[#E4E7EC]"></div>
@@ -88,7 +124,11 @@ export const MobileSlideNave = ({ active, setactive }) => {
                   ? "text-primary-color-600 after:w-full"
                   : "",
               )}
-              onClick={() => setactive(item.name)}
+              onClick={() =>
+                setactive((prev) => {
+                  return { ...prev, mobile: item.name };
+                })
+              }
             >
               {item.name}
             </li>

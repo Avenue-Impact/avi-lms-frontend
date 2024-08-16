@@ -8,6 +8,8 @@ import { Form } from "@/Components/ui/form";
 import FormInput from "@/Components/ui/form-input";
 import { PasswordInput } from "@/Components/ui/password-input";
 import { Heading, Paragraph } from "../../pages/auth/components/Text";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClose } from "@fortawesome/free-solid-svg-icons";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -16,7 +18,7 @@ const loginSchema = z.object({
     .min(4, { message: "Name must be at least 4 characters long" }),
 });
 
-const ReferralFormModal = () => {
+const ReferralFormModal = ({ setModal }) => {
   // const [currentPassword, setCurrentPassword] = useState("");
   const [password, setPassword] = useState("");
   // const [passwordConfirmation, setPasswordConfirmation] = useState("");
@@ -31,11 +33,23 @@ const ReferralFormModal = () => {
 
   return (
     <BorderCard className="w-full max-w-[670px] bg-white">
-      <div className="mb-5 space-y-1 text-left 2xl:mb-8">
-        <Heading className="text-left">Request to withdraw</Heading>
-        <Paragraph className="text-left">
-          Request to withdraw your referrals’ fund
-        </Paragraph>
+      <div className="flex items-start justify-between">
+        <div className="mb-5 space-y-1 text-left 2xl:mb-8">
+          <Heading className="text-left">Request to withdraw</Heading>
+          <Paragraph className="text-left">
+            Request to withdraw your referrals’ fund
+          </Paragraph>
+        </div>
+        <button
+          type="button"
+          className=""
+          onClick={() => setModal((prev) => !prev)}
+        >
+          <FontAwesomeIcon
+            icon={faClose}
+            className="text-2xl text-tertiary-color-700"
+          />
+        </button>
       </div>
       <Form {...form}>
         <form
@@ -99,7 +113,7 @@ const ReferralFormModal = () => {
             referral funds. This takes 4 to 5 working days.
           </p>
           <CommonButton
-            className="w-2/4 bg-primary-color-600 font-poppins text-xl font-semibold capitalize text-white hover:bg-primary-color-600"
+            className="w-2/4 bg-primary-color-600 font-poppins capitalize text-white hover:bg-primary-color-600 md:text-xl md:font-semibold"
             type="submit"
           >
             Request Withdrawal

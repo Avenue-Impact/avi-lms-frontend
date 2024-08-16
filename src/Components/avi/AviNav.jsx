@@ -2,13 +2,21 @@ import { useState } from "react";
 import { DarkLogo } from "../Logo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { faBars, faSearch,  faCog, faUserPlus, faSignOutAlt, faClose } from '@fortawesome/free-solid-svg-icons';
-
+import {
+  faBars,
+  faSearch,
+  faCog,
+  faUserPlus,
+  faSignOutAlt,
+  faClose,
+} from "@fortawesome/free-solid-svg-icons";
 
 import { Link, NavLink, useNavigate, useNavigation } from "react-router-dom";
 import { FaRegBell, FaRegHeart } from "react-icons/fa6";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { GrHomeRounded } from "react-icons/gr";
+import ProfilePopUp from "../dashboard/ProfilePopUp";
+import PopUp from "../dashboard/PopUp";
 
 const AviNav = ({ showNav, setShowNav }) => {
   const navigate = useNavigate();
@@ -75,8 +83,7 @@ export const PreviewVideoNav = ({ showNav, setShowNav }) => {
       <div className="relative w-2/4">
         <input
           type="text"
-
-          className="border bg-gray-50 text-[14px] rounded-md px-1 py-2 pl-10 w-full focus:outline-none"
+          className="w-full rounded-md border bg-gray-50 px-1 py-2 pl-10 text-[14px] focus:outline-none"
           placeholder="What do you want to learn?"
         />
         <div className="absolute left-3 top-1.5 text-gray-400">
@@ -85,14 +92,17 @@ export const PreviewVideoNav = ({ showNav, setShowNav }) => {
       </div>
 
       <div className="relative flex items-center gap-6">
-        <span className="text-xl">
+        <button
+          onClick={() => navigate("/dashboard/notification")}
+          className="text-xl"
+        >
           <FaRegBell />
-        </span>
+        </button>
         <div className="absolute right-0 top-0 z-10 h-2 w-2 rounded-full bg-[#008000] md:h-3 md:w-3"></div>
 
-        <div className="relative">
-          <Avatar 
-            className="h-8 w-8 md:h-10 md:w-10 cursor-pointer" 
+        <PopUp className="relative cursor-pointer">
+          <Avatar
+            className="h-8 w-8 cursor-pointer md:h-10 md:w-10"
             onClick={() => setDropdownOpen(!dropdownOpen)}
           >
             <AvatarImage src="https://github.com/shadcn.png" />
@@ -101,66 +111,8 @@ export const PreviewVideoNav = ({ showNav, setShowNav }) => {
             </AvatarFallback>
           </Avatar>
 
-          {dropdownOpen && (
-            
-            <div className="absolute text-[#344054] right-0 mt-2 z-50 w-[400px] py-8 px-6 bg-white border border-gray-200 rounded-md shadow-lg">
-
-              <div className="flex pt-4 pb-6 gap-5 items-center">
-                <div>
-                  <Avatar 
-                    className="w-8 md:h-[60px] md:w-[60px] cursor-pointer"
-                  >
-                    <AvatarImage src="https://github.com/shadcn.png" />
-                    <AvatarFallback className="bg-primary-color-100 text-sm text-primary-color-600 md:text-lg">
-                      MS
-                    </AvatarFallback>
-                  </Avatar>
-                </div>
-
-                <div className="flex-1 text-[#667185]  font-[300]">
-                  <p className="text-[24px]">Yinka ABeeb</p>
-                  <p className="text-[14px] ">Yinkaabeeb@gmail.com</p>
-                </div>
-              </div>
-
-              <div className="hidden h-[1px] w-full bg-[#C7D7F4] lg:block" />
-
-              <div className="py-4">
-                <Link to="/dashboard" className="flex items-center px-4 py-3  hover:bg-gray-100">
-                 <GrHomeRounded className="mr-4"  /> Dashboard
-                </Link>
-                <Link to="/notifications" className="flex items-center px-4 py-3  hover:bg-gray-100">
-                  <FaRegBell className="mr-4" />Notifications
-                </Link>
-                <Link to="/wishlist" className="flex items-center px-4 py-2  hover:bg-gray-100">
-                  <FaRegHeart className="mr-4"  /> Wishlist
-                </Link>
-              </div>
-
-              <div className="hidden h-[1.2px] w-full bg-[#C7D7F4] lg:block" />
-              
-              <div className="py-5">
-                <Link to="/settings" className="flex items-center px-4 py-2  hover:bg-gray-100">
-                  <FontAwesomeIcon icon={faCog} className="mr-4" /> Account Settings
-                </Link>
-                <Link to="/referral" className="flex items-center px-4 py-2    hover:bg-gray-100">
-                  <FontAwesomeIcon icon={faUserPlus} className="mr-4" /> Referral
-                </Link>
-              </div>
-
-              <div className="hidden h-[1.2px] mb-6 w-full bg-[#C7D7F4] lg:block" />
-
-                <button 
-                  onClick={() => {
-                    // Add logout functionality here
-                  }} 
-                  className="flex items-center w-full text-left px-4 py-2 hover:bg-gray-100"
-                >
-                  <FontAwesomeIcon icon={faSignOutAlt} className="mr-4" /> Logout
-                </button>
-            </div>
-          )}
-        </div>
+          {/* {dropdownOpen && <ProfilePopUp />} */}
+        </PopUp>
       </div>
     </nav>
   );

@@ -43,11 +43,11 @@ export const DashboardDiscover = ({
   altText,
   title,
   rating,
-  leaavingRateStar,
   numRatings,
   courseProgress,
   leaveRating,
   continueLearning,
+  getStarted,
 }) => {
   const renderStars = () => {
     const stars = [];
@@ -57,6 +57,10 @@ export const DashboardDiscover = ({
       );
     }
     return stars;
+  };
+
+  const leaavingRateStar = () => {
+    return <FontAwesomeIcon icon={faStar} className="text-[#F53366]" />;
   };
 
   return (
@@ -69,6 +73,7 @@ export const DashboardDiscover = ({
         className={`rounded-b-lg text-[#667185] md:px-3 md:py-2 lg:py-[4px]`}
       >
         <p className="text-[12px] font-[500]">{title}</p>
+
         <div
           className={`${styles.courseNumber} mb-2 mt-[6px] flex items-center justify-start gap-2 lg:mb-2 lg:mt-[10px]`}
         >
@@ -79,15 +84,29 @@ export const DashboardDiscover = ({
           <p className="text-[12px]">{numRatings}</p>
         </div>
 
+        <div className="my-[5px] hidden h-[1px] w-full bg-[#F53366] lg:block" />
+
         <div className="flex flex-1 justify-between">
           <p className="text-[10px]">{courseProgress}</p>
-          <p className="text-[10px]">
-            {leaavingRateStar}
-            {leaveRating}
-          </p>
+          <Link to="/dashboard/leaveRating">
+            <p className="text-[10px]">
+              {leaveRating && (
+                <>
+                  {leaavingRateStar()}
+                  <span className="underline">{leaveRating}</span>
+                </>
+              )}
+            </p>
+          </Link>
 
-          <Link to="/Dashboard/share-documents">
-            <p className="text-[10px] hover:underline">{continueLearning}</p>
+          <Link to="/dashboard/share-documents">
+            <p className="text-[10px] text-[#F53366] underline">
+              {continueLearning}
+            </p>
+          </Link>
+
+          <Link to="/dashboard/share-documents">
+            <p className="text-[10px] text-[#F53366] underline">{getStarted}</p>
           </Link>
         </div>
       </div>

@@ -8,11 +8,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
 import { FaRegBell } from "react-icons/fa6";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { Link, useNavigate } from "react-router-dom";
+import { DropdownMenuComponent } from "@/Components/dashboard/DropDownMenuComponent";
+import PopUp from "@/Components/dashboard/PopUp";
 
 const DiscoverCourses = () => {
+  const navigate = useNavigate();
   return (
     <>
-      <div className="flex items-center justify-between px-6 py-7 lg:justify-normal lg:px-20">
+      <div className="flex items-center justify-between gap-6 px-6 py-7 lg:justify-normal lg:px-20">
         <DarkLogo />
         <div className="hidden w-max items-center gap-3 rounded-lg bg-[#FDFDFD] px-4 py-2 lg:flex lg:w-full">
           <FontAwesomeIcon icon={faSearch} className="text-[#475367]" />
@@ -25,25 +29,31 @@ const DiscoverCourses = () => {
 
         <div className="flex items-center gap-3 justify-self-end md:gap-4 lg:gap-6">
           <div className="flex items-center gap-4">
-            <p className="hidden text-sm text-[#667185] md:block md:text-nowrap">
+            <button
+              type="button"
+              className="hidden text-sm text-[#667185] md:block md:text-nowrap"
+              onClick={() => navigate("/discover-courses")}
+            >
               View all Courses
-            </p>
+            </button>
             <span className="lg:hidden">
               <FontAwesomeIcon icon={faSearch} className="text-[#475367]" />
             </span>
 
-            <span className="text-xl">
+            <Link to={"/dashboard/notification"} className="text-xl">
               <FaRegBell />
-            </span>
+            </Link>
           </div>
-          <div className="relative">
-            <div className="absolute right-0 top-0 z-10 h-2 w-2 rounded-full bg-[#008000] md:h-3 md:w-3"></div>
-            <Avatar className="h-8 w-8 md:h-10 md:w-10">
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback className="bg-primary-color-100 text-sm text-primary-color-600 md:text-lg">
-                CN
-              </AvatarFallback>
-            </Avatar>
+          <div className="relative pr-2">
+            <PopUp>
+              <div className="absolute right-0 top-0 z-10 h-2 w-2 rounded-full bg-[#008000] md:h-3 md:w-3"></div>
+              <Avatar className="h-8 w-8 md:h-10 md:w-10">
+                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarFallback className="bg-primary-color-100 text-sm text-primary-color-600 md:text-lg">
+                  CN
+                </AvatarFallback>
+              </Avatar>
+            </PopUp>
           </div>
         </div>
       </div>
@@ -86,6 +96,51 @@ const DiscoverCourses = () => {
             previewButtonText="Preview this course"
             path="/PreviewVideoCourse"
           />
+          <CourseCard
+            imgSrc={joinTeam}
+            altText="joinTeam"
+            title={
+              <>
+                {" "}
+                Project Consultant <br /> Training Programme (Bundle)
+              </>
+            }
+            rating="4.3"
+            numRatings="45,345"
+            previewButtonText="Preview this course"
+            path="/PreviewVideoCourse"
+          />
+
+          <CourseCard
+            imgSrc={joinTeam}
+            altText="joinTeam"
+            title={
+              <>
+                {" "}
+                Project Consultant <br /> Training Programme (Bundle)
+              </>
+            }
+            rating="4.3"
+            numRatings="45,345"
+            previewButtonText="Preview this course"
+            path="/PreviewVideoCourse"
+          />
+
+          <CourseCard
+            imgSrc={joinTeam}
+            altText="joinTeam"
+            title={
+              <>
+                {" "}
+                Project Consultant <br /> Training Programme (Bundle)
+              </>
+            }
+            rating="4.3"
+            numRatings="45,345"
+            previewButtonText="Preview this course"
+            path="/PreviewVideoCourse"
+          />
+
           <CourseCard
             imgSrc={joinTeam}
             altText="joinTeam"

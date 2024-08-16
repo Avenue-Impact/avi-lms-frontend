@@ -427,6 +427,34 @@ const PreviewCourse = ({ features }) => {
                   previewButtonText="Preview this course"
                 />
 
+              <CourseCard
+                  imgSrc={joinTeam}
+                  altText="joinTeam"
+                  title={
+                    <>
+                      {" "}
+                      Project Consultant <br /> Training Programme (Bundle)
+                    </>
+                  }
+                  rating="4.3"
+                  numRatings="45,345"
+                  previewButtonText="Preview this course"
+                />
+
+              <CourseCard
+                  imgSrc={joinTeam}
+                  altText="joinTeam"
+                  title={
+                    <>
+                      {" "}
+                      Project Consultant <br /> Training Programme (Bundle)
+                    </>
+                  }
+                  rating="4.3"
+                  numRatings="45,345"
+                  previewButtonText="Preview this course"
+                />
+
                 <CourseCard
                   imgSrc={joinTeam}
                   altText="joinTeam"
@@ -491,6 +519,9 @@ const PreviewCourse = ({ features }) => {
               
               {/* Preview this Course */}
               <div className={`${styles.previewCoursesFlex} py-8`}>
+                <div>
+                  <img src={certificate} alt="" />
+                </div>
                 <div>
                   <img src={certificate} alt="" />
                 </div>

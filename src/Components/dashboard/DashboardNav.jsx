@@ -3,9 +3,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FaRegBell } from "react-icons/fa";
 import { DarkLogo } from "../Logo";
-import { Link} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import PopUp from "./PopUp";
 
 function DashboardNav({ setToggleNav }) {
+  const navigate = useNavigate();
   return (
     <nav className="flex w-full flex-nowrap items-center justify-between bg-white py-4 pl-6 pr-6 md:grid md:grid-cols-[3fr_1fr] md:gap-36 md:px-16 md:py-6 md:pl-10 md:pr-4 lg:gap-10 lg:px-[70px] lg:pl-16">
       <span className="flex items-center gap-2 lg:hidden">
@@ -27,31 +29,38 @@ function DashboardNav({ setToggleNav }) {
       </div>
       <div className="flex items-center gap-3 justify-self-end md:gap-4 lg:gap-6">
         <div className="flex items-center gap-4">
-          <p className="hidden text-sm text-[#667185] md:block md:text-nowrap">
+          <button
+            type="button"
+            className="hidden text-sm text-[#667185] md:block md:text-nowrap"
+            onClick={() => navigate("/discover-courses")}
+          >
             View all Courses
-          </p>
+          </button>
           <span className="lg:hidden">
             <FontAwesomeIcon icon={faSearch} className="text-[#475367]" />
           </span>
-          
-          <Link to={"/dashboard/notification"} >
-                <span className="text-xl">
-                  <FaRegBell />
-                </span>
-              </Link>
 
-
-
-
+          <Link to={"/dashboard/notification"}>
+            <span className="text-xl">
+              <FaRegBell />
+            </span>
+          </Link>
         </div>
         <div className="relative">
           <div className="absolute right-0 top-0 z-10 h-2 w-2 rounded-full bg-[#008000] md:h-3 md:w-3"></div>
-          <Avatar className="h-8 w-8 md:h-10 md:w-10">
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback className="bg-primary-color-100 text-sm text-primary-color-600 md:text-lg">
-              CN
-            </AvatarFallback>
-          </Avatar>
+              <PopUp className="relative cursor-pointer">
+              <Avatar
+                className="h-8 w-8 cursor-pointer md:h-10 md:w-10"
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+              >
+                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarFallback className="bg-primary-color-100 text-sm text-primary-color-600 md:text-lg">
+                  MS
+                </AvatarFallback>
+              </Avatar>
+
+              {/* {dropdownOpen && <ProfilePopUp />} */}
+            </PopUp>
         </div>
       </div>
     </nav>

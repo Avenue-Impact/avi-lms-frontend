@@ -25,9 +25,9 @@ function RegisterSuccess({ title, text, setModal, path }) {
         />
       </button>
       <div className="mx-auto max-w-[430px] space-y-8 text-center">
-        <p className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#61C478] text-2xl text-white">
+        <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#61C478] text-2xl text-white">
           <FontAwesomeIcon icon={faCheck} />
-        </p>
+        </span>
         <div className="space-y-6">
           <Heading>{title}</Heading>
           <Paragraph>{text}</Paragraph>

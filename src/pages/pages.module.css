@@ -176,3 +176,15 @@
     display: block;
   }
 }
+
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .google-icon {
+    @apply bg-gradient-to-r from-[#4285F4] via-[#EA4335] via-[#FBBC05] to-[#34A853] text-transparent bg-clip-text;
+  }
+}

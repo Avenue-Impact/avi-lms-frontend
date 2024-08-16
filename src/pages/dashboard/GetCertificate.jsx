@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 
 export const GetCertificate = () => {
   const [certificateReady, setCertificateReady] = useState(false);
+  
   return (
     <div>
       <div className="w-full gap-6 rounded-lg lg:grid lg:grid-cols-12">
@@ -53,7 +54,11 @@ export const GetCertificate = () => {
           </div>
 
           <div>
-            <DashButton className="mt-4 h-[40px] w-full text-white">
+            <DashButton
+              className="mt-4 h-[40px] w-[100%] text-white disabled:bg-slate-200"
+              onClick={() => setCertificateReady((prev) => !prev)}
+              disabled={!certificateReady}
+            >
               Download Certificate
             </DashButton>
           </div>
@@ -78,14 +83,14 @@ export const GetCertificate = () => {
         </div>
       </div>
 
-      <div>
+      {/* <div>
         <DashButton
           className="mt-4 h-[40px] w-[100%] text-white"
           onClick={() => setCertificateReady((prev) => !prev)}
         >
           Download Certificate
         </DashButton>
-      </div>
+      </div> */}
     </div>
   );
 };
