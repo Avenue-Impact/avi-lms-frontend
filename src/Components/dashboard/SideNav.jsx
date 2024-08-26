@@ -1,4 +1,4 @@
-import { LucideLogOut, MoreVertical } from "lucide-react";
+import { LucideLogOut, MoreVertical, Type } from "lucide-react";
 import { PiGearThin } from "react-icons/pi";
 import { IoGiftOutline } from "react-icons/io5";
 import { useContext, createContext, useState } from "react";
@@ -8,16 +8,36 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
+import { useAuth } from "@/hooks/useAuth";
+import Cookies from "js-cookie";
+import { useProfile } from "@/services/queries";
+import { fetchUserProfile } from "@/services/api";
+import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "../ui/skeleton";
 
 const SidebarContext = createContext();
 
 export function Sidebar({ children, toggleNav, setToggleNav }) {
   const [expanded, setExpanded] = useState(false);
-  const navigate = useNavigate();
+
+  const { userDetails, dispatch } = useAuth();
 
   const location = useLocation();
 
-  // fixed left-0 top-0 z-10
+  const { data, isLoading } = useQuery({
+    queryKey: ["userProfile"],
+    queryFn: fetchUserProfile,
+  });
+  // const { data, isLoading } = useProfile();
+  // if (!isLoading && data?.data?.data !== undefined)
+  //   dispatch({ type: "auth/update_profile", payload: { ...data.data.data } });
+
+  const handleLogout = () => {
+    // navigate("/login");
+    // dispatch({ Type: "auth/logout" });
+    Cookies.remove("token");
+    window.location.href = "/login";
+  };
 
   return (
     <aside
@@ -88,9 +108,15 @@ export function Sidebar({ children, toggleNav, setToggleNav }) {
 
           <div className="flex border-t p-3">
             <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarImage src={userDetails.avatar} />
               <AvatarFallback className="bg-primary-color-100 text-lg text-primary-color-600">
-                MS
+                {userDetails.firstname ? (
+                  `${userDetails.firstname.charAt(0).toUpperCase()}${userDetails.lastname.charAt(0).toUpperCase()}`
+                ) : isLoading ? (
+                  <Skeleton className="h-12 w-12 rounded-full" />
+                ) : (
+                  `${data?.data?.data.firstname.charAt(0).toUpperCase()}${data?.data?.data.lastname.charAt(0).toUpperCase()}`
+                )}
               </AvatarFallback>
             </Avatar>
 
@@ -98,15 +124,42 @@ export function Sidebar({ children, toggleNav, setToggleNav }) {
               className={`ml-3 flex w-full items-center justify-between overflow-hidden transition-all`}
             >
               <div className="leading-4">
-                <h4 className="text-[#101928]">Maxwell Samantha</h4>
-                <span className="text-xs text-gray-600">johndoe@gmail.com</span>
+                <h4 className="capitalize text-[#101928]">
+                  {!userDetails.firstname && isLoading ? (
+                    <Skeleton className="h-4 w-[100px]" />
+                  ) : (
+                    <>
+                      {" "}
+                      <span>
+                        {userDetails.firstname
+                          ? userDetails.firstname
+                          : isLoading
+                            ? "loading"
+                            : data?.data?.data.firstname}
+                      </span>{" "}
+                      <span>
+                        {userDetails.lastname
+                          ? userDetails.lastname
+                          : isLoading
+                            ? "loading"
+                            : data?.data?.data.lastname}
+                      </span>
+                    </>
+                  )}
+                </h4>
+                <span className="text-xs text-gray-600">
+                  {userDetails.email.length > 17 ? (
+                    `${userDetails.email.slice(0, 19)}...`
+                  ) : userDetails.email || isLoading ? (
+                    <Skeleton className="mt-1 h-4 w-[150px]" />
+                  ) : data?.data?.data.email.length > 17 ? (
+                    `${data?.data?.data.email.slice(0, 19)}...`
+                  ) : (
+                    data?.data?.data.email
+                  )}
+                </span>
               </div>
-              <button
-                onClick={() => {
-                  navigate("/login");
-                  setToggleNav(true);
-                }}
-              >
+              <button onClick={handleLogout}>
                 <LucideLogOut />
               </button>
             </div>

@@ -8,48 +8,83 @@ import FormInput from "@/Components/ui/form-input";
 import { Link, useNavigate } from "react-router-dom";
 import { Heading, Paragraph } from "./components/Text";
 import BorderCard from "@/Components/BorderCard";
-import AviNav from "@/Components/avi/AviNav";
 import Modal from "./components/Modal";
 import OtpComponent from "@/Components/about/OtpComponent";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useCredentials } from "@/hooks/useCredentials";
 
-const loginSchema = z.object({
-  email: z.string().email(),
-  password: z
-    .string()
-    .min(4, { message: "Name must be at least 4 characters long" }),
+const forgetPasswordSchema = z.object({
+  email: z.string().min(4, { message: "field is required" }),
 });
+
+const url = import.meta.env.VITE_AUTH_URL;
 
 const ForgotPassword = () => {
   const [modal, setModal] = useState(false);
+
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setModal((prev) => !prev);
+  const { otp, setOtp, setInfo } = useCredentials();
+
+  const verify = () => {
+    setInfo((state) => {
+      return { ...state, otp };
+    });
+
+    navigate("/new-password");
+  };
+
+  const handleSubmit = async (username) => {
+    try {
+      const response = await axios.post(`${url}/forgetPassword`, username);
+
+      if (response?.data?.status === "success") {
+        toast.success(response.data.message);
+        setModal(true);
+
+        setInfo((state) => {
+          return { ...state, email: username.email };
+        });
+      }
+    } catch (error) {
+      if (!error) return toast.error("network fail");
+
+      if (error.response.status === 404) return toast.error("Email not found");
+
+      if (error.response.status === 400) return toast.error("invalid email");
+
+      toast.error(
+        error.response?.data?.error?.msg || error.response.data.message,
+      );
+    }
   };
 
   const form = useForm({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(forgetPasswordSchema),
     defaultValues: {
       email: "",
-      password: "",
     },
   });
 
+  const { isSubmitting } = form.formState;
+  const { info } = useCredentials();
+
   return (
-    <div className="">
-      <AviNav />
+    <div className="px-6">
       {modal && (
         <Modal>
-          <BorderCard className="rounded-xl bg-white px-[72px] py-11 text-center">
+          <BorderCard className="w-full max-w-[731px] rounded-xl bg-white py-11 text-center">
             <div className="px-4">
               <p className="text-xl font-semibold text-[#23314A]">
                 Password Reset Email Sent!
               </p>
               <p className="mx-auto mb-6 mt-3 max-w-[284px] text-center text-sm leading-[18px] text-[#98A2B3]">
-                Please enter code we sent now to aviplatform@gmail.com{" "}
+                Please enter code we sent now to {info.email}
               </p>
-              <OtpComponent />
+              <div className="mx-auto w-fit">
+                <OtpComponent setOtp={setOtp} />
+              </div>
               <p className="mb-[31px] mt-6 text-sm">
                 <span className="text-[#645D5D]"> Didn’t receive a code?</span>{" "}
                 <span className="font-medium text-primary-color-600">
@@ -59,10 +94,7 @@ const ForgotPassword = () => {
             </div>
             <CommonButton
               className="w-full bg-primary-color-600"
-              onClick={() => {
-                setModal((prev) => !prev);
-                navigate("/new-password");
-              }}
+              onClick={verify}
             >
               Confirm
             </CommonButton>
@@ -77,12 +109,16 @@ const ForgotPassword = () => {
               <Paragraph>Use your email to sign in to your dashboard</Paragraph>
             </div>
             <Form {...form}>
-              <form action="" className="space-y-2">
+              <form
+                action=""
+                className="space-y-2"
+                onSubmit={form.handleSubmit(handleSubmit)}
+              >
                 <FormInput
-                  name="username"
+                  name="email"
                   label="Username/Email"
                   placeholder=""
-                  id="username"
+                  id="email"
                   type="text"
                   control={form.control}
                 />
@@ -90,9 +126,9 @@ const ForgotPassword = () => {
                 <CommonButton
                   className="mt-8 w-full bg-primary-color-600 font-poppins text-xl font-semibold capitalize text-white hover:bg-primary-color-600"
                   type="submit"
-                  onClick={handleSubmit}
+                  disabled={isSubmitting}
                 >
-                  reset
+                  {isSubmitting ? "loading ..." : "reset"}
                 </CommonButton>
               </form>
             </Form>

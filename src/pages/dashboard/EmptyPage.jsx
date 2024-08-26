@@ -8,6 +8,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ModalContent from "../lms-pages/ReminderModalContent";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Filter } from "@/Components/dashboard/Filter";
+import Cookies from "js-cookie";
+import { useProfile } from "@/services/queries";
 
 // import ReminderModal from '../auth/components/ReminderModal';
 
@@ -24,7 +26,7 @@ const EmptyPage = () => {
               Use push notifications or calendar events to stay on top of your
               learning goals.
             </p>
-            
+
             <DashButton
               onClick={() => setShowModal((prev) => !prev)}
               className="mt-2 bg-white text-sm font-[500] text-primary-color-600 lg:bg-[#B3123F] lg:text-[#fff]"
@@ -47,19 +49,21 @@ const EmptyPage = () => {
 
       {/* LIVE SESSION */}
       <div className="lg:border-white-300 my-6 rounded-lg bg-white p-6 lg:border-2">
-          <div className="flex flex-row pb-6 items-center justify-between lg:p-2 bg-white rounded-lg">
-              <div className="flex-1 lg:mb-4 md:mb-0">
-                  <h3 className="text-l font-semibold text-gray-800">Live Session + Mentoring</h3>
-              </div>
-              <div className="hidden items-center lg:flex space-x-2">
-                <p className="text-gray-600">Filter by</p>
-                <DashSelect />
-              </div>
-
-              <div className="lg:hidden items-center  space-x-2">
-                  <Filter/>
-              </div>
+        <div className="flex flex-row items-center justify-between rounded-lg bg-white pb-6 lg:p-2">
+          <div className="flex-1 md:mb-0 lg:mb-4">
+            <h3 className="text-l font-semibold text-gray-800">
+              Live Session + Mentoring
+            </h3>
           </div>
+          <div className="hidden items-center space-x-2 lg:flex">
+            <p className="text-gray-600">Filter by</p>
+            <DashSelect />
+          </div>
+
+          <div className="items-center space-x-2 lg:hidden">
+            <Filter />
+          </div>
+        </div>
 
         <div>
           <NoCoursesMessage />
@@ -68,19 +72,21 @@ const EmptyPage = () => {
 
       {/* ON DEMAND */}
       <div className="border-white-300 my-6 rounded-lg border-2 bg-white p-6">
-          <div className="flex flex-row pb-6 items-center justify-between lg:p-2 bg-white rounded-lg">
-              <div className="flex-1 lg:mb-4 md:mb-0">
-                  <h3 className="text-l font-semibold text-gray-800">On Demand Courses  (Pre Recorded Sessions)</h3>
-              </div>
-              <div className="hidden items-center lg:flex space-x-2">
-                <p className="text-gray-600">Filter by</p>
-                <DashSelect />
-              </div>
-
-              <div className="lg:hidden items-center  space-x-2">
-                  <Filter/>
-              </div>
+        <div className="flex flex-row items-center justify-between rounded-lg bg-white pb-6 lg:p-2">
+          <div className="flex-1 md:mb-0 lg:mb-4">
+            <h3 className="text-l font-semibold text-gray-800">
+              On Demand Courses (Pre Recorded Sessions)
+            </h3>
           </div>
+          <div className="hidden items-center space-x-2 lg:flex">
+            <p className="text-gray-600">Filter by</p>
+            <DashSelect />
+          </div>
+
+          <div className="items-center space-x-2 lg:hidden">
+            <Filter />
+          </div>
+        </div>
 
         <div>
           <NoCoursesMessage />

@@ -25,8 +25,8 @@ function Notifications({ notifications, setNotifications }) {
                 />
               </span>
               <article className="flex flex-wrap items-center md:justify-between">
-                <div className="w-full max-w-[320px] md:max-w-[470px]">
-                  <Heading className="text-left text-xs font-medium">
+                <div className="w-full max-w-[170px] md:max-w-[470px]">
+                  <Heading className="w-full text-left text-xs font-medium">
                     {notification.title}
                   </Heading>
                   <Paragraph className="my-[10px] text-left text-xs">

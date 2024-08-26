@@ -1,5 +1,7 @@
 import "./App.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
 import AppLayout from "./layouts/AppLayout";
 import Home from "./pages/Home";
 import About from "./pages/About";
@@ -36,10 +38,21 @@ import LeaveRating from "./pages/dashboard/LeaveRating";
 
 import ServiceLayout from "./layouts/ServiceLayout";
 import NewPassword from "./pages/auth/NewPassword";
-import SliderNav from "./pages/dashboard/SliderNav";
 import DiscoverCourses from "./pages/dashboard/DiscoverCourses";
+import AuthLayout from "./layouts/AuthLayout";
+import { Toaster } from "react-hot-toast";
+import { useState } from "react";
+import ProtectedRoute from "./Components/ProtectedRoute";
+import { Cookie } from "lucide-react";
+import Cookies from "js-cookie";
+import AuthProtectedRoute from "./Components/AuthProtectedRoute";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
+const queryClient = new QueryClient();
 
 function App() {
+  const [userInfo, setUserInfo] = useState({});
+
   const routes = createBrowserRouter([
     {
       path: "/preview-course",
@@ -49,6 +62,7 @@ function App() {
       path: "/PreviewVideoCourse",
       element: <PreviewVideoCourse />,
     },
+
     {
       path: "/",
       element: <AppLayout />,
@@ -67,6 +81,7 @@ function App() {
         },
       ],
     },
+
     {
       path: "/",
       element: <ServiceLayout />,
@@ -90,112 +105,142 @@ function App() {
       ],
     },
     {
-      path: "/AVI",
-      element: <AVI />,
+      element: <AuthProtectedRoute />,
+      children: [
+        {
+          path: "",
+          element: <AuthLayout />,
+          // loader: async () => {
+          //   const token = Cookies.get("token");
+          //   if (token) return (window.location.href = "/dashboard");
+          // },
+          children: [
+            {
+              path: "/AVI",
+              element: <AVI />,
+            },
+            {
+              path: "login",
+              element: <Login setUserInfo={setUserInfo} userInfo={userInfo} />,
+            },
+            {
+              path: "/signup",
+              element: <SignUp />,
+            },
+            {
+              path: "/new-password",
+              element: <NewPassword />,
+            },
+            {
+              path: "/forgot-password",
+              element: <ForgotPassword />,
+            },
+          ],
+        },
+      ],
     },
-    {
-      path: "login",
-      element: <Login />,
-    },
-    {
-      path: "/signup",
-      element: <SignUp />,
-    },
-    {
-      path: "/slider",
-      element: <SliderNav />,
-    },
-    {
-      path: "/new-password",
-      element: <NewPassword />,
-    },
-    {
-      path: "/forgot-password",
-      element: <ForgotPassword />,
-    },
+
     {
       path: "/discover-courses",
       element: <DiscoverCourses />,
     },
     {
-      path: "/dashboard",
-      element: <DashboardLayout />,
+      element: <ProtectedRoute />,
+      // loader: async () => {
+      //   const token = Cookies.get("token");
+      //   if (!token) return (window.location.href = "/login");
+      // },
       children: [
         {
-          index: true,
-          element: <EmptyPage />,
-        },
-        {
-          path: "notification",
-          element: <Notification />,
-        },
-        {
-          path: "wishlists",
-          element: <Wishlist />,
-        },
-        {
-          path: "referral",
-          element: <Referral />,
-        },
-        {
-          path: "student-settings",
-          element: <StudentSettings />,
-        },
-        {
-          path: "Dashboard_Discover",
-          element: <DashboardDiscover />,
-        },
-
-        {
-          path: "EmptyJoinProjectTeam",
-          element: <EmptyJoinProjectTeam />,
-        },
-        {
-          path: "EmptyGetCertificate",
-          element: <EmptyGetCertificate />,
-        },
-
-        {
-          path: "LeaveRating",
-          element: <LeaveRating />,
-        },
-      ],
-    },
-    {
-      element: <OtherLayout />,
-      path: "/dashboard",
-      children: [
-        {
-          element: <ShareDocument />,
           path: "/dashboard",
+          element: <DashboardLayout userInfo={userInfo} />,
+
           children: [
             {
-              path: "share-documents",
-              element: <Documents />,
+              index: true,
+              element: <EmptyPage />,
             },
             {
-              path: "assignments",
-              element: <Assignment />,
+              path: "notification",
+              element: <Notification />,
             },
             {
-              path: "overview",
-              element: <Overview />,
+              path: "wishlists",
+              element: <Wishlist />,
+            },
+            {
+              path: "referral",
+              element: <Referral />,
+            },
+            {
+              path: "student-settings",
+              element: <StudentSettings />,
+            },
+            {
+              path: "Dashboard_Discover",
+              element: <DashboardDiscover />,
+            },
+
+            {
+              path: "EmptyJoinProjectTeam",
+              element: <EmptyJoinProjectTeam />,
+            },
+            {
+              path: "EmptyGetCertificate",
+              element: <EmptyGetCertificate />,
+            },
+
+            {
+              path: "LeaveRating",
+              element: <LeaveRating />,
             },
           ],
         },
         {
-          path: "certificate",
-          element: <GetCertificate />,
-        },
-        {
-          path: "projects",
-          element: <JoinProjectTeam />,
+          element: <OtherLayout />,
+          path: "/dashboard",
+          children: [
+            {
+              element: <ShareDocument />,
+              path: "/dashboard",
+              children: [
+                {
+                  path: "share-documents",
+                  element: <Documents />,
+                },
+                {
+                  path: "assignments",
+                  element: <Assignment />,
+                },
+                {
+                  path: "overview",
+                  element: <Overview />,
+                },
+              ],
+            },
+            {
+              path: "certificate",
+              element: <GetCertificate />,
+            },
+            {
+              path: "projects",
+              element: <JoinProjectTeam />,
+            },
+          ],
         },
       ],
     },
   ]);
 
-  return <RouterProvider router={routes} />;
+  return (
+    <>
+      <QueryClientProvider client={queryClient}>
+        <ReactQueryDevtools initialIsOpen={false} />
+        <Toaster />
+        <RouterProvider router={routes} />;
+      </QueryClientProvider>
+    </>
+  );
 }
 
 export default App;

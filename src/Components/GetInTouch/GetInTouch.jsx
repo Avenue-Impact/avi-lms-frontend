@@ -26,6 +26,7 @@ const GetInTouch = () => {
 
   return (
     <div
+
       className={`${styles.get_in_touch} px-8 py-10 pt-20 lg:px-14 lg:pt-16 2xl:px-20 2xl:py-[100px]`}
     >
       <div className={styles.get_in_touch_info}>
@@ -33,6 +34,7 @@ const GetInTouch = () => {
           Elevate Your Business with Avenue Impact
         </h4>
         <p className="2xl:text-xl 2xl:font-light">
+
           Let us be your partner in elevating your business to new levels of
           success. Our team of knowledgeable experts will collaborate with you
           to comprehend your specific needs and aspirations, and furnish

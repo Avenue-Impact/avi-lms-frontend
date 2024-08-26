@@ -1,11 +1,15 @@
-import BorderCard from "@/Components/BorderCard";
-import { faCheck, faClose } from "@fortawesome/free-solid-svg-icons";
+import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+
+import BorderCard from "@/Components/BorderCard";
 import { Heading, Paragraph } from "./Text";
 import { CommonButton } from "@/Components/ui/button";
 
-function RegisterFail() {
+function RegisterFail({ setModal }) {
+  const handleModal = () => {
+    setModal((prev) => !prev);
+  };
+
   return (
     <BorderCard className="relative bg-white px-24 py-12">
       <button
@@ -14,11 +18,11 @@ function RegisterFail() {
       >
         <FontAwesomeIcon
           icon={faClose}
-          className="text-tertiary-color-700 text-2xl"
+          className="text-2xl text-tertiary-color-700"
         />
       </button>
       <div className="mx-auto max-w-[430px] space-y-8 text-center">
-        <p className="bg-primary-color-500 mx-auto flex h-16 w-16 items-center justify-center rounded-full text-2xl text-white">
+        <p className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary-color-500 text-2xl text-white">
           <FontAwesomeIcon icon={faClose} />
         </p>
         <div className="space-y-6">
@@ -28,7 +32,11 @@ function RegisterFail() {
             the account creation process has failed.
           </Paragraph>
         </div>
-        <CommonButton className="bg-primary-color-600" size="lg">
+        <CommonButton
+          className="bg-primary-color-600"
+          size="lg"
+          onClick={handleModal}
+        >
           OK
         </CommonButton>
       </div>

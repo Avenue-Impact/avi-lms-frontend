@@ -5,7 +5,9 @@ import Card from "../Components/digital-transformation/Card";
 import { digitalData } from "../assets/lib/data";
 import ImpactCard from "../Components/digital-transformation/ImpactCard";
 import DigitalSwiper from "@/Components/digital-transformation/DigitalSwiper";
+
 import ServiceHeading from "@/Components/ServiceHeading";
+
 
 const DigitalTransformation = () => {
   return (

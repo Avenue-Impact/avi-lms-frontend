@@ -6,6 +6,7 @@ import { WhiteLogo } from "./Logo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SocialMediaLinks, { socialMediaData } from "./SocialMediaLink";
 
+
 const Footer = ({ heading, description }) => {
   return (
     <ImageHero imageSrc={footerImg} className={"items-start md:items-end"}>
@@ -22,6 +23,8 @@ const Footer = ({ heading, description }) => {
             <Button className={""}>send us a message</Button>
           </div>
           <div className="mt-28 flex flex-wrap items-center justify-between gap-y-4 text-white md:mt-10 2xl:mt-[31px] 2xl:px-8 2xl:py-10">
+
+
             <div>
               <SocialMediaLinks data={socialMediaData} />
             </div>

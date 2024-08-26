@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import styles from "./pages.module.css";
-import { CourseCardPreview, renderStars } from "../Components/CourseCard";
+import { renderStars } from "../Components/CourseCard";
 import joinTeam from "../assets/images/join_team.png";
 import CourseCard from "../Components/CourseCard";
 import ImageOverlay from "../Components/ImageOverlay";
@@ -9,11 +9,7 @@ import iconDark from "../assets/icons/icon-dark.png";
 import AvenueList from "../Components/Assets/AvenueList";
 import { FaRegCircleCheck } from "react-icons/fa6";
 
-import {
-  ProfessionalList,
-  professionalItems,
-  industriesItems,
-} from "../Components/ProfessionalList";
+import ProfessionalList from "../Components/ProfessionalList";
 import SocialMediaLinks, {
   socialMediaData,
 } from "../Components/SocialMediaLink";
@@ -25,6 +21,8 @@ import { ScrollRestoration } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import Container from "@/Components/Container";
+import CourseCardPreview from "@/Components/CourseCardPreview";
+import { industriesItems, professionalItems } from "@/lib/professionalItems";
 
 const PreviewCourse = ({ features }) => {
   const navigate = useNavigate();
@@ -50,7 +48,8 @@ const PreviewCourse = ({ features }) => {
         <div className={cn(styles.checkout_courses, "")}>
           <div className="lg:pt-5">
             <Container className="hidden lg:block">
-              <div className={`${styles.checkoutCoursesFlex}  py-4 lg:flex lg:py-4`}
+              <div
+                className={`${styles.checkoutCoursesFlex} py-4 lg:flex lg:py-4`}
               >
                 <div className={`${styles.checkoutCourses1} hidden sm:block`}>
                   <p className="text-2xl font-normal text-[#23314A]">
@@ -65,14 +64,13 @@ const PreviewCourse = ({ features }) => {
                   />
                 </div>
               </div>
-            <div className="hidden h-[1px] w-full bg-[#C7D7F4] lg:block" />
+              <div className="hidden h-[1px] w-full bg-[#C7D7F4] lg:block" />
             </Container>
-
 
             <div className="bg-[#23314A] lg:pb-10">
               {/* Back Button for Mobile View */}
               <Container>
-                <div className="mb-4 flex items-center lg:pt-9 lg:hidden">
+                <div className="mb-4 flex items-center lg:hidden lg:pt-9">
                   <button
                     onClick={() => navigate("/avi")}
                     className="text-white"
@@ -360,10 +358,10 @@ const PreviewCourse = ({ features }) => {
                 )}
               >
                 <div className="w-full">
-                    <p className="text-left text-[14px] text-[#23314A] md:text-[24px] md:font-[300] lg:text-[40px]">
-                      Checkout related courses
-                    </p>
-                    <div className="mt-2 hidden h-[1px] w-full bg-[#C7D7F4] lg:block" />
+                  <p className="text-left text-[14px] text-[#23314A] md:text-[24px] md:font-[300] lg:text-[40px]">
+                    Checkout related courses
+                  </p>
+                  <div className="mt-2 hidden h-[1px] w-full bg-[#C7D7F4] lg:block" />
                 </div>
 
                 <button className="rounded border border-tertiary-color-300 px-3 py-1 text-xs text-tertiary-color-700 md:hidden">
@@ -427,7 +425,7 @@ const PreviewCourse = ({ features }) => {
                   previewButtonText="Preview this course"
                 />
 
-              <CourseCard
+                <CourseCard
                   imgSrc={joinTeam}
                   altText="joinTeam"
                   title={
@@ -441,7 +439,7 @@ const PreviewCourse = ({ features }) => {
                   previewButtonText="Preview this course"
                 />
 
-              <CourseCard
+                <CourseCard
                   imgSrc={joinTeam}
                   altText="joinTeam"
                   title={
@@ -503,20 +501,19 @@ const PreviewCourse = ({ features }) => {
           {/* Certificate */}
           <Container>
             <div className={`${styles.certificate_courses} pt-10`}>
-              
-                <div className="pt-10 lg:py-4">
-                  <div className={styles.certificateCourses1}>
-                    <p className="text-2xl font-normal capitalize text-[#23314A]">
-                      Certifications
-                    </p>
+              <div className="pt-10 lg:py-4">
+                <div className={styles.certificateCourses1}>
+                  <p className="text-2xl font-normal capitalize text-[#23314A]">
+                    Certifications
+                  </p>
 
-                    <div className="mt-2 h-[1px] w-full bg-[#C7D7F4]" />
-                    <p className="py-2 text-[#667185]">
-                      Professional Training + Life Project Experience (Online)
-                    </p>
-                  </div>
+                  <div className="mt-2 h-[1px] w-full bg-[#C7D7F4]" />
+                  <p className="py-2 text-[#667185]">
+                    Professional Training + Life Project Experience (Online)
+                  </p>
                 </div>
-              
+              </div>
+
               {/* Preview this Course */}
               <div className={`${styles.previewCoursesFlex} py-8`}>
                 <div>
@@ -533,7 +530,6 @@ const PreviewCourse = ({ features }) => {
                 </div>
               </div>
             </div>
-            
           </Container>
 
           {/* Our Certified Professionals */}

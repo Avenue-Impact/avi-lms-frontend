@@ -1,21 +1,19 @@
 import { Heading } from "../auth/components/Text";
 import BorderCard from "@/Components/BorderCard";
-import { Form } from "@/Components/ui/form";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import FormInput from "@/Components/ui/form-input";
-import { PasswordInput } from "@/Components/ui/password-input";
-import { CommonButton } from "@/Components/ui/button";
+
 import { useState } from "react";
 import Modal from "../auth/components/Modal";
 import ConfirmDelete from "@/Components/dashboard/ConfirmDelete";
 import EditProfile from "@/Components/dashboard/EditProfile";
-import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import ChangePassword from "@/Components/dashboard/ChangePassword";
+import { useAuth } from "@/hooks/useAuth";
 
 function StudentSettings() {
   const [showModal, setShowModal] = useState(false);
   const [page, setPage] = useState("edit");
+
+
 
   return (
     <div className="">

@@ -1,39 +1,96 @@
 import { Form } from "../ui/form";
-import { PasswordInput } from "../ui/password-input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { CommonButton } from "../ui/button";
-const loginSchema = z.object({
-  email: z.string().email(),
-  password: z
-    .string()
-    .min(4, { message: "Name must be at least 4 characters long" }),
-});
+import PasswordInput from "../ui/password-input";
+import { passwordRegex } from "@/lib/utils";
+import axios from "axios";
+import Cookies from "js-cookie";
+import toast from "react-hot-toast";
+import { ClipLoader } from "react-spinners";
+const changePasswordSchema = z
+  .object({
+    oldPassword: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters long " }),
+    newPassword: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters long " })
+      .regex(passwordRegex, {
+        message:
+          "Ensure your password contains at least a lowercase letter, an upper case letter, a special symbol and a number",
+      }),
+    confirmPassword: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters ong" })
+      .regex(passwordRegex, {
+        message:
+          "Ensure your password contains at least a lowercase letter, an upper case letter, a special symbol and a number",
+      }),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Password don't match",
+    path: ["confirmPassword"],
+  });
+
+const url = import.meta.env.VITE_USER_URL;
 
 const ChangePassword = () => {
+  const handleSubmit = async (values) => {
+    const token = Cookies.get("token");
+
+    const passwords = {
+      oldPassword: values.oldPassword,
+      newPassword: values.newPassword,
+      newPasswordConfirmation: values.confirmPassword,
+    };
+
+    try {
+      const response = await axios.patch(`${url}/password`, passwords, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status) return toast.success(response.data.message);
+    } catch (error) {
+      return toast.error(
+        error.message ||
+          error?.response?.data?.message ||
+          error?.message ||
+          "something went wrong",
+      );
+    }
+  };
+
   const form = useForm({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(changePasswordSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      oldPassword: "",
+      newPassword: "",
+      confirmPassword: "",
     },
   });
+
+  const { isSubmitting } = form.formState;
+
   return (
     <div>
       <Form {...form}>
-        <form className="max-w-[405px] space-y-4 py-5">
+        <form
+          className="max-w-[405px] space-y-4 py-5"
+          onSubmit={form.handleSubmit(handleSubmit)}
+        >
           <PasswordInput
-            id="old-password"
-            autoComplete="old-password"
-            label="Old password"
-            name="password"
+            id="oldPassword"
+            name="oldPassword"
             control={form.control}
             placeholder="Old password"
+            label="Old password"
           />
           <PasswordInput
             id="new-password"
-            autoComplete="new-password"
             label="new password"
             name="newPassword"
             control={form.control}
@@ -41,7 +98,6 @@ const ChangePassword = () => {
           />
           <PasswordInput
             id="confirmPassword"
-            autoComplete="new-password"
             label="confirm password"
             name="confirmPassword"
             control={form.control}
@@ -50,8 +106,13 @@ const ChangePassword = () => {
           <CommonButton
             className="mx-auto mt-48 block w-full items-center bg-[#CC1747] capitalize"
             type="submit"
+            disabled={isSubmitting}
           >
-            change password
+            {isSubmitting ? (
+              <ClipLoader size={20} color={"#fff"} />
+            ) : (
+              "change password"
+            )}
           </CommonButton>
         </form>
       </Form>

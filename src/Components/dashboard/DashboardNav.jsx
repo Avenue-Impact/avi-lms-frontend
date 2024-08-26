@@ -5,9 +5,17 @@ import { FaRegBell } from "react-icons/fa";
 import { DarkLogo } from "../Logo";
 import { Link, useNavigate } from "react-router-dom";
 import PopUp from "./PopUp";
+import { useAuth } from "@/hooks/useAuth";
+import { useProfile } from "@/services/queries";
+import { Skeleton } from "../ui/skeleton";
 
-function DashboardNav({ setToggleNav }) {
+function DashboardNav({ setToggleNav, userInfo }) {
   const navigate = useNavigate();
+
+  // const { dispatch } = useAuth();
+  const { userDetails } = useAuth();
+  const { isLoading, data } = useProfile();
+
   return (
     <nav className="flex w-full flex-nowrap items-center justify-between bg-white py-4 pl-6 pr-6 md:grid md:grid-cols-[3fr_1fr] md:gap-36 md:px-16 md:py-6 md:pl-10 md:pr-4 lg:gap-10 lg:px-[70px] lg:pl-16">
       <span className="flex items-center gap-2 lg:hidden">
@@ -48,19 +56,22 @@ function DashboardNav({ setToggleNav }) {
         </div>
         <div className="relative">
           <div className="absolute right-0 top-0 z-10 h-2 w-2 rounded-full bg-[#008000] md:h-3 md:w-3"></div>
-              <PopUp className="relative cursor-pointer">
-              <Avatar
-                className="h-8 w-8 cursor-pointer md:h-10 md:w-10"
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-              >
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback className="bg-primary-color-100 text-sm text-primary-color-600 md:text-lg">
-                  MS
-                </AvatarFallback>
-              </Avatar>
+          <PopUp className="relative cursor-pointer">
+            <Avatar className="h-8 w-8 cursor-pointer md:h-10 md:w-10">
+              <AvatarImage src={userDetails.Avatar} />
+              <AvatarFallback className="bg-primary-color-100 text-sm text-primary-color-600 md:text-lg">
+                {userDetails.firstname ? (
+                  `${userDetails.firstname.charAt(0).toUpperCase()}${userDetails.lastname.charAt(0).toUpperCase()}`
+                ) : isLoading ? (
+                  <Skeleton className="h-12 w-12 rounded-full" />
+                ) : (
+                  `${data?.data?.data.firstname.charAt(0).toUpperCase()}${data?.data?.data.lastname.charAt(0).toUpperCase()}`
+                )}
+              </AvatarFallback>
+            </Avatar>
 
-              {/* {dropdownOpen && <ProfilePopUp />} */}
-            </PopUp>
+            {/* {dropdownOpen && <ProfilePopUp />} */}
+          </PopUp>
         </div>
       </div>
     </nav>

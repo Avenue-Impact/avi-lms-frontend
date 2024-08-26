@@ -8,6 +8,7 @@
 /*======= GET IN TOUCH USING NESTING PROPERTY ====== */
 .get_in_touch_info {
   & h4 {
+
     margin-bottom: 12px;
     color: #fff;
 
@@ -16,6 +17,8 @@
   }
 
   & p {
+
+    
     font-weight: 300;
     text-align: justify;
     color: #f4f5f7;
@@ -76,6 +79,7 @@
     color: #fff;
     transform: translateY(-100%);
   }
+
 }
 
 /* Tablet view */
@@ -90,6 +94,8 @@
   }
 
   .get_in_touch_info h4 {
+
+    
     font-weight: 300;
     line-height: 1.2;
   }
@@ -98,7 +104,9 @@
   .get_in_touch_input input[type="email"],
   .get_in_touch_input input[type="number"] {
     padding: 10px;
+
     margin-bottom: 20px;
+
   }
 
   .get_in_touch_input input[type="text"]:focus::placeholder,

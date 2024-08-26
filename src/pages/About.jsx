@@ -20,7 +20,9 @@ const About = () => {
         <div className={styles.content_avenue}>
           <section className="px-6 pt-10 lg:px-20 lg:pt-16 2xl:py-[100px]">
             <div className={styles.welcome_avenue}>
+
               <h2 className="text-[24px] font-[300] capitalize text-[#23314A] lg:text-[40px]">
+
                 welcome to avenue impact
               </h2>
               <div className="mt-2 h-[1px] w-full bg-[#C7D7F4]" />

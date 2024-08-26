@@ -1,6 +1,6 @@
 const Overview = () => {
   return (
-    <section className="bg-white px-[25px] pb-6 pt-0 md:px-8 lg:mt-2 lg:px-10 lg:py-8">
+    <section className="bg-white pb-6 pt-0 lg:mt-2 lg:px-10 lg:py-8">
       <h3 className="mb-3 text-xl font-light capitalize text-black lg:mb-5 lg:text-2xl lg:font-medium">
         Project Consultant Training Programme (Bundle)
       </h3>

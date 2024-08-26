@@ -1,4 +1,38 @@
 import React from "react";
+// {
+//     "status": "success",
+//     "user": {
+//         "id": "66c5019cb77de580f4274c96",
+//         "firstname": "zainab",
+//         "lastname": "wunmi",
+//         "username": "lawal",
+//         "email": "lawalzainabomowumi2021@gmail.com",
+//         "status": "verified",
+//         "wishlist": [],
+//         "avatar": null,
+//         "referral_code": "lawalPIM28AYSIG"
+//     },
+//     "message": "User verification successful, Please login to gain full access"
+// }
+
+// {
+//     "status": "success",
+//     "data": {
+//         "user": {
+//             "id": "66c5019cb77de580f4274c96",
+//             "firstname": "zainab",
+//             "lastname": "wunmi",
+//             "username": "lawal",
+//             "email": "lawalzainabomowumi2021@gmail.com",
+//             "status": "verified",
+//             "wishlist": [],
+//             "avatar": null,
+//             "referral_code": "lawalPIM28AYSIG"
+//         },
+//         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YzUwMTljYjc3ZGU1ODBmNDI3NGM5NiIsImVtYWlsIjoibGF3YWx6YWluYWJvbW93dW1pMjAyMUBnbWFpbC5jb20iLCJpYXQiOjE3MjQxODc0ODUsImV4cCI6MTcyNDIwMTg4NX0.5QwTd79q7HST5aBb52_Zr0PCG6QRagPvRFgXeswuEs8"
+//     },
+//     "message": "Login successful"
+// }
 
 const SliderNav = () => {
   return (

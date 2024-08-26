@@ -3,7 +3,7 @@ import { RxDownload } from "react-icons/rx";
 
 const Documents = () => {
   return (
-    <section className="bg-white px-4 pb-6 pt-0 sm:px-[22px] md:px-10 md:py-8 lg:mt-2">
+    <section className="bg-white pb-6 pt-0 sm:px-[22px] md:px-10 md:py-8 lg:mt-2 lg:px-4">
       <h3 className="mb-5 text-2xl font-medium capitalize text-black">
         shared document
       </h3>

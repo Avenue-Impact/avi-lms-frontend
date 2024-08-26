@@ -47,7 +47,7 @@ const Assignment = () => {
   };
 
   return (
-    <section className="bg-white px-[25px] pb-6 pt-0 md:px-8 lg:mt-2 lg:px-10 lg:py-8">
+    <section className="bg-white pb-6 pt-0 lg:mt-2 lg:px-10 lg:py-8">
       <h3 className="mb-5 text-2xl font-medium capitalize text-black">
         assignments
       </h3>
@@ -134,7 +134,13 @@ const Assignment = () => {
         </div>
         <div className="divide-y">
           <div className="my-6 flex w-full max-w-[450px] items-center justify-between">
-            <img src={pdfImg} alt="pdf icon" width={48} height={48} />
+            <img
+              src={pdfImg}
+              alt="pdf icon"
+              width={48}
+              height={48}
+              className="h-8 w-8 md:h-12 md:w-12"
+            />
             <div>
               <p className="font-medium text-black">Name of document.pdf</p>
               <p className="mt-1 flex items-center gap-1 text-xs font-light text-[#98A2B3]">
@@ -143,7 +149,13 @@ const Assignment = () => {
                 <span>. 13MB</span>
               </p>
             </div>
-            <img src={progress} alt="pdf icon" width={48} height={48} />
+            <img
+              src={progress}
+              alt="pdf icon"
+              width={48}
+              height={48}
+              className="h-8 w-8 md:h-12 md:w-12"
+            />
             <button type="button">
               {" "}
               <FontAwesomeIcon

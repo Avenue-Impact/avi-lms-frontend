@@ -8,18 +8,7 @@ import {
   FormMessage,
 } from "./form";
 import { cn } from "../../lib/utils";
-// import { Textarea } from "./textarea";
 
-// interface InputLabelProps {
-//   label?: string;
-//   name: string;
-//   type: HTMLInputTypeAttribute;
-//   control: any;
-//   className?: string;
-//   placeholder?: string;
-//   isInput?: boolean;
-//   id?: string;
-// }
 FormInput.propTypes = {
   label: PropTypes.string,
   name: PropTypes.string.isRequired,

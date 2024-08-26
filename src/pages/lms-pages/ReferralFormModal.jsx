@@ -6,10 +6,10 @@ import BorderCard from "@/Components/BorderCard";
 import { CommonButton } from "@/Components/ui/button";
 import { Form } from "@/Components/ui/form";
 import FormInput from "@/Components/ui/form-input";
-import { PasswordInput } from "@/Components/ui/password-input";
 import { Heading, Paragraph } from "../../pages/auth/components/Text";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
+import PasswordInput from "@/Components/ui/password-input";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -87,7 +87,7 @@ const ReferralFormModal = ({ setModal }) => {
             name="email"
             control={form.control}
             type="text"
-            id="email"
+            id="sort code"
             placeholder=""
           />
           <FormInput
@@ -113,7 +113,7 @@ const ReferralFormModal = ({ setModal }) => {
             referral funds. This takes 4 to 5 working days.
           </p>
           <CommonButton
-            className="w-2/4 bg-primary-color-600 font-poppins capitalize text-white hover:bg-primary-color-600 md:text-xl md:font-semibold"
+            className="bg-primary-color-600 font-poppins font-medium capitalize text-white hover:bg-primary-color-600 md:w-2/4 md:text-xl md:font-semibold"
             type="submit"
           >
             Request Withdrawal

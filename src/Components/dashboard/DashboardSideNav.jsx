@@ -37,7 +37,6 @@ export const navItem = [
   },
 ];
 function DashboardSideNav({ toggleNav, setTogglNav }) {
-  const [active, setActive] = useState(navItem);
   const hadleClick = (id) => {};
   return (
     <Sidebar toggleNav={toggleNav} setToggleNav={setTogglNav}>

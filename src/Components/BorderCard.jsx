@@ -5,7 +5,7 @@ function BorderCard({ className, children }) {
   return (
     <div
       className={cn(
-        "mx-auto rounded-2xl border border-lms-border px-8 py-6",
+        "mx-auto rounded-2xl border border-lms-border px-4 py-6 md:px-8",
         className,
       )}
     >

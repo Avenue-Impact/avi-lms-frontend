@@ -72,7 +72,9 @@ const DataSolution = () => {
         <p className="mb-8 mt-4 font-poppins text-[16px] font-[400] text-[#667185] lg:text-[24px]">
           Transforming Raw Data into Actionable Insights
         </p>
+
         <p className="text-justify font-poppins text-[16px] font-[400] leading-6 text-[#667185] md:text-center lg:text-[20px] lg:leading-[30px]">
+
           Avenue Impact Consulting is at the forefront of empowering
           organizations to leverage the full potential of their data through
           cutting-edge Data Analytics Services. From predictive modeling to
@@ -105,7 +107,9 @@ const DataSolution = () => {
         <p className="mb-8 mt-4 font-poppins text-[16px] font-[400] text-[#667185] lg:text-[24px]">
           Empowering Decision-Making with Business Intelligence
         </p>
+
         <p className="text-justify font-poppins text-[16px] text-[#667185] md:text-center lg:text-[20px]">
+
           In the age of information, Business Intelligence (BI) is the key to
           staying ahead. Avenue Impact Consulting’s BI services are designed to
           transform data into actionable intelligence, empowering organizations

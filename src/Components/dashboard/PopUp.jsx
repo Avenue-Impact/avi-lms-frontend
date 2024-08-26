@@ -6,7 +6,7 @@ function PopUp({ children, className }) {
   return (
     <Popover className={cn(className)}>
       <PopoverTrigger>{children}</PopoverTrigger>
-      <PopoverContent>
+      <PopoverContent className="w-[400px] px-6 shadow-none md:mr-10">
         <ProfilePopUp />
       </PopoverContent>
     </Popover>
