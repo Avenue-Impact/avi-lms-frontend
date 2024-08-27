@@ -23,7 +23,20 @@ const ProfilePopUp = () => {
       <div className="flex items-center gap-5 pb-6 pt-4">
         <div>
           <Avatar className="w-8 cursor-pointer md:h-[60px] md:w-[60px]">
-            <AvatarImage src={userDetails.Avatar} />
+          <AvatarImage
+              src={
+                userDetails?.avatar 
+                  ? userDetails.avatar 
+                  : isLoading 
+                  ? '' // Skeleton will be shown when isLoading is true
+                  : data?.data?.data.avatar || ''
+              }
+              alt="User Avatar"
+            />
+            {isLoading && (
+              <Skeleton className="h-12 w-12 rounded-full" />
+            )}
+
             <AvatarFallback className="bg-primary-color-100 text-sm text-primary-color-600 md:text-2xl">
               {userDetails.firstname ? (
                 `${userDetails.firstname.charAt(0).toUpperCase()}${userDetails.lastname.charAt(0).toUpperCase()}`

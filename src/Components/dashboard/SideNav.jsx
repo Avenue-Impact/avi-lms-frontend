@@ -108,7 +108,19 @@ export function Sidebar({ children, toggleNav, setToggleNav }) {
 
           <div className="flex border-t p-3">
             <Avatar>
-              <AvatarImage src={userDetails.avatar} />
+              <AvatarImage src={
+                    userDetails?.avatar 
+                      ? userDetails.avatar 
+                      : isLoading 
+                      ? '' // Skeleton will be shown when isLoading is true
+                      : data?.data?.data.avatar || ''
+                  }
+                  alt="User Avatar"
+                />
+                {isLoading && (
+                  <Skeleton className="h-12 w-12 rounded-full" />
+              )}
+
               <AvatarFallback className="bg-primary-color-100 text-lg text-primary-color-600">
                 {userDetails.firstname ? (
                   `${userDetails.firstname.charAt(0).toUpperCase()}${userDetails.lastname.charAt(0).toUpperCase()}`

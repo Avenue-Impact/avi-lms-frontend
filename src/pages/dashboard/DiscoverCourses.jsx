@@ -12,11 +12,18 @@ import { Link, useNavigate } from "react-router-dom";
 import { DropdownMenuComponent } from "@/Components/dashboard/DropDownMenuComponent";
 import PopUp from "@/Components/dashboard/PopUp";
 import { useAuth } from "@/hooks/useAuth";
+import { useQuery } from "@tanstack/react-query";
+import { fetchUserProfile } from "@/services/api";
+import { Skeleton } from "@/Components/ui/skeleton";
 
 const DiscoverCourses = () => {
 
   const { userDetails } = useAuth();
 
+  const { data, isLoading } = useQuery({
+    queryKey: ["userProfile"],
+    queryFn: fetchUserProfile,
+  });
 
   const navigate = useNavigate();
   return (
@@ -52,11 +59,29 @@ const DiscoverCourses = () => {
           <div className="relative pr-2">
             <PopUp>
               <div className="absolute right-0 top-0 z-10 h-2 w-2 rounded-full bg-[#008000] md:h-3 md:w-3"></div>
-              <Avatar className="h-8 w-8 md:h-10 md:w-10">
-                <AvatarImage src={userDetails.Avatar} />
-                  <AvatarFallback className="bg-primary-color-100 text-sm text-primary-color-600 md:text-lg">
-                      {`${userDetails.firstname.charAt(0).toUpperCase()}${userDetails.lastname.charAt(0).toUpperCase()}`}
-                  </AvatarFallback>
+                <Avatar>
+                <AvatarImage src={
+                      userDetails?.avatar 
+                        ? userDetails.avatar 
+                        : isLoading 
+                        ? '' // Skeleton will be shown when isLoading is true
+                        : data?.data?.data.avatar || ''
+                    }
+                    alt="User Avatar"
+                  />
+                  {isLoading && (
+                    <Skeleton className="h-12 w-12 rounded-full" />
+                )}
+
+                <AvatarFallback className="bg-primary-color-100 text-lg text-primary-color-600">
+                  {userDetails.firstname ? (
+                    `${userDetails.firstname.charAt(0).toUpperCase()}${userDetails.lastname.charAt(0).toUpperCase()}`
+                  ) : isLoading ? (
+                    <Skeleton className="h-12 w-12 rounded-full" />
+                  ) : (
+                    `${data?.data?.data.firstname.charAt(0).toUpperCase()}${data?.data?.data.lastname.charAt(0).toUpperCase()}`
+                  )}
+                </AvatarFallback>
               </Avatar>
             </PopUp>
           </div>
