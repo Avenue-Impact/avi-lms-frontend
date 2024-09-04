@@ -75,7 +75,7 @@ const EditProfile = () => {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       if (response.data.status === "success") {
@@ -87,7 +87,7 @@ const EditProfile = () => {
     }
   };
 
-  const {isSubmitting} = form.formState;
+  const { isSubmitting } = form.formState;
 
   return (
     <>
@@ -151,9 +151,12 @@ const EditProfile = () => {
           />
           <label
             htmlFor="avatar"
-            className="absolute bottom-0 -top-1 left-64 lg:left-[360px] p-2 rounded-full cursor-pointer"
+            className="absolute -top-1 bottom-0 left-64 cursor-pointer rounded-full p-2 lg:left-[360px]"
           >
-            <FontAwesomeIcon icon={faPen} className="text-primary-color-600 text-xs" />
+            <FontAwesomeIcon
+              icon={faPen}
+              className="text-xs text-primary-color-600"
+            />
           </label>
         </div>
         <Form {...form}>
@@ -193,9 +196,9 @@ const EditProfile = () => {
                 placeholder=""
                 type="email"
                 control={form.control}
-                disabled
+                disabled={true}
               />
-              <div className="grid gap-x-4 md:grid-cols-2">
+              {/* <div className="grid gap-x-4 md:grid-cols-2">
                 <PasswordInput
                   id="password"
                   label="Password"
@@ -212,7 +215,7 @@ const EditProfile = () => {
                   placeholder="Enter password"
                   disabled
                 />
-              </div>
+              </div> */}
             </div>
 
             <CommonButton
@@ -223,9 +226,7 @@ const EditProfile = () => {
               {isSubmitting ? (
                 <ClipLoader size={20} color={"#fff"} />
               ) : (
-              
-                  "Update Profile"
-
+                "Update Profile"
               )}
             </CommonButton>
           </form>

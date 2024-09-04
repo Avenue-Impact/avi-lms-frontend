@@ -8,6 +8,7 @@ import {
   FormMessage,
 } from "./form";
 import { cn } from "../../lib/utils";
+import { Textarea } from "./textarea";
 
 FormInput.propTypes = {
   label: PropTypes.string,
@@ -29,6 +30,8 @@ export default function FormInput({
   className,
   placeholder,
   id,
+  disabled,
+  textarea = false,
 }) {
   return (
     <FormField
@@ -46,13 +49,25 @@ export default function FormInput({
             </FormLabel>
           )}
           <FormControl>
-            <Input
-              className={className}
-              type={type}
-              placeholder={placeholder}
-              {...field}
-              id={id}
-            />
+            {textarea ? (
+              <Textarea
+                className={className}
+                type={type}
+                placeholder={placeholder}
+                {...field}
+                id={id}
+                disabled={disabled}
+              />
+            ) : (
+              <Input
+                className={className}
+                type={type}
+                placeholder={placeholder}
+                {...field}
+                id={id}
+                disabled={disabled}
+              />
+            )}
           </FormControl>
           <FormMessage />
         </FormItem>

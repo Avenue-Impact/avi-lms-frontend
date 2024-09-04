@@ -5,7 +5,7 @@ import CourseVideoSection from "@/Components/dashboard/CourseVideoSection";
 import { useState } from "react";
 import LiveSession from "@/Components/dashboard/LiveSession";
 
-function ShareDocument() {
+function ShareDocument({ editButton = false }) {
   const [session, setSession] = useState("live");
   const [sectionDetails, setSectionDetails] = useState({
     section: "",
@@ -43,6 +43,7 @@ function ShareDocument() {
           <CourseSection
             setSession={setSession}
             setSectionDetails={setSectionDetails}
+            editButton={editButton}
           />
         </aside>
       </div>

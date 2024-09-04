@@ -44,7 +44,7 @@ const ConfirmEmail = ({ setConfirm, setModal, setSuccess, user }) => {
         </p>
         <p className="mx-auto mb-6 mt-3 max-w-[284px] text-center text-sm leading-[18px] text-[#98A2B3]">
 
-          Please enter code we sent now to aviplatform@gmail.com{" "}
+          Please enter code we sent now to {user.email}
           <span
             className="cursor-pointer text-primary-color-600"
             onClick={() => inputRef.current.focus()}

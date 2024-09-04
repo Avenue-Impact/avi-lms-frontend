@@ -1,3 +1,5 @@
+import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -8,3 +10,4 @@ export function cn(...inputs) {
 export const passwordRegex = new RegExp(
   /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
 );
+

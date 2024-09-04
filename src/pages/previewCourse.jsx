@@ -1,7 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import styles from "./pages.module.css";
-import { renderStars } from "../Components/CourseCard";
 import joinTeam from "../assets/images/join_team.png";
 import CourseCard from "../Components/CourseCard";
 import ImageOverlay from "../Components/ImageOverlay";
@@ -23,6 +22,7 @@ import { cn } from "@/lib/utils";
 import Container from "@/Components/Container";
 import CourseCardPreview from "@/Components/CourseCardPreview";
 import { industriesItems, professionalItems } from "@/lib/professionalItems";
+import RenderStars from "@/Components/RenderStars";
 
 const PreviewCourse = ({ features }) => {
   const navigate = useNavigate();
@@ -91,7 +91,9 @@ const PreviewCourse = ({ features }) => {
 
                       <div className="flex items-center py-2 text-lg">
                         <p>4.3</p>
-                        <p>{renderStars()}</p>
+                        <p>
+                          <RenderStars />
+                        </p>
                         <p>43,55</p>
                       </div>
 

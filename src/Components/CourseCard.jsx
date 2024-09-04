@@ -1,25 +1,12 @@
 /* eslint-disable react-refresh/only-export-components */
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { 
-  faStar,
-  faStar as faStarSolid,
-} from "@fortawesome/free-solid-svg-icons";
+import { faStar } from "@fortawesome/free-solid-svg-icons";
 import styles from "../pages/pages.module.css"; // Ensure this imports the correct CSS file with the styles
-import PreviewButton, { EnrollPreviewButton } from "./PreviewButton";
 import joinTeam from "../assets/images/join_team.png";
 import { Link } from "react-router-dom";
+import PreviewButton from "./PreviewButton";
 // import previewVideoCourse from "../Components/previewVideoCourse";
-
-export const renderStars = () => {
-  const stars = [];
-  for (let i = 0; i < 5; i++) {
-    stars.push(
-      <FontAwesomeIcon key={i} icon={faStar} className="text-[#ffffff]" />,
-    );
-  }
-  return stars;
-};
 
 const CourseCard = ({
   imgSrc,

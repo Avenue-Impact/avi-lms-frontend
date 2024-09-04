@@ -138,9 +138,9 @@ const PreviewVideoCourse = () => {
               </div>
 
               <div className="mb-4 flex h-full items-center justify-center text-justify md:mb-0 lg:flex-col">
-                <div className="h-[1px] w-full bg-gray-300 lg:h-full lg:w-[1px]"></div>
-                <div className="text-gray-300">OR</div>
-                <div className="h-[1px] w-full bg-gray-300 lg:h-full lg:w-[1px]"></div>
+                  <div className="h-[1px] w-full bg-gray-300 lg:h-full lg:w-[1px]"></div>
+                  <div className="text-gray-300">OR</div>
+                  <div className="h-[1px] w-full bg-gray-300 lg:h-full lg:w-[1px]"></div>
               </div>
 
               <div className="col-span-5 mb-4 md:mb-0">

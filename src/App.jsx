@@ -24,6 +24,7 @@ import Wishlist from "./pages/dashboard/Wishlist";
 import StudentSettings from "./pages/dashboard/StudentSettings";
 import Referral from "./pages/dashboard/Referral";
 import OtherLayout from "./layouts/OtherLayout";
+import AdminLayout from "./layouts/AdminLayout";
 import ShareDocument from "./pages/dashboard/ShareDocument";
 import Documents from "./pages/dashboard/Documents";
 import Assignment from "./pages/dashboard/Assignment";
@@ -43,10 +44,15 @@ import AuthLayout from "./layouts/AuthLayout";
 import { Toaster } from "react-hot-toast";
 import { useState } from "react";
 import ProtectedRoute from "./Components/ProtectedRoute";
-import { Cookie } from "lucide-react";
-import Cookies from "js-cookie";
+
 import AuthProtectedRoute from "./Components/AuthProtectedRoute";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { AdminEmpty } from "./Components/admindashboard/AdminEmpty";
+import CourseManagement from "./pages/admin-pages/CourseManagement";
+import CourseCreation from "./Components/admindashboard/CourseCreation";
+import CoursesLayout from "./layouts/admin/CoursesLayout";
+import CreatedCourse from "./pages/admin-pages/course-management/CreatedCourse";
+import EditCourse from "./pages/admin-pages/course-management/EditCourse";
 
 const queryClient = new QueryClient();
 
@@ -230,7 +236,44 @@ function App() {
         },
       ],
     },
-    
+
+    {
+      element: <AdminLayout />,
+      path: "/admin",
+      children: [
+        {
+          path: "/admin/dashboard",
+          element: <AdminEmpty />,
+        },
+        {
+          element: <CoursesLayout />,
+          path: "course/management",
+
+          children: [
+            {
+              children: [
+                {
+                  index: true,
+                  element: <CourseManagement />,
+                },
+                {
+                  path: "courses",
+                  element: <CreatedCourse />,
+                },
+                {
+                  path: "edit",
+                  element: <EditCourse />,
+                },
+              ],
+            },
+            {
+              path: "create-course",
+              element: <CourseCreation />,
+            },
+          ],
+        },
+      ],
+    },
   ]);
 
   return (

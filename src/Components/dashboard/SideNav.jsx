@@ -1,18 +1,17 @@
-import { LucideLogOut, MoreVertical, Type } from "lucide-react";
+import { LucideLogOut } from "lucide-react";
 import { PiGearThin } from "react-icons/pi";
 import { IoGiftOutline } from "react-icons/io5";
 import { useContext, createContext, useState } from "react";
 import { DarkLogo } from "../Logo";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "@/hooks/useAuth";
 import Cookies from "js-cookie";
 import { useProfile } from "@/services/queries";
-import { fetchUserProfile } from "@/services/api";
-import { useQuery } from "@tanstack/react-query";
+
 import { Skeleton } from "../ui/skeleton";
 
 const SidebarContext = createContext();
@@ -20,15 +19,15 @@ const SidebarContext = createContext();
 export function Sidebar({ children, toggleNav, setToggleNav }) {
   const [expanded, setExpanded] = useState(false);
 
-  const { userDetails, dispatch } = useAuth();
+  const { userDetails } = useAuth();
 
   const location = useLocation();
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["userProfile"],
-    queryFn: fetchUserProfile,
-  });
-  // const { data, isLoading } = useProfile();
+  // const { data, isLoading } = useQuery({
+  //   queryKey: ["userProfile"],
+  //   queryFn: fetchUserProfile,
+  // });
+  const { data, isLoading } = useProfile();
   // if (!isLoading && data?.data?.data !== undefined)
   //   dispatch({ type: "auth/update_profile", payload: { ...data.data.data } });
 
@@ -108,18 +107,17 @@ export function Sidebar({ children, toggleNav, setToggleNav }) {
 
           <div className="flex border-t p-3">
             <Avatar>
-              <AvatarImage src={
-                    userDetails?.avatar 
-                      ? userDetails.avatar 
-                      : isLoading 
-                      ? '' // Skeleton will be shown when isLoading is true
-                      : data?.data?.data.avatar || ''
-                  }
-                  alt="User Avatar"
-                />
-                {isLoading && (
-                  <Skeleton className="h-12 w-12 rounded-full" />
-              )}
+              <AvatarImage
+                src={
+                  userDetails?.avatar
+                    ? userDetails.avatar
+                    : isLoading
+                      ? "" // Skeleton will be shown when isLoading is true
+                      : data?.data?.data.avatar || ""
+                }
+                alt="User Avatar"
+              />
+              {isLoading && <Skeleton className="h-12 w-12 rounded-full" />}
 
               <AvatarFallback className="bg-primary-color-100 text-lg text-primary-color-600">
                 {userDetails.firstname ? (
@@ -183,17 +181,25 @@ export function Sidebar({ children, toggleNav, setToggleNav }) {
 }
 
 export function SidebarItem({ icon, text, path, setToggleNav }) {
-  const { expanded } = useContext(SidebarContext);
+  // const { expanded } = useContext(SidebarContext);
 
-  const location = useLocation();
+  const { pathname } = useLocation();
+  // const isActive =
+  //   (pathname === "/" && href === "/") ||
+  //   pathname === href ||
+  //   pathname?.startsWith(`${href}/`);
 
   return (
-    <li className={"dashboard"} onClick={() => setToggleNav((prev) => !prev)}>
+    <li
+      className={"dashboard capitalize lg:whitespace-nowrap"}
+      onClick={() => setToggleNav((prev) => !prev)}
+    >
       <NavLink
         to={path}
         className={cn(
-          "group relative my-1 flex cursor-pointer items-center border-4 border-transparent px-3 py-2 text-gray-600 transition-colors hover:border-l-primary-color-600 hover:bg-primary-color-100/30 hover:text-primary-color-600",
-          location.pathname === path
+          "group relative my-1 flex cursor-pointer items-center border-4 border-transparent px-1 py-2 text-gray-600 transition-colors hover:border-l-primary-color-600 hover:bg-primary-color-100/30 hover:text-primary-color-600",
+
+          pathname === path || pathname?.startsWith(`${path}`)
             ? "border-l-4 border-l-primary-color-600 bg-primary-color-100/30 font-medium text-primary-color-600"
             : "",
         )}
