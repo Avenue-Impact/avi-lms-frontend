@@ -63,9 +63,9 @@ export default function FormInput({
                 className={className}
                 type={type}
                 placeholder={placeholder}
-                {...field}
                 id={id}
                 disabled={disabled}
+                {...field}
               />
             )}
           </FormControl>

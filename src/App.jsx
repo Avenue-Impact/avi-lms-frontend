@@ -53,6 +53,7 @@ import CourseCreation from "./Components/admindashboard/CourseCreation";
 import CoursesLayout from "./layouts/admin/CoursesLayout";
 import CreatedCourse from "./pages/admin-pages/course-management/CreatedCourse";
 import EditCourse from "./pages/admin-pages/course-management/EditCourse";
+import AdminLogin from "./pages/admin-pages/AdminLogin";
 
 const queryClient = new QueryClient();
 
@@ -111,7 +112,7 @@ function App() {
       ],
     },
     {
-      element: <AuthProtectedRoute />,
+      element: <AuthProtectedRoute tokin={"token"} path={"/dashboard"} />,
       children: [
         {
           path: "",
@@ -151,7 +152,7 @@ function App() {
       element: <DiscoverCourses />,
     },
     {
-      element: <ProtectedRoute />,
+      element: <ProtectedRoute tokin={"token"} path={"/login"} />,
       // loader: async () => {
       //   const token = Cookies.get("token");
       //   if (!token) return (window.location.href = "/login");
@@ -236,39 +237,55 @@ function App() {
         },
       ],
     },
-
+    //admin routes
     {
-      element: <AdminLayout />,
-      path: "/admin",
+      element: (
+        <AuthProtectedRoute tokin={"adminToken"} path={"/admin/dashboard"} />
+      ),
       children: [
         {
-          path: "/admin/dashboard",
-          element: <AdminEmpty />,
+          path: "admin/login",
+          element: <AdminLogin />,
         },
+      ],
+    },
+    {
+      element: <ProtectedRoute tokin={"adminToken"} path={"/admin/login"} />,
+      children: [
         {
-          element: <CoursesLayout />,
-          path: "course/management",
-
+          element: <AdminLayout />,
+          path: "/admin",
           children: [
             {
-              children: [
-                {
-                  index: true,
-                  element: <CourseManagement />,
-                },
-                {
-                  path: "courses",
-                  element: <CreatedCourse />,
-                },
-                {
-                  path: "edit",
-                  element: <EditCourse />,
-                },
-              ],
+              path: "/admin/dashboard",
+              element: <AdminEmpty />,
             },
             {
-              path: "create-course",
-              element: <CourseCreation />,
+              element: <CoursesLayout />,
+              path: "course/management",
+
+              children: [
+                {
+                  children: [
+                    {
+                      index: true,
+                      element: <CourseManagement />,
+                    },
+                    {
+                      path: "courses",
+                      element: <CreatedCourse />,
+                    },
+                    {
+                      path: "edit",
+                      element: <EditCourse />,
+                    },
+                  ],
+                },
+                {
+                  path: "create-course",
+                  element: <CourseCreation />,
+                },
+              ],
             },
           ],
         },

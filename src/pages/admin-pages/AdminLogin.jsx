@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Link, useNavigate } from "react-router-dom";
 import BorderCard from "@/Components/BorderCard";
-import { Heading, Paragraph } from "./components/Text";
 import { Form } from "@/Components/ui/form";
 import FormInput from "@/Components/ui/form-input";
 
@@ -17,6 +16,7 @@ import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
 
 import { ClipLoader } from "react-spinners";
+import { Heading, Paragraph } from "../auth/components/Text";
 // {
 //     "status": "success",
 //     "user": {
@@ -53,26 +53,28 @@ import { ClipLoader } from "react-spinners";
 // }
 
 const loginSchema = z.object({
-  username: z.string().min(1, { message: "name is required" }),
+  email: z.string().email(),
   password: z
     .string()
     .min(4, { message: "password must be at least 4 characters long" }),
 });
 
-const url = import.meta.env.VITE_AUTH_URL;
+const url = import.meta.env.VITE_ADMIN_URL;
 
-const Login = () => {
+const AdminLogin = () => {
   const navigate = useNavigate();
   const { dispatch } = useAuth();
 
   const handleSubmit = async (values) => {
     const user = {
-      userid: values.username,
+      email: values.email,
       password: values.password,
     };
 
     try {
       const response = await axios.post(`${url}/login`, user);
+
+      console.log(response);
 
       if (response.data.status === "success") {
         dispatch({
@@ -83,7 +85,7 @@ const Login = () => {
           },
         });
 
-        Cookies.set("token", response.data.data.token, {
+        Cookies.set("adminToken", response.data.data.token, {
           expires: 1,
           secure: true,
         });
@@ -91,7 +93,7 @@ const Login = () => {
         const decoded = jwtDecode(response.data.data.token);
         console.log("decoded", decoded);
 
-        navigate("/dashboard");
+        navigate("/admin/dashboard");
         toast.success("login successful");
       }
     } catch (error) {
@@ -103,7 +105,7 @@ const Login = () => {
   const form = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
     },
   });
@@ -126,11 +128,11 @@ const Login = () => {
                 onSubmit={form.handleSubmit(handleSubmit)}
               >
                 <FormInput
-                  name="username"
-                  label="Username/Email"
+                  name="email"
+                  label="Email"
                   placeholder=""
-                  id="username"
-                  type="text"
+                  id="email"
+                  type="email"
                   control={form.control}
                 />
                 <PasswordInput
@@ -159,29 +161,22 @@ const Login = () => {
                     "sign in"
                   )}
                 </CommonButton>
-                
               </form>
             </Form>
           </BorderCard>
-          <p className="mt-6 flex items-center justify-center gap-4 text-center">
-            <span className="text-sm text-[#514A4A]">
-              Already have an account?
-            </span>
-            <Link
-              to={"/signup"}
-              className="text-sm font-semibold capitalize text-primary-color-600"
-            >
-              sign up
-            </Link>
-          </p>
+            <p className="mt-6 flex items-center justify-center gap-4 text-center">
+              <span className="text-sm text-[#514A4A]">
+                Already have an account?
+              </span>
+              
+              <Link
+                to={"/signup"}
+                className="text-sm font-semibold capitalize text-primary-color-600"
+              >
+                sign up
+              </Link>
+            </p>
 
-
-          <div className="text-center">
-            <Link to={"/admin/login"}
-                className="text-sm font-semibold text-white hover:text-primary-color-300">
-                Login Admin 
-            </Link>
-          </div>
           
         </div>
       </div>
@@ -195,4 +190,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default AdminLogin;

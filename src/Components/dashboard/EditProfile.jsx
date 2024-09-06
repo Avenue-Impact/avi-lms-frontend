@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { CommonButton } from "../ui/button";
 import FormInput from "../ui/form-input";
@@ -17,6 +17,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Skeleton } from "../ui/skeleton";
 import { useProfile } from "@/services/queries";
 import { ClipLoader } from "react-spinners";
+import { useQuery } from "@tanstack/react-query";
 
 // Validation schema
 const profileSchema = z.object({
@@ -28,7 +29,10 @@ const profileSchema = z.object({
 
 const EditProfile = () => {
   const { userDetails } = useAuth();
-  const { isLoading, data } = useProfile();
+
+  const { isLoading, data, refetch } = useProfile();
+
+  // const { refetch } = useQuery(["userProfile"]);
 
   const [modal, setModal] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState(userDetails?.avatar || "");
@@ -36,13 +40,22 @@ const EditProfile = () => {
   const form = useForm({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      firstname: userDetails?.firstname || "",
-      lastname: userDetails?.lastname || "",
-      username: userDetails?.username || "",
-      email: userDetails?.email || "",
+      firstname: userDetails?.firstname,
+      lastname: userDetails?.lastname,
+      username: userDetails?.username,
+      email: userDetails?.email,
       avatar: null,
     },
   });
+
+  useEffect(() => {
+    if (data) {
+      form.setValue("firstname", data?.data?.data.firstname);
+      form.setValue("lastname", data?.data?.data.lastname);
+      form.setValue("email", data?.data?.data.email);
+      form.setValue("username", data?.data?.data.username);
+    }
+  }, [data, form]);
 
   // Handle file change event
   const handleFileChange = (event) => {
@@ -79,6 +92,7 @@ const EditProfile = () => {
       );
 
       if (response.data.status === "success") {
+        refetch();
         setModal(true); // Show success modal
       }
     } catch (error) {
@@ -126,21 +140,21 @@ const EditProfile = () => {
       )}
       <div className="mx-auto max-w-[716px]">
         <div className="relative">
-          <Avatar className="mx-auto block h-14 w-14 md:h-20 md:w-20">
-            <AvatarImage
-              src={avatarPreview}
-              className="m-auto block rounded-full"
-            />
-            <AvatarFallback className="mx-auto w-full rounded-full bg-primary-color-100 p-2 text-2xl text-primary-color-600 md:p-4">
-              {userDetails.firstname ? (
-                `${userDetails.firstname.charAt(0).toUpperCase()}${userDetails.lastname.charAt(0).toUpperCase()}`
-              ) : isLoading ? (
-                <Skeleton className="h-12 w-12 rounded-full" />
-              ) : (
-                `${data?.data?.data.firstname.charAt(0).toUpperCase()}${data?.data?.data.lastname.charAt(0).toUpperCase()}`
-              )}
-            </AvatarFallback>
-          </Avatar>
+          {isLoading ? (
+            <Skeleton className="mx-auto block h-14 w-14 rounded-full md:h-20 md:w-20" />
+          ) : (
+            <Avatar className="mx-auto block h-14 w-14 md:h-20 md:w-20">
+              <AvatarImage
+                src={avatarPreview || data?.data?.data.avatar}
+                className="m-auto block rounded-full"
+              />
+              <AvatarFallback className="mx-auto w-full rounded-full bg-primary-color-100 p-2 text-2xl text-primary-color-600 md:p-4">
+                {(userDetails.firstname &&
+                  `${userDetails.firstname.charAt(0).toUpperCase()}${userDetails.lastname.charAt(0).toUpperCase()}`) ||
+                  `${data?.data?.data.firstname.charAt(0).toUpperCase()}${data?.data?.data.lastname.charAt(0).toUpperCase()}`}
+              </AvatarFallback>
+            </Avatar>
+          )}
           <input
             type="file"
             id="avatar"
@@ -159,46 +173,64 @@ const EditProfile = () => {
             />
           </label>
         </div>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)}>
-            <div className="space-y-4">
-              <FormInput
-                name="username"
-                id="username"
-                label="Username"
-                placeholder=""
-                type="text"
-                control={form.control}
-              />
-              <div className="grid gap-x-4 md:grid-cols-2">
+
+        {isLoading ? (
+          <div className="mt-4">
+            <div>
+              <Skeleton className="h-12 w-full max-w-[760px]" />
+            </div>
+            <div className="my-4 flex gap-2">
+              <Skeleton className="h-12 w-full max-w-[380px]" />
+              <Skeleton className="h-12 w-full max-w-[380px]" />
+            </div>
+            <div>
+              <Skeleton className="h-12 w-full max-w-[760px]" />
+            </div>
+          </div>
+        ) : (
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleSubmit)}>
+              <div className="space-y-4">
                 <FormInput
-                  name="firstname"
-                  id="firstname"
-                  label="First Name"
+                  name="username"
+                  id="username"
+                  label="Username"
                   placeholder=""
                   type="text"
                   control={form.control}
+                  value={userDetails.username || data?.data?.data.username}
                 />
+                <div className="grid gap-x-4 md:grid-cols-2">
+                  <FormInput
+                    name="firstname"
+                    id="firstname"
+                    label="First Name"
+                    placeholder=""
+                    type="text"
+                    control={form.control}
+                  />
+                  <FormInput
+                    name="lastname"
+                    id="lastname"
+                    label="Last Name"
+                    placeholder=""
+                    type="text"
+                    control={form.control}
+                    value={userDetails.lastname || data?.data?.data.lastname}
+                  />
+                </div>
+                {/* Disabled fields */}
                 <FormInput
-                  name="lastname"
-                  id="lastname"
-                  label="Last Name"
+                  name="email"
+                  id="email"
+                  label="Email Address"
                   placeholder=""
-                  type="text"
+                  type="email"
                   control={form.control}
+                  disabled={true}
+                  value={userDetails.email || data?.data?.data.email}
                 />
-              </div>
-              {/* Disabled fields */}
-              <FormInput
-                name="email"
-                id="email"
-                label="Email Address"
-                placeholder=""
-                type="email"
-                control={form.control}
-                disabled={true}
-              />
-              {/* <div className="grid gap-x-4 md:grid-cols-2">
+                {/* <div className="grid gap-x-4 md:grid-cols-2">
                 <PasswordInput
                   id="password"
                   label="Password"
@@ -216,21 +248,22 @@ const EditProfile = () => {
                   disabled
                 />
               </div> */}
-            </div>
+              </div>
 
-            <CommonButton
-              type="submit"
-              className="mx-auto mt-6 block w-[55.865%] items-center bg-[#CC1747]"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                <ClipLoader size={20} color={"#fff"} />
-              ) : (
-                "Update Profile"
-              )}
-            </CommonButton>
-          </form>
-        </Form>
+              <CommonButton
+                type="submit"
+                className="mx-auto mt-6 block w-[55.865%] items-center bg-[#CC1747]"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <ClipLoader size={20} color={"#fff"} />
+                ) : (
+                  "Update Profile"
+                )}
+              </CommonButton>
+            </form>
+          </Form>
+        )}
       </div>
     </>
   );

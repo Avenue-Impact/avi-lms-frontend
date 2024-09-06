@@ -12,6 +12,7 @@ export async function fetchUserProfile() {
         'Authorization': `Bearer ${token}`
       }
     })
+    console.log(response);
 
     return response
   } catch (error) {
