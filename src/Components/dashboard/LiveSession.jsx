@@ -1,7 +1,9 @@
+import { useContext } from "react";
 import { MobileSlideNav } from "./DashboardSliderNav";
 import { MobileContent } from "./MobileContent";
+import { DocumentContext } from "@/pages/dashboard/ShareDocument";
 
-function LiveSession({ sections, setSections, setSectionDetails, setSession }) {
+function LiveSession() {
   return (
     <div className="mb-6">
       <div className="border-b border-b-[#E4E7EC] pb-4">
@@ -36,14 +38,10 @@ function LiveSession({ sections, setSections, setSectionDetails, setSession }) {
         </button>
       </section>
       <div className="lg:hidden">
-        <MobileSlideNav active={sections.mobile} setactive={setSections} />
+        <MobileSlideNav />
       </div>
       <div className="lg:hidden">
-        <MobileContent
-          name={sections.mobile}
-          setSession={setSession}
-          setSectionDetails={setSectionDetails}
-        />
+        <MobileContent />
       </div>
     </div>
   );

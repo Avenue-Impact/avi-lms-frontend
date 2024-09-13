@@ -29,7 +29,8 @@ const CourseCreation = () => {
             {[
               "Course Management",
               "Course Type",
-              "Course Session",
+              "Cohort Course Sections",
+              "On-Demand Course Sections",
               "Publish",
             ].map((label, index) => (
               <button
@@ -50,7 +51,8 @@ const CourseCreation = () => {
               </button>
             ))}
           </div>
-          <div className="flex space-x-2">
+
+          {/* <div className="flex space-x-2">
             {(activeTab === 1 ||
               activeTab === 2 ||
               (activeTab === 3 && subTab === 1)) && (
@@ -58,50 +60,126 @@ const CourseCreation = () => {
                 Save and Continue
               </button>
             )}
+
             {activeTab === 3 && subTab === 2 && (
               <button className="flex items-center rounded border border-[#667185] bg-transparent px-4 py-2 text-[#667185] hover:bg-[#f0f0f0]">
                 Preview
               </button>
             )}
-            {activeTab === 4 && (
+            
+            {activeTab === 5 && (
               <button className="flex items-center rounded border border-[#667185] bg-transparent px-4 py-2 text-[#667185] hover:bg-[#f0f0f0]">
                 Publish
               </button>
             )}
-          </div>
+          </div> */}
         </div>
 
         {/* Content */}
         <div
-          className={` ${activeTab === 1 ? "" : activeTab === 2 ? "" : activeTab === 3 ? "" : ""}`}
+          className={` ${activeTab === 1 ? "" : activeTab === 2 ? "" : activeTab === 3 ? ""  : activeTab === 4 ? "" :  "" }`}
         >
-          {activeTab === 1 && <CourseManagementPage />}
+
+          {activeTab === 1 &&
+            <>
+              <div className="mb-4 flex items-center justify-between">
+                  <h2 className="text-[24px] mt-5 font-[500] text-[#344054] mb-2">Course Information</h2>
+
+                    <button className="flex items-center rounded border border-[#667185] bg-transparent px-4 py-2 text-[#667185] hover:bg-[#f0f0f0]">
+                      Save and Continue
+                    </button>
+              </div>
+
+                <CourseManagementPage />
+            </>
+           
+           }
+
+
           {activeTab === 2 && (
-            <div>
+            <>
+              <div className="mb-4 flex items-center justify-between">
+                  <h2 className="text-[24px] mt-5 font-[500] text-[#344054] mb-2">Course Type</h2>
+
+                    <button className="flex items-center rounded border border-[#667185] bg-transparent px-4 py-2 text-[#667185] hover:bg-[#f0f0f0]">
+                      Save and Continue
+                    </button>
+              </div>
+              
               <CourseType />
-            </div>
+            </>
           )}
+
+
           {activeTab === 3 && (
             <div>
+             <div className="mb-4 flex items-center justify-between">
+                  <h2 className="text-[24px] mt-5 font-[500] text-[#344054] mb-2">Course Sections (May Cohort 2024)</h2>
+
+                  { subTab === 1 ? (
+                       <button className="flex items-center rounded border border-[#667185] bg-transparent px-4 py-2 text-[#667185] hover:bg-[#f0f0f0]">
+                       Save and Continue
+                     </button>
+                  ) : subTab === 2 ? (
+                        <button className="flex items-center rounded border border-[#667185] bg-transparent px-4 py-2 text-[#667185] hover:bg-[#f0f0f0]">
+                            Preview
+                      </button>
+                  ) : null
+                }
+             </div>
+
+
               <div className="mb-4 flex w-max gap-4 border-b border-[#98A2B3]">
                 <button
                   className={`border-b-2 px-4 py-2 font-[600] ${subTab === 1 ? "border-b-2 border-[#CC1747] text-[#CC1747]" : "border-b-transparent text-[#344054]"} `}
-                  onClick={() => handleSubTabClick(1)}
-                >
+                  onClick={() => handleSubTabClick(1)}>
                   Live Session
                 </button>
+
                 <button
                   className={`border-b-2 px-4 py-2 font-[600] ${subTab === 2 ? "border-b-primary-color-600 text-primary-color-600" : "border-b-transparent text-[#344054]"} `}
-                  onClick={() => handleSubTabClick(2)}
-                >
+                  onClick={() => handleSubTabClick(2)}>
                   Recorded
                 </button>
               </div>
+
               {subTab === 1 && <LiveSession />}
+
               {subTab === 2 && <RecordedSession />}
             </div>
           )}
-          {activeTab === 4 && <PublishPage />}
+
+
+
+              {activeTab === 4 && (
+                <>
+                   <div className="mb-4 flex items-center justify-between">
+                      <h2 className="text-[24px] mt-5 font-[500] text-[#344054] mb-2">On-Demand Course Sections</h2>
+
+                        <button className="flex items-center rounded border border-[#667185] bg-transparent px-4 py-2 text-[#667185] hover:bg-[#f0f0f0]">
+                            Preview
+                        </button>
+                  </div>
+                  <RecordedSession />
+                </>
+              )}
+
+
+
+          {activeTab === 5 &&
+            <>
+                <div className="mb-4 flex items-center justify-between">
+                  <h2 className="text-[24px] mt-5 font-[500] text-[#344054] mb-2">Publish</h2>
+
+                    <button className="flex items-center rounded border border-[#667185] bg-transparent px-4 py-2 text-[#667185] hover:bg-[#f0f0f0]">
+                        Publish
+                    </button>
+              </div>
+
+                <PublishPage />
+            </>
+          }
+          
         </div>
       </div>
     </div>

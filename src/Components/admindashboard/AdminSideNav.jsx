@@ -21,7 +21,7 @@ import { useNavigation } from "react-router-dom";
 const navItem = [
   {
     id: 1,
-    text: "Dashboard",
+    text: "Buddy Hub",
 
     icon: <GrHomeRounded />,
 

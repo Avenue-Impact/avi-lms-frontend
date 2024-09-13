@@ -115,6 +115,7 @@ function RecordedSession() {
                   className="rounded-md border-2 border-input bg-[#FAFAFA] p-4 placeholder:text-[#9D9D9D]"
                 />
               </div>
+              
               <div>
                 <div className="ml-auto mt-6 w-max">
                   <CommonButton variant="outline">

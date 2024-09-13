@@ -1,15 +1,11 @@
-import { useState } from "react";
+import { useContext } from "react";
 import DashboardSliderNav, { MobileSlideNav } from "./DashboardSliderNav";
 import { DesktopContent, MobileContent } from "./MobileContent";
 import liveSession from "../../assets/images/dashboard/live-session.png";
+import { DocumentContext } from "@/pages/dashboard/ShareDocument";
 
-function CourseVideoSection({
-  sectionDetails,
-  setSession,
-  setSectionDetails,
-  sections,
-  setSections,
-}) {
+function CourseVideoSection() {
+  const { sectionDetails } = useContext(DocumentContext);
   return (
     <section>
       <div className="overflow-hidden rounded-[10px] lg:h-[400px] lg:w-[700px]">
@@ -26,23 +22,16 @@ function CourseVideoSection({
         <span> {sectionDetails.topic} </span>
       </h1>
       <div className="hidden lg:block">
-        <DashboardSliderNav
-          desktopSection={sections.desktop}
-          setDesktopSection={setSections}
-        />
+        <DashboardSliderNav />
       </div>
       <div className="lg:hidden">
-        <MobileSlideNav active={sections.mobile} setactive={setSections} />
+        <MobileSlideNav />
       </div>
       <div className="hidden lg:block">
-        <DesktopContent section={sections.desktop} />
+        <DesktopContent />
       </div>
       <div className="lg:hidden">
-        <MobileContent
-          name={sections.mobile}
-          setSession={setSession}
-          setSectionDetails={setSectionDetails}
-        />
+        <MobileContent />
       </div>
     </section>
   );

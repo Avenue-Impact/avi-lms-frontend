@@ -1,5 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
-import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import styles from "../pages/pages.module.css"; // Ensure this imports the correct CSS file with the styles
@@ -9,7 +7,6 @@ import PreviewButton from "./PreviewButton";
 // import previewVideoCourse from "../Components/previewVideoCourse";
 
 const CourseCard = ({
-  imgSrc,
   altText,
   title,
   rating,

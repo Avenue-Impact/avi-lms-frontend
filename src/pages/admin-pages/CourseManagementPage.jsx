@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import UploadCourseManagement from './UploadCourseManagement';
 import DashButton from '../auth/ButtonDash';
-
+// import MyCKEditor from '../Components/pages/CDKEditor'
 
 
 const CourseManagementPage = () => {

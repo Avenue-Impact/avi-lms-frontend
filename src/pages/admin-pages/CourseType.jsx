@@ -23,7 +23,7 @@ import DashButton from "../auth/ButtonDash";
   return (
     <>
         <div>
-            <h2 className="text-[24px] mt-5 font-[500] text-[#344054] mb-2">Course Type</h2>
+            {/* <h2 className="text-[24px] mt-5 font-[500] text-[#344054] mb-2">Course Type</h2> */}
 
             {/* Live Session + Mentoring */}
             <div className="grid grid-cols-12 gap-10 mb-4 md:mb-0 border border-gray-300 rounded  mt-5 p-10">

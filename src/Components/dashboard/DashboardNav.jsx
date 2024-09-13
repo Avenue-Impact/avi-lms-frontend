@@ -9,7 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/services/queries";
 import { Skeleton } from "../ui/skeleton";
 
-function DashboardNav({ setToggleNav, userInfo }) {
+function DashboardNav({ setToggleNav }) {
   const navigate = useNavigate();
 
   // const { dispatch } = useAuth();
@@ -58,19 +58,17 @@ function DashboardNav({ setToggleNav, userInfo }) {
           <div className="absolute right-0 top-0 z-10 h-2 w-2 rounded-full bg-[#008000] md:h-3 md:w-3"></div>
           <PopUp className="relative cursor-pointer">
             <Avatar className="h-8 w-8 cursor-pointer md:h-10 md:w-10">
-            <AvatarImage
+              <AvatarImage
                 src={
-                  userDetails?.avatar 
-                    ? userDetails.avatar 
-                    : isLoading 
-                    ? '' // Skeleton will be shown when isLoading is true
-                    : data?.data?.data.avatar || ''
+                  userDetails?.avatar
+                    ? userDetails.avatar
+                    : isLoading
+                      ? "" // Skeleton will be shown when isLoading is true
+                      : data?.data?.data.avatar || ""
                 }
                 alt="User Avatar"
               />
-              {isLoading && (
-                <Skeleton className="h-12 w-12 rounded-full" />
-              )}
+              {isLoading && <Skeleton className="h-12 w-12 rounded-full" />}
 
               <AvatarFallback className="bg-primary-color-100 text-sm text-primary-color-600 md:text-lg">
                 {userDetails.firstname ? (

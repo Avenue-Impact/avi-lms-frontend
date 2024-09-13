@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisV, faSearch, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
 import DashButton from '../auth/ButtonDash';
 
-const CourseTable = ({ courses }) => {
+const CourseTable = ({ courses, onRemoveStudent }) => {
   const [showDropdown, setShowDropdown] = useState(null);
 
   const toggleDropdown = (index) => {
@@ -14,10 +14,11 @@ const CourseTable = ({ courses }) => {
     }
   };
 
-  const handleRemoveStudent = () => {
-    alert('Remove student');
-    setShowDropdown(null); // Close the dropdown after action
-  };
+  // const handleRemoveStudent = () => {
+  //   alert('Remove student');
+  //   setShowDropdown(null); // Close the dropdown after action
+    
+  // };
 
   return (
     <div className="overflow-x-auto">
@@ -99,7 +100,7 @@ const CourseTable = ({ courses }) => {
                 </button>
                 {showDropdown === index && (
                   <div className="absolute  right-0 z-10 w-32 py-2 mt-2 bg-white rounded shadow-lg ">
-                    <button onClick={handleRemoveStudent} className="block w-full px-4 py-2 text-left text-red-600 hover:bg-gray-100 ">
+                    <button onClick={() => onRemoveStudent(course.id)} className="block w-full px-4 py-2 text-left text-red-600 hover:bg-gray-100 ">
                          <FontAwesomeIcon icon={faTrash} className="mr-2" /> Remove
                     </button>
                   </div>

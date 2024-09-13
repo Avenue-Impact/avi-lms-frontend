@@ -8,7 +8,7 @@ export const initialState = {
   wishlist: [],
   avatar: null,
   referral_code: '',
-  token: ''
+
 }
 export const reducer = (state, action) => {
   const { type, payload } = action

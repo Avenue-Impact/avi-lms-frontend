@@ -2,8 +2,10 @@ import { ScrollRestoration } from "react-router-dom";
 
 import CourseSection from "@/Components/dashboard/CourseSection";
 import CourseVideoSection from "@/Components/dashboard/CourseVideoSection";
-import { useState } from "react";
+import { createContext, useState } from "react";
 import LiveSession from "@/Components/dashboard/LiveSession";
+
+export const DocumentContext = createContext();
 
 function ShareDocument({ editButton = false }) {
   const [session, setSession] = useState("live");
@@ -18,36 +20,26 @@ function ShareDocument({ editButton = false }) {
   });
 
   return (
-    <>
+    <DocumentContext.Provider
+      value={{
+        session,
+        setSession,
+        sectionDetails,
+        setSectionDetails,
+        sections,
+        setSections,
+      }}
+    >
       <ScrollRestoration />
       <div className="w-full gap-4 lg:grid lg:grid-cols-[2.8fr_1fr]">
-        {session === "live" && (
-          <LiveSession
-            sections={sections}
-            setSections={setSections}
-            setSectionDetails={setSectionDetails}
-            setSession={setSession}
-          />
-        )}
-        {session === "recorded" && (
-          <CourseVideoSection
-            sectionDetails={sectionDetails}
-            setSession={setSession}
-            setSectionDetails={setSectionDetails}
-            sections={sections}
-            setSections={setSections}
-          />
-        )}
+        {session === "live" && <LiveSession />}
+        {session === "recorded" && <CourseVideoSection />}
 
         <aside className="hidden rounded-[12px] border border-[#E4E7EC] bg-white px-4 py-6 lg:block">
-          <CourseSection
-            setSession={setSession}
-            setSectionDetails={setSectionDetails}
-            editButton={editButton}
-          />
+          <CourseSection editButton={editButton} />
         </aside>
       </div>
-    </>
+    </DocumentContext.Provider>
   );
 }
 

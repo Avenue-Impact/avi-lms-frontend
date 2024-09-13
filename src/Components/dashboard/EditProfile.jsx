@@ -12,12 +12,10 @@ import Modal from "@/pages/auth/components/Modal";
 import BorderCard from "../BorderCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faClose, faPen } from "@fortawesome/free-solid-svg-icons";
-import PasswordInput from "../ui/password-input";
 import { useAuth } from "@/hooks/useAuth";
 import { Skeleton } from "../ui/skeleton";
 import { useProfile } from "@/services/queries";
 import { ClipLoader } from "react-spinners";
-import { useQuery } from "@tanstack/react-query";
 
 // Validation schema
 const profileSchema = z.object({

@@ -79,7 +79,6 @@ const Login = () => {
           type: "auth/login",
           payload: {
             ...response.data.data.user,
-            token: response.data.data.token,
           },
         });
 
@@ -159,7 +158,6 @@ const Login = () => {
                     "sign in"
                   )}
                 </CommonButton>
-                
               </form>
             </Form>
           </BorderCard>
@@ -175,14 +173,14 @@ const Login = () => {
             </Link>
           </p>
 
-
           <div className="text-center">
-            <Link to={"/admin/login"}
-                className="text-sm font-semibold text-white hover:text-primary-color-300">
-                Login Admin 
+            <Link
+              to={"/admin/login"}
+              className="text-sm font-semibold text-white hover:text-primary-color-300"
+            >
+              Login Admin
             </Link>
           </div>
-          
         </div>
       </div>
 

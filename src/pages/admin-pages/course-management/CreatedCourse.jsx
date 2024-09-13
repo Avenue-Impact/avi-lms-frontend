@@ -1,5 +1,6 @@
-import React from 'react'
-import CreatedCourseCard from '../CreatedCourseCard';
+
+import CreatedCourseCard from "../../../Components/admindashboard/course-management/CreatedCourseCard";
+
 import joinTeam from "../../../assets/images/join_team.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from '@fortawesome/free-solid-svg-icons';

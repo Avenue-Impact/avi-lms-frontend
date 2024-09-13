@@ -3,9 +3,7 @@ import footerImg from "../assets/images/footer-img.jpg";
 import HeroHeading from "./MainContent/HeroHeading";
 import Button from "./Button";
 import { WhiteLogo } from "./Logo";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SocialMediaLinks, { socialMediaData } from "./SocialMediaLink";
-
 
 const Footer = ({ heading, description }) => {
   return (
@@ -23,8 +21,6 @@ const Footer = ({ heading, description }) => {
             <Button className={""}>send us a message</Button>
           </div>
           <div className="mt-28 flex flex-wrap items-center justify-between gap-y-4 text-white md:mt-10 2xl:mt-[31px] 2xl:px-8 2xl:py-10">
-
-
             <div>
               <SocialMediaLinks data={socialMediaData} />
             </div>

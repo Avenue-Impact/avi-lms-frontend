@@ -5,33 +5,23 @@ import Assignment from "@/pages/dashboard/Assignment";
 import GetCertificate from "@/pages/dashboard/GetCertificate";
 import Overview from "@/pages/dashboard/Overview";
 import LeaveRating from "@/pages/dashboard/LeaveRating";
+import { DocumentContext } from "@/pages/dashboard/ShareDocument";
+import { useContext } from "react";
 
-export const MobileContent = ({
-  name,
-  setSession,
-  setSectionDetails,
-  active,
-  setActive,
-}) => {
-  if (name === "course sections")
-    return (
-      <CourseSection
-        setSession={setSession}
-        setSectionDetails={setSectionDetails}
-        active={active}
-        setActive={setActive}
-      />
-    );
-  if (name === "project area") return <JoinProjectTeam />;
-  if (name === "share documents") return <Documents />;
-  if (name === "assignments") return <Assignment />;
-  if (name === "get certification") return <GetCertificate />;
-  if (name === "overview") return <Overview />;
-  if (name === "leave a review") return <LeaveRating />;
+export const MobileContent = () => {
+  const { sections } = useContext(DocumentContext);
+  if (sections.mobile === "course sections") return <CourseSection />;
+  if (sections.mobile === "project area") return <JoinProjectTeam />;
+  if (sections.mobile === "share documents") return <Documents />;
+  if (sections.mobile === "assignments") return <Assignment />;
+  if (sections.mobile === "get certification") return <GetCertificate />;
+  if (sections.mobile === "overview") return <Overview />;
+  if (sections.mobile === "leave a review") return <LeaveRating />;
 };
 
-export const DesktopContent = ({ section }) => {
-  if (section === "share documents") return <Documents />;
-  if (section === "assignments") return <Assignment />;
-  if (section === "overview") return <Overview />;
+export const DesktopContent = () => {
+  const { sections } = useContext(DocumentContext);
+  if (sections.desktop === "share documents") return <Documents />;
+  if (sections.desktop === "assignments") return <Assignment />;
+  if (sections.desktop === "overview") return <Overview />;
 };

@@ -1,17 +1,18 @@
 import OtpComponent from "@/Components/about/OtpComponent";
 import BorderCard from "@/Components/BorderCard";
 import { CommonButton } from "@/Components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
 import { useCredentials } from "@/hooks/useCredentials";
 import axios from "axios";
-import { useRef, useState } from "react";
+import Cookies from "js-cookie";
+import { useRef } from "react";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 
 const url = import.meta.env.VITE_AUTH_URL;
 
 const ConfirmEmail = ({ setConfirm, setModal, setSuccess, user }) => {
   // const [otp, setOtp] = useState("");
-  const navigate = useNavigate();
+  const { dispatch } = useAuth();
 
   const inputRef = useRef();
 
@@ -23,10 +24,22 @@ const ConfirmEmail = ({ setConfirm, setModal, setSuccess, user }) => {
         email: user.email,
         confirmCode: otp,
       });
+      console.log(verify);
 
       if (verify.data.status === "success") {
         toast.success(verify.data.status);
         setSuccess("success");
+        dispatch({
+          type: "auth/login",
+          payload: {
+            ...verify.data.data.user,
+          },
+        });
+
+        Cookies.set("token", verify.data.data.token, {
+          expires: 1,
+          secure: true,
+        });
       }
     } catch (error) {
       // setSuccess("fail");
@@ -43,7 +56,6 @@ const ConfirmEmail = ({ setConfirm, setModal, setSuccess, user }) => {
           Confirm your email address
         </p>
         <p className="mx-auto mb-6 mt-3 max-w-[284px] text-center text-sm leading-[18px] text-[#98A2B3]">
-
           Please enter code we sent now to {user.email}
           <span
             className="cursor-pointer text-primary-color-600"
@@ -51,7 +63,6 @@ const ConfirmEmail = ({ setConfirm, setModal, setSuccess, user }) => {
           >
             Edit
           </span>
-
         </p>
         <div className="mx-auto w-fit">
           <OtpComponent setOtp={setOtp} inputRef={inputRef} />

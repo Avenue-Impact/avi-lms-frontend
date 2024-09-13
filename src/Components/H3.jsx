@@ -1,12 +1,11 @@
-import React from "react";
-
 const H3 = ({ children, className }) => {
-	return (
-		<h3
-			className={`text-[#3A4C6C] font-light text-2xl lg:text-[2.5rem] capitalize ${className}`}>
-			{children}
-		</h3>
-	);
+  return (
+    <h3
+      className={`text-2xl font-light capitalize text-[#3A4C6C] lg:text-[2.5rem] ${className}`}
+    >
+      {children}
+    </h3>
+  );
 };
 
 export default H3;

@@ -1,6 +1,3 @@
-import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import styles from "./BulletList.module.css";
 import { FaRegCircleCheck } from "react-icons/fa6";
 

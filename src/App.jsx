@@ -54,6 +54,22 @@ import CoursesLayout from "./layouts/admin/CoursesLayout";
 import CreatedCourse from "./pages/admin-pages/course-management/CreatedCourse";
 import EditCourse from "./pages/admin-pages/course-management/EditCourse";
 import AdminLogin from "./pages/admin-pages/AdminLogin";
+import AdminPayment from "./Components/admindashboard/AdminPayment";
+import ProjectArea from "./pages/admin-pages/project-area/ProjectArea";
+import ProjectAreaLayout from "./layouts/admin/ProjectAreaLayout";
+import General from "./pages/admin-pages/project-area/Genral";
+import Groups from "./pages/admin-pages/project-area/Groups";
+import CourseProjectArea from "./Components/admindashboard/project-area/CourseProjectArea";
+import CourseTools from "./Components/admindashboard/project-area/CourseTools";
+import FinancialLayout from "./layouts/admin/FinancialLayout";
+import CreateCoupon from "./pages/admin-pages/financial-aid/CreateCoupon";
+import FinancialAidRequest from "./pages/admin-pages/financial-aid/FinancialAidRequest";
+
+import ViewDetails from "./Components/admindashboard/financial-aid/ViewDetails";
+
+
+import CourseInfomation from "./pages/admin-pages/course-management/CourseInfomation";
+
 
 const queryClient = new QueryClient();
 
@@ -279,11 +295,68 @@ function App() {
                       path: "edit",
                       element: <EditCourse />,
                     },
+                    {
+                      path: "info",
+                      element: <CourseInfomation />,
+                    },
                   ],
                 },
                 {
                   path: "create-course",
                   element: <CourseCreation />,
+                },
+              ],
+            },
+            {
+              path: "financial-aid",
+              element: <FinancialLayout />,
+                children: [
+                  {
+                    index: true,
+                    element: <CreateCoupon/>
+                  },
+                  {
+                    path: "aid-request",
+                    element: <FinancialAidRequest/>
+                  },
+                  ],
+            },
+
+            {
+              path: "view-details",
+              element: <ViewDetails/>
+            },
+            
+            {
+              path: "/admin/payment",
+              element: <AdminPayment/>
+            },
+          
+            {
+              element: <ProjectAreaLayout />,
+              path: "project-area",
+              children: [
+                {
+                  index: true,
+                  element: <ProjectArea />,
+                },
+                {
+                  path: ":id/general",
+                  element: <General />,
+                  children: [
+                    {
+                      index: true,
+                      element: <CourseProjectArea />,
+                    },
+                    {
+                      path: "course-tool",
+                      element: <CourseTools />,
+                    },
+                  ],
+                },
+                {
+                  path: ":id/group",
+                  element: <Groups />,
                 },
               ],
             },

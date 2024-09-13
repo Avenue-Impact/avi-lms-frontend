@@ -5,6 +5,8 @@ import { faCloudUpload, faVideo } from '@fortawesome/free-solid-svg-icons';
 const MediaUploadContainer = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [videoPreview, setVideoPreview] = useState(null);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const fileInputRefImage = useRef(null);
   const fileInputRefVideo = useRef(null);
 
@@ -14,11 +16,26 @@ const MediaUploadContainer = () => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result);
+        const img = new Image();
+        img.onload = () => {
+          // Check the image dimensions
+          if (img.width > 1920 || img.height > 1080) {
+            setError('Image dimensions exceed 1920x1080 pixels');
+            setSuccess('');
+            setImagePreview('');
+          } else {
+            setSuccess('Image upload successfully');
+            setError('');
+            // If dimensions are acceptable, set the image preview
+            setImagePreview(reader.result);
+          }
+        };
+        img.src = reader.result;
       };
       reader.readAsDataURL(file);
     }
   };
+  
 
   // Handle video file upload
   const handleVideoUpload = (e) => {
@@ -108,6 +125,13 @@ const MediaUploadContainer = () => {
             ref={fileInputRefImage}
           />
         </div>
+        {error ? (<p className="mb-2 text-[#e13636] pt-4 font-[400]" >{error}</p>
+        ) : success ? (
+           <p className="mb-2 text-[#23944c] pt-4 font-[400]" >{success}</p>
+        )
+        :(
+          <p className="mb-2 text-[#475367] pt-4 font-[400]" >The Image must be 1920 x 1080 Resolution</p>
+        )}
       </div>
 
         {/* Video Upload */}

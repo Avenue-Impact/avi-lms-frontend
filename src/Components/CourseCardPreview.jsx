@@ -1,4 +1,3 @@
-import React from "react";
 import { EnrollPreviewButton } from "./PreviewButton";
 import { Link } from "react-router-dom";
 import styles from "../pages/pages.module.css";

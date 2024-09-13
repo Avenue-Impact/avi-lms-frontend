@@ -6,7 +6,7 @@ import { CommonButton } from "@/Components/ui/button";
 function PublishPage() {
   return (
     <div>
-      <h2 className="mb-2 text-xl font-bold">Publish</h2>
+      {/* <h2 className="mb-2 text-xl font-bold">Publish</h2> */}
       <div className="space-y-14">
         <CourseInfo />
         <CourseType />

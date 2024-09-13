@@ -1,7 +1,7 @@
 import { LucideLogOut } from "lucide-react";
 import { PiGearThin } from "react-icons/pi";
 import { IoGiftOutline } from "react-icons/io5";
-import { useContext, createContext, useState } from "react";
+import { createContext, useState } from "react";
 import { DarkLogo } from "../Logo";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { NavLink, useLocation } from "react-router-dom";
@@ -23,17 +23,9 @@ export function Sidebar({ children, toggleNav, setToggleNav }) {
 
   const location = useLocation();
 
-  // const { data, isLoading } = useQuery({
-  //   queryKey: ["userProfile"],
-  //   queryFn: fetchUserProfile,
-  // });
   const { data, isLoading } = useProfile();
-  // if (!isLoading && data?.data?.data !== undefined)
-  //   dispatch({ type: "auth/update_profile", payload: { ...data.data.data } });
 
   const handleLogout = () => {
-    // navigate("/login");
-    // dispatch({ Type: "auth/logout" });
     Cookies.remove("token");
     window.location.href = "/login";
   };
@@ -181,13 +173,7 @@ export function Sidebar({ children, toggleNav, setToggleNav }) {
 }
 
 export function SidebarItem({ icon, text, path, setToggleNav }) {
-  // const { expanded } = useContext(SidebarContext);
-
   const { pathname } = useLocation();
-  // const isActive =
-  //   (pathname === "/" && href === "/") ||
-  //   pathname === href ||
-  //   pathname?.startsWith(`${href}/`);
 
   return (
     <li

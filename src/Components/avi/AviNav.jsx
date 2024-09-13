@@ -12,8 +12,6 @@ import { fetchUserProfile } from "@/services/api";
 import { Skeleton } from "../ui/skeleton";
 
 const AviNav = ({ showNav, setShowNav }) => {
-
-
   const navigate = useNavigate();
   return (
     <nav className="z-50 flex items-center justify-between px-6 py-4 lg:px-20">
@@ -63,11 +61,7 @@ const AviNav = ({ showNav, setShowNav }) => {
   );
 };
 
-
-
-
-export const PreviewVideoNav = ({ showNav, setShowNav }) => {
-  
+export const PreviewVideoNav = ({ setShowNav }) => {
   const { data, isLoading } = useQuery({
     queryKey: ["userProfile"],
     queryFn: fetchUserProfile,
@@ -76,7 +70,6 @@ export const PreviewVideoNav = ({ showNav, setShowNav }) => {
   const { userDetails } = useAuth();
 
   const navigate = useNavigate();
-  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   return (
     <nav className="flex items-center justify-between px-6 py-4 lg:px-20">
@@ -110,30 +103,29 @@ export const PreviewVideoNav = ({ showNav, setShowNav }) => {
         <div className="absolute right-0 top-0 z-10 h-2 w-2 rounded-full bg-[#008000] md:h-3 md:w-3"></div>
 
         <PopUp className="relative cursor-pointer">
-            <Avatar>
-                <AvatarImage src={
-                      userDetails?.avatar 
-                        ? userDetails.avatar 
-                        : isLoading 
-                        ? '' // Skeleton will be shown when isLoading is true
-                        : data?.data?.data.avatar || ''
-                    }
-                    alt="User Avatar"
-                  />
-                  {isLoading && (
-                    <Skeleton className="h-12 w-12 rounded-full" />
-                )}
+          <Avatar>
+            <AvatarImage
+              src={
+                userDetails?.avatar
+                  ? userDetails.avatar
+                  : isLoading
+                    ? "" // Skeleton will be shown when isLoading is true
+                    : data?.data?.data.avatar || ""
+              }
+              alt="User Avatar"
+            />
+            {isLoading && <Skeleton className="h-12 w-12 rounded-full" />}
 
-                <AvatarFallback className="bg-primary-color-100 text-lg text-primary-color-600">
-                  {userDetails.firstname ? (
-                    `${userDetails.firstname.charAt(0).toUpperCase()}${userDetails.lastname.charAt(0).toUpperCase()}`
-                  ) : isLoading ? (
-                    <Skeleton className="h-12 w-12 rounded-full" />
-                  ) : (
-                    `${data?.data?.data.firstname.charAt(0).toUpperCase()}${data?.data?.data.lastname.charAt(0).toUpperCase()}`
-                  )}
-                </AvatarFallback>
-              </Avatar>
+            <AvatarFallback className="bg-primary-color-100 text-lg text-primary-color-600">
+              {userDetails.firstname ? (
+                `${userDetails.firstname.charAt(0).toUpperCase()}${userDetails.lastname.charAt(0).toUpperCase()}`
+              ) : isLoading ? (
+                <Skeleton className="h-12 w-12 rounded-full" />
+              ) : (
+                `${data?.data?.data.firstname.charAt(0).toUpperCase()}${data?.data?.data.lastname.charAt(0).toUpperCase()}`
+              )}
+            </AvatarFallback>
+          </Avatar>
 
           {/* {dropdownOpen && <ProfilePopUp />} */}
         </PopUp>

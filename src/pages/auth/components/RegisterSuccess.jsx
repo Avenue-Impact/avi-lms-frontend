@@ -34,13 +34,23 @@ function RegisterSuccess({ title, text, setModal, path }) {
           <Heading>{title}</Heading>
           <Paragraph>{text}</Paragraph>
         </div>
-        <CommonButton
-          className="bg-primary-color-600"
-          size="lg"
-          onClick={handleModal}
-        >
-          OK
-        </CommonButton>
+        {path ? (
+          <CommonButton
+            className="bg-primary-color-600"
+            size="lg"
+            onClick={handleModal}
+          >
+            OK
+          </CommonButton>
+        ) : (
+          <CommonButton
+            className="bg-primary-color-600"
+            size="lg"
+            onClick={() => setModal((prev) => !prev)}
+          >
+            OK
+          </CommonButton>
+        )}
       </div>
     </BorderCard>
   );
