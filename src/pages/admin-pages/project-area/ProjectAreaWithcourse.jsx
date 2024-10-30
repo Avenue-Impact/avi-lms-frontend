@@ -68,7 +68,7 @@ const ProjectAreaWithcourse = () => {
               {modalTab === "cohort" ? (
                 <ProjectCohortSelection
                   setModal={setModal}
-                  setModalTab={setModalTab}
+                  onClick={() => setModalTab("project-tools")}
                 />
               ) : (
                 <ProjectAreaTools

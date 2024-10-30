@@ -40,7 +40,7 @@ export function Sidebar({ children, toggleNav, setToggleNav }) {
       <nav className="flex h-full w-full flex-col border-r bg-white shadow-sm">
         <div className="mb-3 flex items-center justify-between p-4 pb-2 lg:ml-4 lg:justify-start">
           <DarkLogo className={`overflow-hidden transition-all lg:w-40`} />
-          <button onClick={() => setToggleNav((prev) => !prev)}>
+          <button onClick={() => setToggleNav?.((prev) => !prev)}>
             <FontAwesomeIcon
               icon={faClose}
               className="text-2xl text-tertiary-color-700 lg:hidden"
@@ -55,7 +55,7 @@ export function Sidebar({ children, toggleNav, setToggleNav }) {
           <ul className="flex-1 px-3">
             <li
               className={"dashboard"}
-              onClick={() => setToggleNav((prev) => !prev)}
+              onClick={() => setToggleNav?.((prev) => !prev)}
             >
               <NavLink
                 to={"student-settings"}
@@ -76,7 +76,7 @@ export function Sidebar({ children, toggleNav, setToggleNav }) {
             </li>
             <li
               className={"dashboard"}
-              onClick={() => setToggleNav((prev) => !prev)}
+              onClick={() => setToggleNav?.((prev) => !prev)}
             >
               <NavLink
                 to={"referral"}
@@ -178,7 +178,7 @@ export function SidebarItem({ icon, text, path, setToggleNav }) {
   return (
     <li
       className={"dashboard capitalize lg:whitespace-nowrap"}
-      onClick={() => setToggleNav((prev) => !prev)}
+      onClick={() => setToggleNav?.((prev) => !prev)}
     >
       <NavLink
         to={path}

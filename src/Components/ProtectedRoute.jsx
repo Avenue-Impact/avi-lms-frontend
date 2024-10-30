@@ -1,4 +1,3 @@
-import { useAuth } from "@/hooks/useAuth";
 import Cookies from "js-cookie";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 

@@ -46,7 +46,7 @@ function RegisterSuccess({ title, text, setModal, path }) {
           <CommonButton
             className="bg-primary-color-600"
             size="lg"
-            onClick={() => setModal((prev) => !prev)}
+            onClick={() => setModal?.((prev) => !prev)}
           >
             OK
           </CommonButton>

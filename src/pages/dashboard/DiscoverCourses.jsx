@@ -9,14 +9,19 @@ import { FaRegBell } from "react-icons/fa6";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
-import { DropdownMenuComponent } from "@/Components/dashboard/DropDownMenuComponent";
+// import { DropdownMenuComponent } from "@/Components/dashboard/DropDownMenuComponent";
 import PopUp from "@/Components/dashboard/PopUp";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserProfile } from "@/services/api";
 import { Skeleton } from "@/Components/ui/skeleton";
+import { useFetchAllCourses } from "@/hooks/students/use-fetch-all-courses";
+// import { all } from "axios";
 
 const DiscoverCourses = () => {
+  const { allCourses, isFetchingAllCourses } = useFetchAllCourses();
+  // console.log("allCourses", allCourses);
+  // console.log("isFetchingAllCourses", isFetchingAllCourses);
 
   const { userDetails } = useAuth();
 
@@ -59,19 +64,18 @@ const DiscoverCourses = () => {
           <div className="relative pr-2">
             <PopUp>
               <div className="absolute right-0 top-0 z-10 h-2 w-2 rounded-full bg-[#008000] md:h-3 md:w-3"></div>
-                <Avatar>
-                <AvatarImage src={
-                      userDetails?.avatar 
-                        ? userDetails.avatar 
-                        : isLoading 
-                        ? '' // Skeleton will be shown when isLoading is true
-                        : data?.data?.data.avatar || ''
-                    }
-                    alt="User Avatar"
-                  />
-                  {isLoading && (
-                    <Skeleton className="h-12 w-12 rounded-full" />
-                )}
+              <Avatar>
+                <AvatarImage
+                  src={
+                    userDetails?.avatar
+                      ? userDetails.avatar
+                      : isLoading
+                        ? "" // Skeleton will be shown when isLoading is true
+                        : data?.data?.data.avatar || ""
+                  }
+                  alt="User Avatar"
+                />
+                {isLoading && <Skeleton className="h-12 w-12 rounded-full" />}
 
                 <AvatarFallback className="bg-primary-color-100 text-lg text-primary-color-600">
                   {userDetails.firstname ? (
@@ -98,7 +102,22 @@ const DiscoverCourses = () => {
           already taken the next step with Avenue Impact{" "}
         </p>
         <div className="mb-6 mt-10 grid grid-cols-2 gap-[18px] md:grid-cols-3 lg:grid-cols-4">
-          <CourseCard
+          {isFetchingAllCourses ? (
+            "Loading"
+          ) : (allCourses.data.data.courses.map((course) => (
+                <CourseCard key={course._id}
+                  imgSrc={joinTeam}
+                  altText="joinTeam"
+                  title={course.title}
+                  rating="4.3"
+                  numRatings="45,345"
+                  previewButtonText="Preview this course"
+                  path="/PreviewVideoCourse"
+                />
+            
+          ))
+          )}
+          {/* <CourseCard
             imgSrc={joinTeam}
             altText="joinTeam"
             title={
@@ -125,8 +144,9 @@ const DiscoverCourses = () => {
             numRatings="45,345"
             previewButtonText="Preview this course"
             path="/PreviewVideoCourse"
-          />
-          <CourseCard
+          /> */}
+
+          {/* <CourseCard
             imgSrc={joinTeam}
             altText="joinTeam"
             title={
@@ -169,9 +189,8 @@ const DiscoverCourses = () => {
             numRatings="45,345"
             previewButtonText="Preview this course"
             path="/PreviewVideoCourse"
-          />
-
-          <CourseCard
+          /> */}
+          {/* <CourseCard
             imgSrc={joinTeam}
             altText="joinTeam"
             title={
@@ -212,8 +231,8 @@ const DiscoverCourses = () => {
             numRatings="45,345"
             previewButtonText="Preview this course"
             path="/PreviewVideoCourse"
-          />
-          <CourseCard
+          /> */}
+          {/* <CourseCard
             imgSrc={joinTeam}
             altText="joinTeam"
             title={
@@ -254,21 +273,7 @@ const DiscoverCourses = () => {
             numRatings="45,345"
             previewButtonText="Preview this course"
             path="/PreviewVideoCourse"
-          />
-          <CourseCard
-            imgSrc={joinTeam}
-            altText="joinTeam"
-            title={
-              <>
-                {" "}
-                Project Consultant <br /> Training Programme (Bundle)
-              </>
-            }
-            rating="4.3"
-            numRatings="45,345"
-            previewButtonText="Preview this course"
-            path="/PreviewVideoCourse"
-          />
+          /> */}
         </div>
         <div className="mb-12 mt-5 h-px w-full bg-[#C7D7F4]" />
         <div className="items-enter mx-auto flex w-full max-w-[314px] gap-1">

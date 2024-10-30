@@ -11,13 +11,20 @@ import { cn } from "../../lib/utils";
 import { Textarea } from "./textarea";
 
 FormInput.propTypes = {
-  label: PropTypes.string,
+  label: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
   name: PropTypes.string.isRequired,
-  type: PropTypes.oneOf(["text", "number", "password", "file", "email"])
-    .isRequired,
+  type: PropTypes.oneOf([
+    "text",
+    "number",
+    "password",
+    "file",
+    "email",
+    "time",
+    "date",
+  ]).isRequired,
   control: PropTypes.any,
   className: PropTypes.string,
-  placeholder: PropTypes.string.isRequired,
+  placeholder: PropTypes.string,
   isInput: PropTypes.bool,
   id: PropTypes.string.isRequired,
 };
@@ -32,6 +39,7 @@ export default function FormInput({
   id,
   disabled,
   textarea = false,
+  labelClass,
 }) {
   return (
     <FormField
@@ -43,6 +51,7 @@ export default function FormInput({
             <FormLabel
               className={cn(
                 "font-poppins text-sm font-semibold capitalize text-label",
+                labelClass,
               )}
             >
               {label}

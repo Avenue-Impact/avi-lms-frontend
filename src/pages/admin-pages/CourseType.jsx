@@ -1,149 +1,60 @@
-import React, { useState } from "react";
-import { AdminCohort } from './AdminCohort';
-import { AdminDuration } from "./AdminDuration";
-import DashButton from "../auth/ButtonDash";
-// import { PreviewVideoSelect } from '../auth/components/DashSelect';
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faHeart } from '@fortawesome/free-solid-svg-icons';
-// import DashButton from '../auth/ButtonDash';
-// import { Link } from 'react-router-dom';
+// import { z } from "zod";
 
- const CourseType = () => {
 
-    const [duration, setDuration] = useState("");
-    const maxLength = 30;
+import { useCourseManagementInfo } from "@/hooks/useCourseManagementInfo";
+import SaveButton from "@/Components/admindashboard/course-management/courses/SaveButton";
+import { ScrollRestoration } from "react-router-dom";
 
-    const handleChange = (e) => {
-        const value = e.target.value;
-        if (value.length <= maxLength) {
-        setDuration(value);
-    }
-};
+import LiveSessionMentoringCourseType from "./course-management/LiveSessionMentoringCourseType";
+import OnDemandSessionCourseType from "./course-management/OnDemandSessionCourseType";
+
+
+
+const CourseType = () => {
+  
+  const { setSubTab, subTab, setActiveTab } = useCourseManagementInfo();
+  const handleSubTabClick = (subTabIndex) => {
+    setSubTab(subTabIndex);
+  };
+
 
   return (
     <>
-        <div>
-            {/* <h2 className="text-[24px] mt-5 font-[500] text-[#344054] mb-2">Course Type</h2> */}
+      <ScrollRestoration />
 
-            {/* Live Session + Mentoring */}
-            <div className="grid grid-cols-12 gap-10 mb-4 md:mb-0 border border-gray-300 rounded  mt-5 p-10">
-                <div className='col-span-5'>
-                    <h3 className="text-[20px] font-[500] text-[#344054] lg:text-[24px]">
-                        Live session + Mentoring 
-                    </h3>
-                    <p>Add Course Original Price, Discounted Price, Cohort, and Duration</p>
-                </div>
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="mb-2 mt-5 text-[24px] font-[500] text-[#344054]">
+          Course Type
+        </h2>
 
-                <div className="col-span-7 space-y-4">
-                    {/* Course Original Price and Discounted Price */}
-                    <div className="flex space-x-4">
-                        {/* Course Original Price */}
-                        <div className="flex-1">
-                            <p className="font-[500]">Course Original Price</p>
-                            <input 
-                            type="text" 
-                            placeholder="£2,200" 
-                            className="border border-gray-300 rounded p-2 w-full"
-                            />
-                        </div>
+        <SaveButton onClick={() => setActiveTab((prev) => prev + 1)}>
+          Save and Continue
+        </SaveButton>
+      </div>
 
-                        {/* Discounted Price */}
-                        <div className="flex-1">
-                            <p className="font-[500]">Discounted Price</p>
-                            <input 
-                            type="text" 
-                            placeholder="£4,200" 
-                            className="border border-gray-300 rounded p-2 w-full"
-                            />
-                        </div>
+      <div className="mb-4 flex w-max gap-4 border-b border-[#98A2B3]">
+        <button
+          className={`border-b-2 px-4 py-2 font-[600] ${subTab === 1 ? "border-b-2 border-[#CC1747] text-[#CC1747]" : "border-b-transparent text-[#344054]"} `}
+          onClick={() => handleSubTabClick(1)}
+        >
+          Live session + Mentoring
+        </button>
 
-                    </div>
+        <button
+          className={`border-b-2 px-4 py-2 font-[600] ${subTab === 2 ? "border-b-primary-color-600 text-primary-color-600" : "border-b-transparent text-[#344054]"} `}
+          onClick={() => handleSubTabClick(2)}
+        >
+          On-Demand Session
+        </button>
 
-                    {/* Duration and Time */}
-                    <div className="flex space-x-4">
-                    {/* Duration (Monday-Friday) */}
-                    <div className="flex-1 ">
-                        <p className="font-[500]">Duration</p>
-                        <input 
-                            type="text" 
-                            placeholder="Monday-Friday" 
-                            value={duration}
-                            onChange={handleChange}
-                            maxLength={maxLength}
-                            className="border border-gray-300 rounded p-2 w-full"
-                        />
-                        <p className="flex justify-end text-[#667185] font-[500]  mb-1 mr-2">
-                            {`${duration.length}/${maxLength}`}
-                        </p>
-                    </div>
+      </div>
 
-                    {/* Time (7:00pm default) */}
-                    <div className="flex-1">
-                        <p className="font-[500]">Time</p>
-                        <input 
-                        type="time" 
-                        defaultValue="19:00" 
-                        className="border border-gray-300 rounded p-2 w-full"
-                        />
-                    </div>
-                    </div>
+        {subTab === 1 && <LiveSessionMentoringCourseType />}
 
-                    <div className="pt-9">
-                        <p className="font-[600] text-gray-600">Select Cohort</p>
-                        <AdminCohort/>
-                    </div>
-                </div>
-            </div>
+        {subTab === 2 && <OnDemandSessionCourseType />}
 
-            {/* On-Demand Session */}
-            <div className="grid grid-cols-12 gap-10 mb-4 md:mb-0 border border-gray-300 rounded  mt-5 p-10">
-                <div className='col-span-5'>
-                    <h3 className="text-[20px] font-[500] text-[#344054] lg:text-[24px]">
-                        On-Demand Session
-                    </h3>
-                    <p>Add Multiple Durations and Prices</p>
-                </div>
-
-                <div className="col-span-7 space-y-4">
-                    {/* Course Original Price and Discounted Price */}
-                    <div className="flex items-end space-x-4">
-                        {/* Course Original Price */}
-                        <div className="flex-1">
-                            <p className="font-[600] text-gray-600">Duration</p>
-                            <AdminDuration/>
-                        </div>
-
-
-                        <div className="flex-1">
-                            <p className="font-[500]">Price</p>
-                            <input 
-                            type="text" 
-                            placeholder="£39,200" 
-                            className="border border-gray-300 rounded p-2 w-full"
-                            />
-                        </div>
-
-                        {/* Discounted Price */}
-                        <div className="flex-1">
-                            <DashButton className="rounded px-4 py-2 text-white">
-                                Add
-                            </DashButton>
-                        </div>
-
-                    </div>
-
-                </div>
-            </div>
-
-            <div className="flex justify-end items-center pt-10">
-                  <DashButton className="rounded px-4 py-2 text-white">
-                    Save & Continue
-                  </DashButton>
-              </div>
-
-        </div>
     </>
-  )
-}
+  );
+};
 
 export default CourseType;

@@ -15,7 +15,6 @@ import {
 import { DarkLogo } from "@/Components/Logo";
 import Cookies from "js-cookie";
 import { GrHomeRounded } from "react-icons/gr";
-import { useNavigation } from "react-router-dom";
 
 // import { Sidebar, SidebarItem } from "./SideNav";
 const navItem = [
@@ -36,7 +35,7 @@ const navItem = [
     icon: <CourseIcon />,
     active: false,
     alert: "alert",
-    path: "/admin/notification",
+    path: "/admin/course-work-area",
   },
   {
     id: 3,

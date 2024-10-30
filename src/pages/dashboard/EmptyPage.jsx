@@ -1,15 +1,16 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import DashButton from "../auth/ButtonDash";
 import DashSelect from "../auth/components/DashSelect";
-import NoCoursesMessage from "../auth/components/NoCourses";
+import NoCoursesMessage from "../auth/components/NoLiveCourses";
 import Modal from "../auth/components/Modal";
 import BorderCard from "@/Components/BorderCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ModalContent from "../lms-pages/ReminderModalContent";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Filter } from "@/Components/dashboard/Filter";
-import Cookies from "js-cookie";
-import { useProfile } from "@/services/queries";
+import NoDemandCourses from "../auth/components/NoDemandCourses";
+// import Cookies from "js-cookie";
+// import { useProfile } from "@/services/queries";
 
 // import ReminderModal from '../auth/components/ReminderModal';
 
@@ -66,6 +67,7 @@ const EmptyPage = () => {
         </div>
 
         <div>
+          {}
           <NoCoursesMessage />
         </div>
       </div>
@@ -89,7 +91,7 @@ const EmptyPage = () => {
         </div>
 
         <div>
-          <NoCoursesMessage />
+          <NoDemandCourses />
         </div>
       </div>
 

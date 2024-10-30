@@ -74,6 +74,7 @@ const EditProfile = () => {
     if (formData.avatar) {
       formDataToSend.append("avatar", formData.avatar);
     }
+    console.log(formData);
 
     const token = Cookies.get("token");
 

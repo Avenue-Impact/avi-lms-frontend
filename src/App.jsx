@@ -67,9 +67,33 @@ import FinancialAidRequest from "./pages/admin-pages/financial-aid/FinancialAidR
 
 import ViewDetails from "./Components/admindashboard/financial-aid/ViewDetails";
 
-
 import CourseInfomation from "./pages/admin-pages/course-management/CourseInfomation";
 
+import TeamLayout from "./layouts/admin/TeamLayout";
+import GroupLayout from "./layouts/admin/GroupLayout";
+import StudentManagementTable from "./pages/admin-pages/project-area/StudentManagementTable";
+
+import AdminCertificateLayout from "./layouts/admin/AdminCertificateLayout";
+import CertificateMainPage from "./pages/admin-pages/certificate/CertificateMainPage";
+import CertificateIssueHistory from "./pages/admin-pages/certificate/CertificateIssueHistory";
+import AffiliateLayout from "./layouts/admin/AffiliateLayout";
+import ReferralsAdmin from "./pages/admin-pages/affiliate/ReferralsAdmin";
+import WithdrawalRequest from "./pages/admin-pages/affiliate/WithdrawalRequest";
+
+import AccountManagLayout from "./layouts/admin/AccountManagLayout";
+import AccountMagament from "./pages/admin-pages/account-managemnet/AccountMagament";
+
+import DataManagementPage from "./pages/admin-pages/data-management/DataManagementPage";
+import DashboardAnalytics from "./pages/admin-pages/data-management/DashboardAnalytics";
+import DataCourseManagement from "./pages/admin-pages/data-management/DataCourseManagement";
+import AllStudent from "./pages/admin-pages/data-management/AllStudent";
+import EmptyCourseArea from "./pages/admin-pages/course-work-area/EmptyCourseArea";
+import CourseWorkAreaLayout from "./layouts/admin/CourseWorkAreaLayout";
+import CourseWorkArea from "./pages/admin-pages/course-work-area/CourseWorkArea";
+import CourseWorkAreaDocument from "./pages/admin-pages/course-work-area/CourseWorkAreaDocument";
+import CourseWorkAssignment from "./pages/admin-pages/course-work-area/CourseWorkAssignment";
+import CourseWorkShareDocs from "./pages/admin-pages/course-work-area/CourseWorkShareDocs";
+import CourseCohortPreview from "./pages/admin-pages/course-management/CourseCohortPreview";
 
 const queryClient = new QueryClient();
 
@@ -276,6 +300,38 @@ function App() {
               path: "/admin/dashboard",
               element: <AdminEmpty />,
             },
+
+            // Project Area
+            {
+              element: <ProjectAreaLayout />,
+              path: "project-area",
+              children: [
+                {
+                  index: true,
+                  element: <ProjectArea />,
+                },
+                {
+                  path: ":id/general",
+                  element: <General />,
+                  children: [
+                    {
+                      index: true,
+                      element: <CourseProjectArea />,
+                    },
+                    {
+                      path: "course-tool",
+                      element: <CourseTools />,
+                    },
+                  ],
+                },
+                {
+                  path: ":id/group",
+                  element: <Groups />,
+                },
+              ],
+            },
+
+            // Course Management
             {
               element: <CoursesLayout />,
               path: "course/management",
@@ -307,31 +363,62 @@ function App() {
                 },
               ],
             },
+
+            // Account Management
+            {
+              element: <AccountManagLayout />,
+              path: "account-management",
+
+              children: [
+                {
+                  index: true,
+                  element: <AccountMagament />,
+                },
+              ],
+            },
+
+            // Fianancial Aid
             {
               path: "financial-aid",
               element: <FinancialLayout />,
-                children: [
-                  {
-                    index: true,
-                    element: <CreateCoupon/>
-                  },
-                  {
-                    path: "aid-request",
-                    element: <FinancialAidRequest/>
-                  },
-                  ],
+
+              children: [
+                {
+                  index: true,
+                  element: <CreateCoupon />,
+                },
+                {
+                  path: "aid-request",
+                  element: <FinancialAidRequest />,
+                },
+              ],
             },
 
             {
               path: "view-details",
-              element: <ViewDetails/>
+              element: <ViewDetails />,
             },
-            
+
             {
               path: "/admin/payment",
-              element: <AdminPayment/>
+              element: <AdminPayment />,
             },
-          
+
+            {
+              element: <AffiliateLayout />,
+              path: "affiliate",
+              children: [
+                {
+                  index: true,
+                  element: <ReferralsAdmin />,
+                },
+                {
+                  path: "withdrawal-request",
+                  element: <WithdrawalRequest />,
+                },
+              ],
+            },
+
             {
               element: <ProjectAreaLayout />,
               path: "project-area",
@@ -356,7 +443,90 @@ function App() {
                 },
                 {
                   path: ":id/group",
-                  element: <Groups />,
+                  element: <GroupLayout />,
+                  children: [
+                    {
+                      index: true,
+                      element: <Groups />,
+                    },
+                    {
+                      path: ":team",
+                      element: <TeamLayout />,
+                      children: [
+                        {
+                          index: true,
+                          path: "course-project-area",
+                          element: <CourseProjectArea />,
+                        },
+                        {
+                          path: "course-tools",
+                          element: <CourseTools />,
+                        },
+                        {
+                          path: "student-management",
+                          element: <StudentManagementTable />,
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              path: "course-work-area",
+              element: <CourseWorkAreaLayout />,
+              children: [
+                {
+                  index: true,
+                  element: <CourseWorkArea />,
+                },
+                {
+                  path: "documents",
+                  element: <CourseWorkAreaDocument />,
+                  children: [
+                    {
+                      index: true,
+                      element: <CourseWorkShareDocs />,
+                    },
+                    {
+                      path: "assignment",
+                      element: <CourseWorkAssignment />,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              path: "data-management",
+              element: <DataManagementPage />,
+              children: [
+                {
+                  index: true,
+                  element: <DashboardAnalytics />,
+                },
+                {
+                  path: "course-management",
+                  element: <DataCourseManagement />,
+                },
+                {
+                  path: "all-student",
+                  element: <AllStudent />,
+                },
+              ],
+            },
+
+            // Certificate
+            {
+              element: <AdminCertificateLayout />,
+              path: "certificate",
+              children: [
+                {
+                  index: true,
+                  element: <CertificateMainPage />,
+                },
+                {
+                  path: "certificate-issue",
+                  element: <CertificateIssueHistory />,
                 },
               ],
             },

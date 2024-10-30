@@ -22,13 +22,12 @@ function Groups() {
   const navigate = useNavigate();
 
   const [modal, setModal] = useState(false);
-  const [success, setSuccess] = useState(true);
-  const [multipleModal, setMultipleModal] = useState(true);
+  const [success, setSuccess] = useState(false);
+  const [multipleModal, setMultipleModal] = useState(false);
 
   return (
     <>
       <section>
-        <ProjectAreaNav title={" Groups"} />
         <div className="my-12 flex items-center gap-3">
           <button
             className="flex items-center gap-4"

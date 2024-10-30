@@ -25,7 +25,7 @@ const Cohort = [
   },
 ];
 
-function ProjectCohortSelection({ setModal, setModalTab }) {
+function ProjectCohortSelection({ setModal, onClick }) {
   return (
     <section>
       <div className="flex items-start gap-2">
@@ -65,7 +65,7 @@ function ProjectCohortSelection({ setModal, setModalTab }) {
       </div>
       <CommonButton
         className="ml-auto mt-6 block w-28 bg-primary-color-600"
-        onClick={() => setModalTab("project-tools")}
+        onClick={onClick}
       >
         {" "}
         Next

@@ -1,3 +1,3 @@
 export const AdminEmpty = () => {
-  return <div>AdminEmpty</div>;
+  return <div>admin empty</div>;
 };

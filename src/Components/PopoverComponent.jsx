@@ -6,10 +6,7 @@ function PopoverComponent({ className, trigger, children }) {
     <Popover>
       <PopoverTrigger>{trigger}</PopoverTrigger>
       <PopoverContent
-        className={cn(
-          "mr-10 w-[259px] rounded-sm bg-white shadow-lg",
-          className,
-        )}
+        className={cn("w-[259px] rounded-sm bg-white shadow-lg", className)}
       >
         {children}
       </PopoverContent>

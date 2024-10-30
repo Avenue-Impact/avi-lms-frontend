@@ -1,0 +1,72 @@
+export const referralData = [
+    {
+        id: "1",
+        name: 'Emery Torff’s',
+        email: 'Emerytorffs@gmail.com',
+        referralName: 'James Nissan',
+        referralEmail: 'Jamesnissan@gmail.com',
+        referralDate: '09/12/2024',
+        referralCourse: 'Project Consultant Training Program',
+        courseType: 'Live Session',
+        amount: 406.01,
+        date: 'April, 12 2024',
+        time: '12:30pm',
+        affiliateCommission: '20.00'
+    },
+    {
+        id: "2",
+        name: 'Adekunle Hammed',
+        email: 'Adekunlehammed@gmail.com',
+        referralName: 'James Nissan',
+        referralEmail: 'Jamesnissan@gmail.com',
+        referralDate: '09/12/2024',
+        referralCourse: 'Project Consultant Training Program',
+        courseType: 'Live Session',
+        amount: 256.98,
+        date: 'April, 12 2024',
+        time: '12:30pm',
+        affiliateCommission: '20.00'
+    },
+    {
+        id: "3",
+        name: 'David Bella',
+        email: 'Davidbella@gmail.com',
+        referralName: 'James Nissan',
+        referralEmail: 'Jamesnissan@gmail.com',
+        referralDate: '09/12/2024',
+        referralCourse: 'Project Consultant Training Program',
+        courseType: 'Live Session',
+        amount: 346,
+        date: 'April, 12 2024',
+        time: '12:30pm',
+        affiliateCommission: '20.00'
+    },
+    {
+        id: "4",
+        name: 'Charles Okorocha',
+        email: 'Charlesokorocha@gmail.com',
+        referralName: 'James Nissan',
+        referralEmail: 'Jamesnissan@gmail.com',
+        referralDate: '09/12/2024',
+        referralCourse: 'Project Consultant Training Program',
+        courseType: 'Live Session',
+        amount: 246,
+        date: 'April, 12 2024',
+        time: '12:30pm',
+        affiliateCommission: '20.00'
+    },
+    {
+        id: "5",
+        name: 'Test Run',
+        email: 'Testrun@gmail.com',
+        referralName: 'James Nissan',
+        referralEmail: 'Jamesnissan@gmail.com',
+        referralDate: '09/12/2024',
+        referralCourse: 'Project Consultant Training Program',
+        courseType: 'Live Session',
+        amount: 250.00,
+        date: 'April, 12 2024',
+        time: '12:30pm',
+        affiliateCommission: '20.00'
+    }
+]
