@@ -62,7 +62,6 @@ const OnDemandSessionCourseType = () => {
     const courseType = {
       on_demand_session: [...durationPrice],
     };
-    console.log(courseType);
 
     createCourseType(courseType, {
       onSuccess: () => {
@@ -93,8 +92,6 @@ const OnDemandSessionCourseType = () => {
 
   return (
     <>
-      <ScrollRestoration />
-
       <div className="mb-4 flex items-center justify-between">
         <h2 className="mb-2 mt-5 text-[24px] font-[500] text-[#344054]">
           Course Type
@@ -172,7 +169,7 @@ const OnDemandSessionCourseType = () => {
                       key={index}
                       className="flex items-center justify-between border-b py-2"
                     >
-                      <span className="text-red-600">{`${item.duration} - ${formatCurrency(item.amount)}`}</span>
+                      <span className="text-red-600">{`${item.duration} - £ ${formatCurrency(item.amount)}`}</span>
                       <CommonButton
                         className="h-8 rounded bg-white text-red-600 hover:bg-white"
                         type="button"

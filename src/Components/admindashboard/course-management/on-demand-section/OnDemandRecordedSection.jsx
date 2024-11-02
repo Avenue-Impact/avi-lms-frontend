@@ -55,8 +55,6 @@ const OnDemandRecordedSection = () => {
   if (isLoading) return <p>loading....</p>;
 
   if (error || !data) {
-    console.log(error);
-
     return (
       <p>
         {error?.response?.data?.message ||

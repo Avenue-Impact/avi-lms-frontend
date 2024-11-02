@@ -28,7 +28,6 @@ export const useMoveRecordedSectionUp = () => {
       queryClient.invalidateQueries("get-single-cohort");
     },
     onError: (error) => {
-      console.log(error);
       toast.error(error.response.data.message);
     },
   });

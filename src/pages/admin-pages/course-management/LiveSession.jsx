@@ -13,6 +13,7 @@ import { liveSessionSchema } from "@/lib/form-schemas/forms-schema";
 import LiveSessionContent from "@/Components/admindashboard/course-management/live-session/liveSessionContent";
 import { useCourseManagementInfo } from "@/hooks/useCourseManagementInfo";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 const LiveSession = () => {
   const { createLiveSession, isCreating } = useCreateLiveSession();
@@ -36,11 +37,15 @@ const LiveSession = () => {
   const onSubmit = async (data) => {
     createLiveSession(data, {
       onSuccess: () => {
-        form.reset()
+        form.reset();
         setDisabledButton(true);
-    } });
+      },
+    });
   };
 
+  const { data } = useQuery({
+    queryKey: ["get-single-cohort"],
+  });
   return (
     <div>
       <div className="mb-4 mt-5 rounded border border-gray-300 p-10 md:mb-0">
@@ -61,6 +66,7 @@ const LiveSession = () => {
                   label={"Session Title"}
                   labelClass={"mb-2 font-[500] text-[#475367] block text-base"}
                   className="h-[56px] w-full resize-none rounded border border-gray-300 p-2 outline-none"
+                  disabled={!data?.data?.data.cohort}
                 />
 
                 <p className="text-right text-gray-500">
@@ -80,6 +86,7 @@ const LiveSession = () => {
                   label={"Session Subtitle"}
                   labelClass={"mb-2 font-[500] text-[#475367] block text-base"}
                   className="h-[56px] w-full resize-none rounded border border-gray-300 p-2 outline-none"
+                  disabled={!data?.data?.data.cohort}
                 />
                 <p className="text-right text-gray-500">
                   {form.watch("subtitle")
@@ -101,6 +108,7 @@ const LiveSession = () => {
                   labelClass={"mb-2 font-[500] text-[#475367] block text-base"}
                   textarea={true}
                   className="h-[203px] w-full resize-none rounded border border-gray-300 p-2"
+                  disabled={!data?.data?.data.cohort}
                 />
                 <p className="text-right text-gray-500">
                   {form.watch("overview")
@@ -121,6 +129,7 @@ const LiveSession = () => {
                   label={"Course Content"}
                   labelClass={"mb-2 font-[500] text-[#475367] block text-base"}
                   className="h-[56px] w-full resize-none rounded border border-gray-300 p-2 outline-none"
+                  disabled={!data?.data?.data.cohort}
                 />
               </div>
 
@@ -138,6 +147,7 @@ const LiveSession = () => {
                     }
                     id="startedFrom"
                     placeholder="19:00"
+                    disabled={!data?.data?.data.cohort}
                   />
                 </div>
               </div>
@@ -157,6 +167,7 @@ const LiveSession = () => {
                     }
                     id="meetingDate"
                     placeholder="19:00"
+                    disabled={!data?.data?.data.cohort}
                   />
                 </div>
 
@@ -171,6 +182,7 @@ const LiveSession = () => {
                     labelClass={"text-base font-medium"}
                     id="time"
                     defaultValue="19:00"
+                    disabled={!data?.data?.data.cohort}
                   />
                 </div>
               </div>
@@ -179,7 +191,9 @@ const LiveSession = () => {
                 <CommonButton
                   type="submit"
                   className="bg-primary-color-600"
-                  disabled={isCreating || disabledButton}
+                  disabled={
+                    !data?.data?.data.cohort || isCreating || disabledButton
+                  }
                 >
                   {isCreating ? (
                     <span className="min-w-[89.3px]">
@@ -197,10 +211,10 @@ const LiveSession = () => {
         </div>
       </div>
 
-      <div className="flex items-center  my-5 justify-end gap-6">
+      <div className="my-5 flex items-center justify-end gap-6">
         <CommonButton
           onClick={() => setActiveTab((prev) => prev - 1)}
-          className="ml-auto text-white bg-gray-500 hover:bg-gray-700"
+          className="ml-auto bg-gray-500 text-white hover:bg-gray-700"
         >
           Back
         </CommonButton>

@@ -2,12 +2,25 @@ import CourseInfo from "@/Components/admindashboard/course-management/publish-pa
 import CourseType from "@/Components/admindashboard/course-management/publish-page/CourseType";
 // import PublishCourseSection from "@/Components/admindashboard/course-management/publish-page/PublishCourseSection";
 import { CommonButton } from "@/Components/ui/button";
+import { usePublishCourse } from "@/hooks/course-management/use-publish-course";
 import { useCourseManagementInfo } from "@/hooks/useCourseManagementInfo";
 
 import { ScrollRestoration } from "react-router-dom";
 
 function PublishPage() {
   const { setActiveTab } = useCourseManagementInfo();
+  const { publish, isPublishing } = usePublishCourse();
+  const handlePublish = () => {
+    publish(
+      {},
+      {
+        onSuccess: () => {
+          // Publishing successful
+          setActiveTab(1);
+        },
+      },
+    );
+  };
 
   return (
     <>
@@ -29,7 +42,7 @@ function PublishPage() {
           {/* <PublishCourseSection /> */}
         </div>
 
-        <div className="flex items-center justify-between gap-6 my-6">
+        <div className="my-6 flex items-center justify-between gap-6">
           <CommonButton
             onClick={() => setActiveTab((prev) => prev - 1)}
             className="ml-auto bg-gray-500 text-white hover:bg-gray-700"
@@ -37,7 +50,11 @@ function PublishPage() {
             Back
           </CommonButton>
 
-          <CommonButton className=" block w-full max-w-[182px] bg-primary-color-600">
+          <CommonButton
+            className="block w-full max-w-[182px] bg-primary-color-600"
+            onClick={handlePublish}
+            disabled={isPublishing}
+          >
             Publish
           </CommonButton>
         </div>

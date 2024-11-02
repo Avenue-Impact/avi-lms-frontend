@@ -24,7 +24,6 @@ export const useDeleteRecordedSection = () => {
   const { mutate: deleteRecordedSection, isPending: isDeleting } = useMutation({
     mutationFn: deleteRecordedSectionApi,
     onSuccess: (data) => {
-      console.log(data);
       toast.success(data.data.message);
       queryClient.invalidateQueries("get-demand-course");
     },

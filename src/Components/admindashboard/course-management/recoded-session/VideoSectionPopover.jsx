@@ -19,6 +19,9 @@ import EditRecordedVideoForm from "./EditRecordedVideoForm";
 
 function VideoSectionPopover({ children, className, id, section, record }) {
   const [direction, setDirection] = useState("");
+  const [editModal, setEditModal] = useState(false);
+  const [openPopover, setOpenPopover] = useState(false);
+
   const { moveVideo, isMovingVideo } = useMoveRecordedVideo();
   const { deleteVideo, isDeleting } = useDeleteRecordedVideo();
 
@@ -32,10 +35,13 @@ function VideoSectionPopover({ children, className, id, section, record }) {
 
     setDirection("up");
 
-    moveVideo({
-      data,
-      section: sect,
-    });
+    moveVideo(
+      {
+        data,
+        section: sect,
+      },
+      { onSuccess: () => setOpenPopover((prev) => !prev) },
+    );
   };
 
   const handleMoveDown = (id, sect) => {
@@ -47,10 +53,13 @@ function VideoSectionPopover({ children, className, id, section, record }) {
       direction: "backward",
     };
 
-    moveVideo({
-      data,
-      section: sect,
-    });
+    moveVideo(
+      {
+        data,
+        section: sect,
+      },
+      { onSuccess: () => setOpenPopover((prev) => !prev) },
+    );
   };
   const handleMoveTop = (id, sect) => {
     console.log("move up", id, sect);
@@ -61,10 +70,13 @@ function VideoSectionPopover({ children, className, id, section, record }) {
       direction: "toFront",
     };
 
-    moveVideo({
-      data,
-      section: sect,
-    });
+    moveVideo(
+      {
+        data,
+        section: sect,
+      },
+      { onSuccess: () => setOpenPopover((prev) => !prev) },
+    );
   };
 
   const handleMoveBottom = (id, sect) => {
@@ -75,26 +87,44 @@ function VideoSectionPopover({ children, className, id, section, record }) {
       direction: "toBack",
     };
 
-    moveVideo({
-      data,
-      section: sect,
-    });
+    moveVideo(
+      {
+        data,
+        section: sect,
+      },
+      { onSuccess: () => setOpenPopover((prev) => !prev) },
+    );
   };
 
   const handleDelete = (sect, id) => {
-    deleteVideo({ section: sect, id });
+    deleteVideo(
+      { section: sect, id },
+      { onSuccess: () => setOpenPopover((prev) => !prev) },
+    );
   };
 
   return (
-    <Popover className={cn(className)}>
+    <Popover
+      className={cn(className)}
+      open={openPopover}
+      onOpenChange={setOpenPopover}
+    >
       <PopoverTrigger>{children}</PopoverTrigger>
       <PopoverContent className="mr-10 w-[259px] rounded-sm bg-white shadow-lg">
         <div className="px-3 py-[14px]">
           <EditModal
-            form={<EditRecordedVideoForm section={section} record={record} />}
+            open={editModal}
+            setOpen={setEditModal}
+            form={
+              <EditRecordedVideoForm
+                section={section}
+                record={record}
+                setModal={setEditModal}
+              />
+            }
             header="Edit Recorded Video"
           >
-            <span className="flex w-full items-center gap-1 py-3 text-left text-[#667185]">
+            <span className="flex w-full items-center gap-1 py-3 text-left text-[#667185] hover:bg-accent">
               <span className="text-sm">
                 <HiOutlinePencil />
               </span>
@@ -102,7 +132,7 @@ function VideoSectionPopover({ children, className, id, section, record }) {
             </span>
           </EditModal>
           <button
-            className="flex items-center gap-1 py-3 text-[#667185]"
+            className="flex w-full items-center gap-1 py-3 text-[#667185] hover:bg-accent"
             onClick={() => handleMoveTop(id, section)}
           >
             <span className="text-2xl">
@@ -117,7 +147,7 @@ function VideoSectionPopover({ children, className, id, section, record }) {
             )}
           </button>
           <button
-            className="flex items-center gap-1 py-3 text-[#667185]"
+            className="flex w-full items-center gap-1 py-3 text-[#667185] hover:bg-accent"
             onClick={() => handleMoveUp(id, section)}
           >
             <span className="text-xl">
@@ -130,7 +160,7 @@ function VideoSectionPopover({ children, className, id, section, record }) {
             )}
           </button>
           <button
-            className="flex items-center gap-1 py-3 text-[#667185]"
+            className="flex w-full items-center gap-1 py-3 text-[#667185] hover:bg-accent"
             onClick={() => handleMoveBottom(id, section)}
           >
             <span className="text-xl">
@@ -143,7 +173,7 @@ function VideoSectionPopover({ children, className, id, section, record }) {
             )}
           </button>
           <button
-            className="flex items-center gap-1 py-3 text-[#667185]"
+            className="flex w-full items-center gap-1 py-3 text-[#667185] hover:bg-accent"
             onClick={() => handleMoveDown(id, section)}
           >
             <span className="text-xl">
@@ -156,13 +186,19 @@ function VideoSectionPopover({ children, className, id, section, record }) {
             )}
           </button>
           <button
-            className="flex items-center gap-1 py-3 text-[#667185]"
+            className="flex w-full items-center gap-1 py-3 text-[#667185] hover:bg-accent"
             onClick={() => handleDelete(section, id)}
           >
-            <span className="text-xl">
-              <TrashCan />
-            </span>
-            <span className="text-sm">Delete</span>
+            {isDeleting ? (
+              "loading..."
+            ) : (
+              <>
+                <span className="text-xl">
+                  <TrashCan />
+                </span>
+                <span className="text-sm">Delete</span>
+              </>
+            )}
           </button>
         </div>
       </PopoverContent>

@@ -74,8 +74,6 @@ const AdminLogin = () => {
     try {
       const response = await axios.post(`${url}/login`, user);
 
-      console.log(response);
-
       if (response.data.status === "success") {
         dispatch({
           type: "auth/login",
@@ -91,7 +89,6 @@ const AdminLogin = () => {
         });
 
         const decoded = jwtDecode(response.data.data.token);
-        console.log("decoded", decoded);
 
         navigate("/admin/dashboard");
         toast.success("login successful");
@@ -154,6 +151,7 @@ const AdminLogin = () => {
                 <CommonButton
                   className="mt-8 w-full bg-primary-color-600 font-poppins text-[16px] font-[500] capitalize text-white hover:bg-primary-color-600"
                   type="submit"
+                  disabled={isSubmitting}
                 >
                   {isSubmitting ? (
                     <ClipLoader size={20} color={"#fff"} />
@@ -164,20 +162,18 @@ const AdminLogin = () => {
               </form>
             </Form>
           </BorderCard>
-            <p className="mt-6 flex items-center justify-center gap-4 text-center">
-              <span className="text-sm text-[#514A4A]">
-                Already have an account?
-              </span>
-              
-              <Link
-                to={"/signup"}
-                className="text-sm font-semibold capitalize text-primary-color-600"
-              >
-                sign up
-              </Link>
-            </p>
+          <p className="mt-6 flex items-center justify-center gap-4 text-center">
+            <span className="text-sm text-[#514A4A]">
+              Already have an account?
+            </span>
 
-          
+            <Link
+              to={"/signup"}
+              className="text-sm font-semibold capitalize text-primary-color-600"
+            >
+              sign up
+            </Link>
+          </p>
         </div>
       </div>
 

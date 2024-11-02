@@ -8,12 +8,21 @@ import {
   DialogTrigger,
 } from "@/Components/ui/dialog";
 
-const EditModal = ({ children, form, header = "Edit on-demand section" }) => {
+const EditModal = ({
+  children,
+  form,
+  header = "Edit on-demand section",
+  open,
+  setOpen,
+}) => {
   return (
     <div>
-      <Dialog>
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <CommonButton variant="ghost" className="w-full padding-0 text-left pl-1">
+          <CommonButton
+            variant="ghost"
+            className="padding-0 w-full pl-1 text-left hover:bg-transparent"
+          >
             {children}
           </CommonButton>
         </DialogTrigger>

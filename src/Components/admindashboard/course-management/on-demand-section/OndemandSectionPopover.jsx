@@ -22,66 +22,96 @@ import EditModal from "./EditModal";
 import EditOnDemandSectionForm from "./EditOnDemandSectionForm";
 import { Video } from "lucide-react";
 import AddVideoForm from "./AddVideoForm";
+import { useState } from "react";
 
 function OndemandSectionPopover({ children, className, section, course }) {
+  const [addVideoModal, setAddVideoModal] = useState(false);
+  const [editVideoModal, setEditVideoModal] = useState(false);
+  const [openPopover, setOpenPopover] = useState(false);
+
   const { moveUP, isMovingUP } = useMoveSectionUP();
+
   const { moveDown, isMovingDown } = useMoveSectionDown();
   const { moveToTop, isMovingToTop } = useMoveSectionToTop();
+
   const { moveToBottom, isMovingToBottom } = useMoveSectionToBotton();
   const { deleteSection, isDeleting } = useDeleteOndemandSection();
 
   const handleMoveUp = (sect) => {
-    console.log("move up", sect);
-
     const data = {
       section: sect,
       direction: "forward",
     };
-    moveUP(data);
+    moveUP(data, {
+      onSuccess: () => {
+        setOpenPopover(false);
+      },
+    });
   };
 
   const handleMoveDown = (sect) => {
-    console.log("move up", sect);
-
     const data = {
       section: sect,
       direction: "backward",
     };
-    moveDown(data);
+    moveDown(data, {
+      onSuccess: () => {
+        setOpenPopover(false);
+      },
+    });
   };
   const handleMoveTop = (sect) => {
-    console.log("move up", sect);
-
     const data = {
       section: sect,
       direction: "toFront",
     };
-    moveToTop(data);
+    moveToTop(data, {
+      onSuccess: () => {
+        setOpenPopover(false);
+      },
+    });
   };
 
   const handleMoveBottom = (sect) => {
-    console.log("move up", sect);
-
     const data = {
       section: sect,
       direction: "toBack",
     };
-    moveToBottom(data);
+    moveToBottom(data, {
+      onSuccess: () => {
+        setOpenPopover(false);
+      },
+    });
   };
 
   const handleDelete = (sect) => {
     console.log("delete", sect);
-    deleteSection(sect);
+    deleteSection(sect, {
+      onSuccess: () => {
+        setOpenPopover(false);
+      },
+    });
   };
 
   return (
-    <Popover className={cn(className)}>
+    <Popover
+      className={cn(className)}
+      open={openPopover}
+      onOpenChange={setOpenPopover}
+    >
       <PopoverTrigger>{children}</PopoverTrigger>
       <PopoverContent className="mr-10 w-[259px] rounded-sm bg-white shadow-lg">
         <div className="px-3 py-[14px]">
           <EditModal
+            open={addVideoModal}
+            setOpen={setAddVideoModal}
             header="Add video"
-            form={<AddVideoForm sectionToAddVideo={course} />}
+            form={
+              <AddVideoForm
+                sectionToAddVideo={course}
+                setModal={setAddVideoModal}
+              />
+            }
           >
             <span className="flex w-full items-center gap-1 py-3 text-[#667185] hover:bg-accent disabled:cursor-not-allowed">
               <span className="text-lg">
@@ -93,8 +123,17 @@ function OndemandSectionPopover({ children, className, section, course }) {
             </span>
           </EditModal>
 
-          <EditModal form={<EditOnDemandSectionForm sectionToEdit={course} />}>
-            <span className="flex w-full items-center gap-3 py-3 text-left text-[#667185]">
+          <EditModal
+            open={editVideoModal}
+            setOpen={setEditVideoModal}
+            form={
+              <EditOnDemandSectionForm
+                sectionToEdit={course}
+                setModal={setEditVideoModal}
+              />
+            }
+          >
+            <span className="flex w-full items-center gap-3 py-3 text-left text-[#667185] hover:bg-accent">
               <span className="text-sm">
                 <HiOutlinePencil />
               </span>

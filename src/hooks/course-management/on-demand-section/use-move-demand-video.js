@@ -1,5 +1,5 @@
 import { BASE_URL } from "@/constant";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
@@ -8,13 +8,10 @@ const moveVideo = async ({ data, section }) => {
   const courseId = localStorage.getItem('courseId')
   const token = Cookies.get('adminToken')
 
-  console.log({
-    data,
-    section
-  })
+
   const url = `${BASE_URL}/courses/${courseId}/on-demand/sections/${section}/move-video`
 
-  // https://avi-lms-backend.onrender.com/api/v1/admins/courses/:courseId/on-demand/sections/:section/move-video
+
   return await axios.put(
     url,
     data,
@@ -32,7 +29,6 @@ export const useMoveDown = () => {
   const { mutate: moveDown, status: moveDownStatus } = useMutation({
     mutationFn: moveVideo,
     onSuccess: (data) => {
-      console.log(data);
       toast.success(data.data.message)
 
       queryClient.invalidateQueries("get-demand-course")
@@ -50,7 +46,6 @@ export const useMoveUP = () => {
   const { mutate: moveUP, status } = useMutation({
     mutationFn: moveVideo,
     onSuccess: (data) => {
-      console.log(data);
       toast.success(data.data.message)
 
       queryClient.invalidateQueries("get-demand-course")
@@ -63,13 +58,14 @@ export const useMoveUP = () => {
 }
 
 
+
 export const useMoveTop = () => {
+
   const queryClient = useQueryClient()
 
   const { mutate: moveTop, status: moveTopStatus } = useMutation({
     mutationFn: moveVideo,
     onSuccess: (data) => {
-      console.log(data);
       toast.success(data.data.message)
 
       queryClient.invalidateQueries("get-demand-course")
@@ -88,7 +84,6 @@ export const useMoveBottom = () => {
   const { mutate: moveToBottom, status: moveBottomStatus } = useMutation({
     mutationFn: moveVideo,
     onSuccess: (data) => {
-      console.log(data);
       toast.success(data.data.message)
 
       queryClient.invalidateQueries("get-demand-course")

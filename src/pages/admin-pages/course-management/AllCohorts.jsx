@@ -26,7 +26,6 @@ const AllCohorts = ({ setCohortId }) => {
                 setActive(cohortItem.id);
                 setCohortId(cohortItem.id);
                 localStorage.setItem("cohorts", cohortItem.cohort);
-                console.log(cohortItem.cohort, cohortItem.id);
               }}
               key={cohortItem.id}
               className={cn(

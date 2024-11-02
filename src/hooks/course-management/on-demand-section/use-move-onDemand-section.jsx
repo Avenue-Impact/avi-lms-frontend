@@ -8,9 +8,6 @@ const moveSection = async (data) => {
   const courseId = localStorage.getItem("courseId");
   const token = Cookies.get("adminToken");
 
-  console.log({
-    data,
-  });
   const url = `${BASE_URL}/courses/${courseId}/on-demand/move-section`;
 
   return await axios.put(url, data, {
@@ -25,7 +22,6 @@ export const useMoveSectionUP = () => {
   const { mutate: moveUP, isPending: isMovingUP } = useMutation({
     mutationFn: moveSection,
     onSuccess: (data) => {
-      console.log(data);
       toast.success(data.data.message);
 
       queryClient.invalidateQueries("get-demand-course");
@@ -44,7 +40,6 @@ export const useMoveSectionDown = () => {
   const { mutate: moveDown, isPending: isMovingDown } = useMutation({
     mutationFn: moveSection,
     onSuccess: (data) => {
-      console.log(data);
       toast.success(data.data.message);
 
       queryClient.invalidateQueries("get-demand-course");
@@ -61,7 +56,6 @@ export const useMoveSectionToTop = () => {
   const { mutate: moveToTop, isPending: isMovingToTop } = useMutation({
     mutationFn: moveSection,
     onSuccess: (data) => {
-      console.log(data);
       toast.success(data.data.message);
 
       queryClient.invalidateQueries("get-demand-course");
@@ -78,7 +72,6 @@ export const useMoveSectionToBotton = () => {
   const { mutate: moveToBottom, isPending: isMovingToBottom } = useMutation({
     mutationFn: moveSection,
     onSuccess: (data) => {
-      console.log(data);
       toast.success(data.data.message);
 
       queryClient.invalidateQueries("get-demand-course");

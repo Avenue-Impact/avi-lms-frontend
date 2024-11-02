@@ -8,7 +8,7 @@ import SocialMediaLinks, {
 } from "../Components/SocialMediaLink";
 import { WhiteLogo } from "../Components/Logo";
 import { PreviewVideoNav } from "../Components/avi/AviNav";
-import { ScrollRestoration } from "react-router-dom";
+import { ScrollRestoration, useParams } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import Container from "@/Components/Container";
 import DashButton from "./auth/ButtonDash";
@@ -16,10 +16,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useEnrollNow } from "@/hooks/students/use-fetch-all-courses";
 // import DiscoverCourses from "../pages/dashboard/DashboardDiscover";
 
 const PreviewVideoCourse = () => {
   const navigate = useNavigate();
+
+  let { courseId } = useParams();
+
+  const { createEnrollNow, isLoading } = useEnrollNow(courseId);
+  console.log("createEnrollNow", createEnrollNow);
+  console.log("isLoading", isLoading);
+
 
   const [selectedOption, setSelectedOption] = useState("");
 
@@ -114,16 +122,18 @@ const PreviewVideoCourse = () => {
                 </div>
 
                 <div className="grid w-full grid-cols-12 gap-3 py-4">
-
-                  <Link className="col-span-10 mt-4 text-center rounded  transition duration-300  bg-[#CC1747] text-white hover:bg-[#B3123F] " to={"/dashboard/Dashboard_Discover"}>
-                        <DashButton  className=" text-white bg-transparent hover:bg-transparent" >
-                          Make Payment
-                        </DashButton>
-                    </Link>
-
+                  <Link
+                    className="col-span-10 mt-4 rounded bg-[#CC1747] text-center text-white transition duration-300 hover:bg-[#B3123F]"
+                    to={"/dashboard/Dashboard_Discover"}
+                  >
+                    <DashButton className="bg-transparent text-white hover:bg-transparent">
+                      Make Payment
+                    </DashButton>
+                  </Link>
 
                   <div className="col-span-2 pt-4">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full border-[1px]"
+                    <div
+                      className="flex h-10 w-10 items-center justify-center rounded-full border-[1px]"
                       style={{ borderColor: "#CC1747" }}
                     >
                       <FontAwesomeIcon
@@ -133,14 +143,13 @@ const PreviewVideoCourse = () => {
                       />
                     </div>
                   </div>
-
                 </div>
               </div>
 
               <div className="mb-4 flex h-full items-center justify-center text-justify md:mb-0 lg:flex-col">
-                  <div className="h-[1px] w-full bg-gray-300 lg:h-full lg:w-[1px]"></div>
-                  <div className="text-gray-300">OR</div>
-                  <div className="h-[1px] w-full bg-gray-300 lg:h-full lg:w-[1px]"></div>
+                <div className="h-[1px] w-full bg-gray-300 lg:h-full lg:w-[1px]"></div>
+                <div className="text-gray-300">OR</div>
+                <div className="h-[1px] w-full bg-gray-300 lg:h-full lg:w-[1px]"></div>
               </div>
 
               <div className="col-span-5 mb-4 md:mb-0">
@@ -199,7 +208,7 @@ const PreviewVideoCourse = () => {
                   </label>
                 </div>
 
-                <div className=" space-y-2">
+                <div className="space-y-2">
                   <p className="font-semibold">Enter a promo code</p>
                   <div className="flex">
                     <input
@@ -213,17 +222,12 @@ const PreviewVideoCourse = () => {
                   </div>
                 </div>
 
-                <div className="w-full mt-6">
-
-                <Link to={"/dashboard/Dashboard_Discover"}>
-                  
-                  <DashButton className="w-full text-white">
-                    Make Payment
-                  </DashButton>
-
-                  
+                <div className="mt-6 w-full">
+                  <Link to={"/dashboard/Dashboard_Discover"}>
+                    <DashButton className="w-full text-white">
+                      Make Payment
+                    </DashButton>
                   </Link>
-
                 </div>
               </div>
             </div>

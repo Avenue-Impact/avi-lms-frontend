@@ -19,7 +19,7 @@ export function ClosedSidnav({ children }) {
   // fixed left-0 top-0 z-10
 
   return (
-    <aside className="hidden lg:fixed lg:block left-0 top-0 h-screen w-min">
+    <aside className="left-0 top-0 hidden h-screen w-min lg:fixed lg:block">
       <nav className="flex h-full w-full flex-col border-r bg-white shadow-sm">
         <div className="mb-3 flex items-center justify-center pt-6 lg:ml-4 lg:justify-start">
           <img src={mobileLogo} alt="" className="w-8" />
@@ -30,10 +30,7 @@ export function ClosedSidnav({ children }) {
         </SidebarContext.Provider>
         <div>
           <ul className="flex-1 px-2 md:px-3">
-            <li
-              className={"dashboard"}
-              onClick={() => console.log(location.pathname)}
-            >
+            <li className={"dashboard"}>
               <NavLink
                 to={"student-settings"}
                 className={cn(
@@ -53,10 +50,7 @@ export function ClosedSidnav({ children }) {
                 </span> */}
               </NavLink>
             </li>
-            <li
-              className={"dashboard"}
-              onClick={() => console.log(location.pathname)}
-            >
+            <li className={"dashboard"}>
               <NavLink
                 to={"referral"}
                 className={cn(
@@ -108,7 +102,7 @@ export function SidebarItem({ icon, text, alert, path, onClick, active }) {
   const location = useLocation();
 
   return (
-    <li className={"dashboard"} onClick={() => console.log(location.pathname)}>
+    <li className={"dashboard"}>
       <NavLink
         to={path}
         className={cn(

@@ -1,14 +1,17 @@
 import { useRef, useState } from "react";
 import UploadCourseManagement from "./UploadCourseManagement";
 import { useCourseManagementInfo } from "@/hooks/useCourseManagementInfo";
-import SaveButton from "@/Components/admindashboard/course-management/courses/SaveButton";
+
 import { ScrollRestoration } from "react-router-dom";
 import { Form } from "@/Components/ui/form";
 
 import FormInput from "@/Components/ui/form-input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCreateCourseInformation, useEditCourseInformation } from "@/hooks/course-management/use-create-course-information";
+import {
+  useCreateCourseInformation,
+  useEditCourseInformation,
+} from "@/hooks/course-management/use-create-course-information";
 import toast from "react-hot-toast";
 
 import { ClipLoader } from "react-spinners";
@@ -19,14 +22,19 @@ import { courseInformationSchema } from "@/lib/form-schemas/forms-schema";
 const CourseManagementPage = () => {
   const [image, setImage] = useState({ file: null, preview: null });
   const [video, setVideo] = useState({ file: null, preview: null });
+
   const { createCourseInformation, isCreating } = useCreateCourseInformation();
   const { editCourseInformation, isEditing } = useEditCourseInformation();
+
+  const imageRef = useRef(null);
+  const btnRef = useRef(null);
+
   const { setActiveTab } = useCourseManagementInfo();
-  const courseId = localStorage.getItem("id");
   const courseInformation = localStorage.getItem("course-information")
     ? JSON.parse(localStorage.getItem("course-information"))
     : {};
-  console.log(courseInformation);
+  const courseId =
+    localStorage.getItem("course-information") && courseInformation.id;
 
   const dataToEdit = localStorage.getItem("course-information") && {
     courseTitle: courseInformation.title,
@@ -38,16 +46,12 @@ const CourseManagementPage = () => {
     url: "",
   };
 
-  console.log("DaTA", dataToEdit);
-
   const isEdit = Boolean(courseId);
 
   const [message, setMessage] = useState({
     error: "",
     success: "",
   });
-
-  const imageRef = useRef(null);
 
   const form = useForm({
     resolver: zodResolver(courseInformationSchema),
@@ -75,21 +79,6 @@ const CourseManagementPage = () => {
       url,
     } = data;
 
-    if (!image.file) {
-      toast.error("Please insert an image");
-
-      return setMessage((prev) => {
-        return {
-          ...prev,
-          error: "Please insert image",
-          success: "",
-        };
-      });
-    }
-
-    if (!video.file && form.watch("url").length < 1)
-      return toast.error("Please insert an taster video or video url");
-
     const courses = {
       title: courseTitle,
       tools_and_technologies: technologies.split("\n"),
@@ -107,10 +96,14 @@ const CourseManagementPage = () => {
         ...courses,
         taster_video: video.file,
       };
-    } else {
+    } else if (url) {
       courseToUpload = {
         ...courses,
         upload_from_url: url,
+      };
+    } else {
+      courseToUpload = {
+        ...courses,
       };
     }
 
@@ -173,6 +166,7 @@ const CourseManagementPage = () => {
       onSuccess: () => setActiveTab((prev) => prev + 1),
     });
   };
+
   return (
     <>
       <ScrollRestoration />
@@ -182,9 +176,14 @@ const CourseManagementPage = () => {
           Course Information
         </h2>
 
-        <SaveButton onClick={() => setActiveTab((prev) => prev + 1)}>
+        <CommonButton
+          variant={"outline"}
+          className="font-normal text-[#667185]"
+          ref={btnRef}
+          onClick={() => console.log("btnRef.current")}
+        >
           Save and Continue
-        </SaveButton>
+        </CommonButton>
       </div>
       <Form {...form}>
         <form
@@ -348,6 +347,7 @@ const CourseManagementPage = () => {
               <CommonButton
                 className="min-w-32 rounded bg-primary-color-600"
                 disabled={isCreating || isEditing}
+                ref={btnRef}
               >
                 {isCreating || isEditing ? (
                   <ClipLoader size={20} color={"#fff"} />
@@ -376,7 +376,6 @@ const CourseManagementPage = () => {
       </Form>
     </>
   );
-
 };
 
 export default CourseManagementPage;

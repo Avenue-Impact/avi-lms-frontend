@@ -11,9 +11,9 @@ import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
-const AddRecordedVideoForm = ({ sectionToAddVideo }) => {
+const AddRecordedVideoForm = ({ sectionToAddVideo, setVideoModal }) => {
   const cohort = localStorage.getItem("cohorts");
-  const { title, overview, section } = sectionToAddVideo;
+  const { title, overview } = sectionToAddVideo;
 
   const [video, setVideo] = useState({ file: null, preview: null });
   const [errorMessage, setErrorMessage] = useState("");
@@ -77,6 +77,7 @@ const AddRecordedVideoForm = ({ sectionToAddVideo }) => {
 
     createRecordedSession(recorded, {
       onSuccess: () => {
+        setVideoModal((prev) => !prev);
         form.reset();
         setVideo((prev) => {
           return { ...prev, file: null, preview: null };

@@ -74,7 +74,6 @@ const SignUp = () => {
   const url = import.meta.env.VITE_AUTH_URL;
 
   const handleSubmit = async (values) => {
-    console.log(values);
     const { firstName, lastName, password, email, username } = values;
 
     const users = {
@@ -88,16 +87,11 @@ const SignUp = () => {
     try {
       const response = await axios.post(`${url}/signup`, users);
 
-      console.log(response.data.status);
-
       if (response.data.status === "success") {
-        console.log(response.data);
         setSuccess("success");
 
         setUser(response.data.newUser);
         setConfirm(true);
-
-        console.log(user);
       }
     } catch (error) {
       if (!error) return toast.error("network fail");

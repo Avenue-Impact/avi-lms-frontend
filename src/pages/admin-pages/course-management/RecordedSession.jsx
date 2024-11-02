@@ -15,6 +15,7 @@ import { useCreateRecordedSession } from "@/hooks/course-management/recorded-sec
 import { ClipLoader } from "react-spinners";
 import CoursesRecordedLiveSession from "@/Components/admindashboard/course-management/recoded-session/CoursesRecordedLiveSession";
 import { useCourseManagementInfo } from "@/hooks/useCourseManagementInfo";
+import { useQuery } from "@tanstack/react-query";
 
 function RecordedSession() {
   const [video, setVideo] = useState({ file: null, preview: null });
@@ -22,7 +23,12 @@ function RecordedSession() {
   const videoRef = useRef();
   const [disabled, setDisabled] = useState(true);
 
-  const { createRecordedSession, isCreating, form } = useCreateRecordedSession();
+  const { data } = useQuery({
+    queryKey: ["get-single-cohort"],
+  });
+
+  const { createRecordedSession, isCreating, form } =
+    useCreateRecordedSession();
   const { setActiveTab } = useCourseManagementInfo();
 
   const handleVideoUpload = (e) => {
@@ -116,6 +122,7 @@ function RecordedSession() {
                   label="Section Title"
                   control={form.control}
                   placeholder="Business Analysis Agile Project Management Software Testing "
+                  disabled={!data?.data?.data.cohort}
                 />
                 <p className="mb-1 mt-2 text-right text-sm text-[#667185]">
                   {form.watch("title") ? `${form.watch("title").length}` : 0}
@@ -131,6 +138,7 @@ function RecordedSession() {
                   control={form.control}
                   placeholder="Enter text here "
                   textarea={true}
+                  disabled={!data?.data?.data.cohort}
                 />
                 <p className="mb-1 mt-2 text-right text-sm text-[#667185]">
                   {form.watch("overview")
@@ -147,6 +155,7 @@ function RecordedSession() {
                   label="Video Title"
                   control={form.control}
                   placeholder="Enter Video Title"
+                  disabled={!data?.data?.data.cohort}
                 />
                 <p className="mb-1 mt-2 text-right text-sm text-[#667185]">
                   {form.watch("video_title")
@@ -186,11 +195,15 @@ function RecordedSession() {
                   <input
                     type="file"
                     name=""
+                    accept="video/*"
                     id=""
                     hidden
                     ref={videoRef}
                     onChange={handleVideoUpload}
-                    disabled={form.watch("video_from_url").length >= 1}
+                    disabled={
+                      !data?.data?.data.cohort ||
+                      form.watch("video_from_url").length >= 1
+                    }
                   />
                 </div>
                 {errorMessage && (
@@ -216,7 +229,9 @@ function RecordedSession() {
                   label="Video from URL"
                   control={form.control}
                   placeholder="Input file URL "
-                  disabled={video.file ? true : false}
+                  disabled={
+                    !data?.data?.data.cohort || video.file ? true : false
+                  }
                 />
               </div>
 
@@ -235,7 +250,7 @@ function RecordedSession() {
                   <CommonButton
                     className="ml-6 bg-primary-color-600"
                     type="submit"
-                    disabled={isCreating}
+                    disabled={!data?.data?.data.cohort || isCreating}
                   >
                     {isCreating ? (
                       <span className="min-w-[89.3px]">

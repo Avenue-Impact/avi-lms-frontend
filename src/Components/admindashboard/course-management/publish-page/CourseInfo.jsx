@@ -58,10 +58,6 @@ import { ClipLoader } from "react-spinners";
 //   applied: [],
 // };
 
-const str = "hello";
-
-console.log(str.split("e"));
-
 const CourseInfo = ({ editButton = false }) => {
   const { data, isLoading, isError, error } = useQuery({
     queryFn: fetchCourseInformation,

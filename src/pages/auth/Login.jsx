@@ -88,7 +88,6 @@ const Login = () => {
         });
 
         const decoded = jwtDecode(response.data.data.token);
-        console.log("decoded", decoded);
 
         navigate("/dashboard");
         toast.success("login successful");

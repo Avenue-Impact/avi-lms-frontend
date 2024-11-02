@@ -14,7 +14,6 @@ export async function fetchUserProfile() {
         'Authorization': `Bearer ${token}`
       }
     })
-    console.log(response);
 
     return response
   } catch (error) {
@@ -63,7 +62,7 @@ export const addCourseInformation = async (data) => {
 export const editCourseInformationApi = async (data) => {
   // https://avi-lms-backend.onrender.com/api/v1/admins/courses/:courseId/course-informations
   const token = Cookies.get('adminToken')
-  const courseId = localStorage.getItem('id')
+  const courseId = localStorage.getItem('courseId')
 
   return await axios.patch(
     `${BASE_URL}/courses/${courseId}/course-informations`,

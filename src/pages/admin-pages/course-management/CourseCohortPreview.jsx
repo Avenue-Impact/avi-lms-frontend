@@ -31,7 +31,6 @@ const CourseCohortPreview = ({ setSection }) => {
 
   const handleNext = () => {
     if (!cohortId) return;
-    console.log(cohortId);
 
     setSection("live or recorded");
     localStorage.setItem("section", "live or recorded");

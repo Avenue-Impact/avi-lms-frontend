@@ -43,7 +43,6 @@ const Assignment = () => {
 
   const handleClick = () => {
     inputRef.current.click();
-    console.log("clicked");
   };
 
   return (

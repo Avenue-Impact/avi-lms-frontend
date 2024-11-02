@@ -24,7 +24,6 @@ export const useDeleteOndemandSection = () => {
   const { mutate: deleteSection, isPending: isDeleting } = useMutation({
     mutationFn: mutateSection,
     onSuccess: (data) => {
-      console.log(data);
       toast.success(data.data.message);
       queryClient.invalidateQueries("get-demand-course");
     },

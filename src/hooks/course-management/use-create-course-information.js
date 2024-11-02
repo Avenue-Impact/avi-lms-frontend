@@ -8,8 +8,7 @@ export const useCreateCourseInformation = () => {
       mutationFn: addCourseInformation,
       onSuccess: ({ data }) => {
         toast.success(data.message);
-        localStorage.setItem("id", data.data.id);
-        console.log(data);
+        localStorage.setItem("courseId", data.data.id);
 
         localStorage.setItem("course-information", JSON.stringify(data.data));
       },
@@ -25,7 +24,6 @@ export const useEditCourseInformation = () => {
     mutationFn: editCourseInformationApi,
     onSuccess: ({ data }) => {
       toast.success(data.message);
-      console.log(data);
 
       localStorage.setItem("course-information", JSON.stringify(data.data));
     },
@@ -35,3 +33,5 @@ export const useEditCourseInformation = () => {
 
   return { editCourseInformation, isEditing };
 };
+
+

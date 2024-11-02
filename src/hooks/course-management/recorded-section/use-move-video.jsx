@@ -22,7 +22,6 @@ export const useMoveRecordedVideo = () => {
   const { mutate: moveVideo, isPending: isMovingVideo } = useMutation({
     mutationFn: moveRecordedVideo,
     onSuccess: (data) => {
-      console.log(data);
       toast.success(data.data.message);
       queryClient.invalidateQueries("get-single-cohort");
     },

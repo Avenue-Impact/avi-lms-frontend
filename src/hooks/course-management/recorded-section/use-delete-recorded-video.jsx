@@ -23,7 +23,6 @@ export const useDeleteRecordedVideo = () => {
   const { mutate: deleteVideo, isPending: isDeleting } = useMutation({
     mutationFn: deleteRecordedVideo,
     onSuccess: (data) => {
-      console.log(data);
       toast.success(data.data.message);
       queryClient.invalidateQueries("get-demand-course");
     },

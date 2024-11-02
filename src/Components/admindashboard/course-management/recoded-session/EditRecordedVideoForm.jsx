@@ -10,7 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
-const EditRecordedVideoForm = ({ section, record }) => {
+const EditRecordedVideoForm = ({ section, record, setModal }) => {
   const [video, setVideo] = useState({ file: null, preview: null });
   const [errorMessage, setErrorMessage] = useState("");
   console.log(section, record);
@@ -74,6 +74,7 @@ const EditRecordedVideoForm = ({ section, record }) => {
           setVideo((prev) => {
             return { ...prev, file: null, preview: null };
           });
+          setModal((prev) => !prev);
         },
       },
     );

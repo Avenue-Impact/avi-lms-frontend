@@ -10,7 +10,7 @@ import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
-const AddVideoForm = ({ sectionToAddVideo }) => {
+const AddVideoForm = ({ sectionToAddVideo, setModal }) => {
   const { title, overview, section } = sectionToAddVideo;
   const cohort = localStorage.getItem("cohorts");
 
@@ -80,6 +80,7 @@ const AddVideoForm = ({ sectionToAddVideo }) => {
         setVideo((prev) => {
           return { ...prev, file: null, preview: null };
         });
+        setModal(false);
       },
     });
   };

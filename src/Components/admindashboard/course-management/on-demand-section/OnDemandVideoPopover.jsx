@@ -21,82 +21,133 @@ import {
 import { useDeleteOndemandVideo } from "@/hooks/course-management/on-demand-section/use-mutate-ondemand-video";
 import EditModal from "./EditModal";
 import EditOndemandVideoForm from "./EditOndemandVideoForm";
+import { useState } from "react";
 
 function OnDemandVideoPopover({ children, className, id, section, video }) {
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [openPopver, setOpenPopover] = useState(false);
+
   const { moveUP, status } = useMoveUP();
   const { moveDown, moveDownStatus } = useMoveDown();
   const { moveTop, moveTopStatus } = useMoveTop();
   const { moveToBottom, moveBottomStatus } = useMoveBottom();
-  const { deleteVideo, deleteStatus } = useDeleteOndemandVideo();
-
-  console.log(video);
+  const { deleteVideo, isDeleting } = useDeleteOndemandVideo();
 
   const handleMoveUp = (id, sect) => {
-    console.log("move up", id, sect);
-
     const data = {
       videoId: id,
       direction: "forward",
     };
-    moveUP({
-      data,
-      section: sect,
-    });
+    moveUP(
+      {
+        data,
+        section: sect,
+      },
+      {
+        onSuccess: () => {
+          setOpenPopover(false);
+        },
+      },
+    );
   };
 
   const handleMoveDown = (id, sect) => {
-    console.log("move up", id, sect);
-
     const data = {
       videoId: id,
       direction: "backward",
     };
-    moveDown({
-      data,
-      section: sect,
-    });
+    moveDown(
+      {
+        data,
+        section: sect,
+      },
+      {
+        onSuccess: () => {
+          setOpenPopover(false);
+        },
+      },
+    );
   };
-  const handleMoveTop = (id, sect) => {
-    console.log("move up", id, sect);
+  /**
+   * Handles the action of moving an on-demand video to the top of the list.
+   *
+   * @param {string} id - The unique identifier of the video to be moved.
+   * @param {string} sect - The section where the video belongs.
+   *
+   * @returns {void}
+   */
 
+  // Perform the move operation using the provided id and section
+  // The moveTop function is assumed to be a custom hook or a function that interacts with the backend API
+  // The onSuccess callback is called after the move operation
+  const handleMoveTop = (id, sect) => {
     const data = {
       videoId: id,
       direction: "toFront",
     };
-    moveTop({
-      data,
-      section: sect,
-    });
+    moveTop(
+      {
+        data,
+        section: sect,
+      },
+      {
+        onSuccess: () => {
+          setOpenPopover(false);
+        },
+      },
+    );
   };
 
   const handleMoveBottom = (id, sect) => {
-    console.log("move up", id, sect);
-
     const data = {
       videoId: id,
       direction: "toBack",
     };
-    moveToBottom({
-      data,
-      section: sect,
-    });
+    moveToBottom(
+      {
+        data,
+        section: sect,
+      },
+      {
+        onSuccess: () => {
+          setOpenPopover(false);
+        },
+      },
+    );
   };
 
   const handleDelete = (sect, id) => {
-    deleteVideo({ section: sect, id });
+    deleteVideo(
+      { section: sect, id },
+      {
+        onSuccess: () => {
+          setOpenPopover(false);
+        },
+      },
+    );
   };
 
   return (
-    <Popover className={cn(className)}>
+    <Popover
+      className={cn(className)}
+      open={openPopver}
+      onOpenChange={setOpenPopover}
+    >
       <PopoverTrigger>{children}</PopoverTrigger>
       <PopoverContent className="mr-10 w-[259px] rounded-sm bg-white shadow-lg">
         <div className="px-3 py-[14px]">
           <EditModal
+            open={openEditModal}
+            setOpen={setOpenEditModal}
             form={
-              <EditOndemandVideoForm videoToEdit={video} section={section} />
+              <EditOndemandVideoForm
+                videoToEdit={video}
+                section={section}
+                setModal={setOpenEditModal}
+              />
             }
           >
-            <span className="flex w-full items-center gap-1 py-3 text-left text-[#667185]">
+            <span className="flex w-full items-center gap-1 py-3 text-left text-[#667185] hover:bg-accent">
               <span className="text-sm">
                 <HiOutlinePencil />
               </span>
@@ -104,7 +155,7 @@ function OnDemandVideoPopover({ children, className, id, section, video }) {
             </span>
           </EditModal>
           <button
-            className="flex items-center gap-1 py-3 text-[#667185]"
+            className="flex w-full items-center gap-1 py-3 text-[#667185] hover:bg-accent"
             onClick={() => handleMoveTop(id, section)}
           >
             <span className="text-2xl">
@@ -119,7 +170,7 @@ function OnDemandVideoPopover({ children, className, id, section, video }) {
             )}
           </button>
           <button
-            className="flex items-center gap-1 py-3 text-[#667185]"
+            className="flex w-full items-center gap-1 py-3 text-[#667185] hover:bg-accent"
             onClick={() => handleMoveUp(id, section)}
           >
             <span className="text-xl">
@@ -132,7 +183,7 @@ function OnDemandVideoPopover({ children, className, id, section, video }) {
             )}
           </button>
           <button
-            className="flex items-center gap-1 py-3 text-[#667185]"
+            className="flex w-full items-center gap-1 py-3 text-[#667185] hover:bg-accent"
             onClick={() => handleMoveBottom(id, section)}
           >
             <span className="text-xl">
@@ -145,7 +196,7 @@ function OnDemandVideoPopover({ children, className, id, section, video }) {
             )}
           </button>
           <button
-            className="flex items-center gap-1 py-3 text-[#667185]"
+            className="flex w-full items-center gap-1 py-3 text-[#667185] hover:bg-accent"
             onClick={() => handleMoveDown(id, section)}
           >
             <span className="text-xl">
@@ -158,7 +209,7 @@ function OnDemandVideoPopover({ children, className, id, section, video }) {
             )}
           </button>
           <button
-            className="flex items-center gap-1 py-3 text-[#667185]"
+            className="flex w-full items-center gap-1 py-3 text-[#667185] hover:bg-accent"
             onClick={() => handleDelete(section, id)}
           >
             <span className="text-xl">

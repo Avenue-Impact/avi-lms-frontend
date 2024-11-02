@@ -24,7 +24,6 @@ const ConfirmEmail = ({ setConfirm, setModal, setSuccess, user }) => {
         email: user.email,
         confirmCode: otp,
       });
-      console.log(verify);
 
       if (verify.data.status === "success") {
         toast.success(verify.data.status);
