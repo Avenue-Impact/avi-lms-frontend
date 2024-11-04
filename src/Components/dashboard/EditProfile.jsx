@@ -1,106 +1,28 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import Cookies from "js-cookie";
+import { useState } from "react";
 import { CommonButton } from "../ui/button";
-import FormInput from "../ui/form-input";
-import { Form } from "../ui/form";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+
 import Modal from "@/pages/auth/components/Modal";
 import BorderCard from "../BorderCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faClose, faPen } from "@fortawesome/free-solid-svg-icons";
-import { useAuth } from "@/hooks/useAuth";
-import { Skeleton } from "../ui/skeleton";
-import { useProfile } from "@/services/queries";
-import { ClipLoader } from "react-spinners";
+import { faCheck, faClose } from "@fortawesome/free-solid-svg-icons";
 
-// Validation schema
-const profileSchema = z.object({
-  firstname: z.string().min(1, "First name is required"),
-  lastname: z.string().min(1, "Last name is required"),
-  username: z.string().min(1, "Username is required"),
-  avatar: z.instanceof(File).optional(),
-});
+import EditProfileForm from "./EditProfileForm";
 
 const EditProfile = () => {
-  const { userDetails } = useAuth();
-
-  const { isLoading, data, refetch } = useProfile();
-
   // const { refetch } = useQuery(["userProfile"]);
 
   const [modal, setModal] = useState(false);
-  const [avatarPreview, setAvatarPreview] = useState(userDetails?.avatar || "");
 
-  const form = useForm({
-    resolver: zodResolver(profileSchema),
-    defaultValues: {
-      firstname: userDetails?.firstname,
-      lastname: userDetails?.lastname,
-      username: userDetails?.username,
-      email: userDetails?.email,
-      avatar: null,
-    },
-  });
-
-  useEffect(() => {
-    if (data) {
-      form.setValue("firstname", data?.data?.data.firstname);
-      form.setValue("lastname", data?.data?.data.lastname);
-      form.setValue("email", data?.data?.data.email);
-      form.setValue("username", data?.data?.data.username);
-    }
-  }, [data, form]);
+  // useEffect(() => {
+  //   if (data) {
+  //     form.setValue("firstname", data?.data?.data.firstname);
+  //     form.setValue("lastname", data?.data?.data.lastname);
+  //     form.setValue("email", data?.data?.data.email);
+  //     form.setValue("username", data?.data?.data.username);
+  //   }
+  // }, [data, form]);
 
   // Handle file change event
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setAvatarPreview(URL.createObjectURL(file));
-      form.setValue("avatar", file);
-    }
-  };
-
-  // Handle form submission
-  const handleSubmit = async (formData) => {
-    const formDataToSend = new FormData();
-    formDataToSend.append("firstname", formData.firstname);
-    formDataToSend.append("lastname", formData.lastname);
-    formDataToSend.append("username", formData.username);
-
-    if (formData.avatar) {
-      formDataToSend.append("avatar", formData.avatar);
-    }
-    console.log(formData);
-
-    const token = Cookies.get("token");
-
-    try {
-      const response = await axios.patch(
-        "https://avi-lms-backend.onrender.com/api/v1/users/me",
-        formDataToSend,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-
-      if (response.data.status === "success") {
-        refetch();
-        setModal(true); // Show success modal
-      }
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      // Handle error, maybe show a notification or modal
-    }
-  };
-
-  const { isSubmitting } = form.formState;
 
   return (
     <>
@@ -137,133 +59,7 @@ const EditProfile = () => {
           </BorderCard>
         </Modal>
       )}
-      <div className="mx-auto max-w-[716px]">
-        <div className="relative">
-          {isLoading ? (
-            <Skeleton className="mx-auto block h-14 w-14 rounded-full md:h-20 md:w-20" />
-          ) : (
-            <Avatar className="mx-auto block h-14 w-14 md:h-20 md:w-20">
-              <AvatarImage
-                src={avatarPreview || data?.data?.data.avatar}
-                className="m-auto block rounded-full"
-              />
-              <AvatarFallback className="mx-auto w-full rounded-full bg-primary-color-100 p-2 text-2xl text-primary-color-600 md:p-4">
-                {(userDetails.firstname &&
-                  `${userDetails.firstname.charAt(0).toUpperCase()}${userDetails.lastname.charAt(0).toUpperCase()}`) ||
-                  `${data?.data?.data.firstname.charAt(0).toUpperCase()}${data?.data?.data.lastname.charAt(0).toUpperCase()}`}
-              </AvatarFallback>
-            </Avatar>
-          )}
-          <input
-            type="file"
-            id="avatar"
-            name="avatar"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="hidden"
-          />
-          <label
-            htmlFor="avatar"
-            className="absolute -top-1 bottom-0 left-64 cursor-pointer rounded-full p-2 lg:left-[360px]"
-          >
-            <FontAwesomeIcon
-              icon={faPen}
-              className="text-xs text-primary-color-600"
-            />
-          </label>
-        </div>
-
-        {isLoading ? (
-          <div className="mt-4">
-            <div>
-              <Skeleton className="h-12 w-full max-w-[760px]" />
-            </div>
-            <div className="my-4 flex gap-2">
-              <Skeleton className="h-12 w-full max-w-[380px]" />
-              <Skeleton className="h-12 w-full max-w-[380px]" />
-            </div>
-            <div>
-              <Skeleton className="h-12 w-full max-w-[760px]" />
-            </div>
-          </div>
-        ) : (
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSubmit)}>
-              <div className="space-y-4">
-                <FormInput
-                  name="username"
-                  id="username"
-                  label="Username"
-                  placeholder=""
-                  type="text"
-                  control={form.control}
-                  value={userDetails.username || data?.data?.data.username}
-                />
-                <div className="grid gap-x-4 md:grid-cols-2">
-                  <FormInput
-                    name="firstname"
-                    id="firstname"
-                    label="First Name"
-                    placeholder=""
-                    type="text"
-                    control={form.control}
-                  />
-                  <FormInput
-                    name="lastname"
-                    id="lastname"
-                    label="Last Name"
-                    placeholder=""
-                    type="text"
-                    control={form.control}
-                    value={userDetails.lastname || data?.data?.data.lastname}
-                  />
-                </div>
-                {/* Disabled fields */}
-                <FormInput
-                  name="email"
-                  id="email"
-                  label="Email Address"
-                  placeholder=""
-                  type="email"
-                  control={form.control}
-                  disabled={true}
-                  value={userDetails.email || data?.data?.data.email}
-                />
-                {/* <div className="grid gap-x-4 md:grid-cols-2">
-                <PasswordInput
-                  id="password"
-                  label="Password"
-                  name="password"
-                  control={form.control}
-                  placeholder="Change Password"
-                  disabled
-                />
-                <PasswordInput
-                  id="confirmPassword"
-                  label="Confirm Password"
-                  name="confirmPassword"
-                  control={form.control}
-                  placeholder="Enter password"
-                  disabled
-                />
-              </div> */}
-              </div>
-
-              <CommonButton
-                type="submit"
-                className="mx-auto mt-6 block w-[55.865%] items-center bg-[#CC1747]"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? (
-                  <ClipLoader size={20} color={"#fff"} />
-                ) : (
-                  "Update Profile"
-                )}
-              </CommonButton>
-            </form>
-          </Form>
-        )}
-      </div>
+      <EditProfileForm setModal={setModal} />
     </>
   );
 };

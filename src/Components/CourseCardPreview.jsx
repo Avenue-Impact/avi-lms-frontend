@@ -4,13 +4,13 @@ import styles from "../pages/pages.module.css";
 
 const CourseCardPreview = ({
   imgSrc,
-  path="/PreviewVideoCourse",
+  path = "/PreviewVideoCourse",
   previewButtonText,
 }) => {
   return (
     <div className={`${styles.previewCourses1} `}>
       <div className={`${styles.courseImg} `}>
-        <img className="rounded-lg" src={imgSrc} alt="Course" />
+        <img className="w-full rounded-lg" src={imgSrc} alt="Course" />
       </div>
       <div className="pt-4 text-center">
         <Link to={path}>

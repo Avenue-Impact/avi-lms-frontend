@@ -5,15 +5,15 @@ import { FaRegBell } from "react-icons/fa";
 import { DarkLogo } from "../Logo";
 import { Link, useNavigate } from "react-router-dom";
 import PopUp from "./PopUp";
-import { useAuth } from "@/hooks/useAuth";
-import { useProfile } from "@/services/queries";
 import { Skeleton } from "../ui/skeleton";
+import { cn } from "@/lib/utils";
+import { useProfile } from "@/hooks/students/use-fetch-student-profile";
 
 function DashboardNav({ setToggleNav }) {
   const navigate = useNavigate();
 
   // const { dispatch } = useAuth();
-  const { userDetails } = useAuth();
+  // const { userDetails } = useAuth();
   const { isLoading, data } = useProfile();
 
   return (
@@ -55,32 +55,25 @@ function DashboardNav({ setToggleNav }) {
           </Link>
         </div>
         <div className="relative">
-          <div className="absolute right-0 top-0 z-10 h-2 w-2 rounded-full bg-[#008000] md:h-3 md:w-3"></div>
+          <div
+            className={cn(
+              "absolute right-0 top-0 z-10 h-2 w-2 rounded-full md:h-3 md:w-3",
+              !data?.data?.data.firstname ? "bg-gray-400" : "bg-[#008000]",
+            )}
+          ></div>
           <PopUp className="relative cursor-pointer">
-            <Avatar className="h-8 w-8 cursor-pointer md:h-10 md:w-10">
-              <AvatarImage
-                src={
-                  userDetails?.avatar
-                    ? userDetails.avatar
-                    : isLoading
-                      ? "" // Skeleton will be shown when isLoading is true
-                      : data?.data?.data.avatar || ""
-                }
-                alt="User Avatar"
-              />
-              {isLoading && <Skeleton className="h-12 w-12 rounded-full" />}
+            {isLoading ? (
+              <Skeleton className="h-12 w-12 rounded-full" />
+            ) : (
+              <Avatar className="h-8 w-8 cursor-pointer md:h-10 md:w-10">
+                <AvatarImage src={data?.data?.data.avatar} alt="User Avatar" />
+                {isLoading && <Skeleton className="h-12 w-12 rounded-full" />}
 
-              <AvatarFallback className="bg-primary-color-100 text-sm text-primary-color-600 md:text-lg">
-                {userDetails.firstname ? (
-                  `${userDetails.firstname.charAt(0).toUpperCase()}${userDetails.lastname.charAt(0).toUpperCase()}`
-                ) : isLoading ? (
-                  <Skeleton className="h-12 w-12 rounded-full" />
-                ) : (
-                  `${data?.data?.data.firstname.charAt(0).toUpperCase()}${data?.data?.data.lastname.charAt(0).toUpperCase()}`
-                )}
-              </AvatarFallback>
-            </Avatar>
-
+                <AvatarFallback className="bg-primary-color-100 text-sm text-primary-color-600 md:text-lg">
+                  {`${data?.data?.data.firstname.charAt(0).toUpperCase() ?? "A"}${data?.data?.data.lastname.charAt(0).toUpperCase() ?? "I"}`}
+                </AvatarFallback>
+              </Avatar>
+            )}
             {/* {dropdownOpen && <ProfilePopUp />} */}
           </PopUp>
         </div>

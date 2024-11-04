@@ -1,19 +1,15 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import DashButton from "../auth/ButtonDash";
 import DashSelect from "../auth/components/DashSelect";
 // import NoCoursesMessage from '../auth/components/NoCourses';
-import Modal from "../auth/components/Modal";
 import BorderCard from "@/Components/BorderCard";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar, faTimes } from "@fortawesome/free-solid-svg-icons";
-import ModalContent from "../lms-pages/ReminderModalContent";
-import joinTeam from "../../assets/images/join_team.png";
-import styles from "../pages.module.css";
 import { Filter } from "@/Components/dashboard/Filter";
 import DashboardDiscover from "@/Components/DashboardDiscover";
-import { useProfile } from "@/services/queries";
-import axios from "axios";
-import Cookies from "js-cookie";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import joinTeam from "../../assets/images/join_team.png";
+import Modal from "../auth/components/Modal";
+import ModalContent from "../lms-pages/ReminderModalContent";
 
 // import ReminderModal from '../auth/components/ReminderModal';
 

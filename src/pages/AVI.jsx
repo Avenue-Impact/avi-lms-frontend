@@ -1,24 +1,29 @@
-import React, { useState } from "react";
 // import MainContent from "../Components/MainContent/MainContent";
-import AVIbg from "../assets/images/live_coaching.png";
-import styles from "./pages.module.css";
-import CourseCard from "../Components/CourseCard";
-import joinTeam from "../assets/images/join_team.png";
-import teamDiscussion from "../assets/images/team_discussion.png";
+import { industriesItems, professionalItems } from "@/lib/professionalItems";
+import { ScrollRestoration } from "react-router-dom";
 import certificate from "../assets/images/certificate.png";
+import joinTeam from "../assets/images/join_team.png";
+import AVIbg from "../assets/images/live_coaching.png";
 import professionalBG from "../assets/images/proffessional.png";
+import teamDiscussion from "../assets/images/team_discussion.png";
+import ColorHero from "../Components/ColorHero";
+import CourseCard from "../Components/CourseCard";
 import ImageOverlay from "../Components/ImageOverlay";
 import { WhiteLogo } from "../Components/Logo";
 import ProfessionalList from "../Components/ProfessionalList";
 import SocialMediaLinks, {
   socialMediaData,
 } from "../Components/SocialMediaLink";
-import ColorHero from "../Components/ColorHero";
-import { ScrollRestoration } from "react-router-dom";
-import { industriesItems, professionalItems } from "@/lib/professionalItems";
+import styles from "./pages.module.css";
+import { useFetchAllCourses } from "@/hooks/students/use-fetch-all-courses";
+import CreatedCourseCard from "@/Components/admindashboard/course-management/CreatedCourseCard";
 // import img from "../assets/images/data-solution.jpg";
 
 const AVI = () => {
+  const { data, isLoading } = useFetchAllCourses();
+
+  console.log(data);
+
   return (
     <>
       <ScrollRestoration />
@@ -65,117 +70,21 @@ const AVI = () => {
 
             {/* Preview this Course */}
             <div className={`${styles.previewCoursesFlex} overflow-visible`}>
-              <CourseCard
-                imgSrc={joinTeam}
-                altText="joinTeam"
-                title={
-                  <>
-                    {" "}
-                    Project Consultant <br /> Training Programme (Bundle)
-                  </>
-                }
-                rating="4.3"
-                numRatings="45,345"
-                previewButtonText="Preview this course"
-              />
-
-              <CourseCard
-                imgSrc={joinTeam}
-                altText="joinTeam"
-                title={
-                  <>
-                    {" "}
-                    Project Consultant <br /> Training Programme (Bundle)
-                  </>
-                }
-                rating="4.3"
-                numRatings="45,345"
-                previewButtonText="Preview this course"
-              />
-
-              <CourseCard
-                imgSrc={joinTeam}
-                altText="joinTeam"
-                title={
-                  <>
-                    {" "}
-                    Project Consultant <br /> Training Programme (Bundle)
-                  </>
-                }
-                rating="4.3"
-                numRatings="45,345"
-                previewButtonText="Preview this course"
-              />
-
-              <CourseCard
-                imgSrc={joinTeam}
-                altText="joinTeam"
-                title={
-                  <>
-                    {" "}
-                    Project Consultant <br /> Training Programme (Bundle)
-                  </>
-                }
-                rating="4.3"
-                numRatings="45,345"
-                previewButtonText="Preview this course"
-              />
-
-              <CourseCard
-                imgSrc={joinTeam}
-                altText="joinTeam"
-                title={
-                  <>
-                    {" "}
-                    Project Consultant <br /> Training Programme (Bundle)
-                  </>
-                }
-                rating="4.3"
-                numRatings="45,345"
-                previewButtonText="Preview this course"
-              />
-
-              <CourseCard
-                imgSrc={joinTeam}
-                altText="joinTeam"
-                title={
-                  <>
-                    {" "}
-                    Project Consultant <br /> Training Programme (Bundle)
-                  </>
-                }
-                rating="4.3"
-                numRatings="45,345"
-                previewButtonText="Preview this course"
-              />
-
-              <CourseCard
-                imgSrc={joinTeam}
-                altText="joinTeam"
-                title={
-                  <>
-                    {" "}
-                    Project Consultant <br /> Training Programme (Bundle)
-                  </>
-                }
-                rating="4.3"
-                numRatings="45,345"
-                previewButtonText="Preview this course"
-              />
-
-              <CourseCard
-                imgSrc={joinTeam}
-                altText="joinTeam"
-                title={
-                  <>
-                    {" "}
-                    Project Consultant <br /> Training Programme (Bundle)
-                  </>
-                }
-                rating="4.3"
-                numRatings="45,345"
-                previewButtonText="Preview this course"
-              />
+              {isLoading ? (
+                <p>Loading...</p>
+              ) : (
+                data.data.data.courses.map((course) => (
+                  <CourseCard
+                    key={course.id}
+                    imgSrc={course.cover_image}
+                    altText="joinTeam"
+                    title={course.title}
+                    rating={course.average_rating ?? 0}
+                    review={course.total_reviews}
+                    path={`/preview-course/${course.id}`}
+                  />
+                ))
+              )}
             </div>
 
             {/* Enhance your team's skills */}
@@ -190,7 +99,8 @@ const AVI = () => {
 
               <div className={styles.team_skills_content}>
                 <h3 className="text-[24px] font-[300] capitalize leading-9 text-[#3A4C6C] lg:text-[40px]">
-                  Enhance your team's skills <br /> with Avenue Impact Academy.
+                  Enhance your team&apos;s skills <br /> with Avenue Impact
+                  Academy.
                 </h3>
                 <p className="py-7 text-justify">
                   {" "}

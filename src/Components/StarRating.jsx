@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Star } from "lucide-react";
 
-export default function Component({ initialRating = 0, onChange }) {
+export function Component({ initialRating = 0, onChange }) {
   const [rating, setRating] = useState(initialRating);
   const [hover, setHover] = useState(0);
 
@@ -48,12 +48,12 @@ export default function Component({ initialRating = 0, onChange }) {
 }
 
 // import React from "react"
-import StarRating from "./star-rating"
+import StarRating from "./star-rating";
 
-export  function StarRatingDemo() {
+export function StarRatingDemo() {
   return (
     <div className="space-y-4 p-4">
-      <h1 className="text-2xl font-bold mb-4">Star Rating Component</h1>
+      <h1 className="mb-4 text-2xl font-bold">Star Rating Component</h1>
       <div className="space-y-2">
         <div className="flex items-center space-x-2">
           <StarRating rating={0} />
@@ -73,9 +73,8 @@ export  function StarRatingDemo() {
         </div>
       </div>
     </div>
-  )
+  );
 }
-
 
 export default function Component({ rating, maxRating = 5 }) {
   const getColor = (index) => {
@@ -84,7 +83,7 @@ export default function Component({ rating, maxRating = 5 }) {
     if (threshold >= 1) return "text-yellow-400";
     if (threshold > 0) return "text-yellow-200";
     return "text-gray-300";
-  }
+  };
 
   const displayRating = rating != null ? rating.toFixed(1) : "N/A";
 
@@ -93,7 +92,7 @@ export default function Component({ rating, maxRating = 5 }) {
       {[...Array(maxRating)].map((_, index) => (
         <Star
           key={index}
-          className={`w-6 h-6 ${getColor(index)}`}
+          className={`h-6 w-6 ${getColor(index)}`}
           fill="currentColor"
         />
       ))}
@@ -101,5 +100,5 @@ export default function Component({ rating, maxRating = 5 }) {
         {displayRating} 
       </span> */}
     </div>
-  )
+  );
 }

@@ -5,21 +5,14 @@ import Cookies from "js-cookie";
 
 const url = import.meta.env.VITE_USER_URL;
 
-export async function fetchUserProfile() {
+export const fetchUserProfile = async () => {
   const token = Cookies.get('token')
 
-  try {
-    const response = await axios.get(url, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    })
-
-    return response
-  } catch (error) {
-    console.log(error);
-
-  }
+  return axios.get(url, {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  })
 
 }
 

@@ -16,23 +16,41 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { useEnrollNow } from "@/hooks/students/use-fetch-all-courses";
+import { usePreviewCourses } from "@/hooks/students/use-fetch-all-courses";
 // import DiscoverCourses from "../pages/dashboard/DashboardDiscover";
 
 const PreviewVideoCourse = () => {
   const navigate = useNavigate();
 
-  let { courseId } = useParams();
-
-  const { createEnrollNow, isLoading } = useEnrollNow(courseId);
+  // const { createEnrollNow, isLoading } = useEnrollNow(courseId);
   // console.log("createEnrollNow", createEnrollNow);
   // console.log("isLoading", isLoading);
 
+
+  let { courseId} = useParams();
+  const { previewCourse, isLoading } = usePreviewCourses(courseId);
+  console.log("previewCourse", previewCourse);
+  console.log("isLoading", isLoading);
+
+
+//   const { previewVideo, isLoadingVideo } = usePreviewVideo(videoId);
+//   console.log("previewVideo", previewVideo);
+// console.log("isLoadingVideo", isLoadingVideo);
+
+  
+  
+  
   const [selectedOption, setSelectedOption] = useState("");
 
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
   };
+
+  const original_price = previewCourse?.data?.data.course.live_class_price.original_price.amount
+  const discounted_price = previewCourse?.data?.data.course.live_class_price.discounted_price.amount
+  
+  const finalAmount =
+    original_price - (original_price * discounted_price) / 100;
 
   return (
     <>
@@ -48,10 +66,7 @@ const PreviewVideoCourse = () => {
             <div className="bg-[#23314A] lg:pb-10">
               <Container>
                 <div className="mb-4 flex items-center lg:hidden lg:pt-9">
-                  <button
-                    onClick={() => navigate("/avi")}
-                    className="text-white"
-                  >
+                  <button onClick={() => navigate(-1)} className="text-white">
                     <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
                   </button>
                 </div>
@@ -62,7 +77,7 @@ const PreviewVideoCourse = () => {
                   </p>
 
                   <video
-                    src={PreviewCourseVideo}
+                    src={previewCourse?.data?.data.course.preview_video}
                     controls
                     className="h-auto w-full shadow-lg lg:rounded-3xl"
                   ></video>
@@ -87,17 +102,36 @@ const PreviewVideoCourse = () => {
                 <div className="py-4">
                   <div className="flex items-center space-x-4">
                     <h3 className="text-[25px] font-[600] text-gray-800">
-                      Price £2,200
+                      {/* Price £2,200 */}
+                      {
+                        previewCourse?.data?.data.course.live_class_price
+                          .original_price.currency_symbol
+                      }
+
+                      {original_price}
                     </h3>
                     <p className="text-[20px] font-[400] line-through">
-                      £39,900
+                      {/* £39,900 */}
+                      {
+                        previewCourse?.data?.data.course.live_class_price
+                          .discounted_price.currency_symbol
+                      }
+
+                      {discounted_price}
                     </p>
                     <p className="font-[bold] text-[13.42px] text-gray-500">
-                      85% off
+                      {finalAmount}% off
                     </p>
                   </div>
+
                   <p className="mt-2 text-gray-600">
-                    Every Monday to Friday 7PM
+                    Every{" "}
+                    {previewCourse?.data?.data.course.live_class_price.duration.replace(
+                      /\b\w/g,
+                      (char) => char.toUpperCase(),
+                    )}{" "}
+                    {previewCourse?.data?.data.course.live_class_price.time}
+                    {/* 7PM */}
                   </p>
                 </div>
 
@@ -158,53 +192,28 @@ const PreviewVideoCourse = () => {
 
                 {/* Radio Button */}
                 <div className="space-y-1 py-6">
-                  <label className="flex items-center space-x-2 rounded border border-gray-300 px-4 py-3">
-                    <input
-                      type="radio"
-                      name="subscription"
-                      value="one-month"
-                      checked={selectedOption === "one-month"}
-                      onChange={handleOptionChange}
-                      className="form-radio text-primary-color-600"
-                    />
-                    <span>One Month Access - £100</span>
-                  </label>
-
-                  <label className="flex items-center space-x-2 rounded border border-gray-300 px-4 py-3">
-                    <input
-                      type="radio"
-                      name="subscription"
-                      value="three-months"
-                      checked={selectedOption === "three-months"}
-                      onChange={handleOptionChange}
-                      className="form-radio text-primary-color-600"
-                    />
-                    <span>3 Months Access - £200</span>
-                  </label>
-
-                  <label className="flex items-center space-x-2 rounded border border-gray-300 px-4 py-3">
-                    <input
-                      type="radio"
-                      name="subscription"
-                      value="six-months"
-                      checked={selectedOption === "six-months"}
-                      onChange={handleOptionChange}
-                      className="form-radio text-primary-color-600"
-                    />
-                    <span>6 Months Access - £400</span>
-                  </label>
-
-                  <label className="flex items-center space-x-2 rounded border border-gray-300 px-4 py-3">
-                    <input
-                      type="radio"
-                      name="subscription"
-                      value="annual"
-                      checked={selectedOption === "annual"}
-                      onChange={handleOptionChange}
-                      className="form-radio text-primary-color-600"
-                    />
-                    <span>Annual Year Subscription - £1600</span>
-                  </label>
+                  {previewCourse?.data?.data.course.pre_recorded_price.map(
+                    (item, index) => (
+                      <label
+                        key={index.id}
+                        className="flex items-center space-x-2 rounded border border-gray-300 px-4 py-3"
+                      >
+                        <input
+                          type="radio"
+                          name="subscription"
+                          value={item.duration}
+                          checked={selectedOption === `${item.duration}`}
+                          onChange={handleOptionChange}
+                          className="form-radio text-primary-color-600"
+                        />
+                        <span>
+                          {item.duration} - {item.currency_symbol}
+                          {item.amount}
+                        </span>
+                      </label>
+                    ),
+                  )}
+                 
                 </div>
 
                 <div className="space-y-2">
