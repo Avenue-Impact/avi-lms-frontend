@@ -16,6 +16,8 @@ const ModalContent = ({ setShowModal }) => {
     setSelectedDay((prevSelectedDay) => (prevSelectedDay === day ? '' : day));
   };
 
+
+
   
   const handleNextClick = () => {
     setShowAdditionalContent(true);
