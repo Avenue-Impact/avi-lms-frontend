@@ -25,13 +25,11 @@ const PreviewVideoCourse = () => {
   let { courseId } = useParams();
 
   const { createEnrollNow, isLoading } = useEnrollNow(courseId);
-  console.log("createEnrollNow", createEnrollNow);
-  console.log("isLoading", isLoading);
-
+  // console.log("createEnrollNow", createEnrollNow);
+  // console.log("isLoading", isLoading);
 
   const [selectedOption, setSelectedOption] = useState("");
 
-  
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
   };
