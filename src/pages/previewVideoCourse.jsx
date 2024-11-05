@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styles from "./pages.module.css";
 import ImageOverlay from "../Components/ImageOverlay";
 import { PreviewVideoSelect } from "./auth/components/DashSelect";
-import PreviewCourseVideo from "../assets/video/aca3d49307cab662ec1e91becdd52cb4-720p-preview.mp4";
+// import PreviewCourseVideo from "../assets/video/aca3d49307cab662ec1e91becdd52cb4-720p-preview.mp4";
 import SocialMediaLinks, {
   socialMediaData,
 } from "../Components/SocialMediaLink";
@@ -19,7 +19,7 @@ import { Link } from "react-router-dom";
 import { usePreviewCourses } from "@/hooks/students/use-fetch-all-courses";
 // import DiscoverCourses from "../pages/dashboard/DashboardDiscover";
 
-const PreviewVideoCourse = () => {
+const PreviewVideoCourses = () => {
   const navigate = useNavigate();
 
   // const { createEnrollNow, isLoading } = useEnrollNow(courseId);
@@ -269,4 +269,4 @@ const PreviewVideoCourse = () => {
   );
 };
 
-export default PreviewVideoCourse;
+export default PreviewVideoCourses;

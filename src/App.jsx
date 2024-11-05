@@ -92,7 +92,7 @@ import CourseWorkAreaDocument from "./pages/admin-pages/course-work-area/CourseW
 import CourseWorkAssignment from "./pages/admin-pages/course-work-area/CourseWorkAssignment";
 import CourseWorkShareDocs from "./pages/admin-pages/course-work-area/CourseWorkShareDocs";
 // import PreviewVideoCourse from "./pages/previewVideoCourse";
-import PreviewVideoCourse from "./pages/PreviewVideoCourse";
+// import PreviewVideoCourse from "./pages/PreviewVideoCourse";
 
 const queryClient = new QueryClient();
 
@@ -104,10 +104,10 @@ function App() {
       path: "/preview-course/:courseId",
       element: <PreviewCourse />,
     },
-    {
-      path: "/preview-video-course/:courseId/enroll",
-      element: <PreviewVideoCourse />,
-    },
+    // {
+    //   path: "/preview-video-course/:courseId/enroll",
+    //   element: <PreviewVideoCourses/>,
+    // },
 
     {
       path: "/",
