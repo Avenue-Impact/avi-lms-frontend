@@ -4,9 +4,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 
-const deleteRecordedVideo = async ({ section, id }) => {
-  const courseId = localStorage.getItem("courseId");
-  const cohortId = localStorage.getItem("cohortId");
+const deleteRecordedVideo = async ({ section, id, courseId, cohortId }) => {
   const token = Cookies.get("adminToken");
 
   const url = `${BASE_URL}/courses/${courseId}/cohorts/${cohortId}/sections/${section}/recorded-session/${id}`;

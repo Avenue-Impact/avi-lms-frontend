@@ -25,12 +25,19 @@ import EditRecordedSectionForm from "./EditRecordedSectionForm";
 import { Video } from "lucide-react";
 import AddRecordedVideoForm from "./AddRecordedVideoForm";
 import { useState } from "react";
+import { useParams, useSearchParams } from "react-router-dom";
 
 function SectionPopover({ children, className, section, course }) {
   const [addVideoModal, setAddVideoModal] = useState(false);
   const [editSectionModal, setEditSectionModal] = useState(false);
   const [openPopover, setOpenPopover] = useState(false);
 
+  const [queryString] = useSearchParams();
+  const params = useParams();
+
+  const cohortId =
+    queryString.get("cohortId") ?? localStorage.getItem("cohortId");
+  const courseId = params.courseId ?? localStorage.getItem("courseId");
   const { moveSectionUp, isMovingUp } = useMoveRecordedSectionUp();
   const { moveSectionDown, isMovingDown } = useMoveRecordedSectionDown();
   const { moveSectionToTop, isMovingToTop } = useMoveRecordedSectionToTop();
@@ -40,16 +47,17 @@ function SectionPopover({ children, className, section, course }) {
   const { deleteRecordedSection, isDeleting } = useDeleteRecordedSection();
 
   const handleMoveUp = (sect) => {
-    console.log("section====", sect);
-
     const data = {
       section: sect,
       direction: "forward",
     };
 
-    moveSectionUp(data, {
-      onSuccess: () => setOpenPopover(false),
-    });
+    moveSectionUp(
+      { data, courseId, cohortId },
+      {
+        onSuccess: () => setOpenPopover(false),
+      },
+    );
   };
 
   const handleMoveDown = (sect) => {
@@ -59,9 +67,12 @@ function SectionPopover({ children, className, section, course }) {
       section: sect,
       direction: "backward",
     };
-    moveSectionDown(data, {
-      onSuccess: () => setOpenPopover(false),
-    });
+    moveSectionDown(
+      { data, courseId, cohortId },
+      {
+        onSuccess: () => setOpenPopover(false),
+      },
+    );
   };
   const handleMoveTop = (sect) => {
     console.log("move up", sect);
@@ -70,9 +81,12 @@ function SectionPopover({ children, className, section, course }) {
       section: sect,
       direction: "toFront",
     };
-    moveSectionToTop(data, {
-      onSuccess: () => setOpenPopover(false),
-    });
+    moveSectionToTop(
+      { data, courseId, cohortId },
+      {
+        onSuccess: () => setOpenPopover(false),
+      },
+    );
   };
 
   const handleMoveBottom = (sect) => {
@@ -82,15 +96,21 @@ function SectionPopover({ children, className, section, course }) {
       section: sect,
       direction: "toBack",
     };
-    moveSectionToBottom(data, {
-      onSuccess: () => setOpenPopover(false),
-    });
+    moveSectionToBottom(
+      { data, courseId, cohortId },
+      {
+        onSuccess: () => setOpenPopover(false),
+      },
+    );
   };
 
   const handleDelete = (sect) => {
-    deleteRecordedSection(sect, {
-      onSuccess: () => setOpenPopover(false),
-    });
+    deleteRecordedSection(
+      { section: sect, cohortId, courseId },
+      {
+        onSuccess: () => setOpenPopover(false),
+      },
+    );
   };
 
   return (

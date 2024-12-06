@@ -9,10 +9,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { useParams } from "react-router-dom";
 
 const AddVideoForm = ({ sectionToAddVideo, setModal }) => {
   const { title, overview, section } = sectionToAddVideo;
   const cohort = localStorage.getItem("cohorts");
+
+  const params = useParams();
+
+  const courseId = params.courseId ?? localStorage.getItem("courseId");
 
   const [video, setVideo] = useState({ file: null, preview: null });
   const [errorMessage, setErrorMessage] = useState("");
@@ -74,15 +79,18 @@ const AddVideoForm = ({ sectionToAddVideo, setModal }) => {
       };
     }
 
-    createOnDemandCourse(recorded, {
-      onSuccess: () => {
-        form.reset();
-        setVideo((prev) => {
-          return { ...prev, file: null, preview: null };
-        });
-        setModal(false);
+    createOnDemandCourse(
+      { data: recorded, courseId },
+      {
+        onSuccess: () => {
+          form.reset();
+          setVideo((prev) => {
+            return { ...prev, file: null, preview: null };
+          });
+          setModal(false);
+        },
       },
-    });
+    );
   };
 
   return (

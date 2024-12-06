@@ -35,7 +35,7 @@ function Row({ children, className }) {
   return (
     <div
       role="table row"
-      className={cn(`grid px-6 py-[26px]`, className)}
+      className={cn(`grid  px-4 py-[26px]`, className)}
       style={{ gridTemplateColumns: cols }}
     >
       {children}

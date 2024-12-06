@@ -10,7 +10,7 @@ import DigitalTransformation from "./pages/DigitalTransformation";
 import DataSolution from "./pages/DataSolution";
 import AvenueImpactDevelopment from "./pages/AvenueImpactDevelopment";
 import AVI from "./pages/AVI";
-import PreviewCourse from "./pages/previewCourse";
+// import PreviewCourse from "./pages/PreviewCourse";
 import Component from "./Components/Component";
 import Login from "./pages/auth/Login";
 import SignUp from "./pages/auth/Signup";
@@ -91,8 +91,12 @@ import CourseWorkArea from "./pages/admin-pages/course-work-area/CourseWorkArea"
 import CourseWorkAreaDocument from "./pages/admin-pages/course-work-area/CourseWorkAreaDocument";
 import CourseWorkAssignment from "./pages/admin-pages/course-work-area/CourseWorkAssignment";
 import CourseWorkShareDocs from "./pages/admin-pages/course-work-area/CourseWorkShareDocs";
-// import PreviewVideoCourse from "./pages/previewVideoCourse";
 // import PreviewVideoCourse from "./pages/PreviewVideoCourse";
+import PreviewCourse from "./pages/previewCourse";
+// import PreviewVideoCourse from "./pages/previewVideoCourse";
+import CourseGroupProjectArea from "./Components/admindashboard/project-area/CourseGroupProjectArea";
+import GroupDetails from "./Components/admindashboard/project-area/GroupDetails";
+import EditGroupPage from "./Components/admindashboard/project-area/EditGroupPage";
 
 const queryClient = new QueryClient();
 
@@ -106,7 +110,7 @@ function App() {
     },
     // {
     //   path: "/preview-video-course/:courseId/enroll",
-    //   element: <PreviewVideoCourses/>,
+    //   element: <PreviewVideoCourse />,
     // },
 
     {
@@ -156,10 +160,7 @@ function App() {
         {
           path: "",
           element: <AuthLayout />,
-          // loader: async () => {
-          //   const token = Cookies.get("token");
-          //   if (token) return (window.location.href = "/dashboard");
-          // },
+
           children: [
             {
               path: "/AVI",
@@ -192,10 +193,7 @@ function App() {
     },
     {
       element: <ProtectedRoute tokin={"token"} path={"/login"} />,
-      // loader: async () => {
-      //   const token = Cookies.get("token");
-      //   if (!token) return (window.location.href = "/login");
-      // },
+
       children: [
         {
           path: "/dashboard",
@@ -310,22 +308,22 @@ function App() {
                   element: <ProjectArea />,
                 },
                 {
-                  path: ":id/general",
+                  path: ":courseId/general",
                   element: <General />,
+                },
+                {
+                  path: ":courseId/group",
+                  element: <Groups />,
                   children: [
                     {
                       index: true,
-                      element: <CourseProjectArea />,
+                      element: <GroupDetails />,
                     },
                     {
-                      path: "course-tool",
-                      element: <CourseTools />,
+                      path: ":groupId/edit-project-group",
+                      element: <EditGroupPage />,
                     },
                   ],
-                },
-                {
-                  path: ":id/group",
-                  element: <Groups />,
                 },
               ],
             },
@@ -347,11 +345,11 @@ function App() {
                       element: <CreatedCourse />,
                     },
                     {
-                      path: "edit",
+                      path: "preview/:courseId",
                       element: <EditCourse />,
                     },
                     {
-                      path: "info",
+                      path: "info/:courseId",
                       element: <CourseInfomation />,
                     },
                   ],
@@ -418,59 +416,60 @@ function App() {
               ],
             },
 
-            {
-              element: <ProjectAreaLayout />,
-              path: "project-area",
-              children: [
-                {
-                  index: true,
-                  element: <ProjectArea />,
-                },
-                {
-                  path: ":id/general",
-                  element: <General />,
-                  children: [
-                    {
-                      index: true,
-                      element: <CourseProjectArea />,
-                    },
-                    {
-                      path: "course-tool",
-                      element: <CourseTools />,
-                    },
-                  ],
-                },
-                {
-                  path: ":id/group",
-                  element: <GroupLayout />,
-                  children: [
-                    {
-                      index: true,
-                      element: <Groups />,
-                    },
-                    {
-                      path: ":team",
-                      element: <TeamLayout />,
-                      children: [
-                        {
-                          index: true,
-                          path: "course-project-area",
-                          element: <CourseProjectArea />,
-                        },
-                        {
-                          path: "course-tools",
-                          element: <CourseTools />,
-                        },
-                        {
-                          path: "student-management",
-                          element: <StudentManagementTable />,
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            },
+            // {
+            //   element: <ProjectAreaLayout />,
+            //   path: "project-area",
+            //   children: [
+            //     {
+            //       index: true,
+            //       element: <ProjectArea />,
+            //     },
+            //     {
+            //       path: ":courseId/general",
+            //       element: <General />,
+            //       // children: [
+            //       //   {
+            //       //     index: true,
+            //       //     element: <CourseProjectArea />,
+            //       //   },
+            //       //   {
+            //       //     path: "course-tool",
+            //       //     element: <CourseTools />,
+            //       //   },
+            //       // ],
+            //     },
+            //     {
+            //       path: ":courseId/group",
+            //       element: <GroupLayout />,
+            //       children: [
+            //         {
+            //           index: true,
+            //           element: <Groups />,
+            //         },
+            //         {
+            //           path: ":team",
+            //           element: <TeamLayout />,
+            //           children: [
+            //             {
+            //               index: true,
+            //               path: "course-project-area",
+            //               element: <CourseProjectArea />,
+            //             },
+            //             {
+            //               path: "course-tools",
+            //               element: <CourseTools />,
+            //             },
+            //             {
+            //               path: "student-management",
+            //               element: <StudentManagementTable />,
+            //             },
+            //           ],
+            //         },
+            //       ],
+            //     },
+            //   ],
+            // },
+
             {
               path: "course-work-area",
               element: <CourseWorkAreaLayout />,

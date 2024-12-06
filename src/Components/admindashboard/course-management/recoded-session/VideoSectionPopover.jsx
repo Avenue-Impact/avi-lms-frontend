@@ -16,11 +16,19 @@ import { useState } from "react";
 import { useDeleteRecordedVideo } from "@/hooks/course-management/recorded-section/use-delete-recorded-video";
 import EditModal from "../on-demand-section/EditModal";
 import EditRecordedVideoForm from "./EditRecordedVideoForm";
+import { useParams, useSearchParams } from "react-router-dom";
 
 function VideoSectionPopover({ children, className, id, section, record }) {
   const [direction, setDirection] = useState("");
   const [editModal, setEditModal] = useState(false);
   const [openPopover, setOpenPopover] = useState(false);
+
+  const params = useParams();
+  const [queryString] = useSearchParams();
+
+  const courseId = params.courseId ?? localStorage.getItem("courseId");
+  const cohortId =
+    queryString.get("cohortId") ?? localStorage.getItem("cohortId");
 
   const { moveVideo, isMovingVideo } = useMoveRecordedVideo();
   const { deleteVideo, isDeleting } = useDeleteRecordedVideo();
@@ -39,6 +47,8 @@ function VideoSectionPopover({ children, className, id, section, record }) {
       {
         data,
         section: sect,
+        cohortId,
+        courseId,
       },
       { onSuccess: () => setOpenPopover((prev) => !prev) },
     );
@@ -57,6 +67,8 @@ function VideoSectionPopover({ children, className, id, section, record }) {
       {
         data,
         section: sect,
+        cohortId,
+        courseId,
       },
       { onSuccess: () => setOpenPopover((prev) => !prev) },
     );
@@ -74,6 +86,8 @@ function VideoSectionPopover({ children, className, id, section, record }) {
       {
         data,
         section: sect,
+        cohortId,
+        courseId,
       },
       { onSuccess: () => setOpenPopover((prev) => !prev) },
     );
@@ -91,6 +105,8 @@ function VideoSectionPopover({ children, className, id, section, record }) {
       {
         data,
         section: sect,
+        cohortId,
+        courseId,
       },
       { onSuccess: () => setOpenPopover((prev) => !prev) },
     );
@@ -98,7 +114,7 @@ function VideoSectionPopover({ children, className, id, section, record }) {
 
   const handleDelete = (sect, id) => {
     deleteVideo(
-      { section: sect, id },
+      { section: sect, id, cohortId, courseId },
       { onSuccess: () => setOpenPopover((prev) => !prev) },
     );
   };

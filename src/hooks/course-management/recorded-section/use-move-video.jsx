@@ -4,9 +4,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 
-const moveRecordedVideo = ({ section, data }) => {
-  const courseId = localStorage.getItem("courseId");
-  const cohortId = localStorage.getItem("cohortId");
+const moveRecordedVideo = ({ section, data, courseId, cohortId }) => {
   const token = Cookies.get("adminToken");
 
   const url = `${BASE_URL}/courses/${courseId}/cohorts/${cohortId}/sections/${section}/move-video`;

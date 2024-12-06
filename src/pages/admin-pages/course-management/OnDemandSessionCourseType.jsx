@@ -63,12 +63,19 @@ const OnDemandSessionCourseType = () => {
       on_demand_session: [...durationPrice],
     };
 
-    createCourseType(courseType, {
-      onSuccess: () => {
-        setActiveTab((prev) => prev + 1);
-        //   localStorage.setItem("cohorts", cohort);
+    createCourseType(
+      {
+        data: courseType,
+        courseId:
+          localStorage.getItem("courseId") && localStorage.getItem("courseId"),
       },
-    });
+      {
+        onSuccess: () => {
+          setActiveTab((prev) => prev + 1);
+          //   localStorage.setItem("cohorts", cohort);
+        },
+      },
+    );
   };
 
   const handleAddPrice = () => {

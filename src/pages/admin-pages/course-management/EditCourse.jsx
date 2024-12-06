@@ -3,15 +3,19 @@ import { useState } from "react";
 import CourseInformation from "@/Components/admindashboard/course-management/CourseInformation";
 import CourseCohortsPreview from "./CourseCohortsPreview";
 import OnDemand from "./OnDemand";
+import { useSearchParams } from "react-router-dom";
 
 const EditCourse = () => {
   const [activeSection, setActiveSection] = useState("courseInfo");
+
+  const [queryString] = useSearchParams();
+  const title = queryString.get("title");
 
   return (
     <div>
       <div className="mb-8 mt-16 flex items-center justify-between">
         <p className="font-[500] text-[#344054] lg:text-[18px] 2xl:text-[24px]">
-          Project Consultant Training Programme (Bundle)
+          {title}
         </p>
 
         <div>

@@ -1,5 +1,5 @@
 import { addCourseInformation, editCourseInformationApi } from "@/services/api";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 export const useCreateCourseInformation = () => {
@@ -20,12 +20,12 @@ export const useCreateCourseInformation = () => {
 };
 
 export const useEditCourseInformation = () => {
+  const queryClient = useQueryClient()
   const { mutate: editCourseInformation, isPending: isEditing } = useMutation({
     mutationFn: editCourseInformationApi,
     onSuccess: ({ data }) => {
       toast.success(data.message);
-
-      localStorage.setItem("course-information", JSON.stringify(data.data));
+      queryClient.invalidateQueries('get-course-info')
     },
     onError: (err) =>
       toast.error(err.response.data.message || "something went wrong"),

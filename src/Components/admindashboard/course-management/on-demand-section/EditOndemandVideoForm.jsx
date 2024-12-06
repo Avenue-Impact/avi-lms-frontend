@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useParams } from "react-router-dom";
 
 const EditOndemandVideoForm = ({ videoToEdit, section, setModal }) => {
   const [video, setVideo] = useState({ file: null, preview: null });
@@ -16,6 +17,9 @@ const EditOndemandVideoForm = ({ videoToEdit, section, setModal }) => {
 
   const videoRef = useRef();
   const { editOnDemandVideo, isEditing } = useEditOnDemandVideo();
+  const params = useParams();
+
+  const courseId = params.courseId ?? localStorage.getItem("courseId");
 
   const form = useForm({
     resolver: zodResolver(editOnDemandVideoSchema),
@@ -70,7 +74,7 @@ const EditOndemandVideoForm = ({ videoToEdit, section, setModal }) => {
     }
 
     editOnDemandVideo(
-      { data: recorded, id: videoToEdit.id, section },
+      { data: recorded, id: videoToEdit.id, section, courseId },
       {
         onSuccess: () => {
           form.reset();

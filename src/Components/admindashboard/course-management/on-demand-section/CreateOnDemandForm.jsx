@@ -2,6 +2,7 @@ import { ImgUploadIcon } from "@/Components/Icon";
 import { CommonButton } from "@/Components/ui/button";
 import { Form } from "@/Components/ui/form";
 import FormInput from "@/Components/ui/form-input";
+import { useFetchondemandCourse } from "@/hooks/course-management/on-demand-section/use-fetch-ondemand-course";
 import { useCreateOnDemandCourse } from "@/hooks/course-management/use-create-demand-course";
 import { onDemandSessionSchema } from "@/lib/form-schemas/forms-schema";
 import { cn } from "@/lib/utils";
@@ -10,20 +11,20 @@ import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
-let section = localStorage.getItem("demandSectionNumber")
-  ? localStorage.getItem("demandSectionNumber")
-  : 2;
-
-const CreateOndemandForm = () => {
+const CreateOndemandForm = ({ courseId }) => {
   const [video, setVideo] = useState({ file: null, preview: null });
   const [errorMessage, setErrorMessage] = useState("");
-  const [disabled, setDisabled] = useState(true);
+  const [disabled, setDisabled] = useState(false);
   const [disableInput, setDisableInput] = useState(false);
+  const { data } = useFetchondemandCourse(courseId);
 
   const videoRef = useRef();
   const { createOnDemandCourse, isCreating } = useCreateOnDemandCourse();
 
   const handleCreateNewSection = () => {
+    let section = localStorage.getItem("demandSectionNumber")
+      ? localStorage.getItem("demandSectionNumber")
+      : 1;
     section = Number(section) + 1;
     localStorage.setItem("demandSectionNumber", +section);
     toast.success(`section ${section} is created`);
@@ -66,6 +67,7 @@ const CreateOndemandForm = () => {
 
   const handleCreateSection = async (data) => {
     const { title, video_title, overview } = data;
+    const section = localStorage.getItem("demandSectionNumber");
 
     if (!video.file && form.watch("video_from_url").length < 1)
       return toast.error("Please insert a video or video url");
@@ -87,20 +89,24 @@ const CreateOndemandForm = () => {
       };
     }
 
-    createOnDemandCourse(recorded, {
-      onSuccess: ({ data }) => {
-        form.reset();
+    createOnDemandCourse(
+      { data: recorded, courseId },
+      {
+        onSuccess: ({ data }) => {
+          form.reset();
+          console.log("fininsh data", data);
 
-        form.setValue("title", data.data.title);
-        form.setValue("overview", data.data.overview);
-        setDisableInput((prev) => !prev);
+          form.setValue("title", data.data.title);
+          form.setValue("overview", data.data.overview);
+          setDisableInput((prev) => !prev);
 
-        setDisabled(false);
-        setVideo((prev) => {
-          return { ...prev, file: null, preview: null };
-        });
+          setDisabled(false);
+          setVideo((prev) => {
+            return { ...prev, file: null, preview: null };
+          });
+        },
       },
-    });
+    );
   };
 
   return (
@@ -235,7 +241,7 @@ const CreateOndemandForm = () => {
               <CommonButton
                 variant="outline"
                 type="button"
-                disabled={disabled}
+                disabled={disabled || data?.data?.data.length < 1}
                 className="disabled:cursor-not-allowed"
                 onClick={handleCreateNewSection}
               >

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import LinkList from "@/Components/LinkList";
 import OndemandSection from "./OndemandSection";
-import StudentManagement from "@/Components/admindashboard/course-management/courses/StudentManagement";
+import StudentManagement from "@/Components/admindashboard/course-management/on-demand-section/StudentManagement";
 
 function OnDemand() {
   const [active, setActive] = useState("course-section");

@@ -14,12 +14,16 @@ import LiveSessionContent from "@/Components/admindashboard/course-management/li
 import { useCourseManagementInfo } from "@/hooks/useCourseManagementInfo";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useGetSingleCohort } from "@/hooks/course-management/use-get-singleCohorts";
 
 const LiveSession = () => {
   const { createLiveSession, isCreating } = useCreateLiveSession();
   const { setSubTab } = useCourseManagementInfo();
   const [disabledButton, setDisabledButton] = useState(null);
   const { setActiveTab } = useCourseManagementInfo();
+
+  const courseId = localStorage.getItem("courseId");
+  const cohortId = localStorage.getItem("cohortId");
 
   const form = useForm({
     resolver: zodResolver(liveSessionSchema),
@@ -43,9 +47,7 @@ const LiveSession = () => {
     });
   };
 
-  const { data } = useQuery({
-    queryKey: ["get-single-cohort"],
-  });
+  const { data } = useGetSingleCohort(courseId, cohortId);
   return (
     <div>
       <div className="mb-4 mt-5 rounded border border-gray-300 p-10 md:mb-0">

@@ -1,9 +1,17 @@
-// import { BASE_URL } from "@/constant";
 import { BASE_URL } from "@/constant";
 import axios from "axios";
 import Cookies from "js-cookie";
 
 const url = import.meta.env.VITE_USER_URL;
+
+
+export const axiosAdmin = axios.create({
+  baseURL: BASE_URL,
+  headers: {
+    'Authorization': `Bearer ${Cookies.get('adminToken')}`,
+
+  }
+})
 
 export const fetchUserProfile = async () => {
   const token = Cookies.get('token')
@@ -16,21 +24,14 @@ export const fetchUserProfile = async () => {
 
 }
 
-export const addDemandSection = async (data) => {
-  const token = Cookies.get('adminToken')
-  const courseId = localStorage.getItem("courseId");
+export const addDemandSection = async ({ data, courseId }) => {
 
-  return await axios.post(
 
-    `${BASE_URL}/courses/${courseId}/on-demand-section`,
-    data,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token}`,
-      },
+  return axiosAdmin.post(`/courses/${courseId}/on-demand-section`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
     },
-  );
+  })
 }
 
 
@@ -38,51 +39,38 @@ export const addDemandSection = async (data) => {
 export const addCourseInformation = async (data) => {
   const token = Cookies.get('adminToken')
 
-  return await axios.post(
-    `${BASE_URL}/courses/course-informations`,
-    data,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token}`,
-      },
+  return axios.post(`${BASE_URL}/courses/course-informations`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${token}`,
     },
-  );
+  })
 
 }
 
 
-export const editCourseInformationApi = async (data) => {
-  // https://avi-lms-backend.onrender.com/api/v1/admins/courses/:courseId/course-informations
-  const token = Cookies.get('adminToken')
-  const courseId = localStorage.getItem('courseId')
+export const editCourseInformationApi = async ({ data, courseId }) => {
 
-  return await axios.patch(
-    `${BASE_URL}/courses/${courseId}/course-informations`,
-    data,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token}`,
-      },
+  const token = Cookies.get('adminToken')
+
+  return axios.patch(`${BASE_URL}/courses/${courseId}/course-informations`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${token}`,
     },
-  );
+  })
 }
 
 
 
-export const addCourseType = async (data) => {
-  const token = Cookies.get('adminToken')
-  const courseId = localStorage.getItem('courseId')
-  return await axios.post(
-    `${BASE_URL}/courses/${courseId}/coursetype`,
-    data,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+export const addCourseType = async ({ data, courseId }) => {
+
+
+  return axios.post(`${BASE_URL}/courses/${courseId}/coursetype`, data, {
+    headers: {
+      Authorization: `Bearer ${Cookies.get('adminToken')}`
     },
-  );
+  })
 }
 
 export const addLiveSession = async (data) => {
@@ -102,12 +90,12 @@ export const addLiveSession = async (data) => {
   );
 }
 
-export const addRecordedSession = async (data) => {
-  const courseId = localStorage.getItem('courseId')
+export const addRecordedSession = async ({ data, courseId, section }) => {
+
   const token = Cookies.get('adminToken')
-  let section = localStorage.getItem("recordedSection")
-    ? localStorage.getItem("recordedSection")
-    : 2;
+  // let section = localStorage.getItem("recordedSection")
+  //   ? localStorage.getItem("recordedSection")
+  //   : 2;
   // https://avi-lms-backend.onrender.com/api/v1/admins/courses/:courseId/sections/:section/recorded-session
 
   return await axios.post(
@@ -122,10 +110,8 @@ export const addRecordedSession = async (data) => {
   );
 }
 
-export const fetchDemandCourse = async () => {
+export const fetchDemandCourse = async (courseId) => {
   const token = Cookies.get('adminToken')
-  const courseId = localStorage.getItem('courseId')
-
 
   return await axios.get(
     `${BASE_URL}/courses/${courseId}/on-demand-section`,
@@ -139,9 +125,9 @@ export const fetchDemandCourse = async () => {
 
 
 // Fetch course information
-export const fetchCourseInformation = async () => {
+export const fetchCourseInformation = async (courseId) => {
   const token = Cookies.get('adminToken');
-  const courseId = localStorage.getItem('courseId');
+
 
   return await axios.get(
     `${BASE_URL}/courses/${courseId}/course-informations`,
@@ -154,23 +140,20 @@ export const fetchCourseInformation = async () => {
 };
 
 // Fetch cohorts
-export const fetchCohorts = async () => {
-  const token = Cookies.get('adminToken');
-  const courseId = localStorage.getItem('courseId');
+export const fetchCohorts = async (courseId) => {
 
-  return await axios.get(
-    `${BASE_URL}/courses/${courseId}/cohorts`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+  const token = Cookies.get('adminToken')
+  return await axios.get(`${BASE_URL}/courses/${courseId}/cohorts`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
     },
-  );
-};
+  })
+}
+
 
 // Add a single cohort
-export const addSingleCohort = async (data) => {
-  const courseId = localStorage.getItem('courseId');
+export const addSingleCohort = async ({ data, courseId }) => {
+
   const token = Cookies.get('adminToken');
 
   return await axios.post(
@@ -184,19 +167,16 @@ export const addSingleCohort = async (data) => {
   );
 };
 
-export const getSingleCohort = async () => {
-  const courseId = localStorage.getItem('courseId');
-  const token = Cookies.get('adminToken');
+export const getSingleCohort = async (courseId, cohortId) => {
+  const token = Cookies.get('adminToken')
 
-  const cohortId = localStorage.getItem('cohortId');
-
-  return await axios.get(
-    `${BASE_URL}/courses/${courseId}/cohorts/${cohortId}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+  return await axios.get(`${BASE_URL}/courses/${courseId}/cohorts/${cohortId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
     },
-  );
-
+  })
 }
+
+
+
+

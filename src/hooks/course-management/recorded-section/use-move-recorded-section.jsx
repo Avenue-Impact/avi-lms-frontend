@@ -4,10 +4,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 
-const moveSectionApi = async (data) => {
-  const courseId = localStorage.getItem("courseId");
-  const cohortId = localStorage.getItem("cohortId");
-
+const moveSectionApi = async ({ data, courseId, cohortId }) => {
   const url = `${BASE_URL}/courses/${courseId}/cohorts/${cohortId}/move-section`;
   const token = Cookies.get("adminToken");
 

@@ -1,19 +1,6 @@
-// const months = [
-//   "Jan",
-//   "Feb",
-//   "Mar",
-//   "Apr",
-//   "May",
-//   "Jun",
-//   "Jul",
-//   "Aug",
-//   "Sep",
-//   "Oct",
-//   "Nov",
-//   "Dec",
-// ];
 
-export const formatDate = (date) => {
+
+export const formatDate = (date, showTime = true) => {
   const createdAt = new Date(date);
   const locale = navigator.language;
 
@@ -28,6 +15,6 @@ export const formatDate = (date) => {
   const get12hrs = hour > 12 ? hour - 12 : hour;
 
   const amOrPm = hour >= 12 ? "PM" : "AM";
-
-  return `${day} ${month}, ${year} | ${get12hrs}:${min}${amOrPm}`;
+  if (showTime) return `${day} ${month}, ${year} | ${get12hrs}:${min}${amOrPm}`
+  return `${day} ${month}, ${year} `;
 };

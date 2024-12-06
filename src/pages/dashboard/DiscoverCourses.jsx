@@ -19,7 +19,8 @@ import { useFetchAllCourses } from "@/hooks/students/use-fetch-all-courses";
 // import { all } from "axios";
 
 const DiscoverCourses = () => {
-  const { allCourses, isFetchingAllCourses } = useFetchAllCourses();
+  const { data: allCourses, isLoading: isFetchingAllCourses } =
+    useFetchAllCourses();
   console.log("allCourses", allCourses);
   console.log("isFetchingAllCourses", isFetchingAllCourses);
 
@@ -102,20 +103,21 @@ const DiscoverCourses = () => {
           already taken the next step with Avenue Impact{" "}
         </p>
         <div className="mb-6 mt-10 grid grid-cols-2 gap-[18px] md:grid-cols-3 lg:grid-cols-4">
-          {isFetchingAllCourses
-            ? "Loading"
-            : allCourses.data.data.courses.map((course) => (
-                <CourseCard
-                  key={course.id}
-                  joinTeam={course.cover_image}
-                  altText="joinTeam"
-                  title={course.title}
-                  rating="4.3"
-                  numRatings="45,345"
-                  previewButtonText="Preview this course"
-                  path={`/preview-course/${course.id}`}
-                />
-              ))}
+          {isFetchingAllCourses ? (
+            <p>Loading...</p>
+          ) : (
+            allCourses.data.data.courses.map((course) => (
+              <CourseCard
+                key={course.id}
+                imgSrc={course.cover_image}
+                altText="joinTeam"
+                title={course.title}
+                rating={course.average_rating ?? 0}
+                review={course.total_reviews}
+                path={`/preview-course/${course.id}`}
+              />
+            ))
+          )}
         </div>
         <div className="mb-12 mt-5 h-px w-full bg-[#C7D7F4]" />
         <div className="items-enter mx-auto flex w-full max-w-[314px] gap-1">

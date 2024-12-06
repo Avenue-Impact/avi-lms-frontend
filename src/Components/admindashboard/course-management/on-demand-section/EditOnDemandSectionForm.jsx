@@ -5,10 +5,14 @@ import { useEditOnDemandSection } from "@/hooks/course-management/on-demand-sect
 import { editOnDemandSectionSchema } from "@/lib/form-schemas/forms-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useParams } from "react-router-dom";
 
 const EditOnDemandSectionForm = ({ sectionToEdit, setModal }) => {
   const { editOnDemandCourse, isEditing } = useEditOnDemandSection();
   const { title, overview, section } = sectionToEdit;
+  const params = useParams();
+
+  const courseId = params.courseId ?? localStorage.getItem("courseId");
 
   const form = useForm({
     resolver: zodResolver(editOnDemandSectionSchema),
@@ -20,7 +24,7 @@ const EditOnDemandSectionForm = ({ sectionToEdit, setModal }) => {
 
   const onSubmit = (data) => {
     editOnDemandCourse(
-      { data, section },
+      { data, section, courseId },
       {
         onSuccess: () => {
           setModal(false);

@@ -17,7 +17,7 @@ const EditModal = ({
 }) => {
   return (
     <div>
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={setOpen} className="py-10">
         <DialogTrigger asChild>
           <CommonButton
             variant="ghost"
@@ -26,7 +26,7 @@ const EditModal = ({
             {children}
           </CommonButton>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[665px]">
+        <DialogContent className="w-max">
           <DialogHeader>
             <DialogTitle>{header}</DialogTitle>
             <DialogDescription></DialogDescription>

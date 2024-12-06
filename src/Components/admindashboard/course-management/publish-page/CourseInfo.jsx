@@ -1,68 +1,19 @@
-import { FaRegCircleCheck } from "react-icons/fa6";
-
 import AvenueList from "@/Components/Assets/AvenueList";
 
+import { CommonButton } from "@/Components/ui/button";
+import { useFetchCourseInfo } from "@/hooks/course-management/use-fetch-course-information";
+import { HiOutlinePencil } from "react-icons/hi";
+import { ClipLoader } from "react-spinners";
 import iconDark from "../../../../assets/icons/icon-dark.png";
 import img from "../../../../assets/images/join_team.png";
-import { CommonButton } from "@/Components/ui/button";
-import { HiOutlinePencil } from "react-icons/hi";
-import { useQuery } from "@tanstack/react-query";
-import { fetchCourseInformation } from "@/services/api";
-import { ClipLoader } from "react-spinners";
+import EditModal from "../on-demand-section/EditModal";
+import EditCourseInformationForm from "../courses/EditCourseInformationForm";
+import { useState } from "react";
 
-// const data = {
-//   course: {
-//     id: "66ffa21a424d1743f5b173d0",
-//     title: "the course title",
-//     coverImage:
-//       "https://res.cloudinary.com/dttt6lb9g/image/upload/v1728029212/courses/66ffa21a424d1743f5b173d0_xofxee.png",
-//     course_includes: "course includes",
-//     tools_and_technologies: "the tool and tecnlogy",
-//     benefits: "the benefit",
-//     program_highlights: "the program",
-//     preview_video: "",
-//     enrolledSudents: [],
-//     enrollmentOptions: [],
-//     reviews: [],
-//     total_discount: 0,
-//     live_class_price: {
-//       original_price: {
-//         amount: 3333,
-//         currency: "Pounds",
-//         currency_symbol: "£",
-//         price_string: "£ 3333",
-//       },
-//       discounted_price: {
-//         amount: 100,
-//         currency: "Pounds",
-//         currency_symbol: "£",
-//         price_string: "£ 100",
-//       },
-//       cohort: ["September Cohort 2024"],
-//       duration: "mon-fri",
-//       time: "3:42pm",
-//     },
-//     pre_recorded_price: [
-//       {
-//         duration: "One Month Access",
-//         amount: 100,
-//         currency: "Pounds",
-//         price_string: "£100",
-//         currency_symbol: "£",
-//         _id: "66fffec9068e6acd2b2f1af0",
-//       },
-//     ],
-//     is_publishe: false,
-//     cohorts: ["66fffec9068e6acd2b2f1af3"],
-//   },
-//   applied: [],
-// };
+const CourseInfo = ({ editButton = false, courseId }) => {
+  const [onOpenChange, setOnOpenChange] = useState(false);
 
-const CourseInfo = ({ editButton = false }) => {
-  const { data, isLoading, isError, error } = useQuery({
-    queryFn: fetchCourseInformation,
-    queryKey: ["get-course-info"],
-  });
+  const { data, isLoading, isError } = useFetchCourseInfo(courseId);
 
   if (isLoading)
     return (
@@ -81,12 +32,27 @@ const CourseInfo = ({ editButton = false }) => {
           Course Information
         </h2>
         {editButton && (
-          <CommonButton variant="outline" className="space-x-2 text-[#667185]">
-            <span className="text-lg">
-              <HiOutlinePencil />
-            </span>
-            <span>Edit section</span>
-          </CommonButton>
+          <EditModal
+            open={onOpenChange}
+            setOpen={setOnOpenChange}
+            header="Edit course Information"
+            form={
+              <EditCourseInformationForm
+                courseInformation={data?.data?.data?.course}
+                setOnOpenChange={setOnOpenChange}
+              />
+            }
+          >
+            <CommonButton
+              variant="outline"
+              className="space-x-2 text-[#667185]"
+            >
+              <span className="text-lg">
+                <HiOutlinePencil />
+              </span>
+              <span>Edit section</span>
+            </CommonButton>
+          </EditModal>
         )}
       </div>
       <main className="mt-8 grid grid-cols-2 gap-9">

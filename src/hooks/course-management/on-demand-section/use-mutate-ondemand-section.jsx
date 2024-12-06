@@ -4,10 +4,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 
-const mutateSection = async (section) => {
-  //https://avi-lms-backend.onrender.com/api/v1/admins/courses/:courseId/on-demand-section/:section
-
-  const courseId = localStorage.getItem("courseId");
+const mutateSection = async ({ section, courseId }) => {
   const token = Cookies.get("adminToken");
 
   const url = `${BASE_URL}/courses/${courseId}/on-demand-section/${section}`;

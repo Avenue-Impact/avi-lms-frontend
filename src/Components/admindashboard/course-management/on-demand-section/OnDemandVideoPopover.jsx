@@ -22,10 +22,14 @@ import { useDeleteOndemandVideo } from "@/hooks/course-management/on-demand-sect
 import EditModal from "./EditModal";
 import EditOndemandVideoForm from "./EditOndemandVideoForm";
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 
 function OnDemandVideoPopover({ children, className, id, section, video }) {
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openPopver, setOpenPopover] = useState(false);
+
+  const params = useParams();
+  const courseId = params.courseId ?? localStorage.getItem("courseId");
 
   const { moveUP, status } = useMoveUP();
   const { moveDown, moveDownStatus } = useMoveDown();
@@ -42,6 +46,7 @@ function OnDemandVideoPopover({ children, className, id, section, video }) {
       {
         data,
         section: sect,
+        courseId,
       },
       {
         onSuccess: () => {
@@ -60,6 +65,7 @@ function OnDemandVideoPopover({ children, className, id, section, video }) {
       {
         data,
         section: sect,
+        courseId,
       },
       {
         onSuccess: () => {
@@ -89,6 +95,7 @@ function OnDemandVideoPopover({ children, className, id, section, video }) {
       {
         data,
         section: sect,
+        courseId,
       },
       {
         onSuccess: () => {
@@ -107,6 +114,7 @@ function OnDemandVideoPopover({ children, className, id, section, video }) {
       {
         data,
         section: sect,
+        courseId,
       },
       {
         onSuccess: () => {
@@ -118,7 +126,7 @@ function OnDemandVideoPopover({ children, className, id, section, video }) {
 
   const handleDelete = (sect, id) => {
     deleteVideo(
-      { section: sect, id },
+      { section: sect, id, courseId },
       {
         onSuccess: () => {
           setOpenPopover(false);
@@ -211,11 +219,14 @@ function OnDemandVideoPopover({ children, className, id, section, video }) {
           <button
             className="flex w-full items-center gap-1 py-3 text-[#667185] hover:bg-accent"
             onClick={() => handleDelete(section, id)}
+            disabled={isDeleting}
           >
             <span className="text-xl">
               <TrashCan />
             </span>
-            <span className="text-sm">Delete</span>
+            <span className="text-sm">
+              {isDeleting ? "loading..." : "Delete"}
+            </span>
           </button>
         </div>
       </PopoverContent>

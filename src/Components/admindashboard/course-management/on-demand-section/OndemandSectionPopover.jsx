@@ -23,6 +23,7 @@ import EditOnDemandSectionForm from "./EditOnDemandSectionForm";
 import { Video } from "lucide-react";
 import AddVideoForm from "./AddVideoForm";
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 
 function OndemandSectionPopover({ children, className, section, course }) {
   const [addVideoModal, setAddVideoModal] = useState(false);
@@ -37,16 +38,23 @@ function OndemandSectionPopover({ children, className, section, course }) {
   const { moveToBottom, isMovingToBottom } = useMoveSectionToBotton();
   const { deleteSection, isDeleting } = useDeleteOndemandSection();
 
+  const params = useParams();
+
+  const courseId = params.courseId ?? localStorage.getItem("courseId");
+
   const handleMoveUp = (sect) => {
     const data = {
       section: sect,
       direction: "forward",
     };
-    moveUP(data, {
-      onSuccess: () => {
-        setOpenPopover(false);
+    moveUP(
+      { data, courseId },
+      {
+        onSuccess: () => {
+          setOpenPopover(false);
+        },
       },
-    });
+    );
   };
 
   const handleMoveDown = (sect) => {
@@ -54,22 +62,28 @@ function OndemandSectionPopover({ children, className, section, course }) {
       section: sect,
       direction: "backward",
     };
-    moveDown(data, {
-      onSuccess: () => {
-        setOpenPopover(false);
+    moveDown(
+      { data, courseId },
+      {
+        onSuccess: () => {
+          setOpenPopover(false);
+        },
       },
-    });
+    );
   };
   const handleMoveTop = (sect) => {
     const data = {
       section: sect,
       direction: "toFront",
     };
-    moveToTop(data, {
-      onSuccess: () => {
-        setOpenPopover(false);
+    moveToTop(
+      { data, courseId },
+      {
+        onSuccess: () => {
+          setOpenPopover(false);
+        },
       },
-    });
+    );
   };
 
   const handleMoveBottom = (sect) => {
@@ -77,20 +91,25 @@ function OndemandSectionPopover({ children, className, section, course }) {
       section: sect,
       direction: "toBack",
     };
-    moveToBottom(data, {
-      onSuccess: () => {
-        setOpenPopover(false);
+    moveToBottom(
+      { data, courseId },
+      {
+        onSuccess: () => {
+          setOpenPopover(false);
+        },
       },
-    });
+    );
   };
 
   const handleDelete = (sect) => {
-    console.log("delete", sect);
-    deleteSection(sect, {
-      onSuccess: () => {
-        setOpenPopover(false);
+    deleteSection(
+      { section: sect, courseId },
+      {
+        onSuccess: () => {
+          setOpenPopover(false);
+        },
       },
-    });
+    );
   };
 
   return (

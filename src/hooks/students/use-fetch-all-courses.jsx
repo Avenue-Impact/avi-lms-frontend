@@ -20,7 +20,7 @@ export const useFetchAllCourses = () => {
 export const previewCourses = async (courseId) => {
   // https://avi-lms-backend.onrender.com/api/v1/courses/:courseId?promocode=854B019880
   //avi-lms-backend.onrender.com/api/v1/courses/:courseId
-  https: return await axios.get(`${STUDENT_BASE_URL}/courses/${courseId}`);
+  return await axios.get(`${STUDENT_BASE_URL}/courses/${courseId}`);
 };
 
 export const usePreviewCourses = (courseId) => {

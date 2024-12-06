@@ -5,9 +5,8 @@ import Cookies from "js-cookie"
 import toast from "react-hot-toast"
 
 
-const mutateVideo = async ({ section, id }) => {
-  // https://avi-lms-backend.onrender.com/api/v1/admins/courses/:courseId/on-demand-section/:section/recordings/:videoId
-  const courseId = localStorage.getItem('courseId')
+const mutateVideo = async ({ section, id, courseId }) => {
+
   const token = Cookies.get('adminToken')
 
 

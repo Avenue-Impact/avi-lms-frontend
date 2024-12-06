@@ -11,6 +11,8 @@ import { useQuery } from "@tanstack/react-query";
 
 import { getSingleCohort } from "@/services/api";
 import VideoSectionPopover from "./VideoSectionPopover";
+import { useGetSingleCohort } from "@/hooks/course-management/use-get-singleCohorts";
+import { useParams, useSearchParams } from "react-router-dom";
 
 const months = [
   "Jan",
@@ -44,10 +46,14 @@ const formatDate = (date) => {
 };
 
 const CoursesRecordedLiveSession = () => {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["get-single-cohort"],
-    queryFn: getSingleCohort,
-  });
+  const params = useParams();
+  const [queryString] = useSearchParams();
+
+  const courseId = params.courseId ?? localStorage.getItem("courseId");
+  const cohortId =
+    queryString.get("cohortId") ?? localStorage.getItem("cohortId");
+
+  const { data, isLoading, error } = useGetSingleCohort(courseId, cohortId);
 
   // console.log(isLoading, isError, data);
 
@@ -58,8 +64,17 @@ const CoursesRecordedLiveSession = () => {
     return <p>{"something went wrong..."}</p>;
   }
   if (data) {
-    data?.data?.data?.recorded_sessions.length < 1 &&
+    if (data?.data?.data?.recorded_sessions.length < 1) {
       localStorage.setItem("recordedSection", 2);
+    }
+    !localStorage.getItem("recordedSection") &&
+      localStorage.setItem(
+        "recordedSection",
+        data?.data?.data?.recorded_sessions.length + 1,
+      );
+
+    // data?.data?.data?.recorded_sessions.length < 1 &&
+    //   localStorage.setItem("recordedSection", 2);
     return (
       <aside className="overflow-y-auto overflow-x-hidden">
         {data?.data?.data?.recorded_sessions.length < 1 ? (

@@ -4,9 +4,8 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 
-const editDemandSection = async ({ data, section }) => {
+const editDemandSection = async ({ data, section, courseId }) => {
   const token = Cookies.get("adminToken");
-  const courseId = localStorage.getItem("courseId");
 
   return await axios.patch(
     `${BASE_URL}/courses/${courseId}/on-demand-section/${section}`,

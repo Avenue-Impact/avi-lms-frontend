@@ -1,19 +1,20 @@
 import { useState } from "react";
 
 import CourseManagementSection from "@/Components/admindashboard/course-management/courses/CourseManagementSection";
-import StudentManagement from "@/Components/admindashboard/course-management/courses/StudentManagement";
 import LinkList from "@/Components/LinkList";
 
+import LiveSessionStudentManagement from "@/Components/admindashboard/course-management/courses/LiveSessionStudentManagement";
 import { FaLongArrowAltLeft } from "react-icons/fa";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 function CourseInfomation() {
   const [queryString] = useSearchParams();
   const navigate = useNavigate();
+
+  const cohort = queryString.get("cohort");
+
   const [active, setActive] = useState("course-section");
 
-  const month = queryString.get("month");
-  const year = queryString.get("year");
   return (
     <div className="mt-12">
       <header className="flex items-center justify-between">
@@ -33,7 +34,7 @@ function CourseInfomation() {
             </span>
           </button>
           <p className="text-xl font-medium text-black lg:text-2xl 2xl:text-2xl">
-            {month} {year}
+            {cohort}
           </p>
         </div>
         <ul className="flex items-center gap-4 *:capitalize">
@@ -54,7 +55,7 @@ function CourseInfomation() {
         </ul>
       </header>
       {active === "course-section" && <CourseManagementSection />}
-      {active === "course-management" && <StudentManagement />}
+      {active === "course-management" && <LiveSessionStudentManagement />}
     </div>
   );
 }

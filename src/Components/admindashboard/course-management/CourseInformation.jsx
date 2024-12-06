@@ -1,8 +1,15 @@
+import { useParams } from "react-router-dom";
 import PreviewCourseVideo from "../../../assets/video/aca3d49307cab662ec1e91becdd52cb4-720p-preview.mp4";
 import CourseInfo from "./publish-page/CourseInfo";
+import { useFetchVideo } from "@/hooks/course-management/use-fetch-taster-video";
 import CourseType from "./publish-page/CourseType";
 
 function CourseInformation() {
+  const { courseId } = useParams();
+
+  // const { data, isLoading } = useFetchVideo(courseId);
+  // console.log({ data, isLoading });
+
   return (
     <section className="space-y-10">
       <div className="bg-[#23314A] p-7">
@@ -13,8 +20,8 @@ function CourseInformation() {
         ></video>
       </div>
 
-      <CourseInfo editButton={true} />
-      <CourseType editButton={true} />
+      <CourseInfo editButton={true} courseId={courseId} />
+      <CourseType editButton={true} courseId={courseId} />
     </section>
   );
 }

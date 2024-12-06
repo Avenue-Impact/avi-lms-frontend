@@ -1,13 +1,9 @@
 import { getSingleCohort } from "@/services/api";
 import { useQuery } from "@tanstack/react-query";
 
-export const useGetSingleCohort = () => {
-  const { data: cohortData } = useQuery({
-    queryKey: ["get-single-cohort"],
-    queryFn: getSingleCohort,
+export const useGetSingleCohort = (courseId, cohortId) => {
+  return useQuery({
+    queryKey: ["get-single-cohort", { courseId, cohortId }],
+    queryFn: () => getSingleCohort(courseId, cohortId),
   });
-
-  return {
-    cohortData,
-  };
 };

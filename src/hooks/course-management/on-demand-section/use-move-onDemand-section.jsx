@@ -4,8 +4,7 @@ import { BASE_URL } from "@/constant";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
-const moveSection = async (data) => {
-  const courseId = localStorage.getItem("courseId");
+const moveSection = async ({ data, courseId }) => {
   const token = Cookies.get("adminToken");
 
   const url = `${BASE_URL}/courses/${courseId}/on-demand/move-section`;

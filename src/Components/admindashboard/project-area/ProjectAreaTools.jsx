@@ -4,7 +4,13 @@ import { GroupIcon } from "@/Components/Icon";
 import { LayoutDashboard } from "lucide-react";
 import { FaArrowLeft } from "react-icons/fa6";
 
-function ProjectAreaTools({ setModalTab, setModal, id }) {
+function ProjectAreaTools({
+  setModalTab,
+  setModal,
+
+  selectedCourse,
+  selectedCohort,
+}) {
   const navigate = useNavigate();
   const handleSelect = (path) => {
     navigate(path);
@@ -21,8 +27,9 @@ function ProjectAreaTools({ setModalTab, setModal, id }) {
           <FaArrowLeft />
         </button>
         <h2 className="text-2xl font-bold text-[#101928]">
-          Project Area and Tools & resources
-          {id}
+          {/* Project Area and Tools & resources */}
+          {selectedCourse.title}
+          {/* {id} */}
         </h2>
       </div>
       <p className="mb-6 mt-3 text-[#667185]">
@@ -32,7 +39,11 @@ function ProjectAreaTools({ setModalTab, setModal, id }) {
       <div className="space-y-5">
         <div
           className="group w-full max-w-[400px] cursor-pointer rounded-lg bg-[#D0D5DD] px-6 py-12 transition-all duration-200 ease-linear hover:bg-primary-color-600"
-          onClick={() => handleSelect(`/admin/project-area/${id}/general`)}
+          onClick={() =>
+            handleSelect(
+              `/admin/project-area/${selectedCourse.id}/general?courseTitle=${selectedCourse.title}&cohortId=${selectedCohort.cohortId}&cohort=${selectedCohort.cohort}`,
+            )
+          }
         >
           <div className="flex items-start gap-[10px]">
             <span className="block w-fit rounded-[5.5px] bg-white p-[11.2px] duration-200 group-hover:bg-[#FFEBF0]">
@@ -49,7 +60,11 @@ function ProjectAreaTools({ setModalTab, setModal, id }) {
         </div>
         <div
           className="group w-full max-w-[400px] cursor-pointer rounded-lg bg-[#D0D5DD] px-6 py-12 transition-all duration-200 ease-linear hover:bg-primary-color-600"
-          onClick={() => handleSelect(`/admin/project-area/${id}/group`)}
+          onClick={() =>
+            handleSelect(
+              `/admin/project-area/${selectedCourse.id}/group/?courseTitle=${selectedCourse.title}&cohortId=${selectedCohort.cohortId}&cohort=${selectedCohort.cohort}`,
+            )
+          }
         >
           <div className="flex items-start gap-[10px]">
             <span className="block w-fit rounded-[5.5px] bg-white p-[11.2px] duration-200 group-hover:bg-[#FFEBF0]">

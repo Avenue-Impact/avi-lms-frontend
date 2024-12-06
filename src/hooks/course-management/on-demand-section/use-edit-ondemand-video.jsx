@@ -4,8 +4,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 
-const editVideo = async ({ data, section, id }) => {
-  const courseId = localStorage.getItem("courseId");
+const editVideo = async ({ data, section, id, courseId }) => {
   const token = Cookies.get("adminToken");
 
   const url = `${BASE_URL}/courses/${courseId}/on-demand-section/${section}/recordings/${id}`;

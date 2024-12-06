@@ -1,11 +1,12 @@
 import { CommonButton } from "@/Components/ui/button";
 import { Label } from "@/Components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/Components/ui/radio-group";
-import { useGetSingleCohort } from "@/hooks/course-management/use-get-singleCohorts";
+import { useFetchCourseInfo } from "@/hooks/course-management/use-fetch-course-information";
 
-import { useQuery } from "@tanstack/react-query";
 import { HiOutlinePencil } from "react-icons/hi";
 import { ClipLoader } from "react-spinners";
+import EditModal from "../on-demand-section/EditModal";
+import EditCourseType from "../courses/edit-course-type/EditCourseType";
 
 const writeDay = (dayString) => {
   if (!dayString || !dayString.includes("-")) {
@@ -39,12 +40,8 @@ const calcDiscountPercentage = (price, discount) => {
   return percent.toFixed(2);
 };
 
-function CourseType({ editButton = false }) {
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["get-course-info"],
-  });
-
-  const { cohortData: cohort } = useGetSingleCohort();
+function CourseType({ editButton = false, courseId }) {
+  const { data, isLoading, isError } = useFetchCourseInfo(courseId);
 
   if (isLoading)
     return (
@@ -60,21 +57,30 @@ function CourseType({ editButton = false }) {
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-medium text-[#344054]">Course Type</h2>
         {editButton && (
-          <CommonButton variant="outline" className="space-x-2 text-[#667185]">
-            <span className="text-lg">
-              <HiOutlinePencil />
-            </span>
-            <span>Edit section</span>
-          </CommonButton>
+          <EditModal
+            header="Edit course type"
+            form={<EditCourseType data={data} />}
+          >
+            <CommonButton
+              variant="outline"
+              className="space-x-2 text-[#667185]"
+            >
+              <span className="text-lg">
+                <HiOutlinePencil />
+              </span>
+              <span>Edit section</span>
+            </CommonButton>
+          </EditModal>
         )}
       </div>
       <main className="mt-8 grid grid-cols-2">
-        {!cohort?.data?.data.cohort ? (
+        {data?.data?.data?.course?.cohorts.length === 0 ? (
           <div>NO Live Course ....</div>
         ) : (
           <section className="border-r border-r-[#F0F2F5] pr-11">
             <h3 className="w-full max-w-[530px] text-xl font-light text-[#23314A]">
-              Live session + Mentoring ({cohort?.data?.data.cohort})
+              Live session + Mentoring (
+              {data?.data?.data.course.cohorts.at(0).cohort ?? "no cohort"})
             </h3>
             <div className="mb-3 mt-[42px] flex gap-6">
               <span className="text-xl font-semibold text-[#23314A]">
@@ -112,22 +118,26 @@ function CourseType({ editButton = false }) {
               <h3 className="mb-6 text-xl font-light text-[#23314A]">
                 Select Cohort
               </h3>
-
               <RadioGroup defaultValue="" className="space-y-3">
-                <div className="flex items-center space-x-2 rounded-md border border-[#E0E0E0] px-3 py-[18px]">
-                  <RadioGroupItem
-                    value={cohort?.data?.data.cohort}
-                    id={cohort?.data?.data.cohort}
-                    className="border-[#98A2B3]"
-                    disabled={true}
-                  />
-                  <Label
-                    htmlFor={cohort?.data?.data.cohort}
-                    className="font-normal capitalize text-[#8F8F8E]"
+                {data?.data?.data?.course?.cohorts.map((cohort) => (
+                  <div
+                    className="flex items-center space-x-2 rounded-md border border-[#E0E0E0] px-3 py-[18px]"
+                    key={cohort.id}
                   >
-                    {cohort?.data?.data.cohort}
-                  </Label>
-                </div>
+                    <RadioGroupItem
+                      value={cohort.cohort}
+                      id={cohort.cohort}
+                      className="border-[#98A2B3]"
+                      disabled={true}
+                    />
+                    <Label
+                      htmlFor={cohort.cohort}
+                      className="font-normal capitalize text-[#8F8F8E]"
+                    >
+                      {cohort.cohort}
+                    </Label>
+                  </div>
+                ))}
               </RadioGroup>
             </div>
           </section>
@@ -142,7 +152,7 @@ function CourseType({ editButton = false }) {
               return (
                 <div
                   className="flex items-center space-x-2 rounded-md border border-[#E0E0E0] px-3 py-[18px]"
-                  key={item._id}
+                  key={item.duration}
                 >
                   <RadioGroupItem
                     value={item.duration}

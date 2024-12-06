@@ -19,6 +19,15 @@ import { CommonButton } from "@/Components/ui/button";
 import { courseInformationSchema } from "@/lib/form-schemas/forms-schema";
 // import MyCKEditor from '../Components/pages/CDKEditor'
 
+const stringToArray = (str) => {
+  let arr = str;
+  if (arr.endsWith("\n")) {
+    arr = arr.slice(0, -1);
+    return arr.split("\n");
+  }
+  return arr.split("\n");
+};
+
 const CourseManagementPage = () => {
   const [image, setImage] = useState({ file: null, preview: null });
   const [video, setVideo] = useState({ file: null, preview: null });
@@ -81,10 +90,10 @@ const CourseManagementPage = () => {
 
     const courses = {
       title: courseTitle,
-      tools_and_technologies: technologies.split("\n"),
-      benefits: benefits.split("\n"),
-      program_highlights: highlight.split("\n"),
-      course_includes: courseIncludes.split("\n"),
+      tools_and_technologies: stringToArray(technologies),
+      benefits: stringToArray(benefits),
+      program_highlights: stringToArray(highlight),
+      course_includes: stringToArray(courseIncludes),
       overview: overview,
       coverImage: image.file,
     };
@@ -107,9 +116,18 @@ const CourseManagementPage = () => {
       };
     }
 
-    editCourseInformation(courseToUpload, {
-      onSuccess: () => setActiveTab((prev) => prev + 1),
-    });
+    editCourseInformation(
+      {
+        data: courseToUpload,
+        courseId: courseId,
+      },
+      {
+        onSuccess: (data) => {
+          setActiveTab((prev) => prev + 1);
+          localStorage.setItem("course-information", JSON.stringify(data.data));
+        },
+      },
+    );
   };
 
   const CreateCourse = async (data) => {
@@ -140,10 +158,10 @@ const CourseManagementPage = () => {
 
     const courses = {
       title: courseTitle,
-      tools_and_technologies: technologies.split("\n"),
-      benefits: benefits.split("\n"),
-      program_highlights: highlight.split("\n"),
-      course_includes: courseIncludes.split("\n"),
+      tools_and_technologies: stringToArray(technologies),
+      benefits: stringToArray(benefits),
+      program_highlights: stringToArray(highlight),
+      course_includes: stringToArray(courseIncludes),
       overview: overview,
       coverImage: image.file,
     };

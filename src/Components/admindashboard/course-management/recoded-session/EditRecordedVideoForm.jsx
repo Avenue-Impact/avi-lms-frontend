@@ -9,11 +9,17 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useParams, useSearchParams } from "react-router-dom";
 
 const EditRecordedVideoForm = ({ section, record, setModal }) => {
   const [video, setVideo] = useState({ file: null, preview: null });
   const [errorMessage, setErrorMessage] = useState("");
-  console.log(section, record);
+  const params = useParams();
+  const [queryString] = useSearchParams();
+
+  const courseId = params.courseId ?? localStorage.getItem("courseId");
+  const cohortId =
+    queryString.get("cohortId") ?? localStorage.getItem("cohortId");
 
   const videoRef = useRef();
   const { editRecordedVideo, isEditing } = useEditRecordedVideo();
@@ -67,7 +73,7 @@ const EditRecordedVideoForm = ({ section, record, setModal }) => {
     }
 
     editRecordedVideo(
-      { data: recorded, id: record.id, section },
+      { data: recorded, id: record.id, section, cohortId, courseId },
       {
         onSuccess: () => {
           form.reset();

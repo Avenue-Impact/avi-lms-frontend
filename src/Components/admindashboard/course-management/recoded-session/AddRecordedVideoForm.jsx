@@ -10,9 +10,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { useParams, useSearchParams } from "react-router-dom";
 
 const AddRecordedVideoForm = ({ sectionToAddVideo, setVideoModal }) => {
-  const cohort = localStorage.getItem("cohorts");
+  const [queryString] = useSearchParams();
+  const params = useParams();
+  let section = localStorage.getItem("recordedSection")
+    ? localStorage.getItem("recordedSection")
+    : 2;
+
+  const cohort = queryString.get("cohort") ?? localStorage.getItem("cohorts");
+  const courseId = params.courseId ?? localStorage.getItem("courseId");
   const { title, overview } = sectionToAddVideo;
 
   const [video, setVideo] = useState({ file: null, preview: null });
@@ -75,15 +83,18 @@ const AddRecordedVideoForm = ({ sectionToAddVideo, setVideoModal }) => {
       };
     }
 
-    createRecordedSession(recorded, {
-      onSuccess: () => {
-        setVideoModal((prev) => !prev);
-        form.reset();
-        setVideo((prev) => {
-          return { ...prev, file: null, preview: null };
-        });
+    createRecordedSession(
+      { data: recorded, courseId, section },
+      {
+        onSuccess: () => {
+          setVideoModal((prev) => !prev);
+          form.reset();
+          setVideo((prev) => {
+            return { ...prev, file: null, preview: null };
+          });
+        },
       },
-    });
+    );
   };
 
   return (

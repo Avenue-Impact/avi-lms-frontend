@@ -12,6 +12,7 @@ import { fetchDemandCourse } from "@/services/api";
 
 import OndemandSectionPopover from "./OndemandSectionPopover";
 import OnDemandVideoPopover from "./OnDemandVideoPopover";
+import { useFetchondemandCourse } from "@/hooks/course-management/on-demand-section/use-fetch-ondemand-course";
 
 const months = [
   "Jan",
@@ -44,11 +45,8 @@ const formatDate = (date) => {
   return `${day} ${month}, ${year} | ${get12hrs}:${min}${amOrPm}`;
 };
 
-const OnDemandRecordedSection = () => {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["get-demand-course"],
-    queryFn: fetchDemandCourse,
-  });
+const OnDemandRecordedSection = ({ courseId }) => {
+  const { data, isLoading, error } = useFetchondemandCourse(courseId);
 
   // console.log(isLoading, isError, data);
 
@@ -67,7 +65,8 @@ const OnDemandRecordedSection = () => {
     if (data?.data?.data.length < 1) {
       localStorage.setItem("demandSectionNumber", 1);
     }
-    localStorage.setItem("demandSectionNumber", data?.data?.data.length + 1);
+    !localStorage.getItem("demandSectionNumber") &&
+      localStorage.setItem("demandSectionNumber", data?.data?.data.length);
 
     return (
       <aside className="overflow-y-auto overflow-x-hidden">

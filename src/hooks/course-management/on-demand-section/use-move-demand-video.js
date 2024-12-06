@@ -1,11 +1,10 @@
 import { BASE_URL } from "@/constant";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 
-const moveVideo = async ({ data, section }) => {
-  const courseId = localStorage.getItem('courseId')
+const moveVideo = async ({ data, section, courseId }) => {
   const token = Cookies.get('adminToken')
 
 

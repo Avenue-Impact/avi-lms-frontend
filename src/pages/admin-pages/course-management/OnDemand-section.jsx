@@ -10,6 +10,7 @@ import CreateOndemandForm from "@/Components/admindashboard/course-management/on
 
 function OnDemandCourseSection() {
   const { setActiveTab } = useCourseManagementInfo();
+  const courseId = localStorage.getItem("courseId");
 
   return (
     <>
@@ -26,10 +27,10 @@ function OnDemandCourseSection() {
       </div>
       <main className="grid grid-cols-[3fr_1fr] gap-10 rounded-[10px] border-2 border-[#F0F2F5] p-12 pr-6">
         <div>
-          <CreateOndemandForm />
+          <CreateOndemandForm courseId={courseId} />
         </div>
         <div className="overflow-y-hidden">
-          <OnDemandRecordedSection />
+          <OnDemandRecordedSection courseId={courseId} />
         </div>
       </main>
 
@@ -42,7 +43,7 @@ function OnDemandCourseSection() {
         </CommonButton>
 
         <CommonButton
-          className=" block bg-primary-color-600 font-normal"
+          className="block bg-primary-color-600 font-normal"
           onClick={() => setActiveTab((prev) => prev + 1)}
         >
           Save and Continue

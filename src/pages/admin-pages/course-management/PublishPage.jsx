@@ -10,6 +10,9 @@ import { ScrollRestoration } from "react-router-dom";
 function PublishPage() {
   const { setActiveTab } = useCourseManagementInfo();
   const { publish, isPublishing } = usePublishCourse();
+
+  const courseId = localStorage.getItem("courseId");
+
   const handlePublish = () => {
     publish(
       {},
@@ -37,8 +40,8 @@ function PublishPage() {
 
       <div>
         <div className="space-y-14">
-          <CourseInfo />
-          <CourseType />
+          <CourseInfo courseId={courseId} />
+          <CourseType courseId={courseId} />
           {/* <PublishCourseSection /> */}
         </div>
 

@@ -1,14 +1,9 @@
 import { fetchCohorts } from "@/services/api";
 import { useQuery } from "@tanstack/react-query";
 
-export const useGetAllCohorts = () => {
-  const { data: cohorts, isLoading: isFetching } = useQuery({
-    queryKey: ["get-cohorts"],
-    queryFn: fetchCohorts,
+export const useGetAllCohorts = (courseId) => {
+  return useQuery({
+    queryKey: ["get-cohorts", courseId],
+    queryFn: () => fetchCohorts(courseId),
   });
-
-  return {
-    cohorts,
-    isFetching,
-  };
 };

@@ -16,6 +16,7 @@ import { ClipLoader } from "react-spinners";
 import CoursesRecordedLiveSession from "@/Components/admindashboard/course-management/recoded-session/CoursesRecordedLiveSession";
 import { useCourseManagementInfo } from "@/hooks/useCourseManagementInfo";
 import { useQuery } from "@tanstack/react-query";
+import { useGetSingleCohort } from "@/hooks/course-management/use-get-singleCohorts";
 
 function RecordedSession() {
   const [video, setVideo] = useState({ file: null, preview: null });
@@ -23,9 +24,9 @@ function RecordedSession() {
   const videoRef = useRef();
   const [disabled, setDisabled] = useState(true);
 
-  const { data } = useQuery({
-    queryKey: ["get-single-cohort"],
-  });
+  const courseId = localStorage.getItem("courseId");
+  const cohortId = localStorage.getItem("cohortId");
+  const { data } = useGetSingleCohort(courseId, cohortId);
 
   const { createRecordedSession, isCreating, form } =
     useCreateRecordedSession();
@@ -64,6 +65,9 @@ function RecordedSession() {
   const onSubmit = async (data) => {
     const { title, video_title, overview } = data;
     const cohort = localStorage.getItem("cohorts");
+    let section = localStorage.getItem("recordedSection")
+      ? localStorage.getItem("recordedSection")
+      : 2;
 
     if (!video.file && form.watch("video_from_url").length < 1)
       return toast.error("Please insert a video or video url");
@@ -86,15 +90,18 @@ function RecordedSession() {
     }
 
     console.log(recorded);
-    createRecordedSession(recorded, {
-      onSuccess: () => {
-        setDisabled(false);
-        form.reset();
-        setVideo((prev) => {
-          return { ...prev, file: null, preview: null };
-        });
+    createRecordedSession(
+      { data: recorded, courseId, section },
+      {
+        onSuccess: () => {
+          setDisabled(false);
+          form.reset();
+          setVideo((prev) => {
+            return { ...prev, file: null, preview: null };
+          });
+        },
       },
-    });
+    );
   };
 
   return (
