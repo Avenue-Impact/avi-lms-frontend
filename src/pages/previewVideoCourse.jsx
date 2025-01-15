@@ -18,6 +18,8 @@ import { Link } from "react-router-dom";
 import { usePreviewCourses } from "@/hooks/students/use-fetch-all-courses";
 import { useFetchVideo } from "@/hooks/students/use-fetch-taster-video";
 import { Skeleton } from "@/Components/ui/skeleton";
+import { useAddToWishlist } from "@/hooks/students/use-add-to-wishlist";
+import { useRemoveFromWishlist } from "@/hooks/students/use-remove-from-wishlist";
 
 const PreviewVideoCourse = () => {
   const navigate = useNavigate();
@@ -26,11 +28,38 @@ const PreviewVideoCourse = () => {
   const { previewCourse, isLoading } = usePreviewCourses(courseId);
   console.log("previewCourse", previewCourse);
   console.log("isLoading", isLoading);
+  const [addedToWishList, setAddedToWishList] = useState(false);
+
+  const { mutate, isPending } = useAddToWishlist();
+
+  const { removeFromList, isRemoving } = useRemoveFromWishlist();
 
   const [selectedOption, setSelectedOption] = useState("");
 
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
+  };
+
+  const handleAddToWishlist = () => {
+    mutate(
+      { courseId },
+      {
+        onSuccess: () => {
+          setAddedToWishList(true);
+        },
+      },
+    );
+  };
+
+  const handleRemoveFromWishlist = () => {
+    removeFromList(
+      { courseId },
+      {
+        onSuccess: () => {
+          setAddedToWishList(false);
+        },
+      },
+    );
   };
 
   const original_price =
@@ -156,16 +185,31 @@ const PreviewVideoCourse = () => {
                   </Link>
 
                   <div className="col-span-2 pt-4">
-                    <div
+                    <button
                       className="flex h-10 w-10 items-center justify-center rounded-full border-[1px]"
                       style={{ borderColor: "#CC1747" }}
+                      type="button"
+                      onClick={
+                        addedToWishList
+                          ? handleRemoveFromWishlist
+                          : handleAddToWishlist
+                      }
+                      disabled={isPending || isRemoving}
                     >
-                      <FontAwesomeIcon
-                        icon={faHeart}
-                        className="text-[#CC1747]"
-                        style={{ borderColor: "#CC1747" }}
-                      />
-                    </div>
+                      {addedToWishList ? (
+                        <FontAwesomeIcon
+                          icon={faHeart}
+                          className="text-[#CC1747]"
+                          style={{ borderColor: "#CC1747" }}
+                        />
+                      ) : (
+                        <FontAwesomeIcon
+                          icon={faHeart}
+                          className="text-[#00002]"
+                          style={{ borderColor: "#CC1747" }}
+                        />
+                      )}
+                    </button>
                   </div>
                 </div>
               </div>

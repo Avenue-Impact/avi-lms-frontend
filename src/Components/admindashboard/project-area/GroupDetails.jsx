@@ -175,7 +175,7 @@ const GroupDetails = () => {
               </CommonButton>
             </div>
             <div>
-              <CreateMultipleGroupForm />
+              <CreateMultipleGroupForm setMultipleModal={setMultipleModal} />
             </div>
           </BorderCard>
           {success && (

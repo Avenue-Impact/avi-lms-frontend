@@ -11,7 +11,7 @@ function RegisterSuccess({ title, text, setModal, path }) {
 
   const handleModal = () => {
     setModal((prev) => !prev);
-    navigate(path);
+    path && navigate(path);
   };
 
   return (

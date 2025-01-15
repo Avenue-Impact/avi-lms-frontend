@@ -12,6 +12,7 @@ const streamVideo = (courseId, cohortId, section, videoId) => {
       responseType: "blob",
       headers: {
         Authorization: `Bearer ${Cookies.get("adminToken")}`,
+        Range: "bytes=0-",
       },
     },
   );

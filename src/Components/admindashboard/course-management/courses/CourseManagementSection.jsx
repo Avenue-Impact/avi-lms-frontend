@@ -9,6 +9,8 @@ import EditLiveSessionForm from "../live-session/EditLiveSession";
 import EditLiveSession from "../live-session/EditLiveSession";
 import { useStreamRecordedVideo } from "@/hooks/course-management/recorded-section/use-stream-recorded-video";
 import { Skeleton } from "@/Components/ui/skeleton";
+import { useNavigate } from "react-router-dom";
+// import StartMeeting from "./StartMeeting";
 
 const amOrPm = (timeString) => {
   const hour = timeString.split(":")[0];
@@ -27,7 +29,7 @@ function CourseManagementSection() {
   const [isEdit, setIsEdit] = useState(false);
   const [queryString] = useSearchParams();
 
-  const [showLive, setShowLive] = useState("");
+  const [showLive, setShowLive] = useState("live");
 
   const { courseId } = useParams();
 
@@ -53,7 +55,7 @@ function CourseManagementSection() {
           {showLive === "contents" && (
             <VideoContents sectionDetails={sectionDetails} videoId={videoId} />
           )}
-          {showLive === "" && <>click to show content</>}
+          {/* {showLive === "" && <>click to show content</>} */}
 
           <AdminCoursesSection
             data={data}
@@ -70,6 +72,11 @@ function CourseManagementSection() {
 
 const LiveContent = ({ data }) => {
   console.log(data?.data?.data?.live_session);
+  const [meeting, setMeeting] = useState(false);
+  const [queryString] = useSearchParams();
+  const { courseId } = useParams();
+  const navigate = useNavigate();
+  const cohortId = queryString.get("cohortId");
 
   const {
     title,
@@ -81,48 +88,65 @@ const LiveContent = ({ data }) => {
     time,
   } = data?.data?.data?.live_session ?? {};
   return (
-    <div>
-      <div className="border-b border-b-[#E4E7EC] pb-4">
-        <p className="mb-10 font-poppins text-lg font-medium capitalize text-tertiary-color-900 lg:text-xl">
-          Section 1
-        </p>
-        <p className="text-sm font-medium text-[#344054]">Join Live Session</p>
-      </div>
-      <section className="mt-7 px-5 md:mt-10 md:px-10 lg:mt-16">
-        <h2 className="text-xl font-medium text-black md:text-2xl">
-          {title ?? ""}
-        </h2>
-        <p className="my-5 text-lg font-[275] leading-[38.4px] text-tertiary-color-700 md:text-[2rem] lg:my-8">
-          {subtitle ?? ""}
-        </p>
-        <div className="space-y-3">
-          <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
-            Started from: {started_from && formatDate(started_from, false)}
-          </p>
-          <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
-            Meeting date: {started_from && formatDate(end_date, false)}{" "}
-            {time ?? ""}
-            {amOrPm(time ?? "")} UTC
-          </p>
-          <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
-            Add to: iCal Expor, Google Calendar
-          </p>
-          <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
-            Password: {password ?? ""}
-          </p>
+    <>
+      {meeting ? (
+        "<StartMeeting setMeeting={setMeeting} />"
+      ) : (
+        <div>
+          <div className="border-b border-b-[#E4E7EC] pb-4">
+            <p className="mb-10 font-poppins text-lg font-medium capitalize text-tertiary-color-900 lg:text-xl">
+              Section 1
+            </p>
+            <p className="text-sm font-medium text-[#344054]">
+              Join Live Session
+            </p>
+          </div>
+          <section className="mt-7 px-5 md:mt-10 md:px-10 lg:mt-16">
+            <h2 className="text-xl font-medium text-black md:text-2xl">
+              {title ?? ""}
+            </h2>
+            <p className="my-5 text-lg font-[275] leading-[38.4px] text-tertiary-color-700 md:text-[2rem] lg:my-8">
+              {subtitle ?? ""}
+            </p>
+            <div className="space-y-3">
+              <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
+                Started from: {started_from && formatDate(started_from, false)}
+              </p>
+              <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
+                Meeting date: {started_from && formatDate(end_date, false)}{" "}
+                {time ?? ""}
+                {amOrPm(time ?? "")} UTC
+              </p>
+              <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
+                Add to: iCal Expor, Google Calendar
+              </p>
+              <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
+                Password: {password ?? ""}
+              </p>
+            </div>
+            <button
+              className={cn(
+                "mt-5 rounded-md px-4 py-2 text-sm md:text-base lg:mt-8",
+                isLive
+                  ? "bg-primary-color-600 text-white hover:bg-primary-color-600"
+                  : "bg-tertiary-color-700 text-[#C7D7F4] hover:bg-[#C7D7F4] hover:text-tertiary-color-700",
+              )}
+            >
+              {isLive ? "Join meeting" : "Meeting hasn’t started yet"}
+            </button>
+            <button
+              onClick={() => {
+                navigate(
+                  `/meeting/${courseId}??title=${queryString.get("title")}&cohort=${queryString.get("cohort")}&cohortId=${cohortId}`,
+                );
+              }}
+            >
+              join meeting
+            </button>
+          </section>
         </div>
-        <button
-          className={cn(
-            "mt-5 rounded-md px-4 py-2 text-sm md:text-base lg:mt-8",
-            isLive
-              ? "bg-primary-color-600 text-white hover:bg-primary-color-600"
-              : "bg-tertiary-color-700 text-[#C7D7F4] hover:bg-[#C7D7F4] hover:text-tertiary-color-700",
-          )}
-        >
-          {isLive ? "Join meeting" : "Meeting hasn’t started yet"}
-        </button>
-      </section>
-    </div>
+      )}
+    </>
   );
 };
 

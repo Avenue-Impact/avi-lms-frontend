@@ -1,17 +1,11 @@
 import CreatedCourseCard from "../../../Components/admindashboard/course-management/CreatedCourseCard";
 
 import { useFetchAllAdminCourses } from "@/hooks/course-management/use-fetch-all-courses";
+import { formatDate } from "@/lib/utils";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const CreatedCourse = () => {
-  const formatDate = (date) => {
-    const createdAt = new Date(date);
-    const locale = navigator.language;
-
-    return new Intl.DateTimeFormat(locale).format(createdAt);
-  };
-
   const { data, isLoading, error } = useFetchAllAdminCourses(1, 10, true);
   console.log("project area", data);
 

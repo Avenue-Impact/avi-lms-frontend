@@ -19,8 +19,7 @@ import { useFetchAllCourses } from "@/hooks/students/use-fetch-all-courses";
 // import { all } from "axios";
 
 const DiscoverCourses = () => {
-  const { data: allCourses, isLoading: isFetchingAllCourses } =
-    useFetchAllCourses();
+  const { data: allCourses, isLoading: isFetchingAllCourses } = useFetchAllCourses();
   console.log("allCourses", allCourses);
   console.log("isFetchingAllCourses", isFetchingAllCourses);
 

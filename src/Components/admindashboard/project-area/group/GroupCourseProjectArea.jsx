@@ -12,6 +12,17 @@ import { useParams, useSearchParams } from "react-router-dom";
 import ConfirmDeleteModal from "../ConfirmDeleteModal";
 import CreateGroupCardForm from "./CreateGroupCardForm";
 import { useDeleteGroupCard } from "@/hooks/project-area-groups/use-delete-group-card";
+import { useFetchCourseInfo } from "@/hooks/course-management/use-fetch-course-information";
+import { useImportGroupProjectCard } from "@/hooks/project-area-groups/use-import-group-project-card";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/Components/ui/select";
 
 function GroupCourseProjectArea() {
   const [createFormModal, setCreateFormModal] = useState(false);
@@ -45,20 +56,28 @@ function GroupCourseProjectArea() {
   return (
     <>
       <BorderCard className="grid grid-cols-[1fr_2fr] rounded-[10px] p-12">
-        <div>
-          <h3 className="text-2xl font-medium text-[#344054]">
-            Course Project Area
-          </h3>
-          <p className="my-2 max-w-[297px] text-[#667185]">
-            Create cards for the Course Project area that will be used by
-            students enrolled in the course.
-          </p>
-          <CommonButton
-            className="bg-primary-color-600 font-normal"
-            onClick={() => setCreateFormModal((prev) => !prev)}
-          >
-            Create
-          </CommonButton>
+        <div className="flex h-full flex-col justify-between gap-y-20">
+          <div>
+            <h3 className="text-2xl font-medium text-[#344054]">
+              Course Project Area
+            </h3>
+            <p className="my-2 max-w-[297px] text-[#667185]">
+              Create cards for the Course Project area that will be used by
+              students enrolled in the course.
+            </p>
+            <CommonButton
+              className="bg-primary-color-600 font-normal"
+              onClick={() => setCreateFormModal((prev) => !prev)}
+            >
+              Create
+            </CommonButton>
+          </div>
+          <BorderCard className="w-full rounded-[10px] px-7 py-10">
+            <p className="font-semibold text-[#101928]">
+              Import Cards from previous cohorts
+            </p>
+            <CourseCohortSelection />
+          </BorderCard>
         </div>
         <CreatedCard
           setConfirmDeleteModal={setConfirmDeleteModal}
@@ -187,6 +206,72 @@ const CreatedCard = ({
         );
       })}
     </div>
+  );
+};
+
+const CourseCohortSelection = () => {
+  const [selectedCohort, setSelectedCohort] = useState("");
+  const [queryString] = useSearchParams();
+  const { courseId, groupId } = useParams();
+  const { data, isLoading, error } = useFetchCourseInfo(courseId);
+  const { mutate, isPending } = useImportGroupProjectCard();
+
+  const handleImport = () => {
+    const data = {
+      cohortIdToImport: selectedCohort,
+      type: "cards",
+    };
+
+    mutate({ data, courseId, cohortId: queryString.get("cohortId"), groupId });
+  };
+
+  if (isLoading) return <p className="mt-6 italic">Loading ....</p>;
+  if (error)
+    return (
+      <p className="mt-6 italic">
+        {error?.response?.data?.message ?? " Something Went Wrong"}
+      </p>
+    );
+
+  return (
+    <>
+      <div>
+        {data?.data?.data?.course.cohorts.length > 0 && (
+          <p className="text-sm font-medium text-[#475367]">Select cohort: </p>
+        )}
+        <div>
+          {data?.data?.data?.course.cohorts.length > 0 ? (
+            <Select
+              className="w-full"
+              onValueChange={(value) => setSelectedCohort(value)}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a cohort" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Cohorts</SelectLabel>
+                  {data?.data?.data?.course.cohorts.map((cohort, i) => (
+                    <SelectItem key={i} value={cohort.id}>
+                      {cohort.cohort}{" "}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          ) : (
+            <p className="italic text-slate-400">No cohort for this course</p>
+          )}
+        </div>
+      </div>
+      <CommonButton
+        className="mt-6 rounded bg-primary-color-600"
+        onClick={handleImport}
+        disabled={selectedCohort === "" || isPending}
+      >
+        Import Cards
+      </CommonButton>
+    </>
   );
 };
 

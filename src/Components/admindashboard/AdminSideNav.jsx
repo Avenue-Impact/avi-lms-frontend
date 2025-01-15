@@ -30,7 +30,7 @@ const navItem = [
   },
   {
     id: 2,
-    text: "Course Work Art",
+    text: "Course Work Area",
 
     icon: <CourseIcon />,
     active: false,

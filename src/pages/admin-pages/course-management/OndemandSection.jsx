@@ -4,7 +4,7 @@ import OnDemandAdminSection from "@/Components/admindashboard/course-management/
 import { useFetchondemandCourse } from "@/hooks/course-management/on-demand-section/use-fetch-ondemand-course";
 import { useParams } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import EditOndemandCourseSectionForm from "@/Components/admindashboard/course-management/on-demand-section/EditOndemandCourseSectionForm";
 import { useStreamVideo } from "@/hooks/course-management/on-demand-section/use-stream-ondemand-video";
 import { Skeleton } from "@/Components/ui/skeleton";
@@ -79,26 +79,102 @@ function OndemandSection() {
 
 export default OndemandSection;
 
+// const PreviewVideo = ({ videoId, section }) => {
+//   const { courseId } = useParams();
+//   const { data, isLoading, error } = useStreamVideo(courseId, section, videoId);
+
+//   if (isLoading)
+//     return (
+//       <div className="max-h-[690px] w-full text-white">
+//         <Skeleton className={"h-[400px] w-full"} />
+//       </div>
+//     );
+
+//   if (error) return <p className="text-primary-color-500"> video not found </p>;
+
+//   const blob = data && URL.createObjectURL(data?.data);
+
+//   console.log({ data, blob });
+
+//   return (
+//     <video
+//       src={blob}
+//       controls
+//       className="max-h-[699px] w-full object-cover shadow-lg lg:rounded-3xl"
+//     ></video>
+//   );
+// };
+
 const PreviewVideo = ({ videoId, section }) => {
   const { courseId } = useParams();
-  const { data, isLoading, error } = useStreamVideo(courseId, section, videoId);
+  const videoRef = useRef(null);
+  const [videoUrl, setVideoUrl] = useState(null);
+  const [currentRange, setCurrentRange] = useState("bytes=0-1048575"); // Initial range
+  const { data, isLoading, error, refetch } = useStreamVideo(
+    courseId,
+    section,
+    videoId,
+    currentRange,
+  );
 
-  if (isLoading)
+  // Generate and clean up Blob URL
+  useEffect(() => {
+    if (data?.data) {
+      const blobUrl = URL.createObjectURL(data.data);
+      setVideoUrl(blobUrl);
+
+      return () => {
+        URL.revokeObjectURL(blobUrl);
+      };
+    }
+  }, [data]);
+
+  // Update range dynamically as the video plays
+  const handleRangeUpdate = () => {
+    if (videoRef.current) {
+      const currentTime = videoRef.current.currentTime;
+      const rangeStart = Math.floor(currentTime * 500000); // Estimate byte range based on time
+      const rangeEnd = rangeStart + 1048575; // Fetch the next 1MB
+      setCurrentRange(`bytes=${rangeStart}-${rangeEnd}`);
+      refetch();
+    }
+  };
+
+  if (isLoading) {
     return (
       <div className="max-h-[690px] w-full text-white">
-        <Skeleton className={"h-[400px] w-full"} />
+        <Skeleton className="h-[400px] w-full" />
       </div>
     );
+  }
 
-  if (error) return <p className="text-primary-color-500"> video not found </p>;
+  if (error) {
+    return (
+      <div className="flex h-[400px] items-center justify-center">
+        <p className="text-lg font-semibold text-primary-color-500">
+          Unable to load video. Please check your connection or try again later.
+        </p>
+      </div>
+    );
+  }
 
-  const blob = data && URL.createObjectURL(data?.data);
+  if (!videoUrl) {
+    return (
+      <div className="flex h-[400px] items-center justify-center">
+        <p className="text-lg font-semibold text-primary-color-500">
+          Preparing video...
+        </p>
+      </div>
+    );
+  }
 
   return (
     <video
-      src={blob}
+      ref={videoRef}
+      src={videoUrl}
       controls
       className="max-h-[699px] w-full object-cover shadow-lg lg:rounded-3xl"
-    ></video>
+      onTimeUpdate={handleRangeUpdate} // Trigger range update as video plays
+    />
   );
 };

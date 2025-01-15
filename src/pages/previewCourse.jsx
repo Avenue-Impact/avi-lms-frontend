@@ -185,7 +185,7 @@ const PreviewCourse = () => {
                   "mb-5 flex w-full items-center justify-between",
                 )}
               >
-                <div className="w-full">
+                <div className="lg:w-full">
                   <p className="text-left text-[14px] text-[#23314A] md:text-[24px] md:font-[300] lg:text-[40px]">
                     Checkout related courses
                   </p>

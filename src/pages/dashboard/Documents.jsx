@@ -1,7 +1,28 @@
+import { useFetchSharedDocuments } from "@/hooks/students/use-fetch-shared-document";
 import { documents } from "@/lib/documents";
+import { useContext } from "react";
 import { RxDownload } from "react-icons/rx";
+import { useParams, useSearchParams } from "react-router-dom";
+import { DocumentContext } from "./ShareDocument";
 
-const Documents = () => {
+const Documents = ({ data }) => {
+  const { courseId } = useParams();
+  const [queryString] = useSearchParams();
+  const cohortId = data.cohort_id;
+  const { sectionActive } = useContext(DocumentContext);
+
+  const {
+    data: documentss,
+    isLoading,
+    error,
+  } = useFetchSharedDocuments(courseId, cohortId, sectionActive);
+
+  if (isLoading) return <p>Loading...</p>;
+
+  if (error)
+    return <p>{error?.response?.data?.message ?? "Something went wrong"}</p>;
+
+  console.log(documentss, sectionActive);
   return (
     <section className="bg-white pb-6 pt-0 sm:px-[22px] md:px-10 md:py-8 lg:mt-2 lg:px-4">
       <h3 className="mb-5 text-2xl font-medium capitalize text-black">
@@ -36,5 +57,18 @@ const Documents = () => {
     </section>
   );
 };
+
+function NoDocument() {
+  return (
+    <div className="py-10 text-center">
+      <h3 className="text-xl font-medium text-tertiary-color-700">
+        No shared documents found.
+      </h3>
+      <p className="text-tertiary-color-600 text-sm font-light">
+        You haven&apos;t shared any documents yet.
+      </p>
+    </div>
+  );
+}
 
 export default Documents;

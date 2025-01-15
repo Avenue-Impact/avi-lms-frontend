@@ -23,7 +23,7 @@ const CreatedCourseCard = ({
       </div>
 
       <div className="rounded-b-lg px-[7px] py-[6px] text-[14px] text-[#667185] md:py-2 lg:py-[14px] lg:text-[16px]">
-        <p>{title}</p>
+        <p className="truncate">{title}</p>
 
         {path ? (
           <Link to={path}>

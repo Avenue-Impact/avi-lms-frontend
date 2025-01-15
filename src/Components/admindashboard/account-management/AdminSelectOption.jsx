@@ -1,4 +1,40 @@
-import * as React from "react";
+// import * as React from "react";
+// import { Controller } from "react-hook-form";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectGroup,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/Components/ui/select";
+
+// export function AdminSelectOption({ name, control }) {
+//   return (
+//     <Controller
+//       name={name}
+//       control={control}
+//       render={({ field }) => (
+//         <Select
+//           value={field.value}
+//           onValueChange={field.onChange} // Correctly capture the selected value
+//         >
+//           <SelectTrigger className="w-full">
+//             <SelectValue placeholder="Select Admin Role" />
+//           </SelectTrigger>
+//           <SelectContent className="max-h-60 overflow-y-auto">
+//             <SelectGroup>
+//               <SelectItem value="Financial Admin">Financial Admin</SelectItem>
+//               <SelectItem value="Content Manager">Content Manager</SelectItem>
+//               <SelectItem value="Course Admin">Course Admin</SelectItem>
+//               <SelectItem value="Super Admin">Super Admin</SelectItem>
+//             </SelectGroup>
+//           </SelectContent>
+//         </Select>
+//       )}
+//     />
+//   );
+// }
 
 import {
   Select,
@@ -8,22 +44,22 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/Components/ui/select";
+} from "@/components/ui/select";
 
-export function AdminSelectOption() {
+export function SelectDemo() {
   return (
-    <Select className='p-0'>
-      <SelectTrigger className="w-full">
-        <SelectValue placeholder="Select Cohort" />
+    <Select>
+      <SelectTrigger className="w-[180px]">
+        <SelectValue placeholder="Select a fruit" />
       </SelectTrigger>
-      <SelectContent className="max-h-60 overflow-y-auto">
+      <SelectContent>
         <SelectGroup>
-          {/* <SelectLabel>Select Course</SelectLabel> */}
-          {/* <SelectLabel>Select Course</SelectLabel> */}
-          <SelectItem value="fAdmin">Financial Admin</SelectItem>
-          <SelectItem value="cManager">Content Manager</SelectItem>
-          <SelectItem value="cAdmin">Course Admin</SelectItem>
-          <SelectItem value="admin">Admin</SelectItem>
+          <SelectLabel>Fruits</SelectLabel>
+          <SelectItem value="apple">Apple</SelectItem>
+          <SelectItem value="banana">Banana</SelectItem>
+          <SelectItem value="blueberry">Blueberry</SelectItem>
+          <SelectItem value="grapes">Grapes</SelectItem>
+          <SelectItem value="pineapple">Pineapple</SelectItem>
         </SelectGroup>
       </SelectContent>
     </Select>

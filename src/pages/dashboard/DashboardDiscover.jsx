@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import joinTeam from "../../assets/images/join_team.png";
 import Modal from "../auth/components/Modal";
 import ModalContent from "../lms-pages/ReminderModalContent";
+import { useFetchEnrolledLiveSessionCourse } from "@/hooks/students/use-fetch-enroll-live-session-course";
 
 // import ReminderModal from '../auth/components/ReminderModal';
 
@@ -66,133 +67,9 @@ const Dashboard_Discover = () => {
           </div>
         </div>
 
-        <div>
-          {/* Preview this Course */}
-          <div
-            className={`grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-6 lg:grid-cols-4`}
-          >
-            <DashboardDiscover
-              imgSrc={joinTeam}
-              altText="joinTeam"
-              title={
-                <>
-                  {" "}
-                  Project Consultant <br /> Training Programme (Bundle)
-                </>
-              }
-              rating="4.3"
-              numRatings="45,345"
-              courseProgress="100% completed"
-              leaveRating="Leaving a rating"
-            />
+        <LiveSessionCourses />
 
-            <DashboardDiscover
-              imgSrc={joinTeam}
-              altText="joinTeam"
-              title={
-                <>
-                  {" "}
-                  Project Consultant <br /> Training Programme (Bundle)
-                </>
-              }
-              rating="4.3"
-              numRatings="45,345"
-              courseProgress="0% in progress"
-              getStarted="Get Started"
-            />
-
-            <DashboardDiscover
-              imgSrc={joinTeam}
-              altText="joinTeam"
-              title={
-                <>
-                  {" "}
-                  Project Consultant <br /> Training Programme (Bundle)
-                </>
-              }
-              rating="4.3"
-              numRatings="45,345"
-              courseProgress="20% in progress"
-              continueLearning="Continue"
-            />
-
-            <DashboardDiscover
-              imgSrc={joinTeam}
-              altText="joinTeam"
-              title={
-                <>
-                  {" "}
-                  Project Consultant <br /> Training Programme (Bundle)
-                </>
-              }
-              rating="4.3"
-              numRatings="45,345"
-              courseProgress="0% in progress"
-              getStarted="Get Started"
-            />
-
-            <DashboardDiscover
-              imgSrc={joinTeam}
-              altText="joinTeam"
-              title={
-                <>
-                  {" "}
-                  Project Consultant <br /> Training Programme (Bundle)
-                </>
-              }
-              rating="4.3"
-              numRatings="45,345"
-              // leaavingRateStar={<FontAwesomeIcon icon={faStar} />}
-              courseProgress="100% completed"
-              leaveRating="Leaving a rating"
-            />
-
-            <DashboardDiscover
-              imgSrc={joinTeam}
-              altText="joinTeam"
-              title={
-                <>
-                  {" "}
-                  Project Consultant <br /> Training Programme (Bundle)
-                </>
-              }
-              rating="4.3"
-              numRatings="45,345"
-              courseProgress="20% in progress"
-              continueLearning="Continue"
-            />
-
-            <DashboardDiscover
-              imgSrc={joinTeam}
-              altText="joinTeam"
-              title={
-                <>
-                  {" "}
-                  Project Consultant <br /> Training Programme (Bundle)
-                </>
-              }
-              rating="4.3"
-              numRatings="45,345"
-              courseProgress="20% completed"
-              leaveRating="Leaving a rating"
-            />
-
-            <DashboardDiscover
-              imgSrc={joinTeam}
-              altText="joinTeam"
-              title={
-                <>
-                  {" "}
-                  Project Consultant <br /> Training Programme (Bundle)
-                </>
-              }
-              rating="4.3"
-              numRatings="45,345"
-              courseProgress="20% completed"
-              leaveRating="Leaving a rating"
-            />
-          </div>
-        </div>
+        <div>{/* Preview this Course */}</div>
       </div>
 
       {/* ON DEMAND */}
@@ -354,6 +231,38 @@ const Dashboard_Discover = () => {
       )}
     </div>
   );
+};
+
+const LiveSessionCourses = () => {
+  const { data, isLoading, error } = useFetchEnrolledLiveSessionCourse();
+
+  if (isLoading) return <p>Loading ...</p>;
+  if (error) return <p>Error ...</p>;
+  if (data) {
+    console.log(data);
+
+    return (
+      <div
+        className={`grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-6 lg:grid-cols-4`}
+      >
+        {data?.data?.data?.courses.map((course) => {
+          return (
+            <DashboardDiscover
+              key={course.id}
+              imgSrc={course.cover_image}
+              altText={course.title}
+              title={course.title}
+              rating={course.average_rating}
+              numRatings="45,345"
+              courseProgress="0% in progress"
+              review={"200"}
+              courseId={course.id}
+            />
+          );
+        })}
+      </div>
+    );
+  }
 };
 
 export default Dashboard_Discover;

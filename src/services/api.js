@@ -27,9 +27,10 @@ export const fetchUserProfile = async () => {
 export const addDemandSection = async ({ data, courseId }) => {
 
 
-  return axiosAdmin.post(`/courses/${courseId}/on-demand-section`, data, {
+  return axios.post(`${BASE_URL}/courses/${courseId}/on-demand-section`, data, {
     headers: {
       "Content-Type": "multipart/form-data",
+      "Authorization": `Bearer ${Cookies.get('adminToken')}`,
     },
   })
 }

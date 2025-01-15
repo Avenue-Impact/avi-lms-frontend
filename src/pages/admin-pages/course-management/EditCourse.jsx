@@ -3,13 +3,42 @@ import { useState } from "react";
 import CourseInformation from "@/Components/admindashboard/course-management/CourseInformation";
 import CourseCohortsPreview from "./CourseCohortsPreview";
 import OnDemand from "./OnDemand";
-import { useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
+import { CommonButton } from "@/Components/ui/button";
+import { useUnpublishCourse } from "@/hooks/course-management/use-unpublish-course";
+// import { IoSearch } from "react-icons/io5";
+// import BorderCard from "@/Components/BorderCard";
+// import Modal from "@/pages/auth/components/Modal";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faClose, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
+// import { Heading, Paragraph } from "@/pages/auth/components/Text";
 
 const EditCourse = () => {
+  // const [modal, setModal] = useState(false);
   const [activeSection, setActiveSection] = useState("courseInfo");
 
   const [queryString] = useSearchParams();
   const title = queryString.get("title");
+
+  // const [searchParams] = useSearchParams();
+  // const courseId = searchParams.get("id");
+
+  const { courseId } = useParams();
+  // console.log("courseId", courseId);
+
+  const { unPublish, isUnPublishing } = useUnpublishCourse();
+  console.log("unPublish function:", unPublish);
+  console.log("isUnPublishing state:", isUnPublishing);
+
+
+
+  const handleUnpublish = () => {
+    if (!courseId) {
+      console.error("Course ID is missing.");
+      return;
+    }
+    unPublish({ courseId });
+  };
 
   return (
     <div>
@@ -63,6 +92,16 @@ const EditCourse = () => {
             <StudentManagement />
           </div>
         )} */}
+      </div>
+
+      <div className="my-6 flex items-center justify-between gap-6">
+        <CommonButton onClick={handleUnpublish} disabled={isUnPublishing}  className="ml-auto border border-gray-500 bg-transparent text-gray-500 hover:bg-gray-300">
+          {isUnPublishing ? "Unpublishing..." : "Unpublish"}
+        </CommonButton>
+
+        <CommonButton className="block bg-primary-color-600 font-normal">
+          Delete Course
+        </CommonButton>
       </div>
     </div>
   );

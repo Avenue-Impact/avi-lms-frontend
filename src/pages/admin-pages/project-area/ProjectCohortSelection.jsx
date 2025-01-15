@@ -8,9 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/Components/ui/select";
-import { useState } from "react";
 import { FaArrowLeft } from "react-icons/fa6";
-import { useSearchParams } from "react-router-dom";
 
 function ProjectCohortSelection({
   setModal,

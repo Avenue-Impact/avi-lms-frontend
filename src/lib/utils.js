@@ -11,3 +11,9 @@ export const passwordRegex = new RegExp(
   /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
 );
 
+export const formatDate = (date) => {
+  const createdAt = new Date(date);
+  const locale = navigator.language;
+
+  return new Intl.DateTimeFormat(locale).format(createdAt);
+};
