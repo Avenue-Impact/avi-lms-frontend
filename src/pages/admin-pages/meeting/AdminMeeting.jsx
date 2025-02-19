@@ -8,7 +8,8 @@ const AdminStartLiveSession = () => {
   // const [cohortId, setCohortId] = useState("6732f2f47a0ce8a492cc36e1");
   const { courseId } = useParams();
   const [queryString] = useSearchParams();
-  const { data, isLoading, error } = useStartLiveSession();
+  const cohortId = queryString.get("cohortId");
+  const { data, isLoading, error } = useStartLiveSession(courseId, cohortId);
 
   // const handleStartSession = async () => {
   //   try {
@@ -32,6 +33,7 @@ const AdminStartLiveSession = () => {
   if (error) return <p>Error: {error.message}</p>;
   if (data) {
     // setMeetingDetails(data?.data?.data);
+    console.log(data);
     return (
       <div>
         <StartMeeting

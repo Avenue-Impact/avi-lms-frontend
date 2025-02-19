@@ -13,10 +13,10 @@ import { useCreateAdminRole } from "@/hooks/account-management/use-create-admin-
 import DashButton from "@/pages/auth/ButtonDash";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { useForm } from "react-hook-form"; // Import FormProvider
-import { z } from "zod"; // Add zod for schema validation
+import { useForm } from "react-hook-form";
+import { ScrollRestoration } from "react-router-dom";
+import { z } from "zod";
 
-// Define schema for form validation using Zod
 const sessionSchema = z.object({
   first_name: z
     .string()
@@ -31,16 +31,16 @@ const sessionSchema = z.object({
     .string()
     .min(1, { message: "This field is required" })
     .max(70, { message: "you've reached the max character length" })
-    .email({ message: "Invalid email address" }), // Add email validation
+    .email({ message: "Invalid email address" }),
 });
 
-const CreateAdminRole = ({ setModal }) => {
+const CreateAdminRole = ({ setAdminModal }) => {
   const { create, isPending } = useCreateAdminRole();
   const [adminRole, setAdminRole] = useState("");
   const [error, setError] = useState("");
 
   const form = useForm({
-    resolver: zodResolver(sessionSchema), // Use schema for validation
+    resolver: zodResolver(sessionSchema),
     defaultValues: {
       first_name: "",
       last_name: "",
@@ -56,13 +56,18 @@ const CreateAdminRole = ({ setModal }) => {
       role: adminRole,
     };
     create(adminData, {
-      onSuccess: () => setModal(false),
+      onSuccess: () => {
+        form.reset();
+        setAdminRole("");
+        setAdminModal(false);
+      },
     });
   };
 
   return (
     <div>
-      {/* Coupon Creation Content */}
+      <ScrollRestoration />
+
       <div className="space-y-4 pb-8">
         <h3 className="text-[20px] font-[500] text-[#344054] lg:text-[24px]">
           Add New Admin
@@ -73,9 +78,7 @@ const CreateAdminRole = ({ setModal }) => {
       </div>
 
       <Form {...form}>
-        {/* Wrap the form with FormProvider */}
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          {/* First Name Field */}
           <div className="mb-4">
             <p className="font-[500]">First Name</p>
             <FormInput
@@ -88,7 +91,6 @@ const CreateAdminRole = ({ setModal }) => {
             />
           </div>
 
-          {/* Last Name Field */}
           <div className="mb-4">
             <p className="font-[500]">Last Name</p>
             <FormInput
@@ -101,7 +103,6 @@ const CreateAdminRole = ({ setModal }) => {
             />
           </div>
 
-          {/* Email Address Field */}
           <div className="mb-6">
             <p className="font-[500]">Email Address</p>
             <FormInput
@@ -114,7 +115,6 @@ const CreateAdminRole = ({ setModal }) => {
             />
           </div>
 
-          {/* Admin Role Field */}
           <div className="mb-6">
             <p className="font-[500]">Select Admin Role</p>
             <Select
@@ -140,7 +140,6 @@ const CreateAdminRole = ({ setModal }) => {
                 </SelectGroup>
               </SelectContent>
             </Select>
-            {/* Show error message */}
             <p>
               {error ? (
                 <span className="text-[#ff0000]">{error}</span>
@@ -150,7 +149,6 @@ const CreateAdminRole = ({ setModal }) => {
             </p>
           </div>
 
-          {/* Submit Button */}
           <div className="w-full">
             <DashButton
               type="submit"

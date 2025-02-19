@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import BorderCard from "@/Components/BorderCard";
@@ -10,117 +9,131 @@ import { Heading, Paragraph } from "../../pages/auth/components/Text";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import PasswordInput from "@/Components/ui/password-input";
+import { useRequestWithdrawal } from "@/hooks/students/use-request-withdrawal";
 
-const loginSchema = z.object({
-  email: z.string().email(),
-  password: z
-    .string()
-    .min(4, { message: "Name must be at least 4 characters long" }),
+// Validation Schema
+const withdrawalSchema = z.object({
+  name: z.string().min(2, "Full Name is required"),
+  bankName: z.string().min(2, "Bank Name is required"),
+  accNo: z.string().min(10, "Account Number must be at least 10 digits"),
+  sortCode: z.string().optional(),
+  amountWithdraw: z.string().min(1, "Enter amount to withdraw"),
+  password: z.string().min(4, "Password must be at least 4 characters"),
 });
 
 const ReferralFormModal = ({ setModal }) => {
-  // const [currentPassword, setCurrentPassword] = useState("");
-  const [password, setPassword] = useState("");
-  // const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const { isPending, withdrawal } = useRequestWithdrawal();
+  console.log("THe full info about withdraaw", withdrawal);
 
+  
   const form = useForm({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(withdrawalSchema),
     defaultValues: {
-      email: "",
+      name: "",
+      bankName: "",
+      accNo: "",
+      sortCode: "",
+      amountWithdraw: "",
       password: "",
     },
   });
 
+  const onSubmit = async (data) => {
+    console.log("Form Data:", data); // Log when user fills the form correctly
+
+    withdrawal({
+      name: data.name,
+      amount: Number(data.amountWithdraw),
+      bank_name: data.bankName,
+      account_number: data.accNo,
+      sort_code: data.sortCode || "",
+      password: data.password,
+    });
+  };
+
   return (
-    <BorderCard className="w-full max-w-[670px] bg-white">
-      <div className="flex items-start justify-between">
-        <div className="mb-5 space-y-1 text-left 2xl:mb-8">
-          <Heading className="text-left">Request to withdraw</Heading>
-          <Paragraph className="text-left">
-            Request to withdraw your referrals’ fund
-          </Paragraph>
-        </div>
-        <button
-          type="button"
-          className=""
-          onClick={() => setModal((prev) => !prev)}
-        >
-          <FontAwesomeIcon
-            icon={faClose}
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4">
+      <BorderCard className="max-h-[90vh] w-full max-w-[90%] overflow-y-auto rounded-lg bg-white p-6 shadow-lg md:max-w-[670px]">
+        {/* Header */}
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <Heading className="text-left text-xl md:text-2xl">
+              Request to Withdraw
+            </Heading>
+            <Paragraph className="text-left text-sm md:text-base">
+              Request to withdraw your referrals’ fund
+            </Paragraph>
+          </div>
+          <button
+            type="button"
             className="text-2xl text-tertiary-color-700"
-          />
-        </button>
-      </div>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(() => {
-            console.log("form validated");
-          })}
-          className="space-y-1 2xl:space-y-3"
-        >
-          <FormInput
-            label="full name"
-            name="firstname"
-            control={form.control}
-            type="text"
-            id="firstname"
-            placeholder=""
-          />
-          <FormInput
-            label="bank name"
-            name="lastname"
-            control={form.control}
-            type="text"
-            id="lastname"
-            placeholder=""
-          />
-          <FormInput
-            label="account number"
-            name="username"
-            control={form.control}
-            type="number"
-            id="username"
-            placeholder=""
-          />
-          <FormInput
-            label="sort code"
-            name="email"
-            control={form.control}
-            type="text"
-            id="sort code"
-            placeholder=""
-          />
-          <FormInput
-            label="amount to withdraw"
-            name="email"
-            control={form.control}
-            type="number"
-            id="email"
-            placeholder=""
-          />
-          <PasswordInput
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoComplete="new-password"
-            label="enter password"
-            name="password"
-            control={form.control}
-            placeholder=""
-          />
-          <p className="my-1 max-w-[429px] text-sm italic leading-[20.3px] text-primary-color-600">
-            Enter your password to confirm that you want to withdraw your
-            referral funds. This takes 4 to 5 working days.
-          </p>
-          <CommonButton
-            className="bg-primary-color-600 font-poppins font-medium capitalize text-white hover:bg-primary-color-600 md:w-2/4 md:text-xl md:font-semibold"
-            type="submit"
+            onClick={() => setModal(false)}
           >
-            Request Withdrawal
-          </CommonButton>
-        </form>
-      </Form>
-    </BorderCard>
+            <FontAwesomeIcon icon={faClose} />
+          </button>
+        </div>
+
+        {/* Form */}
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
+            <FormInput
+              label="Full Name"
+              name="name"
+              control={form.control}
+              type="text"
+              id="name"
+            />
+            <FormInput
+              label="Bank Name"
+              name="bankName"
+              control={form.control}
+              type="text"
+              id="bankName"
+            />
+            <FormInput
+              label="Account Number"
+              name="accNo"
+              control={form.control}
+              type="number"
+              id="accNo"
+            />
+            <FormInput
+              label="Sort Code (Optional)"
+              name="sortCode"
+              control={form.control}
+              type="text"
+              id="sortCode"
+            />
+            <FormInput
+              label="Amount to Withdraw"
+              name="amountWithdraw"
+              control={form.control}
+              type="number"
+              id="amountWithdraw"
+            />
+            <PasswordInput
+              id="password"
+              label="Enter Password"
+              name="password"
+              control={form.control}
+            />
+
+            <p className="max-w-[429px] text-sm italic leading-5 text-primary-color-600">
+              Enter your password to confirm that you want to withdraw your
+              referral funds. This takes 4 to 5 working days.
+            </p>
+
+            <CommonButton
+              className="hover:bg-primary-color-700 w-full bg-primary-color-600 py-2 text-lg font-medium text-white md:w-2/4"
+              type="submit"
+              disabled={isPending}
+            >
+              {isPending ? "Processing..." : "Request Withdrawal"}
+            </CommonButton>
+          </form>
+        </Form>
+      </BorderCard>
+    </div>
   );
 };
 

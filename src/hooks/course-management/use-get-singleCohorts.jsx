@@ -5,5 +5,6 @@ export const useGetSingleCohort = (courseId, cohortId) => {
   return useQuery({
     queryKey: ["get-single-cohort", { courseId, cohortId }],
     queryFn: () => getSingleCohort(courseId, cohortId),
+    // enabled: !!cohortId,
   });
 };

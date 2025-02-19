@@ -1,26 +1,29 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Heading } from "../auth/components/Text";
 import Wishlists from "@/Components/dashboard/Wishlists";
 import EmptyWishlist from "@/Components/dashboard/EmptyWishlist";
-import { wishlists } from "@/lib/wishlists";
-import { useFetchWishlist } from "./use-fetch-wishlist";
+import { useFetchWishlist } from "../../hooks/wishlists/use-fetch-wishlist";
 
 function Wishlist() {
-  const [wishlist, setWishlists] = useState(wishlists);
-
+  // const [wishlist, setWishlist] = useState([]);
   const { isLoading, data, error } = useFetchWishlist();
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error)
-    return <p>{error?.response?.data?.message ?? "Something went wrong"}</p>;
+  // useEffect(() => {
+  //   if (data?.data?.data) {
+  //     setWishlist(data.data.data);
+  //   }
+  // }, [data]);
 
-  console.log(data);
+  if (isLoading) return <p>Loading...</p>;
+
+  if (error) {
+    return <p>{error?.response?.data?.message || "Something went wrong"}</p>;
+  }
 
   return (
     <article className="h-full">
-      <Heading className="text-left">Wishlist</Heading>
-      {wishlist.length > 0 ? (
-        <Wishlists wishlist={wishlist} setWishlists={setWishlists} />
+      {data?.data?.data?.length > 0 ? (
+        <Wishlists wishlist={data?.data?.data} />
       ) : (
         <EmptyWishlist />
       )}

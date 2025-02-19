@@ -5,7 +5,6 @@ import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 
 const deleteAdmin = ({ adminId }) => {
-  // https://avi-lms-backend.onrender.com/api/v1/admins/:adminId
   const url = `${BASE_URL}/${adminId}`;
   return axios.delete(url, {
     headers: {

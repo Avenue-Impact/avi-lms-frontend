@@ -53,7 +53,7 @@ function formapateString(dateString) {
 
   // Get the month, day, and year
   const month = months[date.getMonth()];
-  const day = date.gepate();
+  const day = date.getDate();
   const year = date.getFullYear();
 
   // Get the hours and minutes
@@ -84,8 +84,14 @@ const AccountManagementPage = () => {
   // Function to delete account by id
   const handleDeleteAcc = () => {
     if (selectedAccount?.id) {
-      delAdmin({ adminId: selectedAccount.id });
-      setModalDeleteAcc(false);
+      delAdmin(
+        { adminId: selectedAccount.id },
+        {
+          onSuccess: () => {
+            setModalDeleteAcc(false);
+          },
+        },
+      );
 
       //   console.log("Deleted Admin",selectedAccount.id);
     }
@@ -243,6 +249,7 @@ const AccountManagementPage = () => {
                         setSelectedAccount(account);
                         setModalDeleteAcc(true);
                       }}
+                      disabled={isPending}
                     >
                       <TrashCan />
                       Delete

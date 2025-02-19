@@ -18,7 +18,7 @@ export const MobileContent = ({ data }) => {
   if (sections.mobile === "assignments")
     return <Assignment data={data?.data?.data} />;
   if (sections.mobile === "get certification") return <GetCertificate />;
-  if (sections.mobile === "overview") return <Overview />;
+  if (sections.mobile === "overview") return <Overview data={data} />;
   if (sections.mobile === "leave a review") return <LeaveRating />;
 };
 
@@ -28,5 +28,5 @@ export const DesktopContent = ({ data }) => {
     return <Documents data={data?.data?.data} />;
   if (sections.desktop === "assignments")
     return <Assignment data={data?.data?.data} />;
-  if (sections.desktop === "overview") return <Overview />;
+  if (sections.desktop === "overview") return <Overview data={data} />;
 };

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { ZoomMtg } from "@zoom/meetingsdk";
 import { useParams, useSearchParams } from "react-router-dom";
 //import ZoomMtgEmbedded from "@zoom/meetingsdk/embedded";
@@ -14,8 +14,11 @@ const StartMeeting = ({
 }) => {
   const { courseId } = useParams();
   const [queryString] = useSearchParams();
+  const zoomInitialized = useRef(false);
   useEffect(() => {
     // Preload necessary files for the Zoom Web SDK
+    if (zoomInitialized.current) return; // Prevent duplicate initialization
+    zoomInitialized.current = true;
     ZoomMtg.preLoadWasm();
     ZoomMtg.prepareWebSDK();
 
@@ -48,6 +51,14 @@ const StartMeeting = ({
         console.error("Error initializing Zoom Meeting:", error);
       },
     });
+    return () => {
+      // Remove Zoom's injected CSS when the component unmounts
+      const zoomStyles = document.querySelectorAll(
+        'link[href*="zoomus"], style[data-zm]',
+      );
+      zoomStyles.forEach((style) => style.remove());
+      console.log("Zoom styles removed on unmount");
+    };
   }, [
     meetingNumber,
     userName,

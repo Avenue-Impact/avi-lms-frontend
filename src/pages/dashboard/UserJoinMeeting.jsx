@@ -1,20 +1,25 @@
 import { useState } from "react";
 
 import { useJoinSession } from "@/hooks/students/use-join-live-session";
-import { useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import StartMeeting from "../admin-pages/meeting/StartMeeting";
 
 const UserJoinMeeting = () => {
   const [meetingDetails, setMeetingDetails] = useState(null);
-  const [courseId, setCourseId] = useState("672f600db2f3905e23f914e6");
-  const [cohortId, setCohortId] = useState("6732f2f47a0ce8a492cc36e1");
+  // const [courseIds, setCourseId] = useState("672f600db2f3905e23f914e6");
+  // const [cohortIds, setCohortId] = useState("6732f2f47a0ce8a492cc36e1");
   const [queryString] = useSearchParams();
+
+  const { courseId } = useParams();
+
+  const cohortId = queryString.get("cohortId");
 
   const { isLoading, data, error } = useJoinSession(courseId, cohortId);
 
   if (isLoading) return <p>Loading ...</p>;
 
-  if (error) return <p>error ...</p>;
+  if (error)
+    return <p>{error.response.data.message ?? "Something went wrong"}</p>;
 
   // const [errorMessage, setErrorMessage] = useState("");
   // const handleJoinSession = async () => {
@@ -50,6 +55,8 @@ const UserJoinMeeting = () => {
         />
       </div>
     );
+
+  return null;
 };
 
 export default UserJoinMeeting;

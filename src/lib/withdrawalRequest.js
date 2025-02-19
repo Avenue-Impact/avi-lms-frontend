@@ -1,7 +1,7 @@
 export const withdrawalRequest = [
     {
         id: "1",
-        name: 'Emery Torff’s',
+        name: 'Shukurah',
         email: 'Emerytorffs@gmail.com',
         acctNo: '0158909211',
         acctName: 'James Nissan',

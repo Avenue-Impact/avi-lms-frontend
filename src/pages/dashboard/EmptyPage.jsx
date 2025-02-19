@@ -169,7 +169,7 @@ const LiveSessionCourses = () => {
                   imgSrc={course.cover_image}
                   altText={course.title}
                   title={course.title}
-                  rating={course.average_rating.toFixed(1)}
+                  rating={Number(course.average_rating).toFixed(1)}
                   numRatings="45,345"
                   courseProgress="0% in progress"
                   review={"200"}

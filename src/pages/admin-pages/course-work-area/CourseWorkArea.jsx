@@ -18,6 +18,7 @@ function CourseWorkArea() {
 
 const CourseArea = () => {
   const { data, isLoading, error } = useFetchAllAdminCourses(1, 10);
+  console.log("Check the data here", data)
 
   if (isLoading) return <p>Loading ...</p>;
 

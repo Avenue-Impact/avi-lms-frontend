@@ -1,22 +1,27 @@
+
 import PropTypes from "prop-types";
 import Courses from "./Courses";
+import { Heading } from "@/pages/auth/components/Text";
 
-function Wishlists({ wishlist, setWishlists }) {
-  const handleWishlist = (id) => {
-    const newWishlists = wishlist.filter((item) => item.id !== id);
-    setWishlists(newWishlists);
-  };
+function Wishlists({ wishlist }) {
+  // const handleWishlist = (id) => {
+  //   const newWishlists = wishlist.filter((item) => item.id !== id);
+  //   setWishlists(newWishlists);
+  // };
 
   return (
-    <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-      {wishlist.map((item) => (
-        <Courses
-          key={item.id}
-          wishlist={item}
-          handleWishlist={handleWishlist}
-        />
-      ))}
-    </div>
+    <>
+      <Heading className="text-left">Wishlist ({wishlist.length})</Heading>
+      <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+        {wishlist.map((item) => (
+          <Courses
+            key={item.id}
+            wishlist={item}
+            // handleWishlist={handleWishlist}
+          />
+        ))}
+      </div>
+    </>
   );
 }
 
@@ -26,3 +31,4 @@ Wishlists.propTypes = {
 };
 
 export default Wishlists;
+

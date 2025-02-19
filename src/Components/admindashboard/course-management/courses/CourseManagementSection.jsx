@@ -137,7 +137,7 @@ const LiveContent = ({ data }) => {
             <button
               onClick={() => {
                 navigate(
-                  `/meeting/${courseId}??title=${queryString.get("title")}&cohort=${queryString.get("cohort")}&cohortId=${cohortId}`,
+                  `/meeting/${courseId}?title=${queryString.get("title")}&cohort=${queryString.get("cohort")}&cohortId=${cohortId}`,
                 );
               }}
             >

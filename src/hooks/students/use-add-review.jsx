@@ -5,11 +5,12 @@ import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 
 const addRating = async ({ data, courseId }) =>
-  await axios.post(`${STUDENT_BASE_URL}/courses/${courseId}/add-review`, data, {
+  await axios.post(`${STUDENT_BASE_URL}/courses/${courseId}/reviews`, data, {
     headers: {
       Authorization: `Bearer ${Cookies.get("token")}`,
     },
   });
+
 
 export const useAddRating = () => {
   const { mutate, isPending } = useMutation({

@@ -7,7 +7,7 @@ import { DocumentContext } from "./ShareDocument";
 
 const Documents = ({ data }) => {
   const { courseId } = useParams();
-  const [queryString] = useSearchParams();
+
   const cohortId = data.cohort_id;
   const { sectionActive } = useContext(DocumentContext);
 

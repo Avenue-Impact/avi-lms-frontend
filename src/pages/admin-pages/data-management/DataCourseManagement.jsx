@@ -8,9 +8,28 @@ import { IoSearch } from "react-icons/io5";
 import { LiveSessionIcon, OnDemandIcon } from "@/Components/Icon";
 import { GoArrowDownLeft, GoArrowUpRight } from "react-icons/go";
 import { useState } from "react";
+import { useFetchCourseStats } from "@/hooks/data-management/use-fetch-course-stats";
 
 export default function DataCourseManagement() {
   const [course, setCourse] = useState(courseManagement);
+  const { isLoading, error, data } = useFetchCourseStats();
+  // console.log("The course Mangement", data);
+
+  if (isLoading) {
+    return (
+      <div className="py-5">
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="py-5">
+        <p> {error?.response?.data?.message ?? "Something went wrong"}</p>
+      </div>
+    );
+  }
 
   const filterDemand = (str) => {
     const filteredCourse = courseManagement.filter(
@@ -19,6 +38,14 @@ export default function DataCourseManagement() {
 
     setCourse(filteredCourse);
   };
+
+  if (data?.data?.data?.courses?.length < 1) {
+    return (
+      <p className="text-lg capitalize italic text-slate-400">
+        no courses yet ...
+      </p>
+    );
+  }
 
   return (
     <div>

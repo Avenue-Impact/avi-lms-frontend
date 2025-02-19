@@ -32,7 +32,8 @@ function formatDateString(dateString) {
   const year = date.getFullYear();
 
   // Get the hours and minutes
-  let hours = date.getHours();
+  let hours = date.getHours(
+      );
   const minutes = date.getMinutes().toString().padStart(2, "0");
 
   // Determine AM/PM and adjust hours

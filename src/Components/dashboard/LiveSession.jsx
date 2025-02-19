@@ -9,6 +9,8 @@ function LiveSession({ data }) {
   const { courseId } = useParams();
   const navigate = useNavigate();
 
+  console.log("i am the data you are looking for ", data);
+
   const {
     title,
     overview,
@@ -56,7 +58,9 @@ function LiveSession({ data }) {
         <CommonButton
           onClick={() =>
             navigate(
-              `/user/meeting/${courseId}?title=${queryString.get("title")}`,
+              `/user/meeting/${courseId}?cohortId=${
+                data?.data?.data?.cohort_id
+              }&title=${queryString.get("title")}`,
             )
           }
         >
