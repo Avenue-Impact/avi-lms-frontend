@@ -26,7 +26,7 @@ const GetInTouch = () => {
 
   return (
     <div
-      className={`${styles.get_in_touch} px-8 py-10 pt-20 lg:px-14 lg:pt-16 2xl:px-20 2xl:py-[100px]`}
+      className={`${styles.get_in_touch} px-8 py-10 pt-20 lg:px-14 lg:pt-28 2xl:px-20 2xl:py-[100px]`}
     >
       <div className={styles.get_in_touch_info}>
         <h4 className="text-2xl font-light 2xl:text-[40px] 2xl:leading-[40px]">

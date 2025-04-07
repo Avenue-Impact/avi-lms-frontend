@@ -37,7 +37,10 @@ function CourseWorkAreaDocument() {
             <span className="text-sm capitalize text-[#667185]">Go back</span>
           </button>
           <p className="text-lg font-medium text-[#344054]">
-            {queryString?.get("title")} | {queryString.get("cohort")}
+            {queryString?.get("title").length > 40
+              ? `${queryString?.get("title").substring(0, 40)}...`
+              : queryString?.get("title")}
+            | {queryString.get("cohort")}
           </p>
         </div>
       </AdminNav>

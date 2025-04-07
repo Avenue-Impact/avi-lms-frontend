@@ -38,7 +38,7 @@ const OtherTopNav = ({ setShowModal }) => {
           </span>
         </button>
         <p className="text-sm font-medium text-black lg:text-lg 2xl:text-2xl">
-          {queryString.get("title") ||
+          {queryString.get("title") ??
             "Project Consultant Training Programme (Bundle)"}
         </p>
       </div>
@@ -53,7 +53,7 @@ const OtherTopNav = ({ setShowModal }) => {
             )}
           >
             <Link
-              to={`/dashboard/${courseId}/projects`}
+              to={`/dashboard/${courseId}/projects?title=${queryString.get("title") ?? ""}`}
               className="flex gap-2 2xl:gap-[13px]"
             >
               <span className="text-[22px]">
@@ -71,7 +71,7 @@ const OtherTopNav = ({ setShowModal }) => {
             )}
           >
             <Link
-              to={`/dashboard/${courseId}/certificate`}
+              to={`/dashboard/${courseId}/certificate?cohortId=${queryString.get("cohortId") ?? ""}&title=${queryString.get("title") ?? ""}`}
               className="flex gap-2 2xl:gap-[13px]"
             >
               <span className="text-[22px]">

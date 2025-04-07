@@ -107,8 +107,8 @@ const FinancialStudentAidPage = () => {
                     textarea={true}
                     id="reason"
                     className="w-full rounded border border-gray-300 p-2 lg:h-[203px]"
-                  />
-                </div>
+                            />
+                          </div>
 
                 {/* Course benefits */}
                 <div>

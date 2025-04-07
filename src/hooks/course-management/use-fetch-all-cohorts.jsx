@@ -7,3 +7,6 @@ export const useGetAllCohorts = (courseId) => {
     queryFn: () => fetchCohorts(courseId),
   });
 };
+
+
+

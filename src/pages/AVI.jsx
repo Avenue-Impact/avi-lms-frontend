@@ -20,10 +20,6 @@ import CreatedCourseCard from "@/Components/admindashboard/course-management/Cre
 // import img from "../assets/images/data-solution.jpg";
 
 const AVI = () => {
-  const { data, isLoading } = useFetchAllCourses();
-
-  console.log(data);
-
   return (
     <>
       <ScrollRestoration />
@@ -69,24 +65,7 @@ const AVI = () => {
             </div>
 
             {/* Preview this Course */}
-            <div className={`${styles.previewCoursesFlex} overflow-visible`}>
-              {isLoading ? (
-                <p>Loading...</p>
-              ) : (
-                data.data.data.courses.map((course) => (
-                  <CourseCard
-                    key={course.id}
-                    imgSrc={course.cover_image}
-                    altText="joinTeam"
-                    title={course.title}
-                    rating={course.average_rating ?? 0}
-                    review={course.total_reviews}
-                    path={`/preview-course/${course.id}`}
-                  />
-                ))
-              )}
-            </div>
-
+            <AllCourses />
             {/* Enhance your team's skills */}
             <div className={`${styles.team_skills} py-24`}>
               <div className={styles.team_skills_img}>
@@ -187,6 +166,45 @@ const AVI = () => {
         </div>
       </section>
     </>
+  );
+};
+
+const AllCourses = () => {
+  const { data, isLoading, error } = useFetchAllCourses();
+
+  if (isLoading)
+    return (
+      <div className={`${styles.previewCoursesFlex} overflow-visible`}>
+        <p>Loading...</p>
+      </div>
+    );
+  if (error)
+    return (
+      <div className={`${styles.previewCoursesFlex} overflow-visible`}>
+        <p>{error?.response?.data?.message ?? "Something went wrong"}</p>
+      </div>
+    );
+  if (!error)
+    return (
+      <div className={`${styles.previewCoursesFlex} overflow-visible`}>
+        <p>Check your connection </p>
+      </div>
+    );
+
+  return (
+    <div className={`${styles.previewCoursesFlex} overflow-visible`}>
+      {data?.data?.data?.courses?.map((course) => (
+        <CourseCard
+          key={course.id}
+          imgSrc={course.cover_image}
+          altText="joinTeam"
+          title={course.title}
+          rating={course.average_rating ?? 0}
+          review={course.total_reviews}
+          path={`/preview-course/${course.id}`}
+        />
+      ))}
+    </div>
   );
 };
 

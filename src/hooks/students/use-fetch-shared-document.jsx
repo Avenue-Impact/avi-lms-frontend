@@ -17,4 +17,6 @@ export const useFetchSharedDocuments = (courseId, cohortId, section) =>
     queryKey: ["fetch-shared-documents", { courseId, cohortId, section }],
     queryFn: () => fetchDocuments(courseId, cohortId, section),
     enabled: !!courseId && !!cohortId && !!section,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });

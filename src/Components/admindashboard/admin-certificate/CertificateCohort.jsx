@@ -1,7 +1,4 @@
-// DashSelect.jsx
-
 import * as React from "react";
-
 import {
   Select,
   SelectContent,
@@ -12,21 +9,31 @@ import {
   SelectValue,
 } from "@/Components/ui/select";
 
-export function CertificateCohort() {
+const CertificateCohort = ({ cohorts, isLoading, selectedCourseId, setSelectedCourseId }) => {
+  console.log("The data under certificate issue", cohorts);
+
   return (
-    <Select className='p-0'>
+    <Select className="p-0" onValueChange={(value) => setSelectedCourseId(value)}>
       <SelectTrigger className="w-full">
-        <SelectValue placeholder="Select Cohort" />
+        <SelectValue placeholder={isLoading ? "" : "Select Cohort"} />
       </SelectTrigger>
       <SelectContent className="max-h-60 overflow-y-auto">
         <SelectGroup>
-          {/* <SelectLabel>Select Course</SelectLabel> */}
-          <SelectItem value="mc">May Cohort 2024</SelectItem>
-          <SelectItem value="cc">June Cohort 2024</SelectItem>
-          <SelectItem value="ipc">October Cohort 2024</SelectItem>
-          <SelectItem value="jan">January Cohort 2025</SelectItem>
+          {isLoading ? (
+            <SelectItem disabled>Loading...</SelectItem>
+          ) : cohorts?.data?.data?.length > 0 ? (
+            cohorts.data?.data?.map((cohort) => (
+              <SelectItem key={cohort.id} value={cohort.cohort}>
+                {cohort.cohort}
+              </SelectItem>
+            ))
+          ) : (
+            <SelectItem disabled>No Cohorts Available</SelectItem>
+          )}
         </SelectGroup>
       </SelectContent>
     </Select>
   );
-}
+};
+
+export default CertificateCohort;

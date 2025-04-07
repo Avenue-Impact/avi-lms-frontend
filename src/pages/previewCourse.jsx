@@ -18,7 +18,7 @@ import professionalBG from "../assets/images/proffessional.png";
 import AviNav from "../Components/avi/AviNav";
 import { ScrollRestoration, useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { cn } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 import Container from "@/Components/Container";
 import CourseCardPreview from "@/Components/CourseCardPreview";
 import { industriesItems, professionalItems } from "@/lib/professionalItems";
@@ -29,18 +29,28 @@ import {
 } from "@/hooks/students/use-fetch-all-courses";
 import { Skeleton } from "@/Components/ui/skeleton";
 import Cookies from "js-cookie";
+import { StarRating } from "@/Components/star-rating";
+import { useFetchStudentsReviews } from "@/hooks/students/use-fetch-sstudent-reviews";
+// import { useFetchReviews } from "@/hooks/review/use-fetch-reviews";
 
 const PreviewCourse = () => {
   const navigate = useNavigate();
   const { data, isLoading: isFetching } = useFetchAllCourses();
 
   const { courseId } = useParams();
+  // const {
+  //   data: fetchData,
+  //   isLoading: isLoadingData,
+  //   error,
+  // } = useFetchStudentsReviews(courseId);
 
   const token = Cookies.get("token");
 
   const user = Boolean(token);
 
-  const { previewCourse, isLoading } = usePreviewCourses(courseId);
+  const { previewCourse, isLoading, error } = usePreviewCourses(courseId);
+  console.log("Get the course", previewCourse);
+
   const path = !user
     ? "/signup"
     : `/preview-video-course/${courseId}/enroll?title=${previewCourse?.data?.data.course.title}`;
@@ -230,6 +240,92 @@ const PreviewCourse = () => {
             </div>
           </Container>
 
+          {/* Review */}
+          <Container>
+            <div className="pt-10 lg:py-4">
+              <div className={styles.certificateCourses1}>
+                <p className="text-2xl font-normal capitalize text-[#23314A]">
+                  Reviews:
+                </p>
+              </div>
+
+              {isLoading ? (
+                "Loading..."
+              ) : error ? (
+                <p>
+                  {error?.response?.data?.message ?? "Something went wrong"}
+                </p>
+              ) : (
+                <div className="w-full max-w-3xl space-y-6">
+                  {previewCourse?.data?.data.course.reviews.length < 1 ? (
+                    <p className="text-sm italic text-gray-400">
+                      No reviews yet...
+                    </p>
+                  ) : (
+                    previewCourse?.data?.data.course.reviews.map((review) => (
+                      <div
+                        key={review.id}
+                        className="rounded-lg bg-white p-4 shadow-md md:flex-row"
+                      >
+                        <div className="flex flex-row items-center justify-between">
+                          {/* User Profile */}
+                          <div className="flex flex-row gap-3">
+                            <div className="flex-shrink-0">
+                              <img
+                                src={
+                                  review?.user_id?.avatar ||
+                                  "https://i.pravatar.cc/150?img=3"
+                                }
+                                alt="User Avatar"
+                                className="h-12 w-12 rounded-full"
+                              />
+                            </div>
+
+                            {/* Review Content */}
+                            <div className="flex-1">
+                              <h3 className="font-bold capitalize text-[#101928]">
+                                {review.user_id?.firstname}{" "}
+                                {review.user_id?.lastname}
+                              </h3>
+                              {/* Rating and Date */}
+                              <div className="mt-1 flex items-center gap-2 text-yellow-500">
+                                <span>
+                                  {review.rating ? (
+                                    <div className="text-yellow-500gap-[10px] flex items-center">
+                                      <StarRating
+                                        className="text-yellow-500"
+                                        rating={review.rating}
+                                      />
+                                    </div>
+                                  ) : (
+                                    <p className="text-sm italic text-gray-400">
+                                      No reviews available...
+                                    </p>
+                                  )}
+                                </span>{" "}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div>
+                          {/* Review Text */}
+                          <p className="mt-2 text-justify text-[14px] text-[#667185]">
+                            {review.content || (
+                              <p className="text-sm italic text-gray-400">
+                                No comment
+                              </p>
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              )}
+            </div>
+          </Container>
+
           {/* Certificate */}
           <Container>
             <div className={`${styles.certificate_courses} pt-10`}>
@@ -295,7 +391,7 @@ const PreviewCourse = () => {
 
                   <div className="py-3">
                     <small className="lg:text-lg">
-                      © 2024 Avenue Impact Limited. All rights reserved
+                      © 2025 Avenue Impact Limited. All rights reserved
                     </small>
                   </div>
 

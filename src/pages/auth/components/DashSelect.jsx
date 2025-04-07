@@ -14,20 +14,25 @@ import {
 import { usePreviewCourses } from "@/hooks/students/use-fetch-all-courses";
 import { useParams } from "react-router-dom";
 
-export function PreviewVideoSelect() {
+export function PreviewVideoSelect({ selectedCourseId, setSelectedCourseId }) {
   let { courseId } = useParams();
   const { previewCourse } = usePreviewCourses(courseId);
   return (
-    <Select className="p-0">
+    <Select
+      className="p-0"
+      onValueChange={(value) => setSelectedCourseId(value)}
+    >
       <SelectTrigger className="w-full">
         <SelectValue placeholder="Select Cohort" />
       </SelectTrigger>
       <SelectContent className="max-h-60 overflow-y-auto">
-        {previewCourse?.data?.data.course.cohorts.map((cohortlist, index) => (
-          <SelectGroup key={index.id}>
-            <SelectItem value={cohortlist.id}>{cohortlist.cohort}</SelectItem>
-          </SelectGroup>
-        ))}
+        <SelectGroup>
+          {previewCourse?.data?.data.course.cohorts.map((cohortlist) => (
+            <SelectItem key={cohortlist.id} value={cohortlist.cohort}>
+              {cohortlist.cohort}
+            </SelectItem>
+          ))}
+        </SelectGroup>
       </SelectContent>
     </Select>
   );

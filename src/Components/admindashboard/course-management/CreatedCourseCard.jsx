@@ -7,7 +7,7 @@ const CreatedCourseCard = ({
   imgSrc = joinTeam,
   altText,
   title,
-  path = "/admin/course/management/edit", // Setting the default path to a string route
+  path = "/admin/course/management/edit", 
   date = "18/09/2024",
   rating,
   review,

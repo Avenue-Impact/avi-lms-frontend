@@ -1,30 +1,26 @@
-export const wishlists = [
+import joinTeam from "../assets/images/join_team.png";
+import liveCoaching from "../assets/images/live_coaching.png";
+
+export const certCourses = [
   {
-    id: 1,
-    price: 'Price £2,200',
-    reviews: '4,300',
-    ratings: '2.3',
-    title: 'Live session + Mentoring (May Cohorts - 3.5 Months Programme)'
+    id: "1",
+    title: "Project Consultant Training Programme (Bundle)",
+    date: " 01/02/2023",
+    duration: "3 Months",
+    cover_image: joinTeam,
   },
   {
-    id: 2,
-    price: 'Price £2,200',
-    reviews: '4,300',
-    ratings: '2.3',
-    title: 'Live session + Mentoring (May Cohorts - 3.5 Months Programme)'
+    id: "2",
+    title: "Project Consultant Training Programme (Bundle)",
+    date: " 01/02/2024",
+    duration: "1 Month",
+    cover_image: liveCoaching,
   },
   {
-    id: 3,
-    price: 'Price £2,200',
-    reviews: '4,300',
-    ratings: '2.3',
-    title: 'Live session + Mentoring (May Cohorts - 3.5 Months Programme)'
+    id: "3",
+    title: "Project Consultant Training Programme (Bundle)",
+    date: " 01/02/2024",
+    duration: "2 Months",
+    cover_image: joinTeam,
   },
-  {
-    id: 4,
-    price: 'Price £2,200',
-    reviews: '4,300',
-    ratings: '2.3',
-    title: 'Live session + Mentoring (May Cohorts - 3.5 Months Programme)'
-  },
-]
+];

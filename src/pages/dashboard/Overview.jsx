@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 const Overview = ({ data }) => {
   const [queryString] = useSearchParams();
 
-  console.log(data);
+  // console.log(data);
 
   const title = queryString?.get("title") ?? "NO title for this course";
 

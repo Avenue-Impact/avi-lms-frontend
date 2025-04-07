@@ -11,7 +11,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 function CourseWorkAreaWithDocs({ data, modalActive, setModalActive }) {
   const [modal, setModal] = useState(false);
 
-  console.log("Check data here", data);
+  // console.log("Check data here", data);
 
   const { deleteDocs, delectingDoc } = useDeleteUserDocumenet();
 
@@ -20,6 +20,9 @@ function CourseWorkAreaWithDocs({ data, modalActive, setModalActive }) {
   // const [searchParams] = useSearchParams();
   // const courseId = searchParams.get("id");
   // const cohortId = searchParams.get("cohortId");
+
+  const docx = data?.data?.data?.documents;
+  console.log("This is share document", docx);
 
   const courseId = data?.data?.data?.course_id;
   const cohortId = data?.data?.data?.cohort_id;
@@ -66,7 +69,7 @@ function CourseWorkAreaWithDocs({ data, modalActive, setModalActive }) {
             <div className="h-32 overflow-hidden rounded-tl-xl rounded-tr-xl md:h-36">
               <img
                 src={document.url}
-                alt={document.title}
+                alt={document.name}
                 className="h-full w-full object-cover"
               />
             </div>
@@ -88,7 +91,7 @@ function CourseWorkAreaWithDocs({ data, modalActive, setModalActive }) {
               </button>
             </div>
           </div>
-        ))} 
+        ))}
       </div>
       {modal && modalActive === "student" && (
         <ShareDocumentModal setModal={setModal} />

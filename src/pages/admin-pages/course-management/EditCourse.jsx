@@ -27,8 +27,8 @@ const EditCourse = () => {
   // console.log("courseId", courseId);
 
   const { unPublish, isUnPublishing } = useUnpublishCourse();
-  console.log("unPublish function:", unPublish);
-  console.log("isUnPublishing state:", isUnPublishing);
+  // console.log("unPublish function:", unPublish);
+  // console.log("isUnPublishing state:", isUnPublishing);
 
 
 
@@ -44,7 +44,7 @@ const EditCourse = () => {
     <div>
       <div className="mb-8 mt-16 flex items-center justify-between">
         <p className="font-[500] text-[#344054] lg:text-[18px] 2xl:text-[24px]">
-          {title}
+          {title.length > 44 ? `${title.substring(0, 45)}...` : title }
         </p>
 
         <div>

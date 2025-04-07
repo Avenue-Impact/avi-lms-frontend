@@ -39,6 +39,7 @@ const AdminStartLiveSession = () => {
         <StartMeeting
           meetingNumber={data?.data?.data?.meeting_id}
           userName="Admin"
+          userEmail={"tobiemma200@gmail.com"}
           signature={data?.data?.data?.signature}
           apiKey={import.meta.env.VITE_ZOOM_API_KEY}
           password={data?.data?.data?.password}

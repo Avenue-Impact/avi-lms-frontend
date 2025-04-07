@@ -4,12 +4,13 @@ import { useFetchAllAdminCourses } from "@/hooks/course-management/use-fetch-all
 import { formatDate } from "@/lib/utils";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import UnplishedCreatedCourse from "./UnplishedCreatedCourse";
 
 const CreatedCourse = () => {
   const { data, isLoading, error } = useFetchAllAdminCourses(1, 10, true);
-  console.log("project area", data);
+  // console.log("Fetch Courses", data);
 
-  console.log(error);
+  // console.log(error);
 
   return (
     <div>
@@ -52,6 +53,8 @@ const CreatedCourse = () => {
           ))}
         </div>
       )}
+
+      <UnplishedCreatedCourse/>
     </div>
   );
 };

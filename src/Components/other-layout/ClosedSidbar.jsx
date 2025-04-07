@@ -1,13 +1,13 @@
 import mobileLogo from "../../assets/images/mobile-dark.png";
 
-import { LucideLogOut, MoreVertical } from "lucide-react";
-import { PiGearThin } from "react-icons/pi";
-import { IoGiftOutline } from "react-icons/io5";
-import { useContext, createContext, useState } from "react";
-import { DarkLogo } from "../Logo";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { NavLink, useLocation } from "react-router-dom";
+import { useProfile } from "@/hooks/students/use-fetch-student-profile";
 import { cn } from "@/lib/utils";
+import { createContext, useContext, useState } from "react";
+import { IoGiftOutline } from "react-icons/io5";
+import { PiGearThin } from "react-icons/pi";
+import { NavLink, useLocation } from "react-router-dom";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Skeleton } from "../ui/skeleton";
 
 const SidebarContext = createContext();
 
@@ -72,33 +72,14 @@ export function ClosedSidnav({ children }) {
             </li>
           </ul>
 
-          <div className="flex border-t p-2 md:p-3">
-            <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback className="bg-primary-color-100 text-lg text-primary-color-600">
-                MS
-              </AvatarFallback>
-            </Avatar>
-
-            {/* <div
-              className={`ml-3 hidden w-full items-center justify-between overflow-hidden transition-all lg:flex`}
-            >
-              <div className="leading-4">
-                <h4 className="text-[#101928]">Maxwell Samantha</h4>
-                <span className="text-xs text-gray-600">johndoe@gmail.com</span>
-              </div>
-              <LucideLogOut />
-            </div> */}
-          </div>
+          <ProfileImage />
         </div>
       </nav>
     </aside>
   );
 }
 
-export function SidebarItem({ icon, text, alert, path, onClick, active }) {
-  const { expanded } = useContext(SidebarContext);
-
+export function SidebarItem({ icon, path }) {
   const location = useLocation();
 
   return (
@@ -117,3 +98,35 @@ export function SidebarItem({ icon, text, alert, path, onClick, active }) {
     </li>
   );
 }
+
+const ProfileImage = () => {
+  const { data, isLoading, error } = useProfile();
+
+  if (isLoading)
+    return (
+      <div className="flex border-t p-2 md:p-3">
+        <Skeleton className={"size-10 rounded-full"} />
+      </div>
+    );
+
+  if (error)
+    return (
+      <div className="flex border-t p-2 md:p-3">
+        <div className="flex size-10 items-center justify-center bg-slate-200">
+          NA
+        </div>
+      </div>
+    );
+
+  return (
+    <div className="flex border-t p-2 md:p-3">
+      <Avatar>
+        <AvatarImage src={data?.data?.data?.avatar} />
+        <AvatarFallback className="bg-primary-color-100 text-lg text-primary-color-600">
+          {data?.data?.data?.firstname.at(0)}
+          {data?.data?.data?.lastname.at(0)}
+        </AvatarFallback>
+      </Avatar>
+    </div>
+  );
+};

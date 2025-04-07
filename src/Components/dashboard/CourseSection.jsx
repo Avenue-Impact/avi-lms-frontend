@@ -83,7 +83,7 @@ function CourseSection({ editButton, data }) {
           <Accordion type="single" collapsible className="w-full">
             {data?.data?.data?.recorded_sessions.map((section) => {
               return (
-                <AccordionItem value={section.title} key={section.id}>
+                <AccordionItem value={section.id} key={section.id}>
                   <AccordionTrigger
                     className={cn(
                       "group/section [&[data-state=open]]:bg-bg-primary-color-300/20 px-5 pb-[10px] hover:bg-primary-color-300/20",

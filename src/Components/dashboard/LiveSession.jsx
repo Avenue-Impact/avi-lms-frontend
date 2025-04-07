@@ -43,18 +43,21 @@ function LiveSession({ data }) {
             Started from: {formatDate(started_from)}
           </p>
           <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
-            Meeting date: {formatDate(end_date)}
+            Meeting Time: {formatDate(end_date)}
           </p>
-          <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
+          {/* <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
             Add to: iCal Expor, Google Calendar
           </p>
           <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
             Password: {password}
-          </p>
+          </p> */}
         </div>
-        <button className="mt-5 rounded-md bg-tertiary-color-700 px-4 py-2 text-sm text-[#C7D7F4] hover:bg-[#C7D7F4] hover:text-tertiary-color-700 md:text-base lg:mt-8">
+
+
+        <button className="mt-5 rounded-md bg-tertiary-color-700 px-4 mr-4 py-2 text-sm text-[#C7D7F4] hover:bg-[#C7D7F4] hover:text-tertiary-color-700 md:text-base lg:mt-8">
           Meeting hasn’t started yet
         </button>
+
         <CommonButton
           onClick={() =>
             navigate(
@@ -64,9 +67,11 @@ function LiveSession({ data }) {
             )
           }
         >
-          join Meeting
+          Join Meeting
         </CommonButton>
+      
       </section>
+
       <div className="lg:hidden">
         <MobileSlideNav />
       </div>

@@ -6,6 +6,7 @@ import DashButton from "../auth/ButtonDash";
 import ReferralImg from "../../assets/images/image_111.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
+import toast from "react-hot-toast";
 
 const ReferralPage = () => {
   const [loading, setLoading] = useState();
@@ -34,7 +35,7 @@ const ReferralPage = () => {
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
-    alert("Referral link copied to clipboard");
+    toast.success("Referral link copied to clipboard");
   };
 
   const referralCode = data?.data?.data?.referral_code;
@@ -66,7 +67,10 @@ const ReferralPage = () => {
   };
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (error)
+    return (
+      <p>Error: {error?.response?.data?.message ?? "Something went wrong"}</p>
+    );
   return (
     <div>
       <div className="flex flex-wrap justify-around text-sm md:flex-nowrap lg:gap-2">
@@ -75,8 +79,8 @@ const ReferralPage = () => {
             Available balance
           </p>
           <h1 className="mt-10 text-[75px] font-[600] lg:mt-2 lg:text-4xl">
-            {data?.data?.data?.available_balance.currency_symbol}
-            {data?.data?.data?.available_balance.value}
+            {data?.data?.data?.available_balance.currency_symbol ?? "£"}
+            {data?.data?.data?.available_balance.value ?? "0"}
           </h1>
         </div>
 

@@ -1,11 +1,14 @@
 import CertificateEmpty from '@/Components/admindashboard/admin-certificate/CertificateEmpty'
-import CertificatePage, {certCourses} from '@/Components/admindashboard/admin-certificate/CertificatePage'
+import CertificatePage from '@/Components/admindashboard/admin-certificate/CertificatePage'
+import { useFetchAllAdminCourses } from '@/hooks/course-management/use-fetch-all-courses';
 import React from 'react'
 
 const CertificateMainPage = () => {
+  const {data} = useFetchAllAdminCourses();
+
   return (
     <div>
-        {certCourses.length < 1 ? <CertificateEmpty/> : <CertificatePage/>}
+        {data?.data?.data?.courses.length < 1 ? <CertificateEmpty/> : <CertificatePage/>}
     </div>
   )
 }

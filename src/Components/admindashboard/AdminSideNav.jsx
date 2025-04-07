@@ -150,8 +150,16 @@ function SideNav({ children }) {
         <ul className="my-5 *:border-b *:border-b-[#E4E7EC]">{children}</ul>
         <div className="divide-y">
           <ul>
-            <SidebarItem text={"review"} icon={<HeartIcon />} />
-            <SidebarItem text={"notification"} icon={<BellIcon />} />
+            <SidebarItem
+              text={"review"}
+              path={"/admin/reviews"}
+              icon={<HeartIcon />}
+            />
+            <SidebarItem
+              text={"notification"}
+              path={"/admin/notification"}
+              icon={<BellIcon />}
+            />
           </ul>
           <div className="px-6 py-10">
             <button className="flex items-center gap-5" onClick={handleSignOut}>

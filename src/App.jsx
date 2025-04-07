@@ -96,6 +96,13 @@ import UserJoinMeeting from "./pages/dashboard/UserJoinMeeting";
 import AdminConfirmationRole from "./pages/admin-pages/account-managemnet/AdminConfirmationRole";
 import StudentDetails from "./pages/admin-pages/data-management/StudentDetails";
 
+import ReviewLayout from "./layouts/admin/ReviewsLayout";
+import Review from "./pages/admin-pages/reviews/Review";
+import NotificationLayout from "./layouts/admin/NotificationLayout";
+import Notifications from "./pages/admin-pages/notification/Notifications";
+import ReviewDetails from "./pages/admin-pages/reviews/ReviewInfo";
+import ReviewMainPage from "./pages/admin-pages/reviews/ReviewMainPage";
+
 const queryClient = new QueryClient();
 
 function App() {
@@ -477,6 +484,34 @@ function App() {
                 {
                   path: "certificate-issue",
                   element: <CertificateIssueHistory />,
+                },
+              ],
+            },
+
+            // Review
+            {
+              element: <ReviewLayout />,
+              path: "reviews",
+              children: [
+                {
+                  index: true,
+                  element: <ReviewMainPage />,
+                },
+                {
+                  path: "review-details/:id/:courseTitle",
+                  element: <ReviewDetails />,
+                },
+              ],
+            },
+
+            // Notification
+            {
+              element: <NotificationLayout />,
+              path: "notification",
+              children: [
+                {
+                  index: true,
+                  element: <Notifications />,
                 },
               ],
             },

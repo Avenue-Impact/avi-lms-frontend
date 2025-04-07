@@ -11,6 +11,7 @@ const StartMeeting = ({
   password,
   zak,
   leaveUrl,
+  userEmail,
 }) => {
   const { courseId } = useParams();
   const [queryString] = useSearchParams();
@@ -30,7 +31,7 @@ const StartMeeting = ({
         ZoomMtg.join({
           meetingNumber,
           userName,
-          userEmail: "tobiemma200@gmail.com",
+          userEmail,
           signature,
           sdkKey: apiKey,
           passWord: password,
