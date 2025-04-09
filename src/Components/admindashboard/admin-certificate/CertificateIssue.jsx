@@ -8,11 +8,7 @@ import {
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate, useSearchParams } from "react-router-dom";
-// import { CertificateCohort } from "./CertificateCohort";
 import DashButton from "@/pages/auth/ButtonDash";
-// import Modal from "@/pages/auth/components/Modal";
-// import BorderCard from "@/Components/BorderCard";
-// import { CommonButton } from "@/Components/ui/button";
 import { useGetAllCohorts } from "@/hooks/course-management/use-fetch-all-cohorts";
 import { z } from "zod";
 import { useIssueCertificate } from "@/hooks/certificate/use-issue-certificate";
@@ -25,21 +21,18 @@ import CertificateCohort from "./CertificateCohort";
 const issueCertificate = z.object({
   course_title: z.string().min(2, "Course title is required"),
   issue_date: z.string().min(10, "Issue date is required"),
-
 });
 
 const CertificateIssue = () => {
   const navigate = useNavigate();
-  
+
   const [selectedCourseId, setSelectedCourseId] = useState(null);
 
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
   const title = searchParams.get("title");
-  
 
   const { data, isLoading } = useGetAllCohorts(id);
-  
 
   const { createCert, isPending } = useIssueCertificate(id);
 
@@ -52,10 +45,10 @@ const CertificateIssue = () => {
   });
 
   const onSubmit = async (data) => {
-      if (!selectedCourseId) {
-        alert("Please select a course");
-        return;
-      }
+    if (!selectedCourseId) {
+      alert("Please select a course");
+      return;
+    }
 
     createCert({
       cohort: selectedCourseId,
@@ -80,10 +73,8 @@ const CertificateIssue = () => {
               <p className="py-4 text-[15px] italic">
                 This certificate certifies that{" "}
                 <span className="text-[#F53366]">Maxwell Samantha</span>{" "}
-                successfully completed the course
-                <span className="text-[#F53366]">
-                  "Project Consultant Training Programme (Bundle)"
-                </span>
+                successfully completed the course{" "}
+                <span className="text-[#F53366]">{title}</span>
               </p>
             </div>
           </div>
@@ -107,11 +98,9 @@ const CertificateIssue = () => {
 
           <div className="py-4">
             <p className="text-[16px] font-[400] text-[#667185]">
-              Issue certificates for the live session to all students
-              <span className="2xl:block">
-                enrolled in the Project Consultant Training
-              </span>
-              <span className="2xl:block">Programme (Bundle).</span>
+              Issue certificates for the live session to all students enrolled
+              in the <span className="font-medium 2xl:block">{title}</span>
+              {/* <span className="2xl:block">Programme (Bundle).</span> */}
             </p>
           </div>
 

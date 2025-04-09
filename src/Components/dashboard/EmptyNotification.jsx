@@ -1,7 +1,7 @@
 import { Heading } from "@/pages/auth/components/Text";
 import emptyState from "../../assets/images/empty-state.png";
 import BorderCard from "../BorderCard";
-function EmptyNotification() {
+function EmptyUserNotification() {
   return (
     <div className="flex h-full items-center justify-center">
       <BorderCard className="mx-auto h-fit w-fit align-middle">
@@ -12,4 +12,4 @@ function EmptyNotification() {
   );
 }
 
-export default EmptyNotification;
+export default EmptyUserNotification;

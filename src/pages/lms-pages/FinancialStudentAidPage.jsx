@@ -19,25 +19,21 @@ import {
   SelectValue,
 } from "@/Components/ui/select";
 
-
 const financialAidSchema = z.object({
   reason: z.string().min(2, "Reason you applied for aid"),
   course_goal: z.string().min(2, "Bank Name is required"),
 });
 
 const FinancialStudentAidPage = () => {
-
   const [accurateInfo, setAccurateInfo] = useState(false);
   const [commitment, setCommitment] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState(null);
 
-  const { data:fetchdata } = useFetchAllCourses();
+  const { data: fetchdata } = useFetchAllCourses();
   const courses = fetchdata?.data?.data?.courses || [];
   // console.log("Fetch the data", courses)
-  
 
   const { financialAid, isPending } = useFinancialAid();
- 
 
   const form = useForm({
     resolver: zodResolver(financialAidSchema),
@@ -47,13 +43,12 @@ const FinancialStudentAidPage = () => {
     },
   });
 
-
   const onSubmit = async (data) => {
-     if (!selectedCourseId) {
-       alert("Please select a course");
-       return;
+    if (!selectedCourseId) {
+      alert("Please select a course");
+      return;
     }
-    
+
     financialAid({
       reason_for_application: data.reason,
       how_will_it_help: data.course_goal,
@@ -61,9 +56,7 @@ const FinancialStudentAidPage = () => {
       accurate_info: accurateInfo,
       commitment: commitment,
     });
-  }
-
-
+  };
 
   return (
     <div>
@@ -87,7 +80,7 @@ const FinancialStudentAidPage = () => {
                   {courses.map((course) => (
                     <SelectItem key={course.id} value={course.id}>
                       {course.title}
-                      {course.id}
+                      {/* {course.id} */}
                     </SelectItem>
                   ))}
                 </SelectGroup>
@@ -107,8 +100,8 @@ const FinancialStudentAidPage = () => {
                     textarea={true}
                     id="reason"
                     className="w-full rounded border border-gray-300 p-2 lg:h-[203px]"
-                            />
-                          </div>
+                  />
+                </div>
 
                 {/* Course benefits */}
                 <div>

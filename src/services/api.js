@@ -4,79 +4,69 @@ import Cookies from "js-cookie";
 
 const url = import.meta.env.VITE_USER_URL;
 
-
 export const axiosAdmin = axios.create({
   baseURL: BASE_URL,
   headers: {
-    'Authorization': `Bearer ${Cookies.get('adminToken')}`,
-
-  }
-})
+    Authorization: `Bearer ${Cookies.get("adminToken")}`,
+  },
+});
 
 export const fetchUserProfile = async () => {
-  const token = Cookies.get('token')
+  const token = Cookies.get("token");
 
   return axios.get(url, {
     headers: {
-      'Authorization': `Bearer ${token}`
-    }
-  })
-
-}
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
 
 export const addDemandSection = async ({ data, courseId }) => {
-
-
   return axios.post(`${BASE_URL}/courses/${courseId}/on-demand-section`, data, {
     headers: {
       "Content-Type": "multipart/form-data",
-      "Authorization": `Bearer ${Cookies.get('adminToken')}`,
+      Authorization: `Bearer ${Cookies.get("adminToken")}`,
     },
-  })
-}
-
-
+  });
+};
 
 export const addCourseInformation = async (data) => {
-  const token = Cookies.get('adminToken')
+  const token = Cookies.get("adminToken");
 
   return axios.post(`${BASE_URL}/courses/course-informations`, data, {
     headers: {
       "Content-Type": "multipart/form-data",
       Authorization: `Bearer ${token}`,
     },
-  })
-
-}
-
+  });
+};
 
 export const editCourseInformationApi = async ({ data, courseId }) => {
+  const token = Cookies.get("adminToken");
 
-  const token = Cookies.get('adminToken')
-
-  return axios.patch(`${BASE_URL}/courses/${courseId}/course-informations`, data, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-      Authorization: `Bearer ${token}`,
+  return axios.patch(
+    `${BASE_URL}/courses/${courseId}/course-informations`,
+    data,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
     },
-  })
-}
-
-
+  );
+};
 
 export const addCourseType = async ({ data, courseId }) => {
-
-
   return axios.post(`${BASE_URL}/courses/${courseId}/coursetype`, data, {
     headers: {
-      Authorization: `Bearer ${Cookies.get('adminToken')}`
+      Authorization: `Bearer ${Cookies.get("adminToken")}`,
     },
-  })
-}
+  });
+};
 
 export const addLiveSession = async (data) => {
-  const token = Cookies.get('adminToken')
-  const courseId = localStorage.getItem('courseId')
+  const token = Cookies.get("adminToken");
+  const courseId = localStorage.getItem("courseId");
 
   const cohort = localStorage.getItem("cohorts");
 
@@ -89,11 +79,10 @@ export const addLiveSession = async (data) => {
       },
     },
   );
-}
+};
 
 export const addRecordedSession = async ({ data, courseId, section }) => {
-
-  const token = Cookies.get('adminToken')
+  const token = Cookies.get("adminToken");
   // let section = localStorage.getItem("recordedSection")
   //   ? localStorage.getItem("recordedSection")
   //   : 2;
@@ -109,26 +98,21 @@ export const addRecordedSession = async ({ data, courseId, section }) => {
       },
     },
   );
-}
+};
 
 export const fetchDemandCourse = async (courseId) => {
-  const token = Cookies.get('adminToken')
+  const token = Cookies.get("adminToken");
 
-  return await axios.get(
-    `${BASE_URL}/courses/${courseId}/on-demand-section`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+  return await axios.get(`${BASE_URL}/courses/${courseId}/on-demand-section`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
     },
-  );
-}
-
+  });
+};
 
 // Fetch course information
 export const fetchCourseInformation = async (courseId) => {
-  const token = Cookies.get('adminToken');
-
+  const token = Cookies.get("adminToken");
 
   return await axios.get(
     `${BASE_URL}/courses/${courseId}/course-informations`,
@@ -142,24 +126,30 @@ export const fetchCourseInformation = async (courseId) => {
 
 // Fetch cohorts
 export const fetchCohorts = async (courseId) => {
-
-  const token = Cookies.get('adminToken')
+  const token = Cookies.get("adminToken");
   return await axios.get(`${BASE_URL}/courses/${courseId}/cohorts`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
-  })
-}
-
+  });
+};
 
 // Add a single cohort
 export const addSingleCohort = async ({ data, courseId }) => {
+  const token = Cookies.get("adminToken");
 
-  const token = Cookies.get('adminToken');
+  return await axios.post(`${BASE_URL}/courses/${courseId}/cohorts`, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
 
-  return await axios.post(
-    `${BASE_URL}/courses/${courseId}/cohorts`,
-    data,
+export const getSingleCohort = async (courseId, cohortId) => {
+  const token = Cookies.get("adminToken");
+
+  return await axios.get(
+    `${BASE_URL}/courses/${courseId}/cohorts/${cohortId}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -167,17 +157,3 @@ export const addSingleCohort = async ({ data, courseId }) => {
     },
   );
 };
-
-export const getSingleCohort = async (courseId, cohortId) => {
-  const token = Cookies.get('adminToken')
-
-  return await axios.get(`${BASE_URL}/courses/${courseId}/cohorts/${cohortId}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
-}
-
-
-
-

@@ -10,8 +10,8 @@ const RestoredDeletedReview = () => {
 
   const { id } = useParams();
   const { data, isLoading, error } = useFetchDeletedReviews(id);
-  const { restoreReview } = useRestoreReview();
-  console.log("This is the data for restore review", data);
+  const { restoreReview, isPending } = useRestoreReview();
+  // console.log("This is the data for restore review", data);
 
   const restoredReview = (reviewId) => {
     setLoadingReviewId(reviewId);
@@ -74,9 +74,9 @@ const RestoredDeletedReview = () => {
                         : "bg-[#CC1747] hover:bg-[#f87195]"
                     }`}
                     onClick={() => restoredReview(review.id)}
-                    disabled={loadingReviewId}
+                    disabled={isPending}
                   >
-                    {loadingReviewId === review.id
+                    {isPending && loadingReviewId === review.id
                       ? "Restoring"
                       : "Restore Review"}
                   </button>

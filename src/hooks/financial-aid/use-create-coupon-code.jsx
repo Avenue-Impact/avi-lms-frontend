@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 
 const createCouponCode = async (data) => {
-//  https://avi-lms-backend.onrender.com/api/v1/admins/financial-aid/coupon-codes
+  //  https://avi-lms-backend.onrender.com/api/v1/admins/financial-aid/coupon-codes
   const url = `${BASE_URL}/financial-aid/coupon-codes`;
   return axios.post(url, data, {
     headers: {

@@ -90,7 +90,7 @@ const AdminLogin = () => {
 
         const decoded = jwtDecode(response.data.data.token);
 
-        navigate("/admin/dashboard");
+        navigate("/admin/course/management");
         toast.success("login successful");
       }
     } catch (error) {

@@ -16,5 +16,6 @@ export const useFetchGenerateCoupon = () => {
   return useQuery({
     queryKey: ["fetch-general-coupon"],
     queryFn: fetchGenerateCoupon,
+    enabled: false,
   });
 };

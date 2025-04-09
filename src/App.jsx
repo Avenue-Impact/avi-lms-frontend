@@ -17,7 +17,7 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 import Login from "./pages/auth/Login";
 import SignUp from "./pages/auth/Signup";
 import EmptyPage from "./pages/dashboard/EmptyPage";
-import Notification from "./pages/dashboard/Notification";
+import UserNotification from "./pages/dashboard/UserNotification";
 import Wishlist from "./pages/dashboard/Wishlist";
 
 import AdminLayout from "./layouts/AdminLayout";
@@ -79,8 +79,6 @@ import AccountMagament from "./pages/admin-pages/account-managemnet/AccountMagam
 import CourseWorkAreaLayout from "./layouts/admin/CourseWorkAreaLayout";
 import CourseWorkArea from "./pages/admin-pages/course-work-area/CourseWorkArea";
 import CourseWorkAreaDocument from "./pages/admin-pages/course-work-area/CourseWorkAreaDocument";
-import CourseWorkAssignment from "./pages/admin-pages/course-work-area/CourseWorkAssignment";
-import CourseWorkShareDocs from "./pages/admin-pages/course-work-area/CourseWorkShareDocs";
 import AllStudent from "./pages/admin-pages/data-management/AllStudent";
 import DashboardAnalytics from "./pages/admin-pages/data-management/DashboardAnalytics";
 import DataCourseManagement from "./pages/admin-pages/data-management/DataCourseManagement";
@@ -88,20 +86,20 @@ import DataManagementPage from "./pages/admin-pages/data-management/DataManageme
 // import PreviewVideoCourse from "./pages/PreviewVideoCourse";
 import EditGroupPage from "./Components/admindashboard/project-area/EditGroupPage";
 import GroupDetails from "./Components/admindashboard/project-area/GroupDetails";
-import PreviewCourse from "./pages/previewCourse";
-import PreviewVideoCourse from "./pages/previewVideoCourse";
-import ZoomMeeting from "./pages/admin-pages/meeting/ZoomMeeting";
+import AdminConfirmationRole from "./pages/admin-pages/account-managemnet/AdminConfirmationRole";
 import AdminMeeting from "./pages/admin-pages/meeting/AdminMeeting";
 import UserJoinMeeting from "./pages/dashboard/UserJoinMeeting";
-import AdminConfirmationRole from "./pages/admin-pages/account-managemnet/AdminConfirmationRole";
-import StudentDetails from "./pages/admin-pages/data-management/StudentDetails";
+import PreviewCourse from "./pages/previewCourse";
+import PreviewVideoCourse from "./pages/previewVideoCourse";
 
-import ReviewLayout from "./layouts/admin/ReviewsLayout";
-import Review from "./pages/admin-pages/reviews/Review";
 import NotificationLayout from "./layouts/admin/NotificationLayout";
+import ReviewLayout from "./layouts/admin/ReviewsLayout";
 import Notifications from "./pages/admin-pages/notification/Notifications";
 import ReviewDetails from "./pages/admin-pages/reviews/ReviewInfo";
 import ReviewMainPage from "./pages/admin-pages/reviews/ReviewMainPage";
+import ErrorPage from "./error-page";
+import DashboardErrorPage from "./dashboard-error-page";
+import AdminErrorPage from "./admin-error-page";
 
 const queryClient = new QueryClient();
 
@@ -121,6 +119,7 @@ function App() {
     {
       path: "/",
       element: <AppLayout />,
+      errorElement: <ErrorPage />,
       children: [
         {
           index: true,
@@ -140,6 +139,7 @@ function App() {
     {
       path: "/",
       element: <ServiceLayout />,
+      errorElement: <ErrorPage />,
       children: [
         {
           path: "/digital-transformation",
@@ -161,6 +161,7 @@ function App() {
     },
     {
       element: <AuthProtectedRoute tokin={"token"} path={"/dashboard"} />,
+      errorElement: <ErrorPage />,
       children: [
         {
           path: "",
@@ -198,6 +199,7 @@ function App() {
     },
     {
       element: <ProtectedRoute tokin={"token"} path={"/login"} />,
+      errorElement: <DashboardErrorPage />,
 
       children: [
         {
@@ -216,7 +218,7 @@ function App() {
 
             {
               path: "notification",
-              element: <Notification />,
+              element: <UserNotification />,
             },
             {
               path: "wishlists",
@@ -287,8 +289,12 @@ function App() {
     //admin routes
     {
       element: (
-        <AuthProtectedRoute tokin={"adminToken"} path={"/admin/dashboard"} />
+        <AuthProtectedRoute
+          tokin={"adminToken"}
+          path={"admin/course/management"}
+        />
       ),
+      errorElement: <AdminErrorPage />,
       children: [
         {
           path: "admin/login",
@@ -298,6 +304,7 @@ function App() {
     },
     {
       element: <ProtectedRoute tokin={"adminToken"} path={"/admin/login"} />,
+      errorElement: <AdminErrorPage />,
 
       children: [
         {
@@ -307,11 +314,12 @@ function App() {
         {
           element: <AdminLayout />,
           path: "/admin",
+          errorElement: <AdminErrorPage />,
           children: [
-            {
-              path: "/admin/dashboard",
-              element: <AdminEmpty />,
-            },
+            // {
+            //   path: "/admin/dashboard",
+            //   element: <AdminEmpty />,
+            // },
 
             // Project Area
             {
@@ -514,6 +522,10 @@ function App() {
                   element: <Notifications />,
                 },
               ],
+            },
+            {
+              path: "*",
+              element: <AdminErrorPage />,
             },
           ],
         },
