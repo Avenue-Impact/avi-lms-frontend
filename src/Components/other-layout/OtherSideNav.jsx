@@ -1,6 +1,5 @@
-import React from "react";
-import { ClosedSidnav, SidebarItem } from "./ClosedSidbar";
 import { navItem } from "../dashboard/DashboardSideNav";
+import { ClosedSidnav, SidebarItem } from "./ClosedSidbar";
 
 const OtherSideNav = () => {
   const handleClick = (id) => {

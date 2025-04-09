@@ -7,12 +7,7 @@ import ReferralPage from "../lms-pages/ReferralPage";
 import { useState } from "react";
 
 const Referral = () => {
-
-  
-
   const [selectedOption, setSelectedOption] = useState("referral");
-
-  
 
   return (
     <div>
@@ -34,18 +29,14 @@ const Referral = () => {
         </div>
 
         <div className="w-full rounded py-6">
-          {selectedOption === "referral" && (
-            <ReferralPage/>
-          )}
+          {selectedOption === "referral" && <ReferralPage />}
 
           {selectedOption === "financialAid" && (
             <div>
-                <FinancialStudentAidPage/>
+              <FinancialStudentAidPage />
             </div>
           )}
         </div>
-
-       
       </div>
     </div>
   );

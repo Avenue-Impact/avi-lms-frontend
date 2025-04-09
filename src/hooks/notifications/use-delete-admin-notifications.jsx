@@ -5,7 +5,6 @@ import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 
 const deleteNotifications = ({ notificationId }) => {
-  // https://avi-lms-backend.onrender.com/api/v1/users/admins/me/notifications/:notificationId
   const url = `${BASE_URL}/me/notifications/${notificationId}`;
   return axios.delete(url, {
     headers: {
@@ -19,12 +18,11 @@ export const useDeleteNotifications = () => {
   const { mutate: removeFromList, isPending: isRemoving } = useMutation({
     mutationFn: deleteNotifications,
     onSuccess: () => {
-      toast.success("notification deleted successfully");
-      queryClient.invalidateQueries("admin-notifications");
+      queryClient.invalidateQueries("fetch-admin-notifications");
+      toast.success("Notification deleted successfully");
     },
     onError: (err) => {
-      console.log(err);
-      toast.error(err?.response?.data?.message ?? "something went wrong");
+      toast.error(err?.response?.data?.message ?? "Something went wrong");
     },
   });
   return { removeFromList, isRemoving };

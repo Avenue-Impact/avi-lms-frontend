@@ -4,7 +4,7 @@ import { DesktopContent, MobileContent } from "./MobileContent";
 import liveSession from "../../assets/images/dashboard/live-session.png";
 import { DocumentContext } from "@/pages/dashboard/ShareDocument";
 import { Skeleton } from "../ui/skeleton";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { useStreamVideo } from "@/hooks/course-management/on-demand-section/use-stream-ondemand-video";
 
 function CourseVideoSection({ data }) {
@@ -42,17 +42,24 @@ function CourseVideoSection({ data }) {
   );
 }
 
-const PreviewVideo = ({ videoId, section, cohortId }) => {
+const PreviewVideo = ({ videoId, section }) => {
   const { courseId } = useParams();
   const videoRef = useRef(null);
   const [videoUrl, setVideoUrl] = useState(null);
+  const [queryString] = useSearchParams();
+  const cohortId = queryString.get("cohortId");
   const [currentRange, setCurrentRange] = useState("bytes=0-1048575"); // Initial range
+
+  console.log({ videoId, section, cohortId, courseId });
   const { data, isLoading, error, refetch } = useStreamVideo(
     courseId,
     section,
     videoId,
     currentRange,
+    cohortId,
   );
+
+  console.log({ data, isLoading, error, from: "videos" });
 
   // Generate and clean up Blob URL
   useEffect(() => {

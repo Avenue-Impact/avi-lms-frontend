@@ -79,8 +79,8 @@ const ReferralPage = () => {
             Available balance
           </p>
           <h1 className="mt-10 text-[75px] font-[600] lg:mt-2 lg:text-4xl">
-            {data?.data?.data?.available_balance.currency_symbol ?? "£"}
-            {data?.data?.data?.available_balance.value ?? "0"}
+            {data?.data?.data?.available_balance?.currency_symbol ?? "£"}
+            {data?.data?.data?.available_balance?.value ?? "0"}
           </h1>
         </div>
 

@@ -1,11 +1,10 @@
-import ShareDocsEmpty from "./ShareDocsEmpty";
 import { cn } from "@/lib/utils";
 import CourseWorkAreaWithDocs from "./CourseWorkAreaWithDocs";
+import ShareDocsEmpty from "./ShareDocsEmpty";
 
-import { useGetSingleCohort } from "@/hooks/course-management/use-get-singleCohorts";
-import { useParams, useSearchParams } from "react-router-dom";
-import { createContext, useContext, useState } from "react";
 import { useFetchSharedResources } from "@/hooks/course-work-area/use-fetch-shared-resources";
+import { createContext, useContext, useState } from "react";
+import { useParams, useSearchParams } from "react-router-dom";
 
 export const ShareDocContext = createContext({});
 function CourseWorkShareDocs({ data, active, setActive }) {

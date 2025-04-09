@@ -147,20 +147,22 @@ export function Sidebar({ children, toggleNav, setToggleNav }) {
   );
 }
 
-export function SidebarItem({ icon, text, path, setToggleNav }) {
+export function SidebarItem({ icon, text, path, setToggleNav, active }) {
   const { pathname } = useLocation();
 
   return (
     <li
       className={"dashboard capitalize lg:whitespace-nowrap"}
-      onClick={() => setToggleNav?.((prev) => !prev)}
+      onClick={() => {
+        setToggleNav?.((prev) => !prev);
+      }}
     >
       <NavLink
         to={path}
         className={cn(
           "group relative my-1 flex cursor-pointer items-center border-4 border-transparent px-1 py-2 text-gray-600 transition-colors hover:border-l-primary-color-600 hover:bg-primary-color-100/30 hover:text-primary-color-600",
 
-          pathname === path || pathname?.includes(`${path}`)
+          pathname.split("/").at(-1) === active
             ? "border-l-4 border-l-primary-color-600 bg-primary-color-100/30 font-medium text-primary-color-600"
             : "",
         )}

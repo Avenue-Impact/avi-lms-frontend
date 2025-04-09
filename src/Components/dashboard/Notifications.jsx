@@ -2,12 +2,12 @@ import PropTypes from "prop-types";
 import BorderCard from "../BorderCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Heading, Paragraph } from "@/pages/auth/components/Text";
-import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faBell, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { useFetchNotifications } from "@/hooks/students/use-fetch-notifications";
 import { useDeleteNotifications } from "@/hooks/students/use-delete-notifications";
+import { FaTrashCan } from "react-icons/fa6";
 
 function Notifications({ notifications, setNotifications }) {
-
   const { removeFromList, isRemoving } = useDeleteNotifications();
   const handleclick = (id) => {
     // const newNotifications = data?.data?.data?.filter((data) => data.id !== id);
@@ -18,15 +18,19 @@ function Notifications({ notifications, setNotifications }) {
   };
 
   const { data, isLoading, isError } = useFetchNotifications();
-  // console.log("Fetch the notifications", data);
-  // console.log("Fetch the notifications", isLoading);
+  console.log("Fetch the notifications", data);
+  console.log("Fetch the notifications", isLoading);
 
   return (
     <BorderCard className="mt-10 space-y-3 rounded-md border-none bg-white px-0">
       {isLoading ? (
         "Loading..."
       ) : isError ? (
-        <p>{isError?.response?.data?.message ?? "Something went wrong"}</p>
+        <p>
+          {isError?.response?.data?.message ||
+            isError?.message ||
+            "Something went wrong"}
+        </p>
       ) : (
         data?.data?.data?.map((notification) => {
           return (
@@ -37,7 +41,7 @@ function Notifications({ notifications, setNotifications }) {
               <div className="flex items-start gap-2 md:gap-4">
                 <span className="flex items-center justify-center rounded-full bg-primary-color-100 px-3 py-3 text-primary-color-600">
                   <FontAwesomeIcon
-                    icon={notification.icon}
+                    icon={notification?.icon || faBell}
                     className="text-sm md:text-lg lg:text-xl"
                   />
                 </span>
@@ -50,12 +54,12 @@ function Notifications({ notifications, setNotifications }) {
                       {notification.message}
                     </Paragraph>
                   </div>
-                  {/* <p className="text-[0.625rem] text-tertiary-color-800 *:capitalize md:text-sm">
-                  <span>today</span> |<span>{notification.time} </span>
-                </p> */}
-                  {/* <p className="text-sm text-tertiary-color-800 lg:block">
-                  <span>today</span> |<span>{notification.time} </span>
-                </p> */}
+                  <p className="text-[0.625rem] text-tertiary-color-800 *:capitalize md:text-sm">
+                    <span>today</span> |<span>{notification.updated_at} </span>
+                  </p>
+                  <p className="text-sm text-tertiary-color-800 lg:block">
+                    <span>today</span> |<span>{notification.created_at} </span>
+                  </p>
                 </article>
               </div>
               <div className="items-center justify-self-end *:capitalize md:flex md:gap-10">

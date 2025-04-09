@@ -19,10 +19,7 @@ const ReviewDetail = () => {
     delReview({
       courseId: id,
       reviewId: reviewId,
-    }),
-      {
-        onSettled: () => setLoadingDeteleId(null), // Reset after API call
-      };
+    });
   };
 
   return (
@@ -73,9 +70,9 @@ const ReviewDetail = () => {
                         : "bg-[#CC1747] hover:bg-[#f87195]"
                     }`}
                     onClick={() => deleteReview(review.id)}
-                    disabled={loadingDeleteId}
+                    disabled={isPending}
                   >
-                    {loadingDeleteId === review.id
+                    {isPending && loadingDeleteId === review.id
                       ? "Deleting"
                       : "Delete Review"}
                   </button>

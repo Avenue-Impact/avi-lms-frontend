@@ -1,4 +1,3 @@
-import { SidebarItem } from "@/Components/dashboard/SideNav";
 import {
   AccountIcon,
   AffiliateIcon,
@@ -13,20 +12,28 @@ import {
   ProjectIcon,
 } from "@/Components/Icon";
 import { DarkLogo } from "@/Components/Logo";
+import { cn } from "@/lib/utils";
 import Cookies from "js-cookie";
-import { GrHomeRounded } from "react-icons/gr";
+import { NavLink, useLocation } from "react-router-dom";
 
 // import { Sidebar, SidebarItem } from "./SideNav";
 const navItem = [
+  // {
+  //   id: 1,
+  //   text: "Buddy Hub",
+
+  //   icon: <GrHomeRounded />,
+
+  //   active: true,
+  //   alert: "alert",
+  //   path: "/admin/dashboard",
+  // },
   {
     id: 1,
-    text: "Buddy Hub",
-
-    icon: <GrHomeRounded />,
-
-    active: true,
-    alert: "alert",
-    path: "/admin/dashboard",
+    text: "course management",
+    icon: <ManagementIcon />,
+    path: "/admin/course/management",
+    active: "management",
   },
   {
     id: 2,
@@ -46,12 +53,12 @@ const navItem = [
 ];
 
 const navitem2 = [
-  {
-    id: 1,
-    text: "course management",
-    icon: <ManagementIcon />,
-    path: "/admin/course/management",
-  },
+  // {
+  //   id: 1,
+  //   text: "course management",
+  //   icon: <ManagementIcon />,
+  //   path: "/admin/course/management",
+  // },
   {
     id: 2,
     text: "data management",
@@ -190,6 +197,32 @@ function SideNav({ children }) {
         </div>
       </div>
     </aside>
+  );
+}
+function SidebarItem({ icon, text, path, setToggleNav }) {
+  const { pathname } = useLocation();
+
+  return (
+    <li
+      className={"dashboard capitalize lg:whitespace-nowrap"}
+      onClick={() => setToggleNav?.((prev) => !prev)}
+    >
+      <NavLink
+        to={path}
+        className={cn(
+          "group relative my-1 flex cursor-pointer items-center border-4 border-transparent px-1 py-2 text-gray-600 transition-colors hover:border-l-primary-color-600 hover:bg-primary-color-100/30 hover:text-primary-color-600",
+
+          pathname === path || pathname?.includes(`${path}`)
+            ? "border-l-4 border-l-primary-color-600 bg-primary-color-100/30 font-medium text-primary-color-600"
+            : "",
+        )}
+      >
+        <span className={"text-xl"}>{icon}</span>
+        <span className={`ml-3 overflow-hidden transition-all lg:block`}>
+          {text}
+        </span>
+      </NavLink>
+    </li>
   );
 }
 

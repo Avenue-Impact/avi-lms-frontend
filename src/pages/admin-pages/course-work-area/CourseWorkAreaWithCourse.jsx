@@ -1,13 +1,11 @@
-import { IoSearch } from "react-icons/io5";
 import CreatedCourseCard from "@/Components/admindashboard/course-management/CreatedCourseCard";
-import { createdCourses } from "@/lib/courses";
-import Modal from "@/pages/auth/components/Modal";
 import BorderCard from "@/Components/BorderCard";
-import ProjectCohortSelection from "../project-area/ProjectCohortSelection";
-import ProjectAreaTools from "@/Components/admindashboard/project-area/ProjectAreaTools";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { formatDate } from "@/lib/utils";
+import Modal from "@/pages/auth/components/Modal";
+import { useState } from "react";
+import { IoSearch } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
+import ProjectCohortSelection from "../project-area/ProjectCohortSelection";
 
 function CourseWorkAreaWithCourse({ data }) {
   const [modal, setModal] = useState(false);

@@ -12,7 +12,7 @@ import toast from "react-hot-toast";
 
 const createCouponCode = z.object({
   coupon_name: z.string().min(2, "Coupon Name is required"),
-//   coupon_code: z.string().min(2, "Coupon Code is required"),
+  //   coupon_code: z.string().min(2, "Coupon Code is required"),
   percentage_discount: z
     .string()
     .refine((val) => !isNaN(Number(val)), "Must be a number")
@@ -26,13 +26,13 @@ const createCouponCode = z.object({
 const CouponTable = () => {
   const { create, isPending } = useCouponCode();
   const { data, refetch, isFetching: isGenerating } = useFetchGenerateCoupon();
-    console.log("Generate coupon code", data);
+  // console.log("Generate coupon code", data);
 
   const form = useForm({
     resolver: zodResolver(createCouponCode),
     defaultValues: {
       coupon_name: "",
-      coupon_code: "", 
+      coupon_code: "",
       percentage_discount: "",
     },
   });
@@ -40,7 +40,7 @@ const CouponTable = () => {
   // Function to call API and fetch coupon code
   const handleGenerateCoupon = async () => {
     try {
-      const response = await refetch(); 
+      const response = await refetch();
       if (response.data) {
         toast.success("Coupon code generated successfully!");
       } else {
@@ -100,18 +100,8 @@ const CouponTable = () => {
 
                 <div className="col-span-5">
                   <div className="relative">
-                    {/* <FormInput
-                      label="Coupon Code"
-                      name="coupon_code"
-                      placeholder="Click Generate"
-                      control={form.control}
-                      input="text"
-                      id="coupon_code"
-                      defaultValue={data?.data?.data || ""}
-                      className="w-full rounded border border-gray-300 px-4 py-7"
-                    /> */}
                     <p className="text-[15px] font-[600]">Coupon Code</p>
-                    <p className="w-full rounded border text-gray-400 border-gray-300 p-4">
+                    <p className="w-full rounded border border-gray-300 p-4 text-gray-400">
                       {data?.data?.data}
                     </p>
 

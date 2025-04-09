@@ -12,19 +12,19 @@ const UnpublishedCourseCard = ({
   review,
   onLaunch,
   isPending,
-  
 }) => {
   return (
-    <div className="relative mt-20 rounded-lg bg-[rgb(252,252,252)] shadow-md">
+    
+    <div className="relative mt-2 rounded-lg bg-[rgb(252,252,252)] shadow-md">
       <button
         onClick={onLaunch}
         className="absolute right-3 top-3 text-gray-500 hover:text-blue-600"
         title="Launch Course"
       >
         {isPending ? (
-          <FaSpinner className="hover:text-red-300 animate-spin text-lg text-white" />
+          <FaSpinner className="animate-spin text-lg text-white hover:text-red-300" />
         ) : (
-          <FaRocket className="hover:text-red-300 text-lg text-white" />
+          <FaRocket className="text-lg text-white hover:text-red-300" />
         )}
       </button>
 

@@ -11,7 +11,7 @@ export const navItem = [
 
     icon: <GrHomeRounded />,
 
-    active: true,
+    active: "dashboard",
     alert: "alert",
     path: "/dashboard",
   },
@@ -21,7 +21,7 @@ export const navItem = [
 
     icon: <FaRegBell />,
 
-    active: false,
+    active: "notification",
     alert: "alert",
     path: "/dashboard/notification",
   },
@@ -31,7 +31,7 @@ export const navItem = [
 
     icon: <FaRegHeart />,
 
-    active: false,
+    active: "wishlists",
     alert: "alert",
     path: "/dashboard/wishlists",
   },

@@ -5,14 +5,13 @@ import {
   faSearch,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-// import { IoSearch } from "react-icons/io5";
+
 import React, { useEffect, useRef, useState } from "react";
-// import DashButton from '@/pages/auth/ButtonDash'
-// import { couponList as initialCouponList } from '@/lib/couponList';
 import CouponEmptyTable from "./CouponEmptyTable";
 import { useFetchAllCoupons } from "@/hooks/financial-aid/use-fetch-all-coupon codes";
 import { formatDateString } from "@/lib/formatdatestring";
 import { useDeleteAllCoupon } from "@/hooks/financial-aid/use-delete-coupon-code";
+import toast from "react-hot-toast";
 
 const CreatedCouponCard = () => {
   const [showDropDown, setShowDropdown] = useState(null);
@@ -22,7 +21,6 @@ const CreatedCouponCard = () => {
   const { data: fetchAllCoupons, isLoading, isError } = useFetchAllCoupons();
   const { deleteCoupon, isPending } = useDeleteAllCoupon();
   const [deletingCouponId, setDeletingCouponId] = useState(null);
-
 
   // console.log("fetch-all-coupons", fetchAllCoupons);
   // console.log("isLoading-financial-aid", isLoading);
@@ -38,7 +36,6 @@ const CreatedCouponCard = () => {
         setShowDropdown(null);
       });
   };
-
 
   const toggleDropDown = (index) => {
     if (showDropDown === index) {

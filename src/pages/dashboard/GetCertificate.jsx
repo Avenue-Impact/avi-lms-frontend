@@ -8,6 +8,8 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { useGetCertificate } from "@/hooks/students/use-get-certificate";
 import { useProfile } from "@/hooks/students/use-fetch-student-profile";
 import { Skeleton } from "@/Components/ui/skeleton";
+import { useViewEnrolledCourse } from "@/hooks/students/use-view-enrolled-course";
+import P from "@/Components/P";
 
 export const GetCertificate = () => {
   // const [certificateReady, setCertificateReady] = useState(true);
@@ -38,23 +40,6 @@ export const GetCertificate = () => {
         {/* Certificate Image */}
         <div className="order-1 col-span-7 mb-4 text-justify md:mb-0">
           <Cert />
-          {/* <div className="relative">
-            <img
-              src={certificate}
-              alt="certificate"
-              className={cn("w-full", certificateReady ? "" : "blur-sm")}
-            />
-            {!certificateReady && (
-              <div className="absolute inset-0 mx-auto flex items-center justify-center p-4">
-                <div className="rounded-lg bg-[#FFEBF0] text-center text-[#CC1747] lg:px-10 lg:py-14">
-                  <p>
-                    Certificate not ready yet. Complete <br /> course to get
-                    certificate.
-                  </p>
-                </div>
-              </div>
-            )}
-          </div> */}
         </div>
 
         {/* Live Session */}
@@ -63,20 +48,7 @@ export const GetCertificate = () => {
             Live session + Mentoring (May Cohorts - 3.5 Months Programme)
           </h3>
 
-          <div className="py-4">
-            <img src={AVIbg} alt="" className="rounded-xl" />
-          </div>
-
-          <div>
-            <div className="flex items-center space-x-4">
-              <h3 className="text-[25px] font-[600] text-gray-800">
-                Price £2,200
-              </h3>
-              <p className="text-[20px] font-[400] line-through">£39,900</p>
-              <p className="text-[13.42px] font-bold text-gray-500">85% off</p>
-            </div>
-            <p className="mt-2 text-gray-600">Every Monday to Friday 7PM</p>
-          </div>
+          <CourseDetails />
 
           <div>
             <DashButton
@@ -94,15 +66,14 @@ export const GetCertificate = () => {
           <div className="relative lg:p-6">
             <h3 className="text-[24px] font-[500]">Certificate Recipient</h3>
             <p className="py-4 text-[15px] italic">
-              This certificate certifies that{" "}
-              <StudentName/>{" "}
-              successfully completed the course {""}
+              This certificate certifies that <StudentName /> successfully
+              completed the course {""}
               <span className="text-[#F53366]">
-                {`${queryString.get('title')?? "Project Consultant Training Programme (Bundle)"}`}
-              </span>{" "}
-              on 12/06/2024, taught by Avenue Impact Academy. It confirms that
-              the student completed the entire course. The course duration
-              reflects at the time of completion.
+                {`${queryString.get("title") ?? "Project Consultant Training Programme (Bundle)"}`}
+              </span>
+              , taught by Avenue Impact Academy. It confirms that the student
+              completed the entire course. The course duration reflects at the
+              time of completion.
             </p>
           </div>
         </div>
@@ -134,16 +105,17 @@ const Cert = () => {
   if (error)
     return <p>{error?.response?.data?.message ?? "something went wrong"}</p>;
   if (certificateHTML) {
-   const blob =  certificateHTML && URL.createObjectURL(certificateHTML?.data)
-    return <img src={blob}/>
+    const blob = certificateHTML && URL.createObjectURL(certificateHTML?.data);
+    return <img src={blob} />;
   }
 };
 
-const StudentName = () => { 
-  const {isLoading,error,data} = useProfile()
+const StudentName = () => {
+  const { isLoading, error, data } = useProfile();
 
-  if (isLoading) return <Skeleton className={'w-9 h-2 '}/>
-  if (error) return <p>{error?.response?.data?.message ?? "something went wrong"}</p>
+  if (isLoading) return <Skeleton className={"h-2 w-9"} />;
+  if (error)
+    return <p>{error?.response?.data?.message ?? "something went wrong"}</p>;
   if (data) {
     return (
       <span className="text-[#F53366]">
@@ -151,5 +123,68 @@ const StudentName = () => {
       </span>
     );
   }
-}
+};
+
+const CourseDetails = () => {
+  const { courseId } = useParams();
+
+  const { isLoading, error, data } = useViewEnrolledCourse(courseId);
+
+  if (isLoading) {
+    return (
+      <>
+        <div className="py-4">
+          <Skeleton className={"h-[230px] w-full max-w-[431px]"} />
+        </div>
+        <Skeleton className={"h-9 w-full"} />
+      </>
+    );
+  }
+
+  if (error) {
+    return <p>{error?.response?.data?.message ?? "Something went wrong"}</p>;
+  }
+  return (
+    <>
+      <div className="py-4">
+        <img
+          src={data?.data?.data?.cover_image}
+          alt=""
+          className="rounded-xl"
+        />
+      </div>
+
+      <div>
+        <div className="flex items-center space-x-4">
+          <h3 className="text-[25px] font-[600] text-gray-800">
+            Price{" "}
+            {
+              data?.data?.data?.live_class_price?.original_price
+                ?.currency_symbol
+            }
+            {data?.data?.data?.live_class_price?.original_price?.amount}
+          </h3>
+          <p className="text-[20px] font-[400] line-through">
+            {
+              data?.data?.data?.live_class_price?.discounted_price
+                ?.currency_symbol
+            }
+            {data?.data?.data?.live_class_price?.discounted_price?.amount}
+          </p>
+          <p className="text-[13.42px] font-bold text-gray-500">
+            {(
+              (data?.data?.data?.live_class_price?.discounted_price?.amount /
+                data?.data?.data?.live_class_price?.original_price?.amount) *
+              100
+            ).toFixed(0)}
+            % off
+          </p>
+        </div>
+        <p className="mt-2 text-gray-600">
+          Every Monday to Friday {data?.data?.data?.live_class_price?.time}
+        </p>
+      </div>
+    </>
+  );
+};
 export default GetCertificate;

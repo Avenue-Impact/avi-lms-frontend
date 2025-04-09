@@ -154,7 +154,7 @@ const CourseCohortsPreview = () => {
                 className="block w-full rounded-lg border px-4 py-6 text-left hover:border-primary-color-600 hover:bg-[#FFEBF0]"
               >
                 <span className="mb-3 block text-lg font-semibold text-tertiary-color-700">
-                  {`${cohort.cohort}`}
+                  {`${cohort?.cohort}`}
                 </span>
                 <span className="block text-xs text-primary-color-600">
                   Created {formatDate(cohort.created_at)}
