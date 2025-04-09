@@ -98,8 +98,9 @@ const ReferralPage = () => {
             Total amount
           </p>
           <h1 className="mt-2 text-[24px] font-[600] lg:text-4xl">
-            {/* £129k  */} {data?.data?.data?.total_amount.currency_symbol}{" "}
-            {data?.data?.data?.total_amount.value}
+            {/* £129k  */}{" "}
+            {data?.data?.data?.total_amount?.currency_symbol ?? "£"}{" "}
+            {data?.data?.data?.total_amount?.value ?? "0"}
           </h1>
         </div>
 
@@ -109,8 +110,8 @@ const ReferralPage = () => {
           </p>
           <h1 className="mt-2 text-[24px] font-[600] lg:text-4xl">
             {/* £129k */}{" "}
-            {data?.data?.data?.total_amount_withdrawn.currency_symbol}
-            {data?.data?.data?.total_amount_withdrawn.value}
+            {data?.data?.data?.total_amount_withdrawn?.currency_symbol ?? "£"}
+            {data?.data?.data?.total_amount_withdrawn?.value ?? "0"}
           </h1>
         </div>
 
