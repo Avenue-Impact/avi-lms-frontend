@@ -101,7 +101,9 @@ const CouponTable = () => {
                 <div className="col-span-5">
                   <div className="relative">
                     <p className="text-[15px] font-[600]">Coupon Code</p>
-                    <p className="w-full rounded border border-gray-300 p-4 text-gray-400">
+                    <p
+                      className={`${data?.data?.data ? "px-4 py-4" : "px-4 py-7"} w-full rounded border border-gray-300 text-gray-400`}
+                    >
                       {data?.data?.data}
                     </p>
 

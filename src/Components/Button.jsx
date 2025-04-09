@@ -15,7 +15,6 @@ const Button = ({ children, className, type = "button", hover = true }) => {
     >
       <span className="self-end text-xl"> {children}</span>
       <span className="transition-colors duration-1000 2xl:w-[36px]">
-        {/* <img src={arrow} alt="" className="self-start" /> */}
         <svg
           width="39"
           height="35"
