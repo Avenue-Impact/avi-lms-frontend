@@ -19,5 +19,6 @@ export const useGetCertificate = (courseId, cohortId) => {
     queryKey: ["get-certificate"],
     queryFn: () => getCertificate(courseId, cohortId),
     enabled: !!courseId && !!cohortId,
+    refetchOnMount: true,
   });
 };

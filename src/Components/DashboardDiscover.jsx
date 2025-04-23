@@ -22,7 +22,7 @@ const DashboardDiscover = ({
         </div>
 
         <div className="rounded-b-lg px-[7px] py-[6px] text-[14px] text-[#667185] md:py-2 lg:py-[14px] lg:text-[16px]">
-          <p className="truncate">{title}</p>
+          <p className="truncate text-xs md:text-sm lg:text-base">{title}</p>
 
           {rating ? (
             <div className="flex items-center gap-[10px]">

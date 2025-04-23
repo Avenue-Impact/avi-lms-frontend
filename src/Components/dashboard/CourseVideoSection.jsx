@@ -19,7 +19,6 @@ function CourseVideoSection({ data }) {
           height={532}
           className="object-cover"
         /> */}
-        {videoId}
         <PreviewVideo videoId={videoId} section={sectionDetails.section} />
       </div>
       <h1 className="my-6 text-2xl font-semibold leading-[28px] text-black *:block *:capitalize">

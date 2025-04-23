@@ -1,4 +1,4 @@
-import CourseSection from "./CourseSection";
+// import CourseSection from "./CourseSection";
 import JoinProjectTeam from "@/pages/dashboard/JoinProjectTeam";
 import Documents from "@/pages/dashboard/Documents";
 import Assignment from "@/pages/dashboard/Assignment";
@@ -7,6 +7,7 @@ import Overview from "@/pages/dashboard/Overview";
 import LeaveRating from "@/pages/dashboard/LeaveRating";
 import { DocumentContext } from "@/pages/dashboard/ShareDocument";
 import { useContext } from "react";
+import CourseSection from "./CourseSection";
 
 export const MobileContent = ({ data }) => {
   const { sections } = useContext(DocumentContext);

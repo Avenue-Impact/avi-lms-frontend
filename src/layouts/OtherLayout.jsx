@@ -2,6 +2,7 @@ import OtherSideNav from "@/Components/other-layout/OtherSideNav";
 import OtherTopNav from "@/Components/other-layout/OtherTopNav";
 import Modal from "@/pages/auth/components/Modal";
 import LeaveRating from "@/pages/dashboard/LeaveRating";
+import { CourseDataProvider } from "@/providers/CourseDataProvider";
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 
@@ -11,10 +12,12 @@ const OtherLayout = () => {
     <div>
       <OtherSideNav />
       <div className="lg:ml-[76px]">
-        <OtherTopNav setShowModal={setShowModal} />
-        <div className="bg-[#FDFDFD] px-6 py-[35px] md:px-5">
-          <Outlet />
-        </div>
+        <CourseDataProvider>
+          <OtherTopNav setShowModal={setShowModal} />
+          <div className="bg-[#FDFDFD] px-6 py-[35px] md:px-5">
+            <Outlet />
+          </div>
+        </CourseDataProvider>
       </div>
       {showModal && (
         <Modal>

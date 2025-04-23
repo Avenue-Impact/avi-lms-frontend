@@ -16,6 +16,10 @@ function CourseSection({ editButton, data }) {
   const { setSession, setSectionDetails, setVideoId, setSectionActive } =
     useContext(DocumentContext);
 
+  console.log("i am fro data", data);
+
+  // return <div>hellow</div>;
+
   return (
     <div>
       <div

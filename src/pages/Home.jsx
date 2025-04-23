@@ -26,7 +26,7 @@ const Home = () => {
   return (
     <>
       <MainContent />
-      <section className="bg-[#f4f5f7] py-12 text-center">
+      {/* <section className="bg-[#f4f5f7] py-12 text-center">
         <div className="px-6">
           <h2 className="mb-4 text-center text-2xl font-light capitalize text-[#23314A] md:text-3xl 2xl:text-[40px]">
             we deliver real results
@@ -61,7 +61,7 @@ const Home = () => {
             <img src={img4} alt="" />
           </ImageSwiper>
         </div>
-      </section>
+      </section> */}
       <Container>
         <section className="grid gap-3 font-[300] md:grid-cols-2 2xl:gap-0">
           <h2 className="text-[24px] text-[#23314A] lg:text-[40px] 2xl:w-[558px]">

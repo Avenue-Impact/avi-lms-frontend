@@ -1,21 +1,20 @@
-import React, { useState } from "react";
 // import DashButton from '../auth/ButtonDash';
-import certificate from "../../assets/images/certificate.png";
-import AVIbg from "../../assets/images/live_coaching.png";
-import DashButton from "../auth/ButtonDash";
-import { cn } from "@/lib/utils";
-import { useParams, useSearchParams } from "react-router-dom";
-import { useGetCertificate } from "@/hooks/students/use-get-certificate";
-import { useProfile } from "@/hooks/students/use-fetch-student-profile";
 import { Skeleton } from "@/Components/ui/skeleton";
+import { useProfile } from "@/hooks/students/use-fetch-student-profile";
+import { useGetCertificate } from "@/hooks/students/use-get-certificate";
 import { useViewEnrolledCourse } from "@/hooks/students/use-view-enrolled-course";
-import P from "@/Components/P";
+import { useLoaderData, useParams, useSearchParams } from "react-router-dom";
+import DashButton from "../auth/ButtonDash";
 
 export const GetCertificate = () => {
   // const [certificateReady, setCertificateReady] = useState(true);
   const { courseId } = useParams();
   const [queryString] = useSearchParams();
   const cohortId = queryString.get("cohortId");
+
+  const topings = useLoaderData();
+
+  console.log({ topings }, "topings");
 
   const {
     isLoading,
@@ -43,7 +42,7 @@ export const GetCertificate = () => {
         </div>
 
         {/* Live Session */}
-        <div className="order-3 col-span-5 mb-4 h-[480.95px] rounded-lg py-4 md:mb-0 lg:order-2 lg:border-2 lg:border-gray-100 lg:bg-white lg:px-8">
+        <div className="order-3 col-span-5 mb-4 rounded-lg py-4 md:mb-0 lg:order-2 lg:border-2 lg:border-gray-100 lg:bg-white lg:px-8">
           <h3 className="mb-2 text-[18px] font-[400] text-gray-800">
             Live session + Mentoring (May Cohorts - 3.5 Months Programme)
           </h3>
@@ -78,15 +77,6 @@ export const GetCertificate = () => {
           </div>
         </div>
       </div>
-
-      {/* <div>
-        <DashButton
-          className="mt-4 h-[40px] w-[100%] text-white"
-          onClick={() => setCertificateReady((prev) => !prev)}
-        >
-          Download Certificate
-        </DashButton>
-      </div> */}
     </div>
   );
 };
@@ -99,8 +89,9 @@ const Cert = () => {
     isLoading,
     error,
     data: certificateHTML,
+    status,
   } = useGetCertificate(courseId, cohortId);
-
+  console.log(status, "status");
   if (isLoading) return <p>loading...</p>;
   if (error)
     return <p>{error?.response?.data?.message ?? "something went wrong"}</p>;

@@ -16,7 +16,7 @@ import DashboardLayout from "./layouts/DashboardLayout";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import Login from "./pages/auth/Login";
 import SignUp from "./pages/auth/Signup";
-import EmptyPage from "./pages/dashboard/EmptyPage";
+import DashBoardHomePage from "./pages/dashboard/DashboardHomePage";
 import UserNotification from "./pages/dashboard/UserNotification";
 import Wishlist from "./pages/dashboard/Wishlist";
 
@@ -100,6 +100,7 @@ import ReviewMainPage from "./pages/admin-pages/reviews/ReviewMainPage";
 import ErrorPage from "./error-page";
 import DashboardErrorPage from "./dashboard-error-page";
 import AdminErrorPage from "./admin-error-page";
+import { homePageLoader } from "./loaders/student/home-page-loader";
 
 const queryClient = new QueryClient();
 
@@ -199,7 +200,6 @@ function App() {
     },
     {
       element: <ProtectedRoute tokin={"token"} path={"/login"} />,
-      errorElement: <DashboardErrorPage />,
 
       children: [
         {
@@ -209,11 +209,14 @@ function App() {
         {
           path: "/dashboard",
           element: <DashboardLayout userInfo={userInfo} />,
+          errorElement: <DashboardErrorPage />,
 
           children: [
             {
               index: true,
-              element: <EmptyPage />,
+              element: <DashBoardHomePage />,
+              loader: homePageLoader(queryClient),
+              errorElement: <DashboardErrorPage />,
             },
 
             {
@@ -277,6 +280,10 @@ function App() {
             {
               path: ":courseId/certificate",
               element: <GetCertificate />,
+              loader: async ({ params }) => {
+                const { courseId } = params;
+                return `this is for certificate ${courseId}`;
+              },
             },
             {
               path: ":courseId/projects",

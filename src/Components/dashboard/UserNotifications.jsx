@@ -23,15 +23,17 @@ function UserNotifications({ data }) {
         return (
           <article
             key={notification._id}
-            className="flex items-center bg-primary-color-100/10 px-0 py-3 md:justify-between md:gap-3 lg:px-6 lg:py-6 2xl:px-8"
+            className="flex items-center justify-between bg-primary-color-100/10 px-0 py-3 md:gap-3 lg:px-6 lg:py-6 2xl:px-8"
           >
-            <div className="flex items-start gap-2 md:gap-4">
-              <span className="flex items-center justify-center rounded-full bg-primary-color-100 px-3 py-3 text-primary-color-600">
-                <FontAwesomeIcon
-                  icon={faBook}
-                  className="text-sm md:text-lg lg:text-xl"
-                />
-              </span>
+            <div className="flex w-full items-start gap-2 md:gap-4">
+              <div>
+                <span className="flex items-center justify-center rounded-full bg-primary-color-100 px-3 py-3 text-primary-color-600">
+                  <FontAwesomeIcon
+                    icon={faBook}
+                    className="text-sm md:text-lg lg:text-xl"
+                  />
+                </span>
+              </div>
               <article className="flex flex-wrap items-center md:justify-between">
                 <div className="w-full max-w-[170px] md:max-w-[470px]">
                   <Heading className="w-full text-left text-xs font-medium capitalize">

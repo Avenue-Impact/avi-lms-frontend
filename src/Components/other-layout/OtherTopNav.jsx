@@ -1,21 +1,25 @@
-import { FaHeart, FaLongArrowAltLeft, FaRegHeart } from "react-icons/fa";
-import { TiGroupOutline } from "react-icons/ti";
+import { useCourseData } from "@/hooks/use-course-data";
+import { cn } from "@/lib/utils";
+import { FaLongArrowAltLeft, FaRegHeart } from "react-icons/fa";
 import { LiaTrophySolid } from "react-icons/lia";
+import { TiGroupOutline } from "react-icons/ti";
 import {
   Link,
-  useLocation,
   useNavigate,
   useParams,
   useSearchParams,
 } from "react-router-dom";
-import { cn } from "@/lib/utils";
 
 const OtherTopNav = ({ setShowModal }) => {
   const [queryString] = useSearchParams();
   const { courseId } = useParams();
 
+  const { data } = useCourseData();
+
+  const cohortId = data?.data?.data?.cohort_id ?? "";
+
   const handleModal = () => setShowModal((prev) => !prev);
-  const location = useLocation();
+  // const location = useLocation();
   const navigate = useNavigate();
 
   const handleBack = () => {
@@ -71,7 +75,7 @@ const OtherTopNav = ({ setShowModal }) => {
             )}
           >
             <Link
-              to={`/dashboard/${courseId}/certificate?cohortId=${queryString.get("cohortId") ?? ""}&title=${queryString.get("title") ?? ""}`}
+              to={`/dashboard/${courseId}/certificate?cohortId=${cohortId}&title=${queryString.get("title") ?? ""}`}
               className="flex gap-2 2xl:gap-[13px]"
             >
               <span className="text-[22px]">
