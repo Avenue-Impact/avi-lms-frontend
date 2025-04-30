@@ -49,12 +49,10 @@ const PreviewCourse = () => {
   const user = Boolean(token);
 
   const { previewCourse, isLoading, error } = usePreviewCourses(courseId);
-  console.log("Get the course", previewCourse);
 
   const path = !user
-    ? "/signup"
+    ? `/signup?id=${courseId}&title=${previewCourse?.data?.data.course.title}`
     : `/preview-video-course/${courseId}/enroll?title=${previewCourse?.data?.data.course.title}`;
-  console.log("previewCourse", previewCourse);
 
   return (
     <>

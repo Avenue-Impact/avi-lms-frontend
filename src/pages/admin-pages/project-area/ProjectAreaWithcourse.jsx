@@ -33,7 +33,7 @@ const ProjectAreaWithcourse = ({ data }) => {
   useEffect(() => {
     if (data) {
       const courses = data?.data?.data?.courses || [];
-      console.log("Courses", courses);
+      // console.log("Courses", courses);
       if (searchQuery) {
         const searchResults = courses.filter((course) =>
           course.title.toLowerCase().includes(searchQuery.toLowerCase()),
@@ -61,7 +61,7 @@ const ProjectAreaWithcourse = ({ data }) => {
   };
 
   return (
-    <div>
+    <div className="pb-20">
       <header className="mt-7 flex items-center justify-between px-4 py-5">
         <p className="text-xl text-[#475367]">
           Courses({filteredCourses.length})

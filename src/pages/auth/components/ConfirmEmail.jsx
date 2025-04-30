@@ -5,13 +5,14 @@ import { useAuth } from "@/hooks/useAuth";
 import { useCredentials } from "@/hooks/useCredentials";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import toast from "react-hot-toast";
 
 const url = import.meta.env.VITE_AUTH_URL;
 
-const ConfirmEmail = ({ setConfirm, setModal, setSuccess, user }) => {
+const ConfirmEmail = ({ setConfirm, setModal, setSuccess, user, form }) => {
   // const [otp, setOtp] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const { dispatch } = useAuth();
 
   const inputRef = useRef();
@@ -48,6 +49,36 @@ const ConfirmEmail = ({ setConfirm, setModal, setSuccess, user }) => {
     }
   };
 
+  const resendOtp = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.post(`${url}/resend-otp`, {
+        email: user.email,
+      });
+
+      if (response.data.status === "success") {
+        toast.success("OTP resent successfully!");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to resend OTP");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // const handleEdit = () => {
+  //   if (user) {
+  //     form.setValue("firstName", user.firstName);
+  //     form.setValue("lastName", user.lastName);
+  //     form.setValue("email", user.email);
+  //     form.setValue("password", user.password);
+  //     form.setValue("confirmPassword", user.confirmPassword);
+  //     form.setValue("username", user.username);
+  //     form.setValue("referralCode", user.referralCode || "");
+  //   }
+  //   setConfirm(false);
+  // };
+
   return (
     <BorderCard className="w-full max-w-[731px] rounded-xl bg-white py-11 text-center">
       <div className="px-4">
@@ -56,19 +87,26 @@ const ConfirmEmail = ({ setConfirm, setModal, setSuccess, user }) => {
         </p>
         <p className="mx-auto mb-6 mt-3 max-w-[284px] text-center text-sm leading-[18px] text-[#98A2B3]">
           Please enter code we sent now to {user.email}
-          <span
+          {/* <span
             className="cursor-pointer text-primary-color-600"
-            onClick={() => inputRef.current.focus()}
+            // onClick={() => inputRef.current.focus()} 
+                    onClick={handleEdit}
+
           >
             Edit
-          </span>
+          </span> */}
         </p>
         <div className="mx-auto w-fit">
           <OtpComponent setOtp={setOtp} inputRef={inputRef} />
         </div>
         <p className="mb-[31px] mt-6 text-sm">
           <span className="text-[#645D5D]"> Didn’t receive a code?</span>{" "}
-          <span className="font-medium text-primary-color-600">Resend</span>
+          <span
+            className={`cursor-pointer font-medium text-primary-color-600 ${isLoading ? "pointer-events-none opacity-50" : ""}`}
+            onClick={resendOtp}
+          >
+            {isLoading ? "Sending..." : "Resend"}
+          </span>
         </p>
       </div>
       <CommonButton

@@ -124,7 +124,7 @@ const AccountManagementPage = () => {
     return <p>{error?.response?.data?.message ?? "Something went wrong"}</p>;
 
   return (
-    <div>
+    <div className="pb-20">
       <div className="grid grid-cols-12 py-10">
         <div className="font-[500]text-[#475367] col-span-4 text-[20px]">
           <p>Users ({adminData?.data?.data?.admins?.length})</p>

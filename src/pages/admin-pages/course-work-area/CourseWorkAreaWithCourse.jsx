@@ -2,10 +2,11 @@ import CreatedCourseCard from "@/Components/admindashboard/course-management/Cre
 import BorderCard from "@/Components/BorderCard";
 import { formatDate } from "@/lib/utils";
 import Modal from "@/pages/auth/components/Modal";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { IoSearch } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import ProjectCohortSelection from "../project-area/ProjectCohortSelection";
+import _ from "lodash";
 
 function CourseWorkAreaWithCourse({ data }) {
   const [modal, setModal] = useState(false);
@@ -14,6 +15,8 @@ function CourseWorkAreaWithCourse({ data }) {
     cohort: "",
     cohortId: "",
   });
+  const [searchQuery, setSearchQuery] = useState("");
+
   const navigate = useNavigate();
 
   const handleModal = (id) => {
@@ -29,8 +32,23 @@ function CourseWorkAreaWithCourse({ data }) {
     );
   };
 
+  const handleSearch = useCallback(
+    _.debounce((query) => {
+      setSearchQuery(query);
+    }, 500),
+    [],
+  );
+
+  const handleChange = (event) => {
+    handleSearch(event.target.value);
+  };
+
+  const filteredCourses = data.filter((course) =>
+    course.title.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
+
   return (
-    <div>
+    <div className="pb-20">
       <header className="mt-7 flex items-center justify-between px-4 py-5">
         <p className="text-xl text-[#475367]">Courses({data.length})</p>
         <div className="flex w-full max-w-[528px] items-center gap-x-4 rounded-md border border-[#D0D5DD] px-4 py-2">
@@ -44,33 +62,40 @@ function CourseWorkAreaWithCourse({ data }) {
             id="search"
             placeholder="Search here..."
             className="w-full placeholder:text-[#667185]"
+            onChange={handleChange}
           />
         </div>
       </header>
       <main className="grid grid-cols-3 gap-[18px]">
-        {data.map((course) => {
-          return (
-            <div
-              key={course.id}
-              onClick={() => {
-                handleModal(course.id);
-              }}
-            >
-              <CreatedCourseCard
-                title={course.title}
-                rating={course.rating}
-                review={course.reviews}
-                imgSrc={course.cover_image}
-                path=""
-                date={
-                  course?.cohorts[0]
-                    ? formatDate(course?.cohorts[0].created_at)
-                    : "not published"
-                }
-              />
-            </div>
-          );
-        })}
+        {filteredCourses.length === 0 ? (
+          <p className="col-span-3 text-center font-medium text-[#CC1747]">
+            No courses found
+          </p>
+        ) : (
+          filteredCourses.map((course) => {
+            return (
+              <div
+                key={course.id}
+                onClick={() => {
+                  handleModal(course.id);
+                }}
+              >
+                <CreatedCourseCard
+                  title={course.title}
+                  rating={course.rating}
+                  review={course.reviews}
+                  imgSrc={course.cover_image}
+                  path=""
+                  date={
+                    course?.cohorts[0]
+                      ? formatDate(course?.cohorts[0].created_at)
+                      : "not published"
+                  }
+                />
+              </div>
+            );
+          })
+        )}
       </main>
       {modal && (
         <Modal>

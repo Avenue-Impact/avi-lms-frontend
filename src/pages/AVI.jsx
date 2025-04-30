@@ -184,12 +184,12 @@ const AllCourses = () => {
         <p>{error?.response?.data?.message ?? "Something went wrong"}</p>
       </div>
     );
-  if (!error)
-    return (
-      <div className={`${styles.previewCoursesFlex} overflow-visible`}>
-        <p>Check your connection </p>
-      </div>
-    );
+  // if (!error)
+  //   return (
+  //     <div className={`${styles.previewCoursesFlex} overflow-visible`}>
+  //       <p>Check your connection </p>
+  //     </div>
+  //   );
 
   return (
     <div className={`${styles.previewCoursesFlex} overflow-visible`}>

@@ -19,23 +19,23 @@ function Notifications() {
 
   const { data, isLoading, error } = useFetchNotifications();
 
-  if (isLoading) return <p className="text-2xl italic">Loading...</p>;
+  if (isLoading) return <p className="italic">Loading...</p>;
 
   if (error) {
     <p>{error?.response?.data?.message ?? "Something went wrong"}</p>;
   }
 
   return (
-    <div className="mt-10">
+    <div className="mt-10 pb-20">
       <Heading className="text-left">
         Notifications({data?.data?.data?.length})
       </Heading>
-      <BorderCard className="mt-10 space-y-3 rounded-md border-none bg-white px-0">
+      <BorderCard className="mt-5 space-y-3 rounded-md border-none bg-white px-0">
         {data?.data?.data?.map((notification) => {
           return (
             <article
               key={notification._id}
-              className="flex items-center bg-primary-color-100/10 px-0 py-3 md:justify-between md:gap-3 lg:px-6 lg:py-6 2xl:px-8"
+              className="flex items-center bg-primary-color-100/10 px-0 md:justify-between md:gap-3 "
             >
               <div className="flex items-start gap-2 md:gap-4">
                 <span className="flex items-center justify-center rounded-full bg-primary-color-100 px-3 py-3 text-primary-color-600">
@@ -46,19 +46,14 @@ function Notifications() {
                 </span>
                 <article className="flex flex-wrap items-center md:justify-between">
                   <div className="w-full max-w-[170px] md:max-w-[470px]">
-                    <Heading className="w-full text-left text-xs font-medium capitalize">
+                    <Heading className="w-full text-left text-lg font-medium capitalize">
                       {notification.title}
                     </Heading>
                     <Paragraph className="my-[10px] text-left text-xs capitalize">
                       {notification.message}
                     </Paragraph>
                   </div>
-                  {/* <p className="text-[0.625rem] text-tertiary-color-800 *:capitalize md:text-sm">
-                  <span>today</span> |<span>{notification.time} </span>
-                </p> */}
-                  {/* <p className="text-sm text-tertiary-color-800 lg:block">
-                  <span>today</span> |<span>{notification.time} </span>
-                </p> */}
+    
                 </article>
               </div>
               <div className="items-center justify-self-end *:capitalize md:flex md:gap-10">

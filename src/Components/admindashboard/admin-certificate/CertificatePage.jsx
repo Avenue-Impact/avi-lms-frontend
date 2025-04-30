@@ -30,7 +30,7 @@ const CertificatePage = () => {
   );
 
   return (
-    <div>
+    <div className="pb-20">
       <header className="mt-7 flex items-center justify-between px-4 py-5">
         <p className="text-xl text-[#475367]">
           Courses({data?.data?.data?.courses.length})
@@ -56,7 +56,7 @@ const CertificatePage = () => {
           "Network error"
         ) : isLoading ? (
           "Loading...."
-        ) : filteredCourses.length === 0 ? ( // If no courses match the search
+        ) : filteredCourses.length === 0 ? ( 
           <p className="col-span-3 text-center font-medium text-[#CC1747]">
             No courses found
           </p>
@@ -66,7 +66,7 @@ const CertificatePage = () => {
               const path = `/admin/certificate/certificate-issue?id=${course.id}&title=${course.title}&coursetypes=${
                 course.available_course_types.live_session ||
                 course.available_course_types.on_demand
-              }`;
+              }`
               return (
                 <div key={course.id}>
                   <Link to={path}>

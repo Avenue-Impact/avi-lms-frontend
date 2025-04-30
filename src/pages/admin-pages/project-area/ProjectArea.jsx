@@ -7,7 +7,7 @@ import { useFetchAllAdminCourses } from "@/hooks/course-management/use-fetch-all
 function ProjectArea() {
   return (
     <div>
-      <ProjectAreaNav title={"Project Area"} />
+      <ProjectAreaNav title={"Project Areas"} />
 
       <ProjectAreaBody />
     </div>

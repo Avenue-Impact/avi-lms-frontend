@@ -46,7 +46,7 @@ import DiscoverCourses from "./pages/dashboard/DiscoverCourses";
 
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { AdminEmpty } from "./Components/admindashboard/AdminEmpty";
-import AdminPayment from "./Components/admindashboard/AdminPayment";
+import AdminPayment from "./pages/admin-pages/AdminPayment";
 import CourseCreation from "./Components/admindashboard/CourseCreation";
 import AuthProtectedRoute from "./Components/AuthProtectedRoute";
 import CoursesLayout from "./layouts/admin/CoursesLayout";
@@ -170,7 +170,7 @@ function App() {
 
           children: [
             {
-              path: "/AVI",
+              path: "/digital-learning-hub",
               element: <AVI />,
             },
             {
@@ -293,6 +293,9 @@ function App() {
         },
       ],
     },
+
+
+    
     //admin routes
     {
       element: (

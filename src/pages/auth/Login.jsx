@@ -1,56 +1,20 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Link, useNavigate } from "react-router-dom";
 import BorderCard from "@/Components/BorderCard";
-import { Heading, Paragraph } from "./components/Text";
 import { Form } from "@/Components/ui/form";
 import FormInput from "@/Components/ui/form-input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { z } from "zod";
+import { Heading, Paragraph } from "./components/Text";
 
 import { CommonButton } from "@/Components/ui/button";
 import PasswordInput from "@/Components/ui/password-input";
-import axios from "axios";
 import toast from "react-hot-toast";
-import { useAuth } from "@/hooks/useAuth";
 
-import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
 
+import { useLoginUser } from "@/hooks/students/use-login-user";
 import { ClipLoader } from "react-spinners";
-// {
-//     "status": "success",
-//     "user": {
-//         "id": "66c5019cb77de580f4274c96",
-//         "firstname": "zainab",
-//         "lastname": "wunmi",
-//         "username": "lawal",
-//         "email": "lawalzainabomowumi2021@gmail.com",
-//         "status": "verified",
-//         "wishlist": [],
-//         "avatar": null,
-//         "referral_code": "lawalPIM28AYSIG"
-//     },
-//     "message": "User verification successful, Please login to gain full access"
-// }
-
-// {
-//     "status": "success",
-//     "data": {
-//         "user": {
-//             "id": "66c5019cb77de580f4274c96",
-//             "firstname": "zainab",
-//             "lastname": "wunmi",
-//             "username": "lawal",
-//             "email": "lawalzainabomowumi2021@gmail.com",
-//             "status": "verified",
-//             "wishlist": [],
-//             "avatar": null,
-//             "referral_code": "lawalPIM28AYSIG"
-//         },
-//         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YzUwMTljYjc3ZGU1ODBmNDI3NGM5NiIsImVtYWlsIjoibGF3YWx6YWluYWJvbW93dW1pMjAyMUBnbWFpbC5jb20iLCJpYXQiOjE3MjQxODc0ODUsImV4cCI6MTcyNDIwMTg4NX0.5QwTd79q7HST5aBb52_Zr0PCG6QRagPvRFgXeswuEs8"
-//     },
-//     "message": "Login successful"
-// }
 
 const loginSchema = z.object({
   username: z.string().min(1, { message: "name is required" }),
@@ -59,11 +23,13 @@ const loginSchema = z.object({
     .min(4, { message: "password must be at least 4 characters long" }),
 });
 
-const url = import.meta.env.VITE_AUTH_URL;
-
 const Login = () => {
   const navigate = useNavigate();
-  const { dispatch } = useAuth();
+  const [queryString] = useSearchParams();
+  const courseId = queryString.get("id");
+  const courseTitle = queryString.get("title");
+
+  const { mutate, isPending } = useLoginUser();
 
   const handleSubmit = async (values) => {
     const user = {
@@ -71,31 +37,24 @@ const Login = () => {
       password: values.password,
     };
 
-    try {
-      const response = await axios.post(`${url}/login`, user);
-
-      if (response.data.status === "success") {
-        dispatch({
-          type: "auth/login",
-          payload: {
-            ...response.data.data.user,
-          },
-        });
-
-        Cookies.set("token", response.data.data.token, {
+    mutate(user, {
+      onSuccess: ({ data }) => {
+        Cookies.set("token", data.data.token, {
           expires: 1,
           secure: true,
         });
-
-        const decoded = jwtDecode(response.data.data.token);
-
-        navigate("/dashboard");
-        toast.success("login successful");
-      }
-    } catch (error) {
-      if (!error.response) return toast.error("network fail");
-      toast.error(error.response.data.message);
-    }
+        if (courseId) {
+          navigate(
+            `/preview-video-course/${courseId}/enroll?title=${courseTitle}`,
+          );
+        } else {
+          navigate("/dashboard");
+        }
+      },
+      onError: (err) => {
+        if (!err.response) toast.error("Network Fail");
+      },
+    });
   };
 
   const form = useForm({
@@ -105,8 +64,6 @@ const Login = () => {
       password: "",
     },
   });
-
-  const { isSubmitting } = form.formState;
 
   return (
     <>
@@ -150,8 +107,9 @@ const Login = () => {
                 <CommonButton
                   className="mt-8 w-full bg-primary-color-600 font-poppins text-[16px] font-[500] capitalize text-white hover:bg-primary-color-600"
                   type="submit"
+                  disabled={isPending}
                 >
-                  {isSubmitting ? (
+                  {isPending ? (
                     <ClipLoader size={20} color={"#fff"} />
                   ) : (
                     "sign in"

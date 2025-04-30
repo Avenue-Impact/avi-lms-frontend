@@ -30,7 +30,7 @@ const Review = () => {
   );
 
   return (
-    <div>
+    <div className="pb-20">
       <AdminNav>
         <p className="text-xl font-medium text-[#344054]">Reviews</p>
       </AdminNav>

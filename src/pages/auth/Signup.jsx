@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { z } from "zod";
 import BorderCard from "@/Components/BorderCard";
 import { CommonButton } from "@/Components/ui/button";
@@ -16,6 +16,7 @@ import axios from "axios";
 import RegisterFail from "./components/RegisterFail";
 import toast from "react-hot-toast";
 import { passwordRegex } from "@/lib/utils";
+import { route } from "@/lib/route-checker";
 
 const loginSchema = z
   .object({
@@ -55,6 +56,11 @@ const SignUp = () => {
   const [confirm, setConfirm] = useState(false);
   const [modal, setModal] = useState(false);
   const [user, setUser] = useState();
+  const [queryString] = useSearchParams();
+
+  const courseId = queryString.get("id");
+  const courseTitle = queryString.get("title");
+  const [searchParams] = useSearchParams();
 
   const form = useForm({
     resolver: zodResolver(loginSchema),
@@ -74,7 +80,8 @@ const SignUp = () => {
   const url = import.meta.env.VITE_AUTH_URL;
 
   const handleSubmit = async (values) => {
-    const { firstName, lastName, password, email, username } = values;
+    const { firstName, lastName, password, email, username, referralCode } =
+      values;
 
     const users = {
       firstname: firstName,
@@ -82,7 +89,10 @@ const SignUp = () => {
       email,
       password,
       username,
+      referral_code: referralCode,
     };
+
+    // console.log("Sign up pAGE", users);
 
     try {
       const response = await axios.post(`${url}/signup`, users);
@@ -90,7 +100,16 @@ const SignUp = () => {
       if (response.data.status === "success") {
         setSuccess("success");
 
-        setUser(response.data.newUser);
+        // setUser(response.data.newUser);
+        setUser({
+          firstName,
+          lastName,
+          email,
+          password,
+          confirmPassword: password,
+          username,
+          referralCode,
+        });
         setConfirm(true);
       }
     } catch (error) {
@@ -101,6 +120,11 @@ const SignUp = () => {
     }
   };
 
+  const code = searchParams.get("code");
+  if (code) {
+    form.setValue("referralCode", code);
+  }
+
   return (
     <div className="min-h-screen">
       {confirm && (
@@ -110,6 +134,7 @@ const SignUp = () => {
             setModal={setModal}
             setSuccess={setSuccess}
             user={user}
+            form={form}
           />
         </Modal>
       )}
@@ -172,14 +197,22 @@ const SignUp = () => {
                       control={form.control}
                       placeholder=""
                     />
-                    <PasswordInput
+                    <FormInput
+                      label="referral Code"
+                      name="referralCode"
+                      control={form.control}
+                      type="text"
+                      id="referralCode"
+                      placeholder=""
+                    />
+                    {/* <PasswordInput
                       id="referralCode"
                       autoComplete="new-password"
                       label="referral Code"
                       name="referralCode"
                       control={form.control}
                       placeholder=""
-                    />
+                    /> */}
                   </div>
                   <div className="mt-[18px] flex items-center gap-4">
                     <input
@@ -223,7 +256,7 @@ const SignUp = () => {
                 Already have an account?
               </span>
               <Link
-                to={"/login"}
+                to={route("/login", courseId, courseTitle)}
                 className="text-sm font-semibold capitalize text-primary-color-600"
               >
                 sign in
