@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
+import AnniversarySpotlightBadge from './Components/MainContent/AnniversarySpotlightBadge';
 
 import AppLayout from "./layouts/AppLayout";
 import About from "./pages/About";
@@ -548,6 +549,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools initialIsOpen={false} />
         <Toaster />
+        <AnniversarySpotlightBadge />
         <RouterProvider router={routes} />
       </QueryClientProvider>
     </>
