@@ -39,19 +39,20 @@ const Navbar = () => {
       <div className="flex justify-between overflow-x-hidden px-8 py-4 transition-all duration-300 ease-linear group-hover:bg-white md:px-12 lg:py-[25.72px] 2xl:px-20">
         <div className="nav-logo">
           <WhiteLogo className="block h-[34.45px] w-[155.05px] group-hover:hidden lg:h-[40.55px] lg:w-[200px]" />
+          <Link to={"/"} className="cursor-pointer">
           <DarkLogo
             className={
               "hidden h-[34.45px] w-[155.05px] group-hover:block lg:h-[40.55px] lg:w-[200px]"
             }
           />
+          </Link>
         </div>
         <div>
           <div
-            className={`absolute w-full md:h-fit md:w-auto ${
-              showNav
+            className={`absolute w-full md:h-fit md:w-auto ${showNav
                 ? "translate-x-0 duration-150 ease-linear"
                 : "translate-x-full duration-150 ease-linear"
-            } left-0 top-0 gap-6 bg-white pb-12 md:relative md:flex md:translate-x-0 md:bg-transparent md:pb-0`}
+              } left-0 top-0 gap-6 bg-white pb-12 md:relative md:flex md:translate-x-0 md:bg-transparent md:pb-0`}
           >
             <div className="flex justify-between px-12 py-6 md:hidden">
               <img src={mobile} alt="mobile logo" />
@@ -92,9 +93,8 @@ const Navbar = () => {
                     Services
                   </span>
                   <span
-                    className={`mr-auto inline-flex transition-transform duration-150 ease-linear ${
-                      dropdown ? "w-min rotate-180" : "w-min ease-in"
-                    }`}
+                    className={`mr-auto inline-flex transition-transform duration-150 ease-linear ${dropdown ? "w-min rotate-180" : "w-min ease-in"
+                      }`}
                   >
                     <FontAwesomeIcon icon={faChevronDown} />
                   </span>
@@ -223,7 +223,7 @@ const Navbar = () => {
               <ul className="nav mt-8 space-y-3 pl-12 font-poppins *:cursor-pointer *:capitalize *:text-[#23314A]">
                 <li
                   onClick={handleNav}
-                  // className="after:contents-[''] relative w-max transition-all duration-150 after:absolute after:left-0 after:m-auto after:block after:h-[2px] after:w-0 after:bg-red-500 after:transition-[width] after:duration-100 after:ease-in hover:after:w-full"
+                // className="after:contents-[''] relative w-max transition-all duration-150 after:absolute after:left-0 after:m-auto after:block after:h-[2px] after:w-0 after:bg-red-500 after:transition-[width] after:duration-100 after:ease-in hover:after:w-full"
                 >
                   <NavLink to={"/digital-transformation"}>
                     digital transformation
@@ -231,13 +231,13 @@ const Navbar = () => {
                 </li>
                 <li
                   onClick={handleNav}
-                  // className="after:contents-[''] relative w-max transition-all duration-150 after:absolute after:left-0 after:m-auto after:block after:h-[3px] after:w-0 after:bg-red-500 after:transition-[width] after:duration-100 after:ease-in hover:after:w-full"
+                // className="after:contents-[''] relative w-max transition-all duration-150 after:absolute after:left-0 after:m-auto after:block after:h-[3px] after:w-0 after:bg-red-500 after:transition-[width] after:duration-100 after:ease-in hover:after:w-full"
                 >
                   <NavLink to={"/data-solution"}> data solution</NavLink>
                 </li>
                 <li
                   onClick={handleNav}
-                  // className="after:contents-[''] relative w-max transition-all duration-150 after:absolute after:left-0 after:m-auto after:block after:h-[2px] after:w-0 after:bg-red-500 after:transition-[width] after:duration-100 after:ease-in hover:after:w-full"
+                // className="after:contents-[''] relative w-max transition-all duration-150 after:absolute after:left-0 after:m-auto after:block after:h-[2px] after:w-0 after:bg-red-500 after:transition-[width] after:duration-100 after:ease-in hover:after:w-full"
                 >
                   <NavLink to={"/avenue-impact-development"}>
                     avenue impact development CIC
@@ -245,7 +245,7 @@ const Navbar = () => {
                 </li>
                 <li
                   onClick={handleNav}
-                  // className="after:contents-[''] relative w-max transition-all duration-150 after:absolute after:left-0 after:m-auto after:block after:h-[2px] after:w-0 after:bg-red-500 after:transition-[width] after:duration-100 after:ease-in hover:after:w-full"
+                // className="after:contents-[''] relative w-max transition-all duration-150 after:absolute after:left-0 after:m-auto after:block after:h-[2px] after:w-0 after:bg-red-500 after:transition-[width] after:duration-100 after:ease-in hover:after:w-full"
                 >
                   <Link to={"/digital-learning-hub"}>Digital learning hub</Link>
                 </li>
