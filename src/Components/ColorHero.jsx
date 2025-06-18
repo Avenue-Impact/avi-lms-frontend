@@ -1,6 +1,6 @@
 import pink from "../assets/images/pink-arrow.png";
 import { ListOfCourses } from "./listOfCourses";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const ColorHero = () => {
@@ -48,7 +48,7 @@ const ColorHero = () => {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed right-0 top-28 h-full z-[700] overflow-y-auto"
+              className="fixed right-0 sm:top-28 top-16 hideScrollBar h-full z-[700] overflow-y-auto"
             >
               <ListOfCourses onClose={() => setShowCourses(false)} />
             </motion.div>
@@ -57,7 +57,7 @@ const ColorHero = () => {
       </AnimatePresence>
       <motion.button 
         onClick={() => setShowCourses(!showCourses)}
-        className="fixed right-0 top-32 z-[600] bg-rose-700 hover:bg-rose-600 px-5 py-3 rounded-l-lg shadow-lg group transition-all duration-300 flex flex-col items-center gap-1"
+        className="fixed right-0 sm:top-32 top-40 z-[600] bg-rose-700 hover:bg-rose-600 px-5 py-3 rounded-l-lg shadow-lg group transition-all duration-300 flex flex-col items-center gap-1"
         whileHover={{ x: -5 }}
         initial={{ x: 0 }}
         animate={{ x: showCourses ? -5 : 0 }}

@@ -57,7 +57,7 @@ export const ListOfCourses = ({ onClose }) => {
   return (
     <div className="bg-white px-4 py-10 rounded-sm w-[380px] max-w-[90vw] shadow-2xl">
       {/* Courses Display - Right Side */}
-      <div className="space-y-6 max-h-[80vh] overflow-y-auto pr-2">
+      <div className="space-y-6 max-h-[80vh] overflow-y-auto hideScrollBar pr-2">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-gray-800">Featured Courses</h2>
           <div className="flex gap-4">
