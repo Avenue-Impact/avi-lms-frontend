@@ -3,7 +3,7 @@
     top: 0; left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 1002;
+    z-index: 500;
     pointer-events: none;
   }
   
@@ -34,15 +34,15 @@
   
   .spotlight-badge.right {
     position: fixed;
-    width: 150px;
-    height: 150px;
+    width: 200px;
+    height: 200px;
     box-shadow:
       0 0 32px 8px #ffd70088,
       0 4px 24px 0 #0002,
       0 0 0 8px #fff3 inset;
     animation: badge-float-corner 4s ease-in-out infinite;
     right: 32px;
-    top: 240px;
+    top: '20%';
     transform: none;
     z-index: 1003;
     border-radius: 50%;

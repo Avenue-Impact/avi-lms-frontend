@@ -18,6 +18,7 @@ import styles from "./pages.module.css";
 import { useFetchAllCourses } from "@/hooks/students/use-fetch-all-courses";
 import CreatedCourseCard from "@/Components/admindashboard/course-management/CreatedCourseCard";
 // import img from "../assets/images/data-solution.jpg";
+// nill
 
 const AVI = () => {
   return (

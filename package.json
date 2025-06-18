@@ -41,7 +41,7 @@
     "js-cookie": "^3.0.5",
     "jwt-decode": "^4.0.0",
     "lodash": "^4.17.21",
-    "lucide-react": "^0.412.0",
+    "lucide-react": "^0.516.0",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.2.0",
     "react-datepicker": "^7.3.0",
