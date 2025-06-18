@@ -88,18 +88,18 @@ export default function BusinessAnalysis() {
       image: 'https://randomuser.me/api/portraits/women/44.jpg'
     },
     {
-      name: 'Michael Chen',
+      name: 'Edward George',
       role: 'Senior BA at FinTech Solutions',
       content: "The curriculum is comprehensive and the instructors are industry experts. I went from zero tech background to a well-paying BA role in just 3 months!",
       rating: 5,
-      image: 'https://randomuser.me/api/portraits/men/32.jpg'
+      image: 'https://randomuser.me/api/portraits/men/39.jpg'
     },
     {
-      name: 'Aisha Mohammed',
+      name: 'Melissa Berry',
       role: 'Product Owner at HealthTech',
       content: "The career support didn't end after graduation. The team helped me prepare for interviews and even connected me with hiring managers. Forever grateful!",
       rating: 5,
-      image: 'https://randomuser.me/api/portraits/women/68.jpg'
+      image: 'https://randomuser.me/api/portraits/women/36.jpg'
     }
   ];
 
@@ -248,7 +248,7 @@ export default function BusinessAnalysis() {
             >
               <div className="flex items-center justify-center gap-4">
                 <div className="flex -space-x-2">
-                  {[1, 2, 3].map((i) => (
+                  {[1, 5, 8].map((i) => (
                     <img 
                       key={i}
                       src={`https://randomuser.me/api/portraits/${i % 2 === 0 ? 'men' : 'women'}/${30 + i}.jpg`}
@@ -415,12 +415,7 @@ export default function BusinessAnalysis() {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-12">
             <div>
-              <div className="flex items-center space-x-2 mb-6">
-                <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold">
-                  AI
-                </div>
-                <span className="text-xl font-bold">Avenue Impact</span>
-              </div>
+              <img src={Logo} alt="" className="w-12 h-12 object-cover bg-white rounded-full p-1" />
               <p className="text-gray-400 mb-6">Empowering the next generation of Business Analysts with world-class training and mentorship.</p>
             </div>
             
