@@ -8,6 +8,7 @@ import About from "./pages/About";
 import AvenueImpactDevelopment from "./pages/AvenueImpactDevelopment";
 import AVI from "./pages/AVI";
 import BusinessAnalysis from "./pages/courses/businessAnalysis";
+import ThanksPage from "./pages/thanksPage";
 import Contact from "./pages/Contact";
 import DataSolution from "./pages/DataSolution";
 import DigitalTransformation from "./pages/DigitalTransformation";
@@ -171,6 +172,10 @@ function App() {
         {
           path: "/courses/business-analysis",
           element: <BusinessAnalysis />,
+        },
+        {
+          path: "/courses/thanks",
+          element: <ThanksPage />,
         },
       ],
     },

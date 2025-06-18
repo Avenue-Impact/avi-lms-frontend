@@ -67,7 +67,7 @@ export const RegistrationForm = () => {
           >
             {/* Salesforce Required Hidden Fields */}
             <input type="hidden" name="oid" value="00D4J000000FoZV" />
-            <input type="hidden" name="retURL" value="https://www.avenueimpact.com/" />
+            <input type="hidden" name="retURL" value="https://www.avenueimpact.com/courses/thanks" />
 
             <div>
               <label htmlFor="first_name" className="block text-sm font-medium text-gray-700 mb-1">
@@ -132,14 +132,14 @@ export const RegistrationForm = () => {
               />
             </div>
 
-            <div>
+            <div className="hidden">
               <label htmlFor="00N4J000007mmgC" className="block text-sm font-medium text-gray-700 mb-1">
                 Select Your Course
               </label>
               <select
                 id="00N4J000007mmgC"
                 name="00N4J000007mmgC"
-                value={formData.course}
+                value={'Business Analysis'}
                 onChange={handleChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               >
