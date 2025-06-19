@@ -58,4 +58,10 @@
 	position: relative;
 }
 
+<<<<<<< HEAD
 
+=======
+.hideScrollBar ::-webkit-scrollbar{
+	display: none;
+}
+>>>>>>> 2dcc40b81166089efb7c8eb8f6c9e4cd11d72000

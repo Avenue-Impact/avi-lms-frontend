@@ -17,9 +17,14 @@ import SocialMediaLinks, {
 import styles from "./pages.module.css";
 import { useFetchAllCourses } from "@/hooks/students/use-fetch-all-courses";
 import CreatedCourseCard from "@/Components/admindashboard/course-management/CreatedCourseCard";
+<<<<<<< HEAD
 import { motion } from "framer-motion";
 import { FaStar, FaRegStar, FaStarHalfAlt } from "react-icons/fa";
 import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
+=======
+// import img from "../assets/images/data-solution.jpg";
+// nill
+>>>>>>> 2dcc40b81166089efb7c8eb8f6c9e4cd11d72000
 
 const AVI = () => {
   return (

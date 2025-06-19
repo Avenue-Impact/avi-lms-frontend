@@ -7,6 +7,8 @@ import AppLayout from "./layouts/AppLayout";
 import About from "./pages/About";
 import AvenueImpactDevelopment from "./pages/AvenueImpactDevelopment";
 import AVI from "./pages/AVI";
+import BusinessAnalysis from "./pages/courses/businessAnalysis";
+import ThanksPage from "./pages/thanksPage";
 import Contact from "./pages/Contact";
 import DataSolution from "./pages/DataSolution";
 import DigitalTransformation from "./pages/DigitalTransformation";
@@ -51,6 +53,7 @@ import AdminPayment from "./pages/admin-pages/AdminPayment";
 import CourseCreation from "./Components/admindashboard/CourseCreation";
 import AuthProtectedRoute from "./Components/AuthProtectedRoute";
 import CoursesLayout from "./layouts/admin/CoursesLayout";
+import CourseLayout from "./layouts/admin/courseLayout";
 import FinancialLayout from "./layouts/admin/FinancialLayout";
 import ProjectAreaLayout from "./layouts/admin/ProjectAreaLayout";
 import AdminLogin from "./pages/admin-pages/AdminLogin";
@@ -159,6 +162,21 @@ function App() {
         {
           path: "/components",
           element: <Component />,
+        },
+      ],
+    },
+    {
+      path: "/courses",
+      element: <CourseLayout />,
+      errorElement: <ErrorPage />,
+      children: [
+        {
+          path: "/courses/business-analysis",
+          element: <BusinessAnalysis />,
+        },
+        {
+          path: "/courses/thanks",
+          element: <ThanksPage />,
         },
       ],
     },
