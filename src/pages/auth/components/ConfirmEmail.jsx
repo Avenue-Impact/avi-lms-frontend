@@ -103,14 +103,14 @@ const ConfirmEmail = ({ setConfirm, setModal, setSuccess, user, form }) => {
     <BorderCard className="w-full max-w-[731px] rounded-xl bg-white py-11 text-center relative">
       
       {/* Close Modal Button */}
-      <div className="absolute top-5 right-5">
+      {/* <div className="absolute top-5 right-5">
         <h1 
           className="cursor-pointer hover:text-red-500 text-2xl" 
           onClick={handleClose}
         >
           <IoClose />
         </h1>
-      </div>
+      </div> */}
 
       {/* Modal Content */}
       <div className="px-4">
