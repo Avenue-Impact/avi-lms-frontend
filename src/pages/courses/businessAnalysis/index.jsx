@@ -83,21 +83,21 @@ export default function BusinessAnalysis() {
     {
       name: 'Sarah Johnson',
       role: 'Business Analyst at TechCorp',
-      content: "I was a banker who transitioned into tech through Avenue Impact's BA program. The hands-on training and mentorship were invaluable in helping me land my dream job.",
+      content: "I joined Avenue Impact in February 2022 and completed in July 2022. With the knowledge and experience I gained, I was able to secure an offer that comes with tier 2 visa sponsorship. Avenue Impact really made an impact on my whole life, not only my career.",
       rating: 5,
       image: 'https://randomuser.me/api/portraits/women/44.jpg'
     },
     {
       name: 'Edward George',
       role: 'Senior BA at FinTech Solutions',
-      content: "The curriculum is comprehensive and the instructors are industry experts. I went from zero tech background to a well-paying BA role in just 3 months!",
+      content: "I started working as a Business Analyst after months of intense training and a live project I took at Avenue Impact. I got  £50,000 per annum with a Tier 2 visa certificate of sponsorship offer. I’m sorted and settled in the UK now. Avenue Impact transformed my life and career.",
       rating: 5,
       image: 'https://randomuser.me/api/portraits/men/39.jpg'
     },
     {
       name: 'Melissa Berry',
       role: 'Product Owner at HealthTech',
-      content: "The career support didn't end after graduation. The team helped me prepare for interviews and even connected me with hiring managers. Forever grateful!",
+      content: "As a working mom, I was looking for an opportunity that would allow me to balance work and play my role as a mom. So, I made the decision and contacted Avenue Impact. With zero knowledge, I took their BA training and have been working as a business analyst since then, which I fell in love with totally because it’s a dream come true for me.",
       rating: 5,
       image: 'https://randomuser.me/api/portraits/women/36.jpg'
     }
