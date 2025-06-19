@@ -103,6 +103,7 @@ import DashboardErrorPage from "./dashboard-error-page";
 import AdminErrorPage from "./admin-error-page";
 import { homePageLoader } from "./loaders/student/home-page-loader";
 
+
 const queryClient = new QueryClient();
 
 function App() {

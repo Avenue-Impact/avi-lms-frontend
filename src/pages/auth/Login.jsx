@@ -42,7 +42,10 @@ const Login = () => {
         Cookies.set("token", data.data.token, {
           expires: 1,
           secure: true,
+          sameSite: 'strict',
+          path: '/'
         });
+        
         if (courseId) {
           navigate(
             `/preview-video-course/${courseId}/enroll?title=${courseTitle}`,
@@ -52,7 +55,18 @@ const Login = () => {
         }
       },
       onError: (err) => {
-        if (!err.response) toast.error("Network Fail");
+        if (!err.response) {
+          toast.error("Network error. Please check your connection.");
+          return;
+        }
+        
+        if (err.response.status === 401) {
+          toast.error("Invalid username or password");
+        } else if (err.response.status === 403) {
+          toast.error("Account is locked. Please contact support.");
+        } else {
+          toast.error(err.response?.data?.message || "Login failed. Please try again.");
+        }
       },
     });
   };
@@ -66,87 +80,74 @@ const Login = () => {
   });
 
   return (
-    <>
-      <div className="flex h-[calc(100vh-100.547px)] w-full items-center justify-center">
-        <div className="py-10">
-          <BorderCard className="mx-auto max-w-[465px]">
-            <div className="mb-8 space-y-1">
-              <Heading>Welcome back!</Heading>
-              <Paragraph>Use your email to sign in to your dashboard</Paragraph>
-            </div>
-            <Form {...form}>
-              <form
-                action=""
-                className="space-y-2"
-                onSubmit={form.handleSubmit(handleSubmit)}
+    <div className="flex min-h-[calc(100vh-100.547px)] w-full items-center justify-center px-4">
+      <div className="w-full max-w-[465px] py-10">
+        <BorderCard className="mx-auto">
+          <div className="mb-8 space-y-1">
+            <Heading>Welcome back!</Heading>
+            <Paragraph>Use your email to sign in to your dashboard</Paragraph>
+          </div>
+          <Form {...form}>
+            <form
+              action=""
+              className="space-y-4"
+              onSubmit={form.handleSubmit(handleSubmit)}
+            >
+              <FormInput
+                name="username"
+                label="Username/Email"
+                placeholder="Enter your username or email"
+                id="username"
+                type="text"
+                control={form.control}
+                autoComplete="username"
+                className="w-full"
+              />
+              <PasswordInput
+                id="password"
+                autoComplete="current-password"
+                label="Password"
+                name="password"
+                control={form.control}
+                placeholder="Enter your password"
+                className="w-full"
+              />
+
+              <Link
+                to={"/forgot-password"}
+                className="block text-sm font-semibold capitalize text-primary-color-600 hover:text-primary-color-700"
               >
-                <FormInput
-                  name="username"
-                  label="Username/Email"
-                  placeholder=""
-                  id="username"
-                  type="text"
-                  control={form.control}
-                />
-                <PasswordInput
-                  id="password"
-                  autoComplete="new-password"
-                  label="password"
-                  name="password"
-                  control={form.control}
-                  placeholder=""
-                />
+                Forgot password?
+              </Link>
 
-                <Link
-                  to={"/forgot-password"}
-                  className="block text-sm font-semibold capitalize text-primary-color-600"
-                >
-                  forgot password?
-                </Link>
-
-                <CommonButton
-                  className="mt-8 w-full bg-primary-color-600 font-poppins text-[16px] font-[500] capitalize text-white hover:bg-primary-color-600"
-                  type="submit"
-                  disabled={isPending}
-                >
-                  {isPending ? (
-                    <ClipLoader size={20} color={"#fff"} />
-                  ) : (
-                    "sign in"
-                  )}
-                </CommonButton>
-              </form>
-            </Form>
-          </BorderCard>
+              <CommonButton
+                className="mt-8 w-full bg-primary-color-600 font-poppins text-[16px] font-[500] capitalize text-white hover:bg-primary-color-700 disabled:opacity-50"
+                type="submit"
+                disabled={isPending}
+              >
+                {isPending ? (
+                  <ClipLoader size={20} color={"#fff"} />
+                ) : (
+                  "Sign in"
+                )}
+              </CommonButton>
+            </form>
+          </Form>
+          
           <p className="mt-6 flex items-center justify-center gap-4 text-center">
             <span className="text-sm text-[#514A4A]">
-              Already have an account?
+              Don't have an account?
             </span>
             <Link
               to={"/signup"}
-              className="text-sm font-semibold capitalize text-primary-color-600"
+              className="text-sm font-semibold capitalize text-primary-color-600 hover:text-primary-color-700"
             >
-              sign up
+              Sign up
             </Link>
           </p>
-
-          <div className="text-center">
-            <Link
-              to={"/admin/login"}
-              className="text-sm font-semibold text-white hover:text-primary-color-300"
-            >
-              Login Admin
-            </Link>
-          </div>
-        </div>
+        </BorderCard>
       </div>
-
-      {/* modals */}
-
-      {/*  <Modal>
-      {showModal &&  <PasswordResetSucess />}
-      </Modal> */}
-    </>
+    </div>
   );
 };
 

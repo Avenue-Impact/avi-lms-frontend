@@ -13,6 +13,7 @@ import {
 
 import { Skeleton } from "../ui/skeleton";
 import { useProfile } from "@/hooks/students/use-fetch-student-profile";
+import Cookies from "js-cookie";
 
 const ProfilePopUp = () => {
   const { isLoading, data } = useProfile();
@@ -100,7 +101,8 @@ const ProfilePopUp = () => {
 
       <button
         onClick={() => {
-          // Add logout functionality here
+          Cookies.remove("token");
+          window.location.href = "/login";
         }}
         className="flex w-full items-center px-4 py-2 text-left hover:bg-gray-100"
       >

@@ -23,7 +23,7 @@ const ColorHero = () => {
         <p className="z-10 mt-9 max-w-[1000px] md:mt-0 md:text-2xl">
           Transform your professional future with industry-recognized
           certificates from Avenue Impact. Our courses are designed by experts
-          to help you gain the skills needed to succeed in today’s competitive
+          to help you gain the skills needed to succeed in today's competitive
           job market.
         </p>
       </div>
