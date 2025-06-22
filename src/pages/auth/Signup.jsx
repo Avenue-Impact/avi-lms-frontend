@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useSearchParams } from "react-router-dom";
 import { z } from "zod";
@@ -60,6 +60,10 @@ const SignUp = () => {
   const [modal, setModal] = useState(false);
   const [user, setUser] = useState();
   const [queryString] = useSearchParams();
+  const [showReferralReminder, setShowReferralReminder] = useState(false);
+  const [pendingSignupValues, setPendingSignupValues] = useState(null);
+  const [skipReferralReminder, setSkipReferralReminder] = useState(false);
+  const formRef = useRef(null);
 
   const courseId = queryString.get("id");
   const courseTitle = queryString.get("title");
@@ -110,6 +114,13 @@ const SignUp = () => {
       // Validate password strength
       if (password.length < 8) {
         toast.error("Password must be at least 8 characters long");
+        return;
+      }
+
+      // If referralCode is empty, show reminder modal (unless skipping)
+      if (!values.referralCode && !skipReferralReminder) {
+        setPendingSignupValues(values);
+        setShowReferralReminder(true);
         return;
       }
 
@@ -176,6 +187,8 @@ const SignUp = () => {
         toast.error(error.response.data.message || "Registration failed. Please try again.");
       }
       setSuccess("fail");
+    } finally {
+      setSkipReferralReminder(false);
     }
   };
 
@@ -215,6 +228,52 @@ const SignUp = () => {
           />
         </Modal>
       )}
+
+      {showReferralReminder && (
+        <Modal>
+          <div className="bg-white rounded-lg shadow-lg p-8 max-w-[350px] w-full text-center">
+            <h2 className="text-lg font-semibold mb-2 text-[#CC1747]">Did you enter a referral code?</h2>
+            <p className="mb-4 text-gray-700 text-sm">
+              If you have a referral code, please enter it before signing up to enjoy referral benefits. You cannot add it later.
+            </p>
+            <div className="flex flex-col gap-3 mt-4">
+              <button
+                className="bg-[#CC1747] text-white px-4 py-2 rounded hover:bg-[#b30e3b]"
+                onClick={() => {
+                  setShowReferralReminder(false);
+                  setPendingSignupValues(null);
+                  // Do not proceed, let user enter code
+                }}
+              >
+                I haven't inputted
+              </button>
+
+              <button
+                className="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300"
+                onClick={() => {
+                  setShowReferralReminder(false);
+                  setSkipReferralReminder(true);
+                  if (pendingSignupValues) {
+                    Object.entries(pendingSignupValues).forEach(([key, value]) => {
+                      form.setValue(key, value);
+                    });
+                    form.setValue("referralCode", "");
+                    setTimeout(() => {
+                      if (formRef.current) {
+                        formRef.current.requestSubmit();
+                      }
+                    }, 0);
+                    setPendingSignupValues(null);
+                  }
+                }}
+              >
+                I wasn't referred
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
       <div className="flex w-full items-center justify-center px-6 2xl:h-[calc(100vh-100.547px)]">
         <div className="w-fit">
           <div className="py-6">
@@ -224,7 +283,7 @@ const SignUp = () => {
                 <Paragraph>Use your email to sign up</Paragraph>
               </div>
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(handleSubmit)}>
+                <form ref={formRef} onSubmit={form.handleSubmit(handleSubmit)}>
                   <div className="space-y-[4px]">
                     <FormInput
                       label="firstname"
@@ -297,16 +356,6 @@ const SignUp = () => {
                       placeholder=""
                       onFocus={handleInputFocus}
                     />
-                    {/* <FormInput
-                      label="referral Code"
-                      name="referralCode"
-                      control={form.control}
-                      type="text"
-                      id="referralCode"
-                      placeholder=""
-                      onFocus={handleInputFocus}
-                      autoComplete="off"
-                    /> */}
                     <FormInput
                       label="Referral Code (Optional)"
                       name="referralCode"
@@ -317,14 +366,6 @@ const SignUp = () => {
                       onFocus={handleInputFocus}
                       autoComplete="off"
                     />
-                    {/* <PasswordInput
-                      id="referralCode"
-                      autoComplete="new-password"
-                      label="referral Code"
-                      name="referralCode"
-                      control={form.control}
-                      placeholder=""
-                    /> */}
                   </div>
                   <div className="mt-[18px] flex items-center gap-4">
                     <input
