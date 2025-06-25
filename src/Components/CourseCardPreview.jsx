@@ -10,6 +10,7 @@ import { useRemoveFromWishlist } from "@/hooks/students/use-remove-from-wishlist
 import { useDeleteWishlist } from "@/hooks/students/use-delete-wishlist";
 import React from "react";
 import { useFetchWishlist } from "@/hooks/wishlists/use-fetch-wishlist";
+// import { DEMO_MODE } from "@/config";
 
 const CourseCardPreview = ({
   imgSrc,
@@ -20,6 +21,7 @@ const CourseCardPreview = ({
   const { mutate: addToWishlist, isPending: isAdding } = useAddToWishlist();
   const { removeFromList, isRemoving } = useRemoveFromWishlist();
   const { data: wishlistData, refetch } = useFetchWishlist();
+  const isLoggedIn = Boolean(Cookies.get("token"));
 
   // Determine if course is in wishlist (real API only)
   const inWishlist = React.useMemo(() => {
@@ -68,16 +70,18 @@ const CourseCardPreview = ({
           <EnrollPreviewButton className="bg-[#CC1747] flex-1 min-w-0">
             Enroll now
           </EnrollPreviewButton>
-          <button
-            type="button"
-            onClick={inWishlist ? handleRemoveFromWishlist : handleAddToWishlist}
-            disabled={isAdding || isRemoving}
-            className={`flex items-center justify-center border rounded-lg p-3 ml-2 py-4 transition-colors duration-150 flex-shrink-0 ${inWishlist ? 'bg-[#CC1747] border-[#CC1747] text-white' : 'bg-white border-[#CC1747] text-[#CC1747] hover:bg-[#ffeff3]'}`}
-            style={{ width: "18%", minWidth: 40, maxWidth: 60 }}
-            title={inWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
-          >
-            {inWishlist ? <FaHeart size={20} /> : <FaRegHeart size={20} />}
-          </button>
+          {isLoggedIn && (
+            <button
+              type="button"
+              onClick={inWishlist ? handleRemoveFromWishlist : handleAddToWishlist}
+              disabled={isAdding || isRemoving}
+              className={`flex items-center justify-center border rounded-lg p-3 ml-2 py-4 transition-colors duration-150 flex-shrink-0 ${inWishlist ? 'bg-[#CC1747] border-[#CC1747] text-white' : 'bg-white border-[#CC1747] text-[#CC1747] hover:bg-[#ffeff3]'}`}
+              style={{ width: "18%", minWidth: 40, maxWidth: 60 }}
+              title={inWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
+            >
+              {inWishlist ? <FaHeart size={20} /> : <FaRegHeart size={20} />}
+            </button>
+          )}
         </Link>
       </div>
     </div>
