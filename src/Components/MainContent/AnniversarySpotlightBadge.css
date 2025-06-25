@@ -34,8 +34,8 @@
   
   .spotlight-badge.right {
     position: fixed;
-    width: 200px;
-    height: 200px;
+    width: 150px;
+    height: 150px;
     box-shadow:
       0 0 32px 8px #ffd70088,
       0 4px 24px 0 #0002,

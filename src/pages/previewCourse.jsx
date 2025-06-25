@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckCircle, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle, faArrowLeft, faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import styles from "./pages.module.css";
 // import joinTeam from "../assets/video/homeBG.mp4";
 import CourseCard from "../Components/CourseCard";
@@ -17,7 +17,7 @@ import certificate from "../assets/images/certificate.png";
 import professionalBG from "../assets/images/proffessional.png";
 import AviNav from "../Components/avi/AviNav";
 import { ScrollRestoration, useParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { cn, formatDate } from "@/lib/utils";
 import Container from "@/Components/Container";
 import CourseCardPreview from "@/Components/CourseCardPreview";
@@ -31,7 +31,9 @@ import { Skeleton } from "@/Components/ui/skeleton";
 import Cookies from "js-cookie";
 import { StarRating } from "@/Components/star-rating";
 import { useFetchStudentsReviews } from "@/hooks/students/use-fetch-sstudent-reviews";
-// import { useFetchReviews } from "@/hooks/review/use-fetch-reviews";
+// import { demoCourses } from "./dashboard/DiscoverCourses";
+import { DarkLogo } from "../Components/Logo";
+import { useState } from "react";
 
 const PreviewCourse = () => {
   const navigate = useNavigate();
@@ -48,6 +50,7 @@ const PreviewCourse = () => {
 
   const user = Boolean(token);
 
+  // Use real API if not demo, else use demo data
   const { previewCourse, isLoading, error } = usePreviewCourses(courseId);
 
   const path = !user
@@ -67,32 +70,41 @@ const PreviewCourse = () => {
       {/* Search for more {`${styles.checkout_courses}`} #23314A courses */}
       <section>
         <div className={cn(styles.checkout_courses, "")}>
-          <div className="lg:pt-5">
-            <Container className="hidden lg:block">
-              <div
-                className={`${styles.checkoutCoursesFlex} py-4 lg:flex lg:py-4`}
-              >
-                <div className={`${styles.checkoutCourses1} hidden sm:block`}>
-                  <p className="text-2xl font-normal text-[#23314A]">
-                    Search for more courses
-                  </p>
-                </div>
-                <div className={styles.checkoutCourses2}>
-                  <input
-                    type="text"
-                    className={styles.inputField}
-                    placeholder="Search courses..."
-                  />
-                </div>
-              </div>
-              <div className="hidden h-[1px] w-full bg-[#C7D7F4] lg:block" />
-            </Container>
+          <div className="">
+            {user && (
+              <div className="hidden sml:block w-full pb-3 pt-3">
+                <section className="w-[90%] mx-auto flex items-center justify-between">
+                  <div>
+                    <Link to="/" className="cursor-pointer">
+                      <DarkLogo />
+                    </Link>
+                  </div>
 
-            <div className="bg-[#23314A] lg:pb-10">
+                  <div className="flex items-center gap-4">
+                    <div className={`${styles.checkoutCourses1} hidden md:block`}>
+                      <p className="font-normal text-[#23314A]">
+                        Search for more courses
+                      </p>
+                    </div>
+                    <div className={styles.checkoutCourses2}>
+                      <input
+                        type="text"
+                        className={styles.inputField}
+                        placeholder="Search courses..."
+                      />
+                    </div>
+                  </div>
+                </section>
+                {/* Border Line */}
+                <div className="hidden h-[1px] w-full bg-[#C7D7F4] lg:block mt-2 mb-0" />
+              </div>
+            )}
+
+            <div className="bg-[#23314A] pb-1">
               {/* Back Button for Mobile View */}
-              <Container>
-                <div className="mb-4 flex items-center lg:hidden lg:pt-9">
-                  <button onClick={() => navigate(-1)} className="text-white">
+              <div className="pt-4 pb-8 px-5">
+                <div className="mb-4 flex items-center">
+                  <button onClick={() => navigate(-1)} className="text-white hover:text-[#bebcbc]">
                     <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
                   </button>
                 </div>
@@ -121,16 +133,16 @@ const PreviewCourse = () => {
                           {isLoading
                             ? "loading"
                             : previewCourse?.data?.data.course.course_includes.map(
-                                (feature, index) => (
-                                  <li key={index} className="mb-2">
-                                    <FontAwesomeIcon
-                                      icon={faCheckCircle}
-                                      className="mr-2"
-                                    />
-                                    <span>{feature}</span>
-                                  </li>
-                                ),
-                              )}
+                              (feature, index) => (
+                                <li key={index} className="mb-2">
+                                  <FontAwesomeIcon
+                                    icon={faCheckCircle}
+                                    className="mr-2"
+                                  />
+                                  <span>{feature}</span>
+                                </li>
+                              ),
+                            )}
                         </ul>
                       </div>
                     </div>
@@ -141,11 +153,12 @@ const PreviewCourse = () => {
                         previewButtonText={"Enroll now"}
                         path={path}
                         loading={isLoading}
+                        courseId={previewCourse?.data?.data.course.id}
                       />
                     </div>
                   </div>
                 </div>
-              </Container>
+              </div>
             </div>
           </div>
         </div>
@@ -221,7 +234,7 @@ const PreviewCourse = () => {
               <div className="grid grid-cols-2 gap-5 md:gap-5 lg:grid-cols-4 lg:gap-[18.34px]">
                 {isFetching ? (
                   <p>Loading...</p>
-                ) : (
+                ) : Array.isArray(data?.data?.data?.courses) && data.data.data.courses.length > 0 ? (
                   data.data.data.courses.map((course) => (
                     <CourseCard
                       key={course.id}
@@ -233,6 +246,8 @@ const PreviewCourse = () => {
                       path={`/preview-course/${course.id}`}
                     />
                   ))
+                ) : (
+                  <p>No related courses found.</p>
                 )}
               </div>
             </div>
@@ -405,35 +420,59 @@ const PreviewCourse = () => {
 };
 
 const Overview = ({ overview, loading }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   return (
-    <div className={`${styles.overviewCourses1} text-justify text-[#667185]`}>
-      <p className="text-[24px] font-[300] capitalize lg:text-[40px]">
-        Overview
-      </p>
+    <div className={`${styles.overviewCourses1} text-justify text-[#667185] mb-6`}>
+      <div 
+        className="flex items-center justify-between cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <p className="text-[24px] font-[300] capitalize lg:text-[40px]">
+          Overview
+        </p>
+        <FontAwesomeIcon 
+          icon={isExpanded ? faChevronUp : faChevronDown} 
+          className="text-[#667185] text-lg"
+        />
+      </div>
       <div className="mt-2 hidden h-[1px] w-full bg-[#C7D7F4] lg:block" />
 
       {loading ? (
         <Skeleton className={"mt-2 h-[209px] w-full"} />
       ) : (
-        <p className="pt-3 text-[16px] font-[300] lg:pt-9 lg:text-[18px]">
-          {overview}
-        </p>
+        <div className={`pt-3 lg:pt-9 transition-all duration-300 ${isExpanded ? 'block' : 'hidden'}`}>
+          <p className="text-[16px] font-[300] lg:text-[18px]">
+            {overview}
+          </p>
+        </div>
       )}
     </div>
   );
 };
 
 const ProgramHighlights = ({ programHighlights, loading }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   return (
-    <div className={`${styles.overviewCourses1} text-[#667185]`}>
-      <p className="text-[24px] font-[300] capitalize lg:text-[40px]">
-        Programme Highlights:
-      </p>
+    <div className={`${styles.overviewCourses1} text-[#667185] mb-6`}>
+      <div 
+        className="flex items-center justify-between cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <p className="text-[24px] font-[300] capitalize lg:text-[40px]">
+          Programme Highlights:
+        </p>
+        <FontAwesomeIcon 
+          icon={isExpanded ? faChevronUp : faChevronDown} 
+          className="text-[#667185] text-lg"
+        />
+      </div>
       <div className="mt-2 hidden h-[1px] w-full bg-[#C7D7F4] lg:block" />
       {loading ? (
         <Skeleton className={"mt-2 h-[209px] w-full"} />
       ) : (
-        <div className="pt-3 lg:pt-9">
+        <div className={`pt-3 lg:pt-9 transition-all duration-300 ${isExpanded ? 'block' : 'hidden'}`}>
           {programHighlights.map((program_highlight, index) => (
             <div
               key={index}
@@ -458,17 +497,28 @@ const ProgramHighlights = ({ programHighlights, loading }) => {
 };
 
 const Benefit = ({ benefits, loading }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   return (
-    <div className={`${styles.overviewCourses1} text-justify text-[#667185]`}>
-      <p className="text-[24px] font-[300] capitalize lg:text-[40px]">
-        Benefit
-      </p>
+    <div className={`${styles.overviewCourses1} text-justify text-[#667185] mb-6`}>
+      <div 
+        className="flex items-center justify-between cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <p className="text-[24px] font-[300] capitalize lg:text-[40px]">
+          Benefit
+        </p>
+        <FontAwesomeIcon 
+          icon={isExpanded ? faChevronUp : faChevronDown} 
+          className="text-[#667185] text-lg"
+        />
+      </div>
 
       <div className="mt-2 hidden h-[1px] w-full bg-[#C7D7F4] lg:block" />
       {loading ? (
         <Skeleton className={"mt-2 h-[209px] w-full"} />
       ) : (
-        <div className="pt-3 lg:pt-9">
+        <div className={`pt-3 lg:pt-9 transition-all duration-300 ${isExpanded ? 'block' : 'hidden'}`}>
           {benefits.map((benefit, index) => (
             <div
               key={index}
@@ -493,17 +543,28 @@ const Benefit = ({ benefits, loading }) => {
 };
 
 const Tools = ({ tech, loading }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   return (
-    <div className={`${styles.overviewCourses1} text-[#667185]`}>
-      <p className="text-[24px] font-[300] lg:text-[40px]">
-        Tools and Technologies:
-      </p>
+    <div className={`${styles.overviewCourses1} text-[#667185] mb-6`}>
+      <div 
+        className="flex items-center justify-between cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <p className="text-[24px] font-[300] lg:text-[40px]">
+          Tools and Technologies:
+        </p>
+        <FontAwesomeIcon 
+          icon={isExpanded ? faChevronUp : faChevronDown} 
+          className="text-[#667185] text-lg"
+        />
+      </div>
 
       <div className="mt-2 hidden h-[1px] w-full bg-[#C7D7F4] lg:block" />
       {loading ? (
         <Skeleton className={"mt-2 h-[209px] w-full"} />
       ) : (
-        <div className="pt-3 lg:pt-9">
+        <div className={`pt-3 lg:pt-9 transition-all duration-300 ${isExpanded ? 'block' : 'hidden'}`}>
           {tech.map((tool_and_technology, index) => (
             <div
               key={index}

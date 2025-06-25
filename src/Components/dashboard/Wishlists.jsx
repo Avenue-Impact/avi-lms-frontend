@@ -14,11 +14,13 @@ function Wishlists({ wishlist }) {
       <Heading className="text-left">Wishlist ({wishlist.length})</Heading>
       <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
         {wishlist.map((item) => (
-          <Courses
-            key={item.id}
-            wishlist={item}
+          <div className="bg-white shadow-md rounded-lg">
+            <Courses
+              key={item.id}
+              wishlist={item}
             // handleWishlist={handleWishlist}
-          />
+            />
+          </div>
         ))}
       </div>
     </>

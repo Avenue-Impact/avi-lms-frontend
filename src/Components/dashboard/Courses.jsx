@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { StarRating } from "../star-rating";
 import { useNavigate } from "react-router-dom";
 import { useDeleteWishlist } from "@/hooks/students/use-delete-wishlist";
+import { FaTrash } from "react-icons/fa";
 
 
 function Courses({ wishlist, handleWishlist }) {
@@ -55,12 +56,11 @@ function Courses({ wishlist, handleWishlist }) {
             {wishlist.price}
           </span> */}
           <button
-
-            className="font-light text-[#566b8e]"
+            className="font-light transition-colors duration-150 p-2 rounded-full"
+            title="Remove from Wishlist"
             onClick={() => mutate(id)}
-
           >
-            Remove
+            <FaTrash size={18} color="#CC1747" />
           </button>
         </div>
       </div>

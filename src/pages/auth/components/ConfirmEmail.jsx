@@ -48,6 +48,9 @@ const ConfirmEmail = ({ setConfirm, setModal, setSuccess, user, form }) => {
           sameSite: 'strict',
           path: '/'
         });
+        
+        // Reload the page after successful verification
+        window.location.reload();
       }
     } catch (error) {
       setSuccess("fail");

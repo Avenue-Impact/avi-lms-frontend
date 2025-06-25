@@ -25,7 +25,11 @@ function DashboardNav({ setToggleNav }) {
         >
           <FontAwesomeIcon icon={faBars} className="text-2xl text-[#23314A]" />
         </button>
-        <DarkLogo />
+        <div>
+          <Link to={"/"}>
+            <DarkLogo />
+          </Link>
+        </div>
       </span>
       <div className="hidden w-max items-center gap-3 rounded-lg bg-[#FDFDFD] px-4 py-2 lg:flex lg:w-full">
         <FontAwesomeIcon icon={faSearch} className="text-[#475367]" />
