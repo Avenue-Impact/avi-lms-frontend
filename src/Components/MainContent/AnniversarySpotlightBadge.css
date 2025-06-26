@@ -36,7 +36,8 @@
   align-items: center;
   justify-content: center;
   pointer-events: auto;
-  cursor: pointer;
+  /* cursor: grab;
+  cursor: grabbing; */
   outline: none;
   z-index: 1;
 }

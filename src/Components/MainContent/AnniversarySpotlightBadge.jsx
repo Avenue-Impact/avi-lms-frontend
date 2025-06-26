@@ -16,6 +16,7 @@ const AnniversarySpotlightBadge = () => {
   const badgeRef = useRef(null);
   const [showTooltip, setShowTooltip] = useState(false);
   const [position, setPosition] = useState(getInitialPosition());
+  const [isDragging, setIsDragging] = useState(false);
   const [bounds, setBounds] = useState({
     left: PADDING,
     top: PADDING,
@@ -87,6 +88,7 @@ const AnniversarySpotlightBadge = () => {
   };
 
   const handleStop = (e, data) => {
+    setIsDragging(false);
     const width = window.innerWidth;
     const maxX = width - BADGE_SIZE - PADDING;
     const maxY = window.innerHeight - BADGE_SIZE - PADDING;
@@ -96,18 +98,25 @@ const AnniversarySpotlightBadge = () => {
     setPosition({ x, y });
   };
 
+  // Determine if badge is on left or right
+  const maxX = window.innerWidth - BADGE_SIZE - PADDING;
+  const isLeft = position.x <= PADDING + 5; // 5px tolerance
+  const isRight = position.x >= maxX - 5;
+
   return (
     <Draggable
       position={position}
       bounds={bounds}
-      onDrag={(e, data) => setPosition({ x: data.x, y: data.y })}
+      onDrag={(e, data) => { setPosition({ x: data.x, y: data.y }); setIsDragging(true); }}
       onStop={handleStop}
+      onStart={() => setIsDragging(true)}
     >
       <div
         className="spotlight-badge-container"
         style={{
           width: BADGE_SIZE,
           height: BADGE_SIZE,
+          cursor: isDragging ? 'grabbing' : 'grab',
         }}
       >
         <div className="spotlight-badge-glow" />
@@ -127,7 +136,12 @@ const AnniversarySpotlightBadge = () => {
           />
           <div className="badge-reflection" />
           {showTooltip && (
-            <div className="badge-tooltip">🎉 Celebrating 10 Years of Excellence!</div>
+            <div
+              className={`badge-tooltip ${isLeft ? 'right' : 'left'}`}
+              style={isLeft ? { left: '110%', right: 'auto', transform: 'translateY(-50%)' } : { right: '110%', left: 'auto', transform: 'translateY(-50%)' }}
+            >
+              🎉 Celebrating 10 Years of Excellence!
+            </div>
           )}
         </div>
       </div>
