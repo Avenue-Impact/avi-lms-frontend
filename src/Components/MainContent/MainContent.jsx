@@ -46,13 +46,11 @@ import bgVideo from "../../assets/video/homeBG.mp4";
 import Hero from "../Hero";
 import HeroHeading from "./HeroHeading";
 import Button from "../Button";
-import AnniversarySpotlightBadge from './AnniversarySpotlightBadge';
 
 const MainContent = () => {
   return (
     <Hero videoSrc={bgVideo} className={"items-center pb-12"}>
       <div className="mt-32 h-fit lg:mt-28 relative">
-        <AnniversarySpotlightBadge />
         <HeroHeading className={"font leading-snug 2xl:w-[1060px]"}>
           Expert Consultants for Sustainable Success
         </HeroHeading>

@@ -1,23 +1,28 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './AnniversarySpotlightBadge.css';
 import confetti from 'canvas-confetti';
-import tenYearsImg from '../../assets/images/ten_yearsAN.jpg'; // adjust path if needed
+import tenYearsImg from '../../assets/images/ten_yearsAN.jpg';
 import Draggable from 'react-draggable';
 
-const BADGE_HEIGHT = 80; // px, adjust if needed for your badge size
-const MARGIN = 20; // px
+const BADGE_SIZE = 150; // Increased size
+const PADDING = 24; // Clean margin from all sides
+
+const getInitialPosition = () => ({
+  x: window.innerWidth - BADGE_SIZE - PADDING,
+  y: Math.max(PADDING, Math.floor(window.innerHeight * 0.2)),
+});
 
 const AnniversarySpotlightBadge = () => {
   const badgeRef = useRef(null);
   const [showTooltip, setShowTooltip] = useState(false);
-  // Use defaultPosition for uncontrolled drag
-  const [defaultY, setDefaultY] = useState(MARGIN);
+  const [position, setPosition] = useState(getInitialPosition());
   const [bounds, setBounds] = useState({
-    top: 0,
-    bottom: window.innerHeight - BADGE_HEIGHT - MARGIN,
+    left: PADDING,
+    top: PADDING,
+    right: window.innerWidth - BADGE_SIZE - PADDING,
+    bottom: window.innerHeight - BADGE_SIZE - PADDING,
   });
 
-  // Confetti burst on mount
   useEffect(() => {
     setTimeout(() => {
       if (badgeRef.current) {
@@ -35,7 +40,6 @@ const AnniversarySpotlightBadge = () => {
     }, 600);
   }, []);
 
-  // Occasional sparkles in right position
   useEffect(() => {
     const sparkle = () => {
       if (badgeRef.current) {
@@ -56,60 +60,75 @@ const AnniversarySpotlightBadge = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Update bounds on resize
-  React.useEffect(() => {
+  useEffect(() => {
     const handleResize = () => {
+      const maxX = window.innerWidth - BADGE_SIZE - PADDING;
+      const maxY = window.innerHeight - BADGE_SIZE - PADDING;
+
       setBounds({
-        top: 0,
-        bottom: window.innerHeight - BADGE_HEIGHT - MARGIN,
+        left: PADDING,
+        top: PADDING,
+        right: maxX,
+        bottom: maxY,
       });
+
+      setPosition(pos => ({
+        x: Math.min(Math.max(pos.x, PADDING), maxX),
+        y: Math.min(Math.max(pos.y, PADDING), maxY),
+      }));
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Prevent drag ghost image and selection
   const preventDrag = (e) => {
     e.preventDefault();
     return false;
   };
 
+  const handleStop = (e, data) => {
+    const width = window.innerWidth;
+    const maxX = width - BADGE_SIZE - PADDING;
+    const maxY = window.innerHeight - BADGE_SIZE - PADDING;
+
+    const x = data.x < width / 2 ? PADDING : maxX;
+    const y = Math.min(Math.max(data.y, PADDING), maxY);
+    setPosition({ x, y });
+  };
+
   return (
     <Draggable
-      axis="y"
+      position={position}
       bounds={bounds}
-      defaultPosition={{ x: 0, y: defaultY }}
+      onDrag={(e, data) => setPosition({ x: data.x, y: data.y })}
+      onStop={handleStop}
     >
       <div
-        className="spotlight-badge-viewport"
-        style={{ position: 'fixed', right: 0, top: 0, zIndex: 50, userSelect: 'none' }}
-        onMouseDown={e => e.preventDefault()} // Prevent text/image selection
+        className="spotlight-badge-container"
+        style={{
+          width: BADGE_SIZE,
+          height: BADGE_SIZE,
+        }}
       >
-        <div className="spotlight-badge-glow right" />
-        <div className="spotlight-badge-mover to-right">
-          <div
-            className="spotlight-badge right"
-            ref={badgeRef}
-            tabIndex={0}
-            aria-label="10 Year Anniversary"
-            onMouseEnter={() => setShowTooltip(true)}
-            onMouseLeave={() => setShowTooltip(false)}
-          >
-            <img
-              src={tenYearsImg}
-              alt="10 Year Anniversary"
-              className="badge-img"
-              draggable={false}
-              onDragStart={preventDrag}
-              style={{ userSelect: 'none', pointerEvents: 'auto' }}
-            />
-            <div className="badge-reflection" />
-            {showTooltip && (
-              <div className="badge-tooltip">
-                🎉 Celebrating 10 Years of Excellence!
-              </div>
-            )}
-          </div>
+        <div className="spotlight-badge-glow" />
+        <div
+          className="spotlight-badge"
+          ref={badgeRef}
+          tabIndex={0}
+          onMouseEnter={() => setShowTooltip(true)}
+          onMouseLeave={() => setShowTooltip(false)}
+        >
+          <img
+            src={tenYearsImg}
+            alt="10 Year Anniversary"
+            className="badge-img"
+            draggable={false}
+            onDragStart={preventDrag}
+          />
+          <div className="badge-reflection" />
+          {showTooltip && (
+            <div className="badge-tooltip">🎉 Celebrating 10 Years of Excellence!</div>
+          )}
         </div>
       </div>
     </Draggable>
