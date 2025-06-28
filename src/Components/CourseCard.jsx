@@ -14,9 +14,10 @@ const CourseCard = ({
   review,
   imgSrc,
   path = "/preview-course",
+  noShadow = false,
 }) => {
   return (
-    <div className="max-w-[300px] rounded-lg bg-[rgb(252,252,252)] shadow-md">
+    <div className={`max-w-[300px] rounded-lg bg-[rgb(252,252,252)] shadow-md`}>
       <div className="h-[150px] w-full overflow-hidden rounded-t-lg lg:h-[200px]">
         <img
           className="h-full w-full object-cover text-[12px]"

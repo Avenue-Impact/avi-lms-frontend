@@ -4,7 +4,7 @@ import { IoGiftOutline } from "react-icons/io5";
 
 import { DarkLogo } from "../Logo";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -34,7 +34,9 @@ export function Sidebar({ children, toggleNav, setToggleNav }) {
       >
         <nav className="flex h-full w-full flex-col border-r bg-white shadow-sm">
           <div className="mb-3 flex items-center justify-between p-4 pb-2 lg:ml-4 lg:justify-start">
-            <DarkLogo className={`overflow-hidden transition-all lg:w-40`} />
+            <Link to={"/"} className="cursor-pointer">
+              <DarkLogo className={`overflow-hidden transition-all lg:w-40`} />
+            </Link>
             <button onClick={() => setToggleNav?.((prev) => !prev)}>
               <FontAwesomeIcon
                 icon={faClose}

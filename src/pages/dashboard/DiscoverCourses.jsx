@@ -1,140 +1,158 @@
+// 
+
+
+
+
+
+
+
+
+
+
+import React, { useState } from "react";
 import Container from "@/Components/Container";
 import CourseCard from "@/Components/CourseCard";
-import joinTeam from "../../assets/images/join_team.png";
-
 import { DarkLogo } from "@/Components/Logo";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
 import { FaRegBell } from "react-icons/fa6";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { Link, useNavigate } from "react-router-dom";
-// import { DropdownMenuComponent } from "@/Components/dashboard/DropDownMenuComponent";
+import { Link } from "react-router-dom";
 import PopUp from "@/Components/dashboard/PopUp";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserProfile } from "@/services/api";
 import { Skeleton } from "@/Components/ui/skeleton";
 import { useFetchAllCourses } from "@/hooks/students/use-fetch-all-courses";
-// import { all } from "axios";
+import joinTeam from '../../assets/images/accordion-img2.png';
+
+// Demo courses for testing (IDs must match preview logic)
+// export const demoCourses = [
+//   {
+//     id: "01",
+//     title: "Demo: Intro to Business Analysis",
+//     cover_image: joinTeam,
+//     average_rating: 4.5,
+//     total_reviews: 32,
+//     overview: "Learn the basics of business analysis and how to apply them in real-world scenarios.",
+//     course_includes: ["10+ hours of video", "Certificate of completion", "Downloadable resources"],
+//     tools_and_technologies: ["Excel", "Power BI", "Jira"],
+//     benefits: ["Career advancement", "Practical skills", "Industry insights"],
+//     program_highlights: ["Live sessions", "Hands-on projects", "Expert instructors"],
+//     reviews: [
+//       {
+//         id: 1,
+//         user_id: { firstname: "Jane", lastname: "Doe", avatar: "https://i.pravatar.cc/150?img=1" },
+//         rating: 5,
+//         content: "Great introduction to business analysis!"
+//       }
+//     ]
+//   },
+//   ...
+// ];
 
 const DiscoverCourses = () => {
+  // const [useDemo, setUseDemo] = useState(true); // default to demo mode
   const { data: allCourses, isLoading: isFetchingAllCourses } = useFetchAllCourses();
-  console.log("allCourses", allCourses);
-  console.log("isFetchingAllCourses", isFetchingAllCourses);
-
   const { userDetails } = useAuth();
-
   const { data, isLoading } = useQuery({
     queryKey: ["userProfile"],
     queryFn: fetchUserProfile,
   });
 
-  const navigate = useNavigate();
+  // const displayedCourses = useDemo
+  //   ? demoCourses
+  //   : allCourses?.data?.data?.courses || [];
+  const displayedCourses = allCourses?.data?.data?.courses || [];
+
   return (
     <>
-      <div className="flex items-center justify-between gap-6 px-6 py-7 lg:justify-normal lg:px-20">
-        <DarkLogo />
-        <div className="hidden w-max items-center gap-3 rounded-lg bg-[#FDFDFD] px-4 py-2 lg:flex lg:w-full">
-          <FontAwesomeIcon icon={faSearch} className="text-[#475367]" />
-          <input
-            type="text"
-            placeholder=" What do you want to learn?"
-            className="w-36 rounded-none border-none bg-transparent text-[#667185] md:w-full"
-          />
+      {/* Header */}
+      <div className="flex items-center justify-between gap-6 px-6 py-7 lg:px-20">
+        <Link to="/"><DarkLogo/></Link>
+        <div className="hidden items-center bg-white px-4 py-2 rounded-lg lg:flex w-full max-w-lg">
+          <FontAwesomeIcon icon={faSearch} className="text-gray-500"/>
+          <input placeholder="What do you want to learn?" className="flex-grow bg-transparent border-none"/>
         </div>
-
-        <div className="flex items-center gap-3 justify-self-end md:gap-4 lg:gap-6">
-          <div className="flex items-center gap-4">
-            <button
-              type="button"
-              className="hidden text-sm text-[#667185] md:block md:text-nowrap"
-              onClick={() => navigate("/discover-courses")}
-            >
-              View all Courses
-            </button>
-            <span className="lg:hidden">
-              <FontAwesomeIcon icon={faSearch} className="text-[#475367]" />
-            </span>
-
-            <Link to={"/dashboard/notification"} className="text-xl">
-              <FaRegBell />
-            </Link>
-          </div>
-          <div className="relative pr-2">
-            <PopUp>
-              <div className="absolute right-0 top-0 z-10 h-2 w-2 rounded-full bg-[#008000] md:h-3 md:w-3"></div>
-              <Avatar>
-                <AvatarImage
-                  src={
-                    userDetails?.avatar
-                      ? userDetails.avatar
-                      : isLoading
-                        ? "" // Skeleton will be shown when isLoading is true
-                        : data?.data?.data.avatar || ""
-                  }
-                  alt="User Avatar"
-                />
-                {isLoading && <Skeleton className="h-12 w-12 rounded-full" />}
-
-                <AvatarFallback className="bg-primary-color-100 text-lg text-primary-color-600">
-                  {userDetails.firstname ? (
-                    `${userDetails.firstname.charAt(0).toUpperCase()}${userDetails.lastname.charAt(0).toUpperCase()}`
-                  ) : isLoading ? (
-                    <Skeleton className="h-12 w-12 rounded-full" />
-                  ) : (
-                    `${data?.data?.data.firstname.charAt(0).toUpperCase()}${data?.data?.data.lastname.charAt(0).toUpperCase()}`
-                  )}
-                </AvatarFallback>
-              </Avatar>
-            </PopUp>
-          </div>
+        <div className="flex items-center gap-4">
+          <Link to="/discover-courses" className="hidden md:block text-sm">View all Courses</Link>
+          <FontAwesomeIcon icon={faSearch} className="md:hidden text-gray-500"/>
+          <Link to="/dashboard/notification"><FaRegBell/></Link>
+          <PopUp>
+            <Avatar>
+              <AvatarImage src={userDetails.avatar || data?.data?.data.avatar || ""}/>
+              {isLoading && <Skeleton className="h-12 w-12 rounded-full"/>}
+              <AvatarFallback>
+                {userDetails.firstname
+                  ? userDetails.firstname[0].toUpperCase() + userDetails.lastname[0].toUpperCase()
+                  : isLoading
+                    ? ""
+                    : data?.data?.data.firstname[0].toUpperCase() + data?.data?.data.lastname[0].toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+          </PopUp>
         </div>
       </div>
+
+      {/* Toggle Demo/Real */}
       <Container>
-        <h1 className="text-2xl text-tertiary-color-900 md:text-3xl lg:text-[40px]">
-          Checkout our top courses
-        </h1>
-        <div className="mb-12 mt-5 h-px w-full bg-[#C7D7F4]" />
-        <p className="max-w-[710px] text-sm font-light leading-[30px] text-tertiary-color-700 md:text-base">
-          Discover our most popular courses, carefully curated to enhance your
-          skills and advance your career. Join thousands of learners who have
-          already taken the next step with Avenue Impact{" "}
+        {/* <div className="mb-4">
+          <button
+            onClick={() => setUseDemo(!useDemo)}
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+          >
+            {useDemo ? "Use Real Courses" : "Use Demo Courses"}
+          </button>
+        </div> */}
+
+        {/* Courses Section */}
+        <h1 className="text-3xl mb-2">Checkout our top courses</h1>
+        <p className="mb-6 text-gray-700">
+          {/* {useDemo 
+            ? "You're viewing demo courses for testing purposes." 
+            : "Discover our most popular courses from Avenue Impact."} */}
+          Discover our most popular courses from Avenue Impact.
         </p>
-        <div className="mb-6 mt-10 grid grid-cols-2 gap-[18px] md:grid-cols-3 lg:grid-cols-4">
+
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 min-h-[200px]">
           {isFetchingAllCourses ? (
-            <p>Loading...</p>
-          ) : (
-            allCourses.data.data.courses.map((course) => (
+            <p>Loading Courses...</p>
+          ) : displayedCourses.length ? (
+            displayedCourses.map(course => (
               <CourseCard
                 key={course.id}
                 imgSrc={course.cover_image}
-                altText="joinTeam"
+                altText={course.title}
                 title={course.title}
-                rating={course.average_rating ?? 0}
+                rating={course.average_rating}
                 review={course.total_reviews}
                 path={`/preview-course/${course.id}`}
               />
             ))
+          ) : (
+            <div className="flex flex-col items-center justify-center w-full col-span-full min-h-[200px]">
+              <button
+                className="bg-[#CC1747] text-white text-xl px-8 py-4 rounded-lg shadow-md hover:bg-[#d1476c] transition-all duration-150 ease-in-out cursor-pointer flex items-center gap-2"
+                onClick={() => window.location.reload()}
+              >
+                No courses available
+                <span className="text-sm">(tap to refresh)</span>
+              </button>
+            </div>
           )}
         </div>
-        <div className="mb-12 mt-5 h-px w-full bg-[#C7D7F4]" />
-        <div className="items-enter mx-auto flex w-full max-w-[314px] gap-1">
-          <button className="rounded-lg border border-[#D0D5DD] p-3">
-            <ChevronLeft />
-          </button>
-          {[1, 2, 3, 4, 5].map((num) => (
-            <span
-              key={num}
-              className="rounded border border-transparent p-3 text-sm text-[#98A2B3] hover:border hover:border-primary-color-600 hover:text-black"
-            >
-              {num}
-            </span>
-          ))}
-          <button className="rounded-lg border border-[#D0D5DD] p-3">
-            <ChevronRight />
-          </button>
-        </div>
+
+        {/* Pagination */}
+        {displayedCourses.length > 0 && (
+          <div className="flex items-center justify-center gap-2 mt-8">
+            <button><ChevronLeft/></button>
+            {[1,2,3,4,5].map(n => (
+              <span key={n} className="px-3 py-1 border rounded">{n}</span>
+            ))}
+            <button><ChevronRight/></button>
+          </div>
+        )}
       </Container>
     </>
   );

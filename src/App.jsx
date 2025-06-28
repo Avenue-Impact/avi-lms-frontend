@@ -1,11 +1,14 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
+import AnniversarySpotlightBadge from './Components/MainContent/AnniversarySpotlightBadge';
 
 import AppLayout from "./layouts/AppLayout";
 import About from "./pages/About";
 import AvenueImpactDevelopment from "./pages/AvenueImpactDevelopment";
 import AVI from "./pages/AVI";
+import BusinessAnalysis from "./pages/courses/businessAnalysis";
+import ThanksPage from "./pages/thanksPage";
 import Contact from "./pages/Contact";
 import DataSolution from "./pages/DataSolution";
 import DigitalTransformation from "./pages/DigitalTransformation";
@@ -50,6 +53,7 @@ import AdminPayment from "./pages/admin-pages/AdminPayment";
 import CourseCreation from "./Components/admindashboard/CourseCreation";
 import AuthProtectedRoute from "./Components/AuthProtectedRoute";
 import CoursesLayout from "./layouts/admin/CoursesLayout";
+import CourseLayout from "./layouts/admin/courseLayout";
 import FinancialLayout from "./layouts/admin/FinancialLayout";
 import ProjectAreaLayout from "./layouts/admin/ProjectAreaLayout";
 import AdminLogin from "./pages/admin-pages/AdminLogin";
@@ -101,6 +105,8 @@ import ErrorPage from "./error-page";
 import DashboardErrorPage from "./dashboard-error-page";
 import AdminErrorPage from "./admin-error-page";
 import { homePageLoader } from "./loaders/student/home-page-loader";
+import RootLayout from "./layouts/RootLayout";
+
 
 const queryClient = new QueryClient();
 
@@ -109,437 +115,452 @@ function App() {
 
   const routes = createBrowserRouter([
     {
-      path: "/preview-course/:courseId",
-      element: <PreviewCourse />,
-    },
-    {
-      path: "/preview-video-course/:courseId/enroll",
-      element: <PreviewVideoCourse />,
-    },
-
-    {
-      path: "/",
-      element: <AppLayout />,
+      element: <RootLayout />,
       errorElement: <ErrorPage />,
       children: [
         {
-          index: true,
-          element: <Home />,
+          path: "/preview-course/:courseId",
+          element: <PreviewCourse />,
         },
         {
-          path: "/about",
-          element: <About />,
+          path: "/preview-video-course/:courseId/enroll",
+          element: <PreviewVideoCourse />,
         },
-        {
-          path: "/contact",
-          element: <Contact />,
-        },
-      ],
-    },
 
-    {
-      path: "/",
-      element: <ServiceLayout />,
-      errorElement: <ErrorPage />,
-      children: [
         {
-          path: "/digital-transformation",
-          element: <DigitalTransformation />,
-        },
-        {
-          path: "/data-solution",
-          element: <DataSolution />,
-        },
-        {
-          path: "/avenue-impact-development",
-          element: <AvenueImpactDevelopment />,
-        },
-        {
-          path: "/components",
-          element: <Component />,
-        },
-      ],
-    },
-    {
-      element: <AuthProtectedRoute tokin={"token"} path={"/dashboard"} />,
-      errorElement: <ErrorPage />,
-      children: [
-        {
-          path: "",
-          element: <AuthLayout />,
-
-          children: [
-            {
-              path: "/digital-learning-hub",
-              element: <AVI />,
-            },
-            {
-              path: "login",
-              element: <Login setUserInfo={setUserInfo} userInfo={userInfo} />,
-            },
-            {
-              path: "/signup",
-              element: <SignUp />,
-            },
-            {
-              path: "/new-password",
-              element: <NewPassword />,
-            },
-            {
-              path: "/forgot-password",
-              element: <ForgotPassword />,
-            },
-          ],
-        },
-      ],
-    },
-
-    {
-      path: "/discover-courses",
-      element: <DiscoverCourses />,
-    },
-    {
-      element: <ProtectedRoute tokin={"token"} path={"/login"} />,
-
-      children: [
-        {
-          path: "/user/meeting/:courseId",
-          element: <UserJoinMeeting />,
-        },
-        {
-          path: "/dashboard",
-          element: <DashboardLayout userInfo={userInfo} />,
-          errorElement: <DashboardErrorPage />,
-
+          path: "/",
+          element: <AppLayout />,
           children: [
             {
               index: true,
-              element: <DashBoardHomePage />,
-              loader: homePageLoader(queryClient),
-              errorElement: <DashboardErrorPage />,
+              element: <Home />,
             },
+            {
+              path: "/about",
+              element: <About />,
+            },
+            {
+              path: "/contact",
+              element: <Contact />,
+            },
+          ],
+        },
 
+        {
+          path: "/",
+          element: <ServiceLayout />,
+          children: [
             {
-              path: "notification",
-              element: <UserNotification />,
+              path: "/digital-transformation",
+              element: <DigitalTransformation />,
             },
             {
-              path: "wishlists",
-              element: <Wishlist />,
+              path: "/data-solution",
+              element: <DataSolution />,
             },
             {
-              path: "referral",
-              element: <Referral />,
+              path: "/avenue-impact-development",
+              element: <AvenueImpactDevelopment />,
             },
             {
-              path: "student-settings",
-              element: <StudentSettings />,
-            },
-            {
-              path: "Dashboard_Discover",
-              element: <DashboardDiscover />,
-            },
-
-            {
-              path: "EmptyJoinProjectTeam",
-              element: <EmptyJoinProjectTeam />,
-            },
-            {
-              path: "EmptyGetCertificate",
-              element: <EmptyGetCertificate />,
-            },
-
-            {
-              path: "LeaveRating",
-              element: <LeaveRating />,
+              path: "/components",
+              element: <Component />,
             },
           ],
         },
         {
-          element: <OtherLayout />,
-          path: "/dashboard",
+          path: "/courses",
+          element: <CourseLayout />,
           children: [
             {
-              element: <ShareDocument />,
-              path: "/dashboard/:courseId",
+              path: "/courses/business-analysis",
+              element: <BusinessAnalysis />,
+            },
+            {
+              path: "/courses/thanks",
+              element: <ThanksPage />,
+            },
+          ],
+        },
+        {
+          element: <AuthProtectedRoute tokin={"token"} path={"/dashboard"} />,
+          children: [
+            {
+              path: "",
+              element: <AuthLayout />,
+
               children: [
                 {
-                  path: "share-documents",
-                  element: <Documents />,
+                  path: "/digital-learning-hub",
+                  element: <AVI />,
                 },
                 {
-                  path: "assignments",
-                  element: <Assignment />,
+                  path: "login",
+                  element: <Login setUserInfo={setUserInfo} userInfo={userInfo} />,
                 },
                 {
-                  path: "overview",
-                  element: <Overview />,
+                  path: "/signup",
+                  element: <SignUp />,
+                },
+                {
+                  path: "/new-password",
+                  element: <NewPassword />,
+                },
+                {
+                  path: "/forgot-password",
+                  element: <ForgotPassword />,
+                },
+              ],
+            },
+          ],
+        },
+
+        {
+          path: "/discover-courses",
+          element: <DiscoverCourses />,
+        },
+        {
+          element: <ProtectedRoute tokin={"token"} path={"/login"} />,
+
+          children: [
+            {
+              path: "/user/meeting/:courseId",
+              element: <UserJoinMeeting />,
+            },
+            {
+              path: "/dashboard",
+              element: <DashboardLayout userInfo={userInfo} />,
+              errorElement: <DashboardErrorPage />,
+
+              children: [
+                {
+                  index: true,
+                  element: <DashBoardHomePage />,
+                  loader: homePageLoader(queryClient),
+                  errorElement: <DashboardErrorPage />,
+                },
+
+                {
+                  path: "notification",
+                  element: <UserNotification />,
+                },
+                {
+                  path: "wishlists",
+                  element: <Wishlist />,
+                },
+                {
+                  path: "referral",
+                  element: <Referral />,
+                },
+                {
+                  path: "student-settings",
+                  element: <StudentSettings />,
+                },
+                {
+                  path: "Dashboard_Discover",
+                  element: <DashboardDiscover />,
+                },
+
+                {
+                  path: "EmptyJoinProjectTeam",
+                  element: <EmptyJoinProjectTeam />,
+                },
+                {
+                  path: "EmptyGetCertificate",
+                  element: <EmptyGetCertificate />,
+                },
+
+                {
+                  path: "LeaveRating",
+                  element: <LeaveRating />,
                 },
               ],
             },
             {
-              path: ":courseId/certificate",
-              element: <GetCertificate />,
-              loader: async ({ params }) => {
-                const { courseId } = params;
-                return `this is for certificate ${courseId}`;
-              },
-            },
-            {
-              path: ":courseId/projects",
-              element: <JoinProjectTeam />,
+              element: <OtherLayout />,
+              path: "/dashboard",
+              children: [
+                {
+                  element: <ShareDocument />,
+                  path: "/dashboard/:courseId",
+                  children: [
+                    {
+                      path: "share-documents",
+                      element: <Documents />,
+                    },
+                    {
+                      path: "assignments",
+                      element: <Assignment />,
+                    },
+                    {
+                      path: "overview",
+                      element: <Overview />,
+                    },
+                  ],
+                },
+                {
+                  path: ":courseId/certificate",
+                  element: <GetCertificate />,
+                  loader: async ({ params }) => {
+                    const { courseId } = params;
+                    return `this is for certificate ${courseId}`;
+                  },
+                },
+                {
+                  path: ":courseId/projects",
+                  element: <JoinProjectTeam />,
+                },
+              ],
             },
           ],
         },
-      ],
-    },
 
-
-    
-    //admin routes
-    {
-      element: (
-        <AuthProtectedRoute
-          tokin={"adminToken"}
-          path={"admin/course/management"}
-        />
-      ),
-      errorElement: <AdminErrorPage />,
-      children: [
+        //admin routes
         {
-          path: "admin/login",
-          element: <AdminLogin />,
-        },
-      ],
-    },
-    {
-      element: <ProtectedRoute tokin={"adminToken"} path={"/admin/login"} />,
-      errorElement: <AdminErrorPage />,
-
-      children: [
-        {
-          element: <AdminMeeting />,
-          path: "meeting/:courseId",
-        },
-        {
-          element: <AdminLayout />,
-          path: "/admin",
+          element: (
+            <AuthProtectedRoute
+              tokin={"adminToken"}
+              path={"admin/course/management"}
+            />
+          ),
           errorElement: <AdminErrorPage />,
           children: [
-            // {
-            //   path: "/admin/dashboard",
-            //   element: <AdminEmpty />,
-            // },
-
-            // Project Area
             {
-              element: <ProjectAreaLayout />,
-              path: "project-area",
-              children: [
-                {
-                  index: true,
-                  element: <ProjectArea />,
-                },
-                {
-                  path: ":courseId/general",
-                  element: <General />,
-                },
-                {
-                  path: ":courseId/group",
-                  element: <Groups />,
-                  children: [
-                    {
-                      index: true,
-                      element: <GroupDetails />,
-                    },
-                    {
-                      path: ":groupId/edit-project-group",
-                      element: <EditGroupPage />,
-                    },
-                  ],
-                },
-              ],
-            },
-
-            // Course Management
-            {
-              element: <CoursesLayout />,
-              path: "course/management",
-
-              children: [
-                {
-                  children: [
-                    {
-                      index: true,
-                      element: <CourseManagement />,
-                    },
-                    {
-                      path: "courses",
-                      element: <CreatedCourse />,
-                    },
-                    {
-                      path: "preview/:courseId",
-                      element: <EditCourse />,
-                    },
-                    {
-                      path: "info/:courseId",
-                      element: <CourseInfomation />,
-                    },
-                  ],
-                },
-                {
-                  path: "create-course",
-                  element: <CourseCreation />,
-                },
-              ],
-            },
-
-            // Account Management
-            {
-              element: <AccountManagLayout />,
-              path: "account-management",
-
-              children: [
-                {
-                  index: true,
-                  element: <AccountMagament />,
-                },
-              ],
-            },
-            {
-              element: <AdminConfirmationRole />,
-              path: "set-admin-password/create-password",
-            },
-
-            // Fianancial Aid
-            {
-              path: "financial-aid",
-              element: <FinancialLayout />,
-
-              children: [
-                {
-                  index: true,
-                  element: <CreateCoupon />,
-                },
-                {
-                  path: "aid-request",
-                  element: <FinancialAidRequest />,
-                },
-              ],
-            },
-
-            {
-              path: "view-details/:id/:firstname/:lastname/:title/:email",
-              element: <ViewDetails />,
-            },
-
-            {
-              path: "/admin/payment",
-              element: <AdminPayment />,
-            },
-
-            {
-              element: <AffiliateLayout />,
-              path: "affiliate",
-              children: [
-                {
-                  index: true,
-                  element: <ReferralsAdmin />,
-                },
-                {
-                  path: "withdrawal-request",
-                  element: <WithdrawalRequest />,
-                },
-              ],
-            },
-
-            {
-              path: "course-work-area",
-              element: <CourseWorkAreaLayout />,
-              children: [
-                {
-                  index: true,
-                  element: <CourseWorkArea />,
-                },
-                {
-                  path: ":courseId/documents",
-                  element: <CourseWorkAreaDocument />,
-                },
-              ],
-            },
-            {
-              path: "data-management",
-              element: <DataManagementPage />,
-              children: [
-                {
-                  index: true,
-                  element: <DashboardAnalytics />,
-                },
-                {
-                  path: "course-management",
-                  element: <DataCourseManagement />,
-                },
-                {
-                  path: "all-student",
-                  element: <AllStudent />,
-                },
-                // {
-                //   path: "student-details/:studentId",
-                //   element: <StudentDetails />,
-                // },
-              ],
-            },
-
-            // Certificate
-            {
-              element: <AdminCertificateLayout />,
-              path: "certificate",
-              children: [
-                {
-                  index: true,
-                  element: <CertificateMainPage />,
-                },
-                {
-                  path: "certificate-issue",
-                  element: <CertificateIssueHistory />,
-                },
-              ],
-            },
-
-            // Review
-            {
-              element: <ReviewLayout />,
-              path: "reviews",
-              children: [
-                {
-                  index: true,
-                  element: <ReviewMainPage />,
-                },
-                {
-                  path: "review-details/:id/:courseTitle",
-                  element: <ReviewDetails />,
-                },
-              ],
-            },
-
-            // Notification
-            {
-              element: <NotificationLayout />,
-              path: "notification",
-              children: [
-                {
-                  index: true,
-                  element: <Notifications />,
-                },
-              ],
-            },
-            {
-              path: "*",
-              element: <AdminErrorPage />,
+              path: "admin/login",
+              element: <AdminLogin />,
             },
           ],
         },
-      ],
+        {
+          element: <ProtectedRoute tokin={"adminToken"} path={"/admin/login"} />,
+          errorElement: <AdminErrorPage />,
+
+          children: [
+            {
+              element: <AdminMeeting />,
+              path: "meeting/:courseId",
+            },
+            {
+              element: <AdminLayout />,
+              path: "/admin",
+              errorElement: <AdminErrorPage />,
+              children: [
+                // {
+                //   path: "/admin/dashboard",
+                //   element: <AdminEmpty />,
+                // },
+
+                // Project Area
+                {
+                  element: <ProjectAreaLayout />,
+                  path: "project-area",
+                  children: [
+                    {
+                      index: true,
+                      element: <ProjectArea />,
+                    },
+                    {
+                      path: ":courseId/general",
+                      element: <General />,
+                    },
+                    {
+                      path: ":courseId/group",
+                      element: <Groups />,
+                      children: [
+                        {
+                          index: true,
+                          element: <GroupDetails />,
+                        },
+                        {
+                          path: ":groupId/edit-project-group",
+                          element: <EditGroupPage />,
+                        },
+                      ],
+                    },
+                  ],
+                },
+
+                // Course Management
+                {
+                  element: <CoursesLayout />,
+                  path: "course/management",
+
+                  children: [
+                    {
+                      children: [
+                        {
+                          index: true,
+                          element: <CourseManagement />,
+                        },
+                        {
+                          path: "courses",
+                          element: <CreatedCourse />,
+                        },
+                        {
+                          path: "preview/:courseId",
+                          element: <EditCourse />,
+                        },
+                        {
+                          path: "info/:courseId",
+                          element: <CourseInfomation />,
+                        },
+                      ],
+                    },
+                    {
+                      path: "create-course",
+                      element: <CourseCreation />,
+                    },
+                  ],
+                },
+
+                // Account Management
+                {
+                  element: <AccountManagLayout />,
+                  path: "account-management",
+
+                  children: [
+                    {
+                      index: true,
+                      element: <AccountMagament />,
+                    },
+                  ],
+                },
+                {
+                  element: <AdminConfirmationRole />,
+                  path: "set-admin-password/create-password",
+                },
+
+                // Fianancial Aid
+                {
+                  path: "financial-aid",
+                  element: <FinancialLayout />,
+
+                  children: [
+                    {
+                      index: true,
+                      element: <CreateCoupon />,
+                    },
+                    {
+                      path: "aid-request",
+                      element: <FinancialAidRequest />,
+                    },
+                  ],
+                },
+
+                {
+                  path: "view-details/:id/:firstname/:lastname/:title/:email",
+                  element: <ViewDetails />,
+                },
+
+                {
+                  path: "/admin/payment",
+                  element: <AdminPayment />,
+                },
+
+                {
+                  element: <AffiliateLayout />,
+                  path: "affiliate",
+                  children: [
+                    {
+                      index: true,
+                      element: <ReferralsAdmin />,
+                    },
+                    {
+                      path: "withdrawal-request",
+                      element: <WithdrawalRequest />,
+                    },
+                  ],
+                },
+
+                {
+                  path: "course-work-area",
+                  element: <CourseWorkAreaLayout />,
+                  children: [
+                    {
+                      index: true,
+                      element: <CourseWorkArea />,
+                    },
+                    {
+                      path: ":courseId/documents",
+                      element: <CourseWorkAreaDocument />,
+                    },
+                  ],
+                },
+                {
+                  path: "data-management",
+                  element: <DataManagementPage />,
+                  children: [
+                    {
+                      index: true,
+                      element: <DashboardAnalytics />,
+                    },
+                    {
+                      path: "course-management",
+                      element: <DataCourseManagement />,
+                    },
+                    {
+                      path: "all-student",
+                      element: <AllStudent />,
+                    },
+                    // {
+                    //   path: "student-details/:studentId",
+                    //   element: <StudentDetails />,
+                    // },
+                  ],
+                },
+
+                // Certificate
+                {
+                  element: <AdminCertificateLayout />,
+                  path: "certificate",
+                  children: [
+                    {
+                      index: true,
+                      element: <CertificateMainPage />,
+                    },
+                    {
+                      path: "certificate-issue",
+                      element: <CertificateIssueHistory />,
+                    },
+                  ],
+                },
+
+                // Review
+                {
+                  element: <ReviewLayout />,
+                  path: "reviews",
+                  children: [
+                    {
+                      index: true,
+                      element: <ReviewMainPage />,
+                    },
+                    {
+                      path: "review-details/:id/:courseTitle",
+                      element: <ReviewDetails />,
+                    },
+                  ],
+                },
+
+                // Notification
+                {
+                  element: <NotificationLayout />,
+                  path: "notification",
+                  children: [
+                    {
+                      index: true,
+                      element: <Notifications />,
+                    },
+                  ],
+                },
+                {
+                  path: "*",
+                  element: <AdminErrorPage />,
+                },
+              ],
+            },
+          ],
+        },
+      ]
     },
   ]);
 
@@ -548,6 +569,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools initialIsOpen={false} />
         <Toaster />
+        <AnniversarySpotlightBadge />
         <RouterProvider router={routes} />
       </QueryClientProvider>
     </>

@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useSearchParams } from "react-router-dom";
 import { z } from "zod";
@@ -21,6 +21,9 @@ import { route } from "@/lib/route-checker";
 const loginSchema = z
   .object({
     email: z.string().email({ message: "Please enter a valid email address." }),
+    phoneNumber: z.string()
+      .min(10, { message: "Please enter a valid phone number" })
+      .regex(/^[0-9+\-\s()]*$/, { message: "Please enter a valid phone number format" }),
     password: z
       .string()
       .min(4, { message: "Password must be at least 8 characters long " })
@@ -28,7 +31,6 @@ const loginSchema = z
         message:
           "Ensure your password contains at least a lowercase letter, an upper case letter, a special symbol and a number",
       }),
-    referralCode: z.string().optional(),
     confirmPassword: z
       .string()
       .min(4, { message: "Password must be at least 8 characters ong" })
@@ -45,6 +47,7 @@ const loginSchema = z
     username: z
       .string()
       .min(1, { message: " username must be at least 4 characters long" }),
+    referralCode: z.string().optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Password don't match",
@@ -57,6 +60,10 @@ const SignUp = () => {
   const [modal, setModal] = useState(false);
   const [user, setUser] = useState();
   const [queryString] = useSearchParams();
+  const [showReferralReminder, setShowReferralReminder] = useState(false);
+  const [pendingSignupValues, setPendingSignupValues] = useState(null);
+  const [skipReferralReminder, setSkipReferralReminder] = useState(false);
+  const formRef = useRef(null);
 
   const courseId = queryString.get("id");
   const courseTitle = queryString.get("title");
@@ -72,6 +79,7 @@ const SignUp = () => {
       username: "",
       confirmPassword: "",
       referralCode: "",
+      phoneNumber: "",
     },
   });
 
@@ -80,27 +88,75 @@ const SignUp = () => {
   const url = import.meta.env.VITE_AUTH_URL;
 
   const handleSubmit = async (values) => {
-    const { firstName, lastName, password, email, username, referralCode } =
-      values;
-
-    const users = {
-      firstname: firstName,
-      lastname: lastName,
-      email,
-      password,
-      username,
-      referral_code: referralCode,
-    };
-
-    // console.log("Sign up pAGE", users);
-
     try {
-      const response = await axios.post(`${url}/signup`, users);
+      const { firstName, lastName, password, email, username, referralCode, phoneNumber } = values;
+
+      // Validate all required fields
+      if (!firstName || !lastName || !email || !password || !username || !phoneNumber) {
+        toast.error("All fields are required");
+        return;
+      }
+
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        toast.error("Please enter a valid email address");
+        return;
+      }
+
+      // Validate phone number format
+      const phoneRegex = /^[0-9+\-\s()]*$/;
+      if (!phoneRegex.test(phoneNumber)) {
+        toast.error("Please enter a valid phone number");
+        return;
+      }
+
+      // Validate password strength
+      if (password.length < 8) {
+        toast.error("Password must be at least 8 characters long");
+        return;
+      }
+
+      // If referralCode is empty, show reminder modal (unless skipping)
+      if (!values.referralCode && !skipReferralReminder) {
+        setPendingSignupValues(values);
+        setShowReferralReminder(true);
+        return;
+      }
+
+      // Log the request URL and data for debugging
+      console.log('Signup URL:', `${url}/signup`);
+      console.log('Signup Data:', {
+        firstname: firstName,
+        lastname: lastName,
+        email,
+        password,
+        username,
+        referral_code: referralCode,
+        phoneNumber,
+      });
+
+      const users = {
+        firstname: firstName,
+        lastname: lastName,
+        email,
+        password,
+        username,
+        referral_code: referralCode,
+        phoneNumber,
+      };
+
+      const response = await axios.post(`${url}/signup`, users, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      });
+
+      console.log('Signup Response:', response.data);
 
       if (response.data.status === "success") {
         setSuccess("success");
-
-        // setUser(response.data.newUser);
         setUser({
           firstName,
           lastName,
@@ -109,14 +165,30 @@ const SignUp = () => {
           confirmPassword: password,
           username,
           referralCode,
+          phoneNumber,
         });
         setConfirm(true);
       }
     } catch (error) {
-      if (!error) return toast.error("network fail");
-      setSuccess("fail");
+      if (!error.response) {
+        toast.error("Network error. Please check your connection.");
+        return;
+      }
 
-      toast.error(error?.response?.data?.message || error?.message);
+      // Log the full error response
+      console.error('Error Response:', error.response);
+
+      // Handle specific error cases
+      if (error.response.status === 409) {
+        toast.error("Email or username already exists");
+      } else if (error.response.status === 400) {
+        toast.error(error.response.data.message || "Invalid input data");
+      } else {
+        toast.error(error.response.data.message || "Registration failed. Please try again.");
+      }
+      setSuccess("fail");
+    } finally {
+      setSkipReferralReminder(false);
     }
   };
 
@@ -124,6 +196,24 @@ const SignUp = () => {
   if (code) {
     form.setValue("referralCode", code);
   }
+
+  // Add viewport meta tag for iOS
+  useEffect(() => {
+    const meta = document.createElement('meta');
+    meta.name = 'viewport';
+    meta.content = 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no';
+    document.head.appendChild(meta);
+
+    return () => {
+      document.head.removeChild(meta);
+    };
+  }, []);
+
+  // Add iOS-specific input handling
+  const handleInputFocus = (e) => {
+    // Prevent zoom on focus for iOS
+    e.target.style.fontSize = '16px';
+  };
 
   return (
     <div className="min-h-screen">
@@ -138,6 +228,52 @@ const SignUp = () => {
           />
         </Modal>
       )}
+
+      {showReferralReminder && (
+        <Modal>
+          <div className="bg-white rounded-lg shadow-lg p-8 max-w-[350px] w-full text-center">
+            <h2 className="text-lg font-semibold mb-2 text-[#CC1747]">Did you enter a referral code?</h2>
+            <p className="mb-4 text-gray-700 text-sm">
+              If you have a referral code, please enter it before signing up to enjoy referral benefits. You cannot add it later.
+            </p>
+            <div className="flex flex-col gap-3 mt-4">
+              <button
+                className="bg-[#CC1747] text-white px-4 py-2 rounded hover:bg-[#b30e3b]"
+                onClick={() => {
+                  setShowReferralReminder(false);
+                  setPendingSignupValues(null);
+                  // Do not proceed, let user enter code
+                }}
+              >
+                I haven't inputted
+              </button>
+
+              <button
+                className="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300"
+                onClick={() => {
+                  setShowReferralReminder(false);
+                  setSkipReferralReminder(true);
+                  if (pendingSignupValues) {
+                    Object.entries(pendingSignupValues).forEach(([key, value]) => {
+                      form.setValue(key, value);
+                    });
+                    form.setValue("referralCode", "");
+                    setTimeout(() => {
+                      if (formRef.current) {
+                        formRef.current.requestSubmit();
+                      }
+                    }, 0);
+                    setPendingSignupValues(null);
+                  }
+                }}
+              >
+                I wasn't referred
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
       <div className="flex w-full items-center justify-center px-6 2xl:h-[calc(100vh-100.547px)]">
         <div className="w-fit">
           <div className="py-6">
@@ -147,7 +283,7 @@ const SignUp = () => {
                 <Paragraph>Use your email to sign up</Paragraph>
               </div>
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(handleSubmit)}>
+                <form ref={formRef} onSubmit={form.handleSubmit(handleSubmit)}>
                   <div className="space-y-[4px]">
                     <FormInput
                       label="firstname"
@@ -156,6 +292,9 @@ const SignUp = () => {
                       type="text"
                       id="firstName"
                       placeholder=""
+                      onFocus={handleInputFocus}
+                      autoComplete="given-name"
+                      autoCapitalize="words"
                     />
                     <FormInput
                       label="lastname"
@@ -164,6 +303,9 @@ const SignUp = () => {
                       type="text"
                       id="lastName"
                       placeholder=""
+                      onFocus={handleInputFocus}
+                      autoComplete="family-name"
+                      autoCapitalize="words"
                     />
                     <FormInput
                       label="username"
@@ -172,6 +314,9 @@ const SignUp = () => {
                       type="text"
                       id="username"
                       placeholder=""
+                      onFocus={handleInputFocus}
+                      autoComplete="username"
+                      autoCapitalize="words"
                     />
                     <FormInput
                       label="email"
@@ -180,6 +325,18 @@ const SignUp = () => {
                       type="email"
                       id="email"
                       placeholder=""
+                      onFocus={handleInputFocus}
+                      autoComplete="email"
+                      autoCapitalize="none"
+                    />
+                    <FormInput
+                      label="Phone Number"
+                      name="phoneNumber"
+                      control={form.control}
+                      type="tel"
+                      id="phoneNumber"
+                      placeholder=""
+                      autoComplete="tel"
                     />
                     <PasswordInput
                       id="password"
@@ -188,6 +345,7 @@ const SignUp = () => {
                       name="password"
                       control={form.control}
                       placeholder=""
+                      onFocus={handleInputFocus}
                     />
                     <PasswordInput
                       id="confirmPassword"
@@ -196,23 +354,18 @@ const SignUp = () => {
                       name="confirmPassword"
                       control={form.control}
                       placeholder=""
+                      onFocus={handleInputFocus}
                     />
                     <FormInput
-                      label="referral Code"
+                      label="Referral Code (Optional)"
                       name="referralCode"
                       control={form.control}
                       type="text"
                       id="referralCode"
                       placeholder=""
+                      onFocus={handleInputFocus}
+                      autoComplete="off"
                     />
-                    {/* <PasswordInput
-                      id="referralCode"
-                      autoComplete="new-password"
-                      label="referral Code"
-                      name="referralCode"
-                      control={form.control}
-                      placeholder=""
-                    /> */}
                   </div>
                   <div className="mt-[18px] flex items-center gap-4">
                     <input

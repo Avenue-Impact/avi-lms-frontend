@@ -17,14 +17,17 @@ import SocialMediaLinks, {
 import styles from "./pages.module.css";
 import { useFetchAllCourses } from "@/hooks/students/use-fetch-all-courses";
 import CreatedCourseCard from "@/Components/admindashboard/course-management/CreatedCourseCard";
+import { motion } from "framer-motion";
+import { FaStar, FaRegStar, FaStarHalfAlt } from "react-icons/fa";
+import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
 // import img from "../assets/images/data-solution.jpg";
+// nill
 
 const AVI = () => {
   return (
     <>
       <ScrollRestoration />
       <ColorHero />
-      {/* {showNav && <Modal />} */}
 
       <section>
         {/* AVI IMAGE */}
@@ -184,12 +187,6 @@ const AllCourses = () => {
         <p>{error?.response?.data?.message ?? "Something went wrong"}</p>
       </div>
     );
-  // if (!error)
-  //   return (
-  //     <div className={`${styles.previewCoursesFlex} overflow-visible`}>
-  //       <p>Check your connection </p>
-  //     </div>
-  //   );
 
   return (
     <div className={`${styles.previewCoursesFlex} overflow-visible`}>

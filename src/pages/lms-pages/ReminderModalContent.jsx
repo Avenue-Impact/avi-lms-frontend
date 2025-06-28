@@ -3,10 +3,31 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faClock } from '@fortawesome/free-solid-svg-icons';
 import { faGoogle, faApple, faMicrosoft } from '@fortawesome/free-brands-svg-icons';
 
+function getTodayISO() {
+  const today = new Date();
+  return today.toISOString().split('T')[0];
+}
+
+function getFutureTimeISO() {
+  const now = new Date();
+  now.setMinutes(now.getMinutes() + 30);
+  return now.toTimeString().slice(0, 5);
+}
+
+function buildICS({ title, description, date, time }) {
+  // date: YYYY-MM-DD, time: HH:MM
+  const dt = new Date(`${date}T${time}`);
+  const dtStart = dt.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+  const dtEnd = new Date(dt.getTime() + 60 * 60 * 1000).toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+  return `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:${title}\nDESCRIPTION:${description}\nDTSTART:${dtStart}\nDTEND:${dtEnd}\nEND:VEVENT\nEND:VCALENDAR`;
+}
+
 const ModalContent = ({ setShowModal }) => {
   const [selectedOption, setSelectedOption] = useState('daily');
   const [selectedDay, setSelectedDay] = useState('');
   const [showAdditionalContent, setShowAdditionalContent] = useState(false);
+  const [date, setDate] = useState(getTodayISO());
+  const [time, setTime] = useState(getFutureTimeISO());
 
   const handleOptionChange = (option) => {
     setSelectedOption(option);
@@ -23,6 +44,16 @@ const ModalContent = ({ setShowModal }) => {
   const handleBackClick = () => {
     setShowAdditionalContent(false);
   };
+
+  // Calendar event details
+  const eventTitle = 'Learning Reminder';
+  const eventDescription = 'Your scheduled learning reminder from Avenue Impact.';
+  const eventDate = date;
+  const eventTime = time;
+  const icsContent = buildICS({ title: eventTitle, description: eventDescription, date: eventDate, time: eventTime });
+  const icsBlob = new Blob([icsContent.replace(/\\n/g, '\r\n')], { type: 'text/calendar' });
+  const icsUrl = URL.createObjectURL(icsBlob);
+  const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventTitle)}&details=${encodeURIComponent(eventDescription)}&dates=${eventDate.replace(/-/g, '')}T${eventTime.replace(':', '')}00Z/${eventDate.replace(/-/g, '')}T${(parseInt(eventTime.split(':')[0])+1).toString().padStart(2,'0')}${eventTime.split(':')[1]}00Z`;
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -65,66 +96,55 @@ const ModalContent = ({ setShowModal }) => {
               </button>
             </div>
 
-            {selectedOption === 'daily' && (
+            {/* Time and Date Inputs */}
+            {(selectedOption === 'daily' || selectedOption === 'weekly' || selectedOption === 'once') && (
               <div className='text-[#8F8F8E]'>
                 <p className="mb-2 text-black">Time</p>
                 <div className="flex items-center mb-4">
-                  <input type="time" className="border border-gray-300 rounded px-2 py-1 w-full mr-2" defaultValue="12:00" />
-                  
-                </div>
-              </div>
-            )}
-
-            {selectedOption === 'weekly' && (
-              <div className='text-[#8F8F8E]'>
-                <p className="mb-2 text-black">Time</p>
-                <div className="flex items-center mb-4">
-                  <input type="time" className="border border-gray-300 rounded px-2 py-1 w-full mr-2" defaultValue="12:00"/>
-                  
-                </div>
-                <p className="mb-2 text-black">Date</p>
-                <div className="grid grid-cols-2 gap-2">
-                  {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map((day) => (
-                    <div
-                      key={day}
-                      className={`flex items-center border rounded p-2 ${
-                        selectedDay === day ? 'bg-[#FFEBF0] border-red-300' : 'border-gray-300'
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        id={day}
-                        name={day}
-                        className="mr-2"
-                        checked={selectedDay === day}
-                        onChange={() => handleDayChange(day)}
-                      />
-                      <label htmlFor={day}>{day}</label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {selectedOption === 'once' && (
-              <div className="flex flex-col space-y-4 text-[#8F8F8E]">
-                <div className="flex items-center ">
-                  <p className="mr-2 text-black">Time</p>
-                  <div className="flex items-center w-full">
-                  <input 
-                    type="time" 
-                    className="border border-gray-300 rounded-lg px-4 py-2 w-full mr-2  bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" defaultValue="12:00"
+                  <input
+                    type="time"
+                    className="border border-gray-300 rounded px-2 py-1 w-full mr-2"
+                    value={time}
+                    min={getFutureTimeISO()}
+                    onChange={e => setTime(e.target.value)}
                   />
                 </div>
-
-                </div>
-                <div className="flex items-center">
-                  <p className="mr-2 text-black">Date</p>
-                  <div className="flex items-center w-full">
-                    <input type="date" className="border border-gray-300 rounded px-2 py-1 w-full mr-2" defaultValue="2024-08-15"/>
-                    
+                {selectedOption !== 'daily' && (
+                  <>
+                    <p className="mb-2 text-black">Date</p>
+                    <div className="flex items-center w-full mb-4">
+                      <input
+                        type="date"
+                        className="border border-gray-300 rounded px-2 py-1 w-full mr-2"
+                        value={date}
+                        min={getTodayISO()}
+                        onChange={e => setDate(e.target.value)}
+                      />
+                    </div>
+                  </>
+                )}
+                {selectedOption === 'weekly' && (
+                  <div className="grid grid-cols-2 gap-2">
+                    {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day) => (
+                      <div
+                        key={day}
+                        className={`flex items-center border rounded p-2 ${
+                          selectedDay === day ? 'bg-[#FFEBF0] border-red-300' : 'border-gray-300'
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          id={day}
+                          name={day}
+                          className="mr-2"
+                          checked={selectedDay === day}
+                          onChange={() => handleDayChange(day)}
+                        />
+                        <label htmlFor={day}>{day}</label>
+                      </div>
+                    ))}
                   </div>
-                </div>
+                )}
               </div>
             )}
             <button onClick={handleNextClick} className="bg-[#CC1747] text-white py-2 px-10 rounded mt-4 float-right">Next</button>
@@ -132,23 +152,37 @@ const ModalContent = ({ setShowModal }) => {
         ) : (
           <>
             <div className="flex items-center space-x-4 font-[400] mb-4">
-              <button className="flex items-center space-x-2 py-2 px-4 bg-transparent border border-[#0078D4] text-red-400 rounded">
+              {/* Google Calendar */}
+              <a
+                href={googleCalUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center space-x-2 py-2 px-4 bg-transparent border border-[#0078D4] text-red-400 rounded"
+              >
                 <span className="google-icon">
                   <FontAwesomeIcon icon={faGoogle} />
                 </span>
-                <span className="hidden md:inline  text-[#667185]">Sign in with Google</span>
+                <span className="hidden md:inline  text-[#667185]">Add to Google Calendar</span>
                 <span className="md:hidden text-black">Google</span>
-              </button>
-
-              <button className="flex items-center space-x-2 py-2 px-4 bg-transparent text-black border border-[#0078D4] rounded">
+              </a>
+              {/* Apple Calendar (ICS) */}
+              <a
+                href={icsUrl}
+                download="learning-reminder.ics"
+                className="flex items-center space-x-2 py-2 px-4 bg-transparent text-black border border-[#0078D4] rounded"
+              >
                 <FontAwesomeIcon icon={faApple} />
-                <span> Apple</span>
-              </button>
-
-              <button className="flex items-center space-x-2 py-2 px-4 bg-transparent text-[#0078D4] border border-[#0078D4] rounded">
+                <span> Apple (ICS)</span>
+              </a>
+              {/* Outlook Calendar (ICS) */}
+              <a
+                href={icsUrl}
+                download="learning-reminder.ics"
+                className="flex items-center space-x-2 py-2 px-4 bg-transparent text-[#0078D4] border border-[#0078D4] rounded"
+              >
                 <FontAwesomeIcon icon={faMicrosoft} />
-                <span> Outlook</span>
-              </button>
+                <span> Outlook (ICS)</span>
+              </a>
             </div>
 
             <p className="mb-4 text-sm text-[#667185]">
