@@ -55,7 +55,7 @@ function CourseVideoSection({ data }) {
 const PreviewVideo = ({ videoId, section, cohortId }) => {
   const { courseId } = useParams();
 
-  const [currentRange, setCurrentRange] = useState("bytes=0-1048575"); // Initial range
+  const [currentRange, setCurrentRange] = useState("bytes=0-1048575");
   const [waiting, setWaiting] = useState(false);
 
   const { data, isLoading, error } = useStreamVideo(
