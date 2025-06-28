@@ -22,21 +22,6 @@ function ShareDocument({ editButton = false }) {
     desktop: "share documents",
   });
   const { data } = useCourseData();
-  // const { data, isLoading, error } = useViewEnrolledCourse(courseId);
-  // useEffect(() => {
-  //   const updateQuery = (key, value) => {
-  //     const newParams = new URLSearchParams(searchParams);
-  //     newParams.set(key, value);
-  //     setSearchParams(newParams);
-  //   };
-  //   if (data) {
-  //     updateQuery("cohortId", data?.data?.data?.cohort_id ?? "");
-  //   }
-  // }, [data, searchParams, setSearchParams]);
-
-  // if (isLoading) return <p>Loading...</p>;
-  // if (error)
-  //   return <p>{error?.response?.data?.message ?? "Something Went wrong!!!"}</p>;
 
   return (
     <DocumentContext.Provider

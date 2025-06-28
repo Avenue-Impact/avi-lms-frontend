@@ -2,12 +2,9 @@ import { useFetchSharedDocuments } from "@/hooks/students/use-fetch-shared-docum
 import { useContext } from "react";
 import { RxDownload } from "react-icons/rx";
 import { useParams } from "react-router-dom";
-import { DocumentContext } from "./ShareDocument";
-import pdf from "../../assets/images/dashboard/pdf.png";
 import docsimg from "../../assets/images/dashboard/docs.png";
-import axios from "axios";
-import Cookies from "js-cookie";
-import toast from "react-hot-toast";
+import pdf from "../../assets/images/dashboard/pdf.png";
+import { DocumentContext } from "./ShareDocument";
 
 const Documents = ({ data }) => {
   const { courseId } = useParams();

@@ -48,7 +48,7 @@ const ReferralPage = () => {
     }
 
     // const referralLink = `https://www.avenueimpact.com/dashboard/referral?code=${referralCode}`;
-    const referralLink = `https://www.avenueimpact.com/signup?code=${referralCode}`;
+    const referralLink = `http://localhost:5173/signup?code=${referralCode}`;
 
     const shareData = {
       title: "Referral Code",

@@ -87,14 +87,14 @@ function CourseSection({ editButton, data }) {
           <Accordion type="single" collapsible className="w-full">
             {data?.data?.data?.recorded_sessions.map((section) => {
               return (
-                <AccordionItem value={section.id} key={section.id}>
+                <AccordionItem value={section._id} key={section._id}>
                   <AccordionTrigger
                     className={cn(
                       "group/section [&[data-state=open]]:bg-bg-primary-color-300/20 px-5 pb-[10px] hover:bg-primary-color-300/20",
-                      active === section.id && "bg-primary-color-300/20",
+                      active === section._id && "bg-primary-color-300/20",
                     )}
                     onClick={() => {
-                      setActive(section.id);
+                      setActive(section._id);
                       setSectionActive(section.section);
                     }}
                   >
@@ -105,7 +105,7 @@ function CourseSection({ editButton, data }) {
                       <p
                         className={cn(
                           "text-base font-light capitalize leading-6 text-tertiary-color-700 group-hover/section:font-semibold group-hover/section:text-primary-color-600",
-                          active === section.id &&
+                          active === section._id &&
                             "font-semibold text-primary-color-600",
                         )}
                       >
@@ -116,10 +116,11 @@ function CourseSection({ editButton, data }) {
                   {section?.videos?.map((video, i) => {
                     return (
                       <AccordionContent
-                        key={video.id}
+                        key={video._id}
                         className={cn(
                           "group/topic cursor-pointer px-5 py-[10px] hover:bg-primary-color-300/20",
-                          videoActive === video.id && "bg-primary-color-300/20",
+                          videoActive === video._id &&
+                            "bg-primary-color-300/20",
                         )}
                         onClick={() => {
                           setSectionDetails((prev) => ({
@@ -129,14 +130,14 @@ function CourseSection({ editButton, data }) {
                             videoTitle: video.video_title,
                           }));
                           setSession("recorded");
-                          setVideoId(video.id);
-                          setvideoActive(video.id);
+                          setVideoId(video._id);
+                          setvideoActive(video._id);
                         }}
                       >
                         <div
                           className={cn(
                             "flex items-start gap-3 text-sm group-hover/topic:text-primary-color-600 md:text-base",
-                            videoActive === video.id &&
+                            videoActive === video._id &&
                               "text-primary-color-600",
                           )}
                         >

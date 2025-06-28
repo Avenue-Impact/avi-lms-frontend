@@ -9,6 +9,7 @@ const DashboardDiscover = ({
   rating,
   review,
   courseId,
+  cohortId,
 }) => {
   return (
     <div className="overflow-hidden rounded-t-lg bg-[rgb(252,252,252)]">
