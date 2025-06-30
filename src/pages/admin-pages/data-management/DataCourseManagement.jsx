@@ -7,13 +7,31 @@ import { IoSearch } from "react-icons/io5";
 
 import { LiveSessionIcon, OnDemandIcon } from "@/Components/Icon";
 import { GoArrowDownLeft, GoArrowUpRight } from "react-icons/go";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useFetchCourseStats } from "@/hooks/data-management/use-fetch-course-stats";
+import _ from "lodash";
 
 export default function DataCourseManagement() {
   const [course, setCourse] = useState(courseManagement);
   const { isLoading, error, data } = useFetchCourseStats();
   // console.log("The course Mangement", data);
+const [searchQuery, setSearchQuery] = useState("")
+    
+    const handleSearch = useCallback(
+        _.debounce((query) => {
+          setSearchQuery(query);
+        }, 500),
+        [],
+      );
+    
+      const handleChange = (event) => {
+        handleSearch(event.target.value);
+      };
+    
+      const filteredCourse = course.filter((course) =>
+        course.title.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
+
 
   if (isLoading) {
     return (
@@ -30,6 +48,8 @@ export default function DataCourseManagement() {
       </div>
     );
   }
+
+
 
   const filterDemand = (str) => {
     const filteredCourse = courseManagement.filter(
@@ -63,6 +83,8 @@ export default function DataCourseManagement() {
               id="search"
               placeholder="Search here..."
               className="w-full placeholder:text-[#667185]"
+                onChange={handleChange}
+
             />
           </div>
           <Popover>
@@ -121,6 +143,12 @@ export default function DataCourseManagement() {
       </header>
 
       <div className="mt-10">
+        { filteredCourse.length === 0 ? (
+          <p className="col-span-3 text-center font-medium text-[#CC1747]">
+            User not found
+          </p>
+        ) : (
+
         <Table cols={"0.3fr 1.6fr 1.3fr 1.3fr 1fr 1.3fr "}>
           <Table.Header className={"*:text-sm *:font-medium *:capitalize"}>
             <h4>S/N</h4>
@@ -131,7 +159,7 @@ export default function DataCourseManagement() {
             <h4>No. of student registered</h4>
           </Table.Header>
           <div className="divide-y">
-            {course.map((course, i) => {
+            {filteredCourse.map((course, i) => {
               return (
                 <Table.Row key={course.id}>
                   <p>{i + 1}</p>
@@ -153,6 +181,8 @@ export default function DataCourseManagement() {
             })}
           </div>
         </Table>
+        )
+      }
       </div>
     </div>
   );

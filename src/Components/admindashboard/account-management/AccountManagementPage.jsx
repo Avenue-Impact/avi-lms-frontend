@@ -27,8 +27,9 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import _ from "lodash";
 import { Save } from "lucide-react";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import toast from "react-hot-toast";
 import { FaTimes } from "react-icons/fa";
 
@@ -80,6 +81,35 @@ const AccountManagementPage = () => {
   const { mutate, isPending: isEditing } = useEditAdminRole();
 
   const { delAdmin, isPending } = useDeleteAdmin();
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedRole, setSelectedRole] = useState("all");
+
+  const handleSearch = useCallback(
+    _.debounce((query) => {
+      setSearchQuery(query);
+    }, 500),
+    [],
+  );
+
+  const handleChange = (event) => {
+    handleSearch(event.target.value);
+  };
+
+  // Filter courses by title
+  const filteredList = adminData?.data?.data?.admins.filter((account) => {
+    const fullText = (
+      account.firstname +
+      account.lastname +
+      account.email
+    ).toLowerCase();
+
+    const matchesSearch = fullText.includes(searchQuery.toLowerCase());
+
+    const matchesRole = selectedRole === "all" || account.role === selectedRole;
+
+    return matchesSearch && matchesRole;
+  });
 
   // Function to delete account by id
   const handleDeleteAcc = () => {
@@ -137,14 +167,15 @@ const AccountManagementPage = () => {
                 type="text"
                 className="w-full rounded-md border bg-gray-50 px-1 py-2 pl-10 text-[14px] focus:outline-none"
                 placeholder="Search here..."
+                onChange={handleChange}
               />
               <div className="absolute left-3 top-1.5 text-gray-400">
                 <FontAwesomeIcon icon={faSearch} />
               </div>
             </div>
 
-            <div className="border-grey-300 flex items-center gap-2 rounded border-2 px-3 py-1.5">
-              <span>
+            <div className="border-grey-300 flex items-center rounded border-2 px-2 ">
+               <span>
                 <svg
                   width="14"
                   height="11"
@@ -166,100 +197,126 @@ const AccountManagementPage = () => {
                   />
                 </svg>
               </span>
-
-              <span>Filter by role </span>
+              <Select onValueChange={(value) => setSelectedRole(value)}>
+                <SelectTrigger className="w-full border-none bg-transparent text-sm focus:ring-0">
+                  <SelectValue placeholder="Filter by role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="all">All Roles</SelectItem>
+                    <SelectItem value="Financial Admin">
+                      Financial Admin
+                    </SelectItem>
+                    <SelectItem value="Content Manager">
+                      Content Manager
+                    </SelectItem>
+                    <SelectItem value="Course Admin">Course Admin</SelectItem>
+                    <SelectItem value="Super Admin">Super Admin</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </div>
       </div>
 
       <div className="overflow-x-auto">
-        <Table cols={"0.3fr 0.9fr 1fr 0.8fr 0.8fr 0.8fr"}>
-          <Table.Header
-            className={"gap-2 *:text-sm *:font-medium *:capitalize"}
-          >
-            <p>S/N</p>
-            <p>Name</p>
-            <p>Email Address</p>
-            <p>Roles</p>
-            <p>Joined</p>
-            <p>Action</p>
-          </Table.Header>
-          {
-            <div className="text-[14px]">
-              {adminData?.data?.data?.admins?.map((account, i) => (
-                <Table.Row
-                  key={account.id}
-                  className={"gap-2 border-b border-[#D0D5DD] *:text-sm"}
-                >
-                  <p className="text-[#344054]">
-                    {i + 1 < 9 ? `0${i + 1}` : i + 1}
-                  </p>
-                  <p className="text-sm font-medium text-[#101928]">
-                    {account.firstname} {account.lastname}
-                  </p>
-                  <p className="truncate text-[#475367]">{account.email}</p>
-                  {/* <p>{account.role}</p> */}
-                  <div>
-                    <Select
-                      onValueChange={(value) => {
-                        setAdminToEdit({ id: account.id, role: value });
-                      }}
-                    >
-                      <SelectTrigger className="w-full items-start border-none p-0 ring-0 focus:ring-0 focus:ring-offset-0">
-                        <SelectValue placeholder={account.role} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectItem value="Financial Admin">
-                            Financial Admin
-                          </SelectItem>
-                          <SelectItem value="Content Manager">
-                            Content Manager
-                          </SelectItem>
-                          <SelectItem value="Course Admin">
-                            Course Admin
-                          </SelectItem>
-                          <SelectItem value="Super Admin">
-                            Super Admin
-                          </SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <p>
-                    {account.joined_date
-                      ? formapateString(account.joined_date)
-                      : "N/A"}
-                  </p>
+        {isLoading ? (
+          "Loading..."
+        ) : error ? (
+          <p>{error?.response?.data?.message ?? "Something went wrong"}</p>
+        ) : filteredList.length === 0 ? (
+          <p className="col-span-3 text-center font-medium text-[#CC1747]">
+            User not found
+          </p>
+        ) : (
+          <Table cols={"0.3fr 0.9fr 1fr 0.8fr 0.8fr 0.8fr"}>
+            <Table.Header
+              className={"*:text-sm *:font-medium *:capitalize gap-2"}
+            >
+              <p>S/N</p>
+              <p>Name</p>
+              <p>Email Address</p>
+              <p>Roles</p>
+              <p>Joined</p>
+              <p>Action</p>
+            </Table.Header>
+            {
+              <div className="text-[14px]">
+                {filteredList.map((account, i) => (
+                  <Table.Row
+                    key={account.id}
+                    className={"*:text-sm gap-2 border-b border-[#D0D5DD]"}
+                  >
+                    <p className="text-[#344054]">
+                      {i + 1 < 9 ? `0${i + 1}` : i + 1}
+                    </p>
+                    <p className="text-sm font-medium text-[#101928]">
+                      {account.firstname} {account.lastname}
+                    </p>
+                    <p className="truncate text-[#475367]">{account.email}</p>
+                    {/* <p>{account.role}</p> */}
+                    <div>
+                      <Select
+                        onValueChange={(value) => {
+                          setAdminToEdit({ id: account.id, role: value });
+                        }}
+                      >
+                        <SelectTrigger className="w-full items-start border-none p-0 ring-0 focus:ring-0 focus:ring-offset-0">
+                          <SelectValue placeholder={account.role} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectItem value="Financial Admin">
+                              Financial Admin
+                            </SelectItem>
+                            <SelectItem value="Content Manager">
+                              Content Manager
+                            </SelectItem>
+                            <SelectItem value="Course Admin">
+                              Course Admin
+                            </SelectItem>
+                            <SelectItem value="Super Admin">
+                              Super Admin
+                            </SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <p>
+                      {account.joined_date
+                        ? formapateString(account.joined_date)
+                        : "N/A"}
+                    </p>
 
-                  <div className="flex items-center justify-between">
-                    <button
-                      className="flex items-center gap-2 rounded bg-primary-color-600 px-3 py-2 font-normal text-white disabled:opacity-50"
-                      onClick={() => handleEdit(account)}
-                      disabled={isEditing || account.id !== adminToEdit.id}
-                    >
-                      <Save className="h-3 w-3" />
-                      <span className="text-sm">save</span>
-                    </button>
+                    <div className="flex items-center justify-between">
+                      <button
+                        className="flex items-center gap-2 rounded bg-primary-color-600 px-3 py-2 font-normal text-white disabled:opacity-50"
+                        onClick={() => handleEdit(account)}
+                        disabled={isEditing || account.id !== adminToEdit.id}
+                      >
+                        <Save className="h-3 w-3" />
+                        <span className="text-sm">save</span>
+                      </button>
 
-                    <button
-                      className="flex items-center gap-2 rounded border px-3 py-2 font-normal text-[#3A4C6C] disabled:opacity-50"
-                      onClick={() => {
-                        setSelectedAccount(account);
-                        setModalDeleteAcc(true);
-                      }}
-                      disabled={isPending}
-                    >
-                      <TrashCan />
-                      Delete
-                    </button>
-                  </div>
-                </Table.Row>
-              ))}
-            </div>
-          }
-        </Table>
+                      <button
+                        className="flex items-center gap-2 rounded border px-3 py-2 font-normal text-[#3A4C6C] disabled:opacity-50"
+                        onClick={() => {
+                          setSelectedAccount(account);
+                          setModalDeleteAcc(true);
+                        }}
+                        disabled={isPending}
+                      >
+                        <TrashCan />
+                        Delete
+                      </button>
+                    </div>
+                  </Table.Row>
+                ))}
+              </div>
+            }
+          </Table>
+        )}
       </div>
 
       {modalDeleteAcc && (

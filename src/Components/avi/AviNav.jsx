@@ -74,7 +74,7 @@ export const PreviewVideoNav = ({ setShowNav }) => {
   return (
     <nav className="flex items-center justify-between px-6 py-4 lg:px-20">
       <div>
-        <Link to={"/"} className="cursor-pointer">
+        <Link to={"/dashboard"} className="cursor-pointer">
           <DarkLogo />
         </Link>
       </div>

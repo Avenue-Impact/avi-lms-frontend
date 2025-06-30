@@ -15,7 +15,7 @@ const FinancialRequestPage = () => {
                     <p className="text-center text-sm text-gray-600 mb-4">
                           There are no financial aid requests at the moment. When students
                         <span className='lg:block'> 
-                        submit requests, you'll be able to review and manage them here.
+                        submit requests, you will be able to review and manage them here.
                         </span>
                     </p>
                     

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 // import { withdrawalRequest } from '@/lib/withdrawalRequest'
 import DashButton from "@/pages/auth/ButtonDash";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,6 +18,7 @@ import { useFetchWithdrawalRequests } from "@/hooks/affiliate/use-fetch-withdraw
 import { formatDateString } from "@/lib/formatdatestring";
 import { useFetchGeneralCSVRequest } from "@/hooks/affiliate/use-generate-csv-file-withdrawal-requests";
 import { useUpdateWithdrawalRequest } from "@/hooks/affiliate/use-update-withdrawal-request-status";
+import _ from "lodash";
 // import { useUpdateWithdrawalRequest } from "@/hooks/affiliate/use-update-withdrawal-request-status";
 // import { useFetchUpdateWithdrawalRequest } from "@/hooks/affiliate/use-update-withdrawal-request-status";
 
@@ -26,10 +27,24 @@ const WithdrawalRequest = () => {
   // const [currentRequestId, setCurrentRequestId] = useState(null);
 
   const { data, isLoading, isError } = useFetchWithdrawalRequests();
-  console.log("The Fetch Withdrawal Requests", data);
-
     const { mutate: updateWithdrawalRequest, isPending } = useUpdateWithdrawalRequest();
-    console.log("updateWithdrawalRequest", updateWithdrawalRequest);
+    const [searchQuery, setSearchQuery] = useState("")
+    
+    const handleSearch = useCallback(
+        _.debounce((query) => {
+          setSearchQuery(query);
+        }, 500),
+        [],
+      );
+    
+      const handleChange = (event) => {
+        handleSearch(event.target.value);
+      };
+    
+      const filteredList = data?.data?.data?.requests.filter((request) =>
+        (request.student_details.first_name + request.student_details.last_name).toLowerCase().includes(searchQuery.toLowerCase()),
+      );
+    
 
  const handleMarkAsPaid = (requestId) => {
    updateWithdrawalRequest(
@@ -89,6 +104,8 @@ const WithdrawalRequest = () => {
                 type="text"
                 className="w-full rounded-md border bg-gray-50 px-1 py-2 pl-10 text-[14px] focus:outline-none"
                 placeholder="Search Course"
+                onChange={handleChange}
+
               />
               <div className="absolute left-3 top-1.5 text-gray-400">
                 <FontAwesomeIcon icon={faSearch} />
@@ -115,6 +132,10 @@ const WithdrawalRequest = () => {
           "Network Error..."
         ) : isLoading ? (
           "Loading..."
+        ) : filteredList.length === 0 ? (
+          <p className="col-span-3 text-center font-medium text-[#CC1747]">
+            User not found
+          </p>
         ) : (
           <table className="w-full border border-gray-300 bg-white text-[13px] text-[#344054]">
             <thead>
@@ -130,7 +151,7 @@ const WithdrawalRequest = () => {
               </tr>
             </thead>
             <tbody className="text-[14px]">
-              {data?.data?.data?.requests.map((request, index) => (
+              {filteredList.map((request, index) => (
                 <tr key={index} className="border-b">
                   <td className="p-4">{index + 1}</td>
                   <td className="p-4">

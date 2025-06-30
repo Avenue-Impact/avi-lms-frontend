@@ -75,7 +75,7 @@ const PreviewCourse = () => {
               <div className="hidden sml:block w-full pb-3 pt-3">
                 <section className="w-[90%] mx-auto flex items-center justify-between">
                   <div>
-                    <Link to="/" className="cursor-pointer">
+                    <Link to="/dashboard" className="cursor-pointer">
                       <DarkLogo />
                     </Link>
                   </div>
