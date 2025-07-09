@@ -116,7 +116,7 @@ const Feedback = () => {
                     name="reason"
                     value={form.reason}
                     onChange={handleChange}
-                    className={`w-full px-4 py-3 border ${errors.reason ? 'border-red-400' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900 font-medium transition-all`}
+                    className={`w-full cursor-pointer px-4 py-3 border ${errors.reason ? 'border-red-400' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900 font-medium transition-all`}
                     required
                   >
                     <option value="">Select a reason</option>
