@@ -34,6 +34,10 @@ export default function BusinessAnalysis() {
     setIsEarlyBird(now < earlyBirdEndDate);
   }, []);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const features = [
     {
       icon: Briefcase,
@@ -90,14 +94,14 @@ export default function BusinessAnalysis() {
     {
       name: 'Edward George',
       role: 'Senior BA at FinTech Solutions',
-      content: "I started working as a Business Analyst after months of intense training and a live project I took at Avenue Impact. I got  £50,000 per annum with a Tier 2 visa certificate of sponsorship offer. I’m sorted and settled in the UK now. Avenue Impact transformed my life and career.",
+      content: "I started working as a Business Analyst after months of intense training and a live project I took at Avenue Impact. I got  £50,000 per annum with a Tier 2 visa certificate of sponsorship offer. I'm sorted and settled in the UK now. Avenue Impact transformed my life and career.",
       rating: 5,
       image: 'https://randomuser.me/api/portraits/men/39.jpg'
     },
     {
       name: 'Melissa Berry',
       role: 'Product Owner at HealthTech',
-      content: "As a working mom, I was looking for an opportunity that would allow me to balance work and play my role as a mom. So, I made the decision and contacted Avenue Impact. With zero knowledge, I took their BA training and have been working as a business analyst since then, which I fell in love with totally because it’s a dream come true for me.",
+      content: "As a working mom, I was looking for an opportunity that would allow me to balance work and play my role as a mom. So, I made the decision and contacted Avenue Impact. With zero knowledge, I took their BA training and have been working as a business analyst since then, which I fell in love with totally because it's a dream come true for me.",
       rating: 5,
       image: 'https://randomuser.me/api/portraits/women/36.jpg'
     }
@@ -132,7 +136,7 @@ export default function BusinessAnalysis() {
       </div>
 
       {/* Navigation */}
-      <header className="bg-white shadow-sm sticky top-0 z-50">
+      <header className="bg-white shadow-sm sticky top-0">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <img src={Logo} alt="" className="w-12 h-12 object-cover" />
@@ -451,41 +455,41 @@ export default function BusinessAnalysis() {
               <h4 className="font-semibold mb-4">Follow Us</h4>
               <div className="flex gap-4">
                 <a
-                  href={socialLinks.Facebook}
+                  href={socialLinks.facebook}
                   className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#CC1747] transition-colors"
                 >
                   <Facebook className="h-5 w-5" />
                 </a>
-                <a
-                  href={socialLinks.Twitter}
-                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#CC1747] transition-colors"
-                >
-                  <Twitter className="h-5 w-5" />
-                </a>
-                <a
-                  href={socialLinks.Linkedin}
-                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#CC1747] transition-colors"
-                >
-                  <Linkedin className="h-5 w-5" />
-                </a>
-                <a
-                  href={socialLinks.Instagram}
-                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#CC1747] transition-colors"
-                >
-                  <Instagram className="h-5 w-5" />
-                </a>
-                <a
-                  href={socialLinks.TikTok}
-                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#CC1747] transition-colors"
-                >
-                  <IoLogoTiktok className="h-5 w-5" />
-                </a>
-                <a
-                  href={socialLinks.Whatsapp}
-                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#CC1747] transition-colors"
-                >
-                  <IoLogoWhatsapp className="h-5 w-5" />
-                </a>
+                                  <a
+                    href={socialLinks.twitter}
+                    className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#CC1747] transition-colors"
+                  >
+                    <Twitter className="h-5 w-5" />
+                  </a>
+                  <a
+                    href={socialLinks.linkedin}
+                    className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#CC1747] transition-colors"
+                  >
+                    <Linkedin className="h-5 w-5" />
+                  </a>
+                  <a
+                    href={socialLinks.instagram}
+                    className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#CC1747] transition-colors"
+                  >
+                    <Instagram className="h-5 w-5" />
+                  </a>
+                  <a
+                    href={socialLinks.tiktok}
+                    className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#CC1747] transition-colors"
+                  >
+                    <IoLogoTiktok className="h-5 w-5" />
+                  </a>
+                  <a
+                    href={socialLinks.whatsapp}
+                    className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#CC1747] transition-colors"
+                  >
+                    <IoLogoWhatsapp className="h-5 w-5" />
+                  </a>
               </div>
             </div>
           </div>

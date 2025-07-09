@@ -8,11 +8,13 @@ import About from "./pages/About";
 import AvenueImpactDevelopment from "./pages/AvenueImpactDevelopment";
 import AVI from "./pages/AVI";
 import BusinessAnalysis from "./pages/courses/businessAnalysis";
+import DataAnalytics from "./pages/courses/dataAnalytics";
 import ThanksPage from "./pages/thanksPage";
 import Contact from "./pages/Contact";
 import DataSolution from "./pages/DataSolution";
 import DigitalTransformation from "./pages/DigitalTransformation";
 import Home from "./pages/Home";
+import Feedback from "./pages/Feedback";
 // import PreviewCourse from "./pages/PreviewCourse";
 import Component from "./Components/Component";
 import DashboardLayout from "./layouts/DashboardLayout";
@@ -143,6 +145,10 @@ function App() {
               path: "/contact",
               element: <Contact />,
             },
+            {
+              path: "/feedback",
+              element: <Feedback />,
+            },
           ],
         },
 
@@ -175,6 +181,10 @@ function App() {
             {
               path: "/courses/business-analysis",
               element: <BusinessAnalysis />,
+            },
+            {
+              path: "/courses/data-analytics",
+              element: <DataAnalytics />,
             },
             {
               path: "/courses/thanks",
