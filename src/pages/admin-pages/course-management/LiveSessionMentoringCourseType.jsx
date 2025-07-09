@@ -50,7 +50,7 @@ const LiveSessionMentoringCourseType = () => {
         currency_symbol: "£",
       },
 
-      //   on_demand_session: [...durationPrice],
+     
     };
     // console.log(courseType);
 
