@@ -32,7 +32,7 @@ const LiveSession = () => {
       subtitle: "",
       time: "",
       meetingDate: "",
-      startedFrom: "",
+      // startedFrom: "",
       courseContent: "",
       overview: "",
     },
@@ -136,7 +136,7 @@ const LiveSession = () => {
               </div>
 
               {/* Starting Date and Time */}
-              <div className="flex space-x-4">
+              {/* <div className="flex space-x-4">
                 <div className="flex-1">
                   <FormInput
                     label={"Started from"}
@@ -152,7 +152,7 @@ const LiveSession = () => {
                     disabled={!data?.data?.data.cohort}
                   />
                 </div>
-              </div>
+              </div> */}
 
               {/* Meeting Date and Time */}
               <div className="flex w-full space-x-4 pt-6 text-[#475367]">

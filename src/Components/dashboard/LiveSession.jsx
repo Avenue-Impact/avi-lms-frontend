@@ -39,9 +39,9 @@ function LiveSession({ data }) {
           {subtitle}
         </p>
         <div className="space-y-3">
-          <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
+          {/* <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
             Started from: {formatDate(started_from)}
-          </p>
+          </p> */}
           <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
             Meeting Time: {formatDate(end_date)}
           </p>

@@ -109,20 +109,20 @@ const LiveContent = ({ data }) => {
               {subtitle ?? ""}
             </p>
             <div className="space-y-3">
-              <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
+              {/* <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
                 Started from: {started_from && formatDate(started_from, false)}
-              </p>
+              </p> */}
               <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
                 Meeting date: {started_from && formatDate(end_date, false)}{" "}
                 {time ?? ""}
                 {amOrPm(time ?? "")} UTC
               </p>
-              <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
+              {/* <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
                 Add to: iCal Expor, Google Calendar
               </p>
               <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
                 Password: {password ?? ""}
-              </p>
+              </p> */}
             </div>
             <button
               className={cn(
