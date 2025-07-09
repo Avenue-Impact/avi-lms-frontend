@@ -146,11 +146,11 @@ const ReferralPage = () => {
             </div>
           )}
 
-          <div className="flex items-center space-x-4 text-[14px] text-[#98A2B3]">
+          {/* <div className="flex items-center space-x-4 text-[14px] text-[#98A2B3]">
             <img src={ReceivedArrow} alt="Received_Arrow" />
             <span>10.2</span>
             <span>+1.01% this today</span>
-          </div>
+          </div> */}
         </div>
 
         <div className="col-span-5 space-y-2 rounded-lg border border-gray-300 p-4 py-5 shadow-sm">
