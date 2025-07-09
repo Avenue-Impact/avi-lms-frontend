@@ -134,7 +134,7 @@ const RevenueAndPurchase = () => {
   if (error)
     return <p>{error?.response?.data?.message ?? "Something went wrong"}</p>;
 
-  console.log(data);
+  // console.log(data);
   return (
     <>
       <div className="w-full max-w-[198px]">
