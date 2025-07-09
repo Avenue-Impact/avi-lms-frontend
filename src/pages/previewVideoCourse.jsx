@@ -29,6 +29,8 @@ const PreviewVideoCourse = () => {
   const navigate = useNavigate();
   let { courseId } = useParams();
   const { previewCourse } = usePreviewCourses(courseId);
+  console.log("Preview the video", previewCourse)
+
   return (
     <>
       <ScrollRestoration />

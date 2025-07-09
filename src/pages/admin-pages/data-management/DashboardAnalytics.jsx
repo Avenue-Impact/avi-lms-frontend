@@ -78,7 +78,7 @@ const StudentAndEnrollment = () => {
             <TotalStudentIcon />
           </span>
         </div>
-        <div className="mt-3 flex items-center gap-3">
+        {/* <div className="mt-3 flex items-center gap-3">
           <div className="flex items-center gap-2">
             <span>
               <ArrowUpRight className="text-[#0F973D]" />
@@ -88,7 +88,7 @@ const StudentAndEnrollment = () => {
             </span>
           </div>
           <p className="text-sm text-[#98A2B3]">+1.01% this week</p>
-        </div>
+        </div> */}
       </div>
       <div className="h-full min-h-[102px] w-px bg-[#E6EDFF]" />
 
@@ -104,7 +104,7 @@ const StudentAndEnrollment = () => {
             <EnrollmentIcon />
           </span>
         </div>
-        <div className="mt-3 flex items-center gap-3">
+        {/* <div className="mt-3 flex items-center gap-3">
           <div className="flex items-center gap-2">
             <span>
               <ArrowUpRight className="text-[#0F973D]" />
@@ -114,7 +114,7 @@ const StudentAndEnrollment = () => {
             </span>
           </div>
           <p className="text-sm text-[#98A2B3]">+1.01% this week</p>
-        </div>
+        </div> */}
       </div>
     </>
   );
@@ -149,7 +149,7 @@ const RevenueAndPurchase = () => {
             <RevenueIcon />
           </div>
         </div>
-        <div className="mt-3 flex items-center gap-3">
+        {/* <div className="mt-3 flex items-center gap-3">
           <div className="flex items-center gap-2">
             <span>
               <ArrowUpRight className="text-[#0F973D]" />
@@ -159,7 +159,7 @@ const RevenueAndPurchase = () => {
             </span>
           </div>
           <p className="text-sm text-[#98A2B3]">+1.01% this week</p>
-        </div>
+        </div> */}
       </div>
       <div className="h-full min-h-[102px] w-px bg-[#E6EDFF]" />
 
@@ -175,7 +175,7 @@ const RevenueAndPurchase = () => {
             <PaymentIcon />
           </span>
         </div>
-        <div className="mt-3 flex items-center gap-3">
+        {/* <div className="mt-3 flex items-center gap-3">
           <div className="flex items-center gap-2">
             <span>
               <ArrowUpRight className="text-[#0F973D]" />
@@ -183,7 +183,7 @@ const RevenueAndPurchase = () => {
             <span className="text-sm text-[#98A2B3]">10.2</span>
           </div>
           <p className="text-sm text-[#98A2B3]">+1.01% this week</p>
-        </div>
+        </div> */}
       </div>
     </>
   );
