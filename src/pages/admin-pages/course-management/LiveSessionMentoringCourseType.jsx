@@ -27,6 +27,8 @@ const LiveSessionMentoringCourseType = () => {
   const { createCourseType, isCreating } = useCreateCourseType();
   const { setActiveTab, setSubTab } = useCourseManagementInfo();
 
+  console.log("creation of course", createCourseType)
+
   const onSubmit = async (data) => {
     // const time = data.time.split(":");
     // const hour =
@@ -39,7 +41,7 @@ const LiveSessionMentoringCourseType = () => {
     const courseType = {
       live_session: {
         original_price: Number(data.coursePrice),
-        discounted_price: Number(data.discountPrice),
+        discounted_price: isNaN(Number(data.discountPrice)) ? 0 : Number(data.discountPrice),
         duration: data.duration,
         time: data.time,
         cohort,
