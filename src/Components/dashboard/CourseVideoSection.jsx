@@ -1,25 +1,36 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useStreamVideo } from "@/hooks/course-management/on-demand-section/use-stream-ondemand-video";
+import { DocumentContext } from "@/pages/dashboard/ShareDocument";
+import { Loader2 } from "lucide-react";
+import {
+  MediaControlBar,
+  MediaController,
+  MediaFullscreenButton,
+  MediaMuteButton,
+  MediaPlaybackRateButton,
+  MediaPlayButton,
+  MediaSeekBackwardButton,
+  MediaSeekForwardButton,
+  MediaTimeDisplay,
+  MediaTimeRange,
+  MediaVolumeRange,
+} from "media-chrome/react";
+import { useContext, useRef, useState } from "react";
+import ReactPlayer from "react-player";
+import { useParams, useSearchParams } from "react-router-dom";
+import { Skeleton } from "../ui/skeleton";
 import DashboardSliderNav, { MobileSlideNav } from "./DashboardSliderNav";
 import { DesktopContent, MobileContent } from "./MobileContent";
-import liveSession from "../../assets/images/dashboard/live-session.png";
-import { DocumentContext } from "@/pages/dashboard/ShareDocument";
-import { Skeleton } from "../ui/skeleton";
-import { useParams, useSearchParams } from "react-router-dom";
-import { useStreamVideo } from "@/hooks/course-management/on-demand-section/use-stream-ondemand-video";
-
 function CourseVideoSection({ data }) {
   const { sectionDetails, videoId } = useContext(DocumentContext);
+
   return (
     <section>
       <div className="overflow-hidden rounded-[10px] lg:h-[400px] lg:w-[700px]">
-        {/* <img
-          src={liveSession}
-          alt="live session"
-          width={897}
-          height={532}
-          className="object-cover"
-        /> */}
-        <PreviewVideo videoId={videoId} section={sectionDetails.section} />
+        <PreviewVideo
+          videoId={videoId}
+          section={sectionDetails.section}
+          cohortId={data?.data?.data?.cohort_id}
+        />
       </div>
       <h1 className="my-6 text-2xl font-semibold leading-[28px] text-black *:block *:capitalize">
         <span>Section {sectionDetails.section}</span>
@@ -41,16 +52,13 @@ function CourseVideoSection({ data }) {
   );
 }
 
-const PreviewVideo = ({ videoId, section }) => {
+const PreviewVideo = ({ videoId, section, cohortId }) => {
   const { courseId } = useParams();
-  const videoRef = useRef(null);
-  const [videoUrl, setVideoUrl] = useState(null);
-  const [queryString] = useSearchParams();
-  const cohortId = queryString.get("cohortId");
-  const [currentRange, setCurrentRange] = useState("bytes=0-1048575"); // Initial range
 
-  console.log({ videoId, section, cohortId, courseId });
-  const { data, isLoading, error, refetch } = useStreamVideo(
+  const [currentRange, setCurrentRange] = useState("bytes=0-1048575"); // Initial range
+  const [waiting, setWaiting] = useState(false);
+
+  const { data, isLoading, error } = useStreamVideo(
     courseId,
     section,
     videoId,
@@ -59,29 +67,6 @@ const PreviewVideo = ({ videoId, section }) => {
   );
 
   console.log({ data, isLoading, error, from: "videos" });
-
-  // Generate and clean up Blob URL
-  useEffect(() => {
-    if (data?.data) {
-      const blobUrl = URL.createObjectURL(data.data);
-      setVideoUrl(blobUrl);
-
-      return () => {
-        URL.revokeObjectURL(blobUrl);
-      };
-    }
-  }, [data]);
-
-  // Update range dynamically as the video plays
-  const handleRangeUpdate = () => {
-    if (videoRef.current) {
-      const currentTime = videoRef.current.currentTime;
-      const rangeStart = Math.floor(currentTime * 500000); // Estimate byte range based on time
-      const rangeEnd = rangeStart + 1048575; // Fetch the next 1MB
-      setCurrentRange(`bytes=${rangeStart}-${rangeEnd}`);
-      refetch();
-    }
-  };
 
   if (isLoading) {
     return (
@@ -101,24 +86,56 @@ const PreviewVideo = ({ videoId, section }) => {
     );
   }
 
-  if (!videoUrl) {
-    return (
-      <div className="flex h-[400px] items-center justify-center">
-        <p className="text-lg font-semibold text-primary-color-500">
-          Preparing video...
-        </p>
-      </div>
-    );
-  }
-
   return (
-    <video
-      ref={videoRef}
-      src={videoUrl}
-      controls
-      className="max-h-[699px] w-full object-cover shadow-lg lg:rounded-3xl"
-      onTimeUpdate={handleRangeUpdate} // Trigger range update as video plays
-    />
+    <div className="relative">
+      {waiting && (
+        <div className="absolute left-0 top-0 z-40 flex h-full w-full items-center justify-center">
+          <span>
+            <Loader2 className="animate-spin text-primary-color-600" />
+          </span>
+        </div>
+      )}
+      <MediaController
+        style={{
+          width: "100%",
+          aspectRatio: "16/9",
+        }}
+      >
+        <ReactPlayer
+          slot="media"
+          src={data.data.data.videoUrl}
+          controls={false}
+          onSeeking={() => {
+            setWaiting(true);
+          }}
+          onWaiting={() => {
+            setWaiting(true);
+          }}
+          onSeeked={() => {
+            setWaiting(false);
+          }}
+          onPlaying={() => {
+            setWaiting(false);
+          }}
+          style={{
+            width: "100%",
+            height: "100%",
+            "--controls": "none",
+          }}
+        ></ReactPlayer>
+        <MediaControlBar className="z-50">
+          <MediaPlayButton />
+          <MediaSeekBackwardButton seekOffset={10} />
+          <MediaSeekForwardButton seekOffset={10} />
+          <MediaTimeRange />
+          <MediaTimeDisplay showDuration />
+          <MediaMuteButton />
+          <MediaVolumeRange />
+          <MediaPlaybackRateButton />
+          <MediaFullscreenButton />
+        </MediaControlBar>
+      </MediaController>
+    </div>
   );
 };
 

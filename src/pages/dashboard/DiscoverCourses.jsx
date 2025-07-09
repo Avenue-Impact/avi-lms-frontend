@@ -1,13 +1,4 @@
-// 
-
-
-
-
-
-
-
-
-
+//
 
 import React, { useState } from "react";
 import Container from "@/Components/Container";
@@ -25,7 +16,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchUserProfile } from "@/services/api";
 import { Skeleton } from "@/Components/ui/skeleton";
 import { useFetchAllCourses } from "@/hooks/students/use-fetch-all-courses";
-import joinTeam from '../../assets/images/accordion-img2.png';
+import joinTeam from "../../assets/images/accordion-img2.png";
 
 // Demo courses for testing (IDs must match preview logic)
 // export const demoCourses = [
@@ -54,7 +45,8 @@ import joinTeam from '../../assets/images/accordion-img2.png';
 
 const DiscoverCourses = () => {
   // const [useDemo, setUseDemo] = useState(true); // default to demo mode
-  const { data: allCourses, isLoading: isFetchingAllCourses } = useFetchAllCourses();
+  const { data: allCourses, isLoading: isFetchingAllCourses } =
+    useFetchAllCourses();
   const { userDetails } = useAuth();
   const { data, isLoading } = useQuery({
     queryKey: ["userProfile"],
@@ -70,25 +62,41 @@ const DiscoverCourses = () => {
     <>
       {/* Header */}
       <div className="flex items-center justify-between gap-6 px-6 py-7 lg:px-20">
-        <Link to="/"><DarkLogo/></Link>
-        <div className="hidden items-center bg-white px-4 py-2 rounded-lg lg:flex w-full max-w-lg">
-          <FontAwesomeIcon icon={faSearch} className="text-gray-500"/>
-          <input placeholder="What do you want to learn?" className="flex-grow bg-transparent border-none"/>
+        <Link to="/dashboard">
+          <DarkLogo />
+        </Link>
+        <div className="hidden w-full max-w-lg items-center rounded-lg bg-white px-4 py-2 lg:flex">
+          <FontAwesomeIcon icon={faSearch} className="text-gray-500" />
+          <input
+            placeholder="What do you want to learn?"
+            className="flex-grow border-none bg-transparent"
+          />
         </div>
         <div className="flex items-center gap-4">
-          <Link to="/discover-courses" className="hidden md:block text-sm">View all Courses</Link>
-          <FontAwesomeIcon icon={faSearch} className="md:hidden text-gray-500"/>
-          <Link to="/dashboard/notification"><FaRegBell/></Link>
+          <Link to="/discover-courses" className="hidden text-sm md:block">
+            View all Courses
+          </Link>
+          <FontAwesomeIcon
+            icon={faSearch}
+            className="text-gray-500 md:hidden"
+          />
+          <Link to="/dashboard/notification">
+            <FaRegBell />
+          </Link>
           <PopUp>
             <Avatar>
-              <AvatarImage src={userDetails.avatar || data?.data?.data.avatar || ""}/>
-              {isLoading && <Skeleton className="h-12 w-12 rounded-full"/>}
+              <AvatarImage
+                src={userDetails.avatar || data?.data?.data.avatar || ""}
+              />
+              {isLoading && <Skeleton className="h-12 w-12 rounded-full" />}
               <AvatarFallback>
                 {userDetails.firstname
-                  ? userDetails.firstname[0].toUpperCase() + userDetails.lastname[0].toUpperCase()
+                  ? userDetails.firstname[0].toUpperCase() +
+                    userDetails.lastname[0].toUpperCase()
                   : isLoading
                     ? ""
-                    : data?.data?.data.firstname[0].toUpperCase() + data?.data?.data.lastname[0].toUpperCase()}
+                    : data?.data?.data.firstname[0].toUpperCase() +
+                      data?.data?.data.lastname[0].toUpperCase()}
               </AvatarFallback>
             </Avatar>
           </PopUp>
@@ -107,7 +115,7 @@ const DiscoverCourses = () => {
         </div> */}
 
         {/* Courses Section */}
-        <h1 className="text-3xl mb-2">Checkout our top courses</h1>
+        <h1 className="mb-2 text-3xl">Checkout our top courses</h1>
         <p className="mb-6 text-gray-700">
           {/* {useDemo 
             ? "You're viewing demo courses for testing purposes." 
@@ -115,11 +123,11 @@ const DiscoverCourses = () => {
           Discover our most popular courses from Avenue Impact.
         </p>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 min-h-[200px]">
+        <div className="grid min-h-[200px] grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
           {isFetchingAllCourses ? (
             <p>Loading Courses...</p>
           ) : displayedCourses.length ? (
-            displayedCourses.map(course => (
+            displayedCourses.map((course) => (
               <CourseCard
                 key={course.id}
                 imgSrc={course.cover_image}
@@ -131,9 +139,9 @@ const DiscoverCourses = () => {
               />
             ))
           ) : (
-            <div className="flex flex-col items-center justify-center w-full col-span-full min-h-[200px]">
+            <div className="col-span-full flex min-h-[200px] w-full flex-col items-center justify-center">
               <button
-                className="bg-[#CC1747] text-white text-xl px-8 py-4 rounded-lg shadow-md hover:bg-[#d1476c] transition-all duration-150 ease-in-out cursor-pointer flex items-center gap-2"
+                className="flex cursor-pointer items-center gap-2 rounded-lg bg-[#CC1747] px-8 py-4 text-xl text-white shadow-md transition-all duration-150 ease-in-out hover:bg-[#d1476c]"
                 onClick={() => window.location.reload()}
               >
                 No courses available
@@ -145,12 +153,18 @@ const DiscoverCourses = () => {
 
         {/* Pagination */}
         {displayedCourses.length > 0 && (
-          <div className="flex items-center justify-center gap-2 mt-8">
-            <button><ChevronLeft/></button>
-            {[1,2,3,4,5].map(n => (
-              <span key={n} className="px-3 py-1 border rounded">{n}</span>
+          <div className="mt-8 flex items-center justify-center gap-2">
+            <button>
+              <ChevronLeft />
+            </button>
+            {[1, 2, 3, 4, 5].map((n) => (
+              <span key={n} className="rounded border px-3 py-1">
+                {n}
+              </span>
             ))}
-            <button><ChevronRight/></button>
+            <button>
+              <ChevronRight />
+            </button>
           </div>
         )}
       </Container>

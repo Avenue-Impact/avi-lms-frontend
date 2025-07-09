@@ -9,9 +9,11 @@ const DashboardDiscover = ({
   rating,
   review,
   courseId,
+  cohortId,
 }) => {
   return (
     <div className="overflow-hidden rounded-t-lg bg-[rgb(252,252,252)]">
+<Link to={`/dashboard/${courseId}/share-documents?title=${title}`}>
       <div className="rounded-lg bg-[rgb(252,252,252)] shadow-md">
         <div className="h-[90px] w-full overflow-hidden rounded-t-lg md:h-[120px] lg:h-[190px] xl:h-[206px]">
           <img
@@ -39,11 +41,12 @@ const DashboardDiscover = ({
 
         <div className="flex items-center justify-between px-[7px] pb-2">
           <p className="text-[10px]">{courseProgress}</p>
-          <Link to={`/dashboard/${courseId}/share-documents?title=${title}`}>
+          <p >
             <p className="text-[10px] text-[#F53366] underline">Get started</p>
-          </Link>
+          </p>
         </div>
       </div>
+</Link>
     </div>
   );
 };

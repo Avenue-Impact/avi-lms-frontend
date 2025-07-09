@@ -8,7 +8,7 @@ import {
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useQuery } from "@tanstack/react-query";
-import { Suspense, useState } from "react";
+import { useState } from "react";
 import DashButton from "../auth/ButtonDash";
 import DashSelect from "../auth/components/DashSelect";
 import Modal from "../auth/components/Modal";
@@ -116,13 +116,6 @@ const DashBoardHomePage = () => {
 };
 
 const OnDemandSessionCourses = () => {
-  // const { isLoading, error, data } = useFetchEnrolledPreRecordedCourse();
-  // if (isLoading) return <p>Loading...</p>;
-
-  // if (error) return <p>something went wrong</p>;
-
-  // if (data) console.log(data);
-
   const { data } = useQuery(recordedSessionDetailQuery());
   return (
     <>
@@ -158,9 +151,8 @@ const LiveSessionCourses = () => {
   // const data = useLoaderData();
 
   const { data } = useQuery(liveSessionDetailQuery());
+  console.log(data, "live sessiong");
 
-  // if (isLoading) return <p>Loading ...</p>;
-  // if (error) return <p>Error ...</p>;
   if (data) {
     return (
       <>
