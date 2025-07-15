@@ -51,7 +51,7 @@ const Review = () => {
             id="search"
             placeholder="Search by title..."
             className="w-full placeholder:text-[#667185]"
-            onChange={handleChange} // Calls debounced search
+            onChange={handleChange} 
           />
         </div>
       </header>

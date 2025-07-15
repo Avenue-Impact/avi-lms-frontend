@@ -6,7 +6,7 @@ const fetchVideo = async (courseId) => {
   const token = Cookies.get("token");
 
   return await axios.get(
-    `https://avi-lms-backend.onrender.com/api/v1/courses/stream-preview/${courseId}`,
+    `https://avi-lms-5478f16284c6.herokuapp.com/api/v1/courses/stream-preview/${courseId}`,
 
     {
       responseType: "blob",

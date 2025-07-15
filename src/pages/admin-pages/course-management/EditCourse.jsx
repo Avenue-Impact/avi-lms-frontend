@@ -3,8 +3,9 @@ import { useState } from "react";
 import CourseInformation from "@/Components/admindashboard/course-management/CourseInformation";
 import CourseCohortsPreview from "./CourseCohortsPreview";
 import OnDemand from "./OnDemand";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { CommonButton } from "@/Components/ui/button";
+import { useDeleteCourse } from "@/hooks/course-management/use-delete-course";
 import { useUnpublishCourse } from "@/hooks/course-management/use-unpublish-course";
 // import { IoSearch } from "react-icons/io5";
 // import BorderCard from "@/Components/BorderCard";
@@ -26,25 +27,42 @@ const EditCourse = () => {
   const { courseId } = useParams();
   // console.log("courseId", courseId);
 
+  const { deleted, isDeleting } = useDeleteCourse();
   const { unPublish, isUnPublishing } = useUnpublishCourse();
-  // console.log("unPublish function:", unPublish);
-  // console.log("isUnPublishing state:", isUnPublishing);
-
-
+  const navigate = useNavigate()
 
   const handleUnpublish = () => {
-    if (!courseId) {
-      console.error("Course ID is missing.");
-      return;
+  unPublish(
+    { courseId },
+    {
+      onSuccess: () => {
+        navigate("/admin/course/management"); 
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      },
     }
-    unPublish({ courseId });
+  );
+};
+
+
+
+  const handleDeleteCourse = () => {
+    deleted({courseId},
+      {
+      onSuccess: () => {
+        navigate("/admin/course/management"); 
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      },
+    }
+    );
+    // console.log("delete successfully", deleted(courseId))
+    // deleting({courseId})
   };
 
   return (
     <div>
       <div className="mb-8 mt-16 flex items-center justify-between">
         <p className="font-[500] text-[#344054] lg:text-[18px] 2xl:text-[24px]">
-          {title.length > 44 ? `${title.substring(0, 45)}...` : title }
+          {title.length > 44 ? `${title.substring(0, 45)}...` : title}
         </p>
 
         <div>
@@ -95,12 +113,19 @@ const EditCourse = () => {
       </div>
 
       <div className="my-6 flex items-center justify-between gap-6">
-        <CommonButton onClick={handleUnpublish} disabled={isUnPublishing}  className="ml-auto border border-gray-500 bg-transparent text-gray-500 hover:bg-gray-300">
+        <button
+          onClick={handleUnpublish}
+          disabled={isUnPublishing}
+          className="ml-auto rounded-md border border-gray-500 bg-transparent px-4 py-2 font-medium text-gray-600 transition-colors hover:bg-gray-300"
+        >
           {isUnPublishing ? "Unpublishing..." : "Unpublish"}
-        </CommonButton>
+        </button>
 
-        <CommonButton className="block bg-primary-color-600 font-normal">
-          Delete Course
+        <CommonButton
+          onClick={handleDeleteCourse}
+          className="block bg-primary-color-600 font-normal"
+        >
+          {isDeleting ? "Deleting..." : "Delete Course"}
         </CommonButton>
       </div>
     </div>

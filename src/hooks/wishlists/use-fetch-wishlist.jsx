@@ -39,7 +39,7 @@ const fetchWishlists = async () => {
   // }
 
   return await axios.get(
-    `https://avi-lms-backend.onrender.com/api/v1/courses/wishlist`,
+    `https://avi-lms-5478f16284c6.herokuapp.com/api/v1/courses/wishlist`,
     {
       headers: {
         Authorization: `Bearer ${Cookies.get("token")}`,

@@ -12,7 +12,7 @@ const deleteWishlist = async (courseId) => {
   //   return { data: { message: "Demo: Wishlist deleted successfully" } };
   // }
   return await axios.delete(
-    `https://avi-lms-backend.onrender.com/api/v1/courses/wishlist/${courseId}`,
+    `https://avi-lms-5478f16284c6.herokuapp.com/api/v1/courses/wishlist/${courseId}`,
     {
       headers: {
         Authorization: `Bearer ${Cookies.get("token")}`,

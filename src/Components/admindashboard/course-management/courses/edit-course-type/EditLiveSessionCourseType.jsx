@@ -64,7 +64,7 @@ const EditLiveSessionCourseType = ({ priceInfo }) => {
         duration: data.duration,
         time: `${hour}:${min}${amOrPm}`,
         cohort,
-        year: 2024,
+        year: 2025,
         currency: "Pounds",
         currency_symbol: "£",
       },

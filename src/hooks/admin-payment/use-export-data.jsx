@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 
 const exportData = async () =>
   await axios.get(
-    "https://avi-lms-backend.onrender.com/api/v1/admins/payments/csv",
+    "https://avi-lms-5478f16284c6.herokuapp.com/api/v1/admins/payments/csv",
     {
       headers: {
         Authorization: `Bearer ${Cookies.get("adminToken")}`,

@@ -1,6 +1,6 @@
 //
 
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import Container from "@/Components/Container";
 import CourseCard from "@/Components/CourseCard";
 import { DarkLogo } from "@/Components/Logo";
@@ -17,6 +17,7 @@ import { fetchUserProfile } from "@/services/api";
 import { Skeleton } from "@/Components/ui/skeleton";
 import { useFetchAllCourses } from "@/hooks/students/use-fetch-all-courses";
 import joinTeam from "../../assets/images/accordion-img2.png";
+import _ from "lodash";
 
 // Demo courses for testing (IDs must match preview logic)
 // export const demoCourses = [
@@ -52,11 +53,27 @@ const DiscoverCourses = () => {
     queryKey: ["userProfile"],
     queryFn: fetchUserProfile,
   });
+  const [searchQuery, setSearchQuery] = useState("");
 
-  // const displayedCourses = useDemo
-  //   ? demoCourses
-  //   : allCourses?.data?.data?.courses || [];
-  const displayedCourses = allCourses?.data?.data?.courses || [];
+  const handleSearch = useCallback(
+    _.debounce((query) => {
+      setSearchQuery(query);
+    }, 500),
+    [],
+  );
+
+  const handleChange = (event) => {
+    handleSearch(event.target.value);
+  };
+
+  // Filter courses by title
+  const displayedCourses =
+  allCourses?.data?.data?.courses?.filter((course) =>
+    course.title.toLowerCase().includes(searchQuery.toLowerCase())
+  ) || [];
+
+
+  // const displayedCourses = allCourses?.data?.data?.courses || [];
 
   return (
     <>
@@ -70,6 +87,7 @@ const DiscoverCourses = () => {
           <input
             placeholder="What do you want to learn?"
             className="flex-grow border-none bg-transparent"
+            onChange={handleChange}
           />
         </div>
         <div className="flex items-center gap-4">
@@ -126,7 +144,17 @@ const DiscoverCourses = () => {
         <div className="grid min-h-[200px] grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
           {isFetchingAllCourses ? (
             <p>Loading Courses...</p>
-          ) : displayedCourses.length ? (
+          ) : displayedCourses.length === 0 ? (
+            <div className="col-span-full flex min-h-[200px] w-full flex-col items-center justify-center">
+              <button
+                className="flex cursor-pointer items-center gap-2 rounded-lg bg-[#CC1747] px-8 py-4 text-xl text-white shadow-md transition-all duration-150 ease-in-out hover:bg-[#d1476c]"
+                onClick={() => window.location.reload()}
+              >
+                No courses available
+                <span className="text-sm">(tap to refresh)</span>
+              </button>
+            </div>
+          ) : (
             displayedCourses.map((course) => (
               <CourseCard
                 key={course.id}
@@ -138,16 +166,6 @@ const DiscoverCourses = () => {
                 path={`/preview-course/${course.id}`}
               />
             ))
-          ) : (
-            <div className="col-span-full flex min-h-[200px] w-full flex-col items-center justify-center">
-              <button
-                className="flex cursor-pointer items-center gap-2 rounded-lg bg-[#CC1747] px-8 py-4 text-xl text-white shadow-md transition-all duration-150 ease-in-out hover:bg-[#d1476c]"
-                onClick={() => window.location.reload()}
-              >
-                No courses available
-                <span className="text-sm">(tap to refresh)</span>
-              </button>
-            </div>
           )}
         </div>
 

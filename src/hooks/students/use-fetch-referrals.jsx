@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 
 const fetchReferrals = async () =>
   await axios.get(
-    `https://avi-lms-backend.onrender.com/api/v1/users/me/referrals`,
+    `https://avi-lms-5478f16284c6.herokuapp.com/api/v1/users/me/referrals`,
     {
       headers: {
         Authorization: `Bearer ${Cookies.get("token")}`,
