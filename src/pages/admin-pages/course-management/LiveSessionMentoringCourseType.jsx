@@ -20,12 +20,15 @@ import { useCreateCourseType } from "@/hooks/course-management/use-create-course
 import { courseTypeSchema } from "@/lib/form-schemas/forms-schema";
 
 const LiveSessionMentoringCourseType = () => {
-  const [cohort, setCohort] = useState("");
+  const savedForm = JSON.parse(localStorage.getItem("liveSessionForm"));
+
+  const [cohort, setCohort] = useState(savedForm?.cohort || "");
 
   const [cohortErr, setCohortErr] = useState("");
 
   const { createCourseType, isCreating } = useCreateCourseType();
   const { setActiveTab, setSubTab } = useCourseManagementInfo();
+  
 
   console.log("creation of course", createCourseType)
 
@@ -45,14 +48,16 @@ const LiveSessionMentoringCourseType = () => {
         duration: data.duration,
         time: data.time,
         cohort,
-        year: 2024,
+        year: 2025,
         currency: "Pounds",
         currency_symbol: "£",
       },
 
      
     };
-    // console.log(courseType);
+    
+    
+    localStorage.setItem("liveSessionForm", JSON.stringify({ ...data, cohort }));
 
     createCourseType(
       { data: courseType, courseId: localStorage.getItem("courseId") },
@@ -85,15 +90,18 @@ const LiveSessionMentoringCourseType = () => {
   //     setDuration("");
   //   };
 
-  const form = useForm({
-    resolver: zodResolver(courseTypeSchema),
-    defaultValues: {
-      duration: "",
-      discountPrice: "",
-      coursePrice: "",
-      time: "",
-    },
-  });
+
+const form = useForm({
+  resolver: zodResolver(courseTypeSchema),
+  defaultValues: {
+    duration: savedForm?.duration || "",
+    discountPrice: savedForm?.discountPrice || "",
+    coursePrice: savedForm?.coursePrice || "",
+    time: savedForm?.time || "",
+  },
+});
+
+
 
   return (
     <>

@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 
 const editRole = async ({ data, adminId }) =>
   await axios.patch(
-    `https://avi-lms-backend.onrender.com/api/v1/admins/${adminId}`,
+    `https://avi-lms-5478f16284c6.herokuapp.com/api/v1/admins/${adminId}`,
     data,
     {
       headers: {

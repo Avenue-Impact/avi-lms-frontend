@@ -79,9 +79,9 @@ export const courseTypeSchema = z.object({
   coursePrice: z
     .string({ message: "This field is required" })
     .min(1, { message: "This field is required" }),
-  // discountPrice: z
-  //   .string({ message: "This field is required" })
-  //   .min(1, { message: "this field is required" }),
+  discountPrice: z
+    .string({ message: "This field is required" })
+    .min(1, { message: "this field is required" }),
   duration: z
     .string({ message: "This field is required" })
     .min(1, { message: "this field is required" }),

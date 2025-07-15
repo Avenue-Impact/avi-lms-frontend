@@ -287,7 +287,7 @@ function RecordedSession() {
 
         <CommonButton
           className="bg-primary-color-600 font-normal"
-          // onClick={() => setActiveTab((prev) => prev + 1)}
+          onClick={() => setActiveTab((prev) => prev + 1)}
         >
           Save and Continue
         </CommonButton>
