@@ -16,7 +16,7 @@ export const useAddPayment = () => {
   const { mutate: payment, isPending: paymentPending } = useMutation({
     mutationFn: addPayment,
     onSuccess: ({ data }) => {
-      toast.success(data?.message ?? "Payment successful");
+      toast.success(data?.message ?? "redirected to payment checkout");
       // Redirect to the Stripe checkout URL
       if (data?.url) {
         window.location.href = data.url;

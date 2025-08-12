@@ -10,6 +10,22 @@ import EditLiveSession from "../live-session/EditLiveSession";
 import { useStreamRecordedVideo } from "@/hooks/course-management/recorded-section/use-stream-recorded-video";
 import { Skeleton } from "@/Components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
+import ReactPlayer from "react-player";
+import {
+  MediaControlBar,
+  MediaController,
+  MediaFullscreenButton,
+  MediaMuteButton,
+  MediaPlaybackRateButton,
+  MediaPlayButton,
+  MediaSeekBackwardButton,
+  MediaSeekForwardButton,
+  MediaTimeDisplay,
+  MediaTimeRange,
+  MediaVolumeRange,
+} from "media-chrome/react";
+import CommonButton from "@/Components/ui/button";
 // import StartMeeting from "./StartMeeting";
 
 const amOrPm = (timeString) => {
@@ -124,7 +140,7 @@ const LiveContent = ({ data }) => {
                 Password: {password ?? ""}
               </p> */}
             </div>
-            <button
+            {/* <button
               className={cn(
                 "mt-5 rounded-md px-4 py-2 text-sm md:text-base lg:mt-8",
                 isLive
@@ -133,16 +149,16 @@ const LiveContent = ({ data }) => {
               )}
             >
               {isLive ? "Join meeting" : "Meeting hasn’t started yet"}
-            </button>
-            <button
+            </button> */}
+            <CommonButton
               onClick={() => {
                 navigate(
                   `/meeting/${courseId}?title=${queryString.get("title")}&cohort=${queryString.get("cohort")}&cohortId=${cohortId}`,
                 );
               }}
             >
-              join meeting
-            </button>
+              Join Meeting
+            </CommonButton>
           </section>
         </div>
       )}
@@ -177,6 +193,7 @@ const VideoContents = ({ sectionDetails, videoId }) => {
 const PreviewVideoCourse = ({ videoId, section }) => {
   const { courseId } = useParams();
   const [queryString] = useSearchParams();
+  const [waiting, setWaiting] = useState(false);
   const cohortId = queryString.get("cohortId");
   const { data, isLoading, error } = useStreamRecordedVideo(
     courseId,
@@ -194,14 +211,60 @@ const PreviewVideoCourse = ({ videoId, section }) => {
 
   if (error) return <p className="text-primary-color-500"> video not found </p>;
 
-  const blob = data && URL.createObjectURL(data?.data);
+  console.log(data?.data?.data?.videoUrl);
 
   return (
-    <video
-      src={blob}
-      controls
-      className="max-h-[699px] w-full object-cover shadow-lg lg:rounded-3xl"
-    ></video>
+    <>
+      <div className="relative">
+        {waiting && (
+          <div className="absolute left-0 top-0 z-40 flex h-full w-full items-center justify-center">
+            <span>
+              <Loader2 className="animate-spin text-primary-color-600" />
+            </span>
+          </div>
+        )}
+        <MediaController
+          style={{
+            width: "100%",
+            aspectRatio: "16/9",
+          }}
+        >
+          <ReactPlayer
+            slot="media"
+            src={data?.data?.data?.videoUrl}
+            controls={false}
+            onSeeking={() => {
+              setWaiting(true);
+            }}
+            onWaiting={() => {
+              setWaiting(true);
+            }}
+            onSeeked={() => {
+              setWaiting(false);
+            }}
+            onPlaying={() => {
+              setWaiting(false);
+            }}
+            style={{
+              width: "100%",
+              height: "100%",
+              "--controls": "none",
+            }}
+          ></ReactPlayer>
+          <MediaControlBar className="z-50">
+            <MediaPlayButton />
+            <MediaSeekBackwardButton seekOffset={10} />
+            <MediaSeekForwardButton seekOffset={10} />
+            <MediaTimeRange />
+            <MediaTimeDisplay showDuration />
+            <MediaMuteButton />
+            <MediaVolumeRange />
+            <MediaPlaybackRateButton />
+            <MediaFullscreenButton />
+          </MediaControlBar>
+        </MediaController>
+      </div>
+    </>
   );
 };
 

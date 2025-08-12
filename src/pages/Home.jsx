@@ -21,6 +21,7 @@ import HeroHeading from "../Components/MainContent/HeroHeading";
 import Container from "../Components/Container";
 import ImageSwiper from "../Components/home/ImageSwiper";
 import Avenue from "../Components/AvenueImpact/Avenue";
+import { Link } from 'react-router-dom';
 
 const Home = () => {
   return (
@@ -74,10 +75,7 @@ const Home = () => {
             business and achieve your full potential.
           </p>
         </section>
-        <div className="mt-12 grid gap-10 md:grid-cols-2 lg:grid-cols-3">
-          {/* <img src={card} alt="" />
-					<img src={card} alt="" />
-					<img src={card} alt="" /> */}
+        <div className="mt-12 grid gap-10 md:grid-cols-2 lg:grid-cols-2">
           <Avenue
             number={1}
             heading={"Analysis"}
@@ -102,6 +100,14 @@ const Home = () => {
             }
             img={card}
           />
+          <div onClick={() => window.location.href = '/digital-learning-hub'} className="cursor-pointer">
+            <Avenue
+              number={4}
+              heading={"Digital Learning Hub"}
+              text={"Explore our Digital Learning Hub for on-demand courses, resources, and interactive learning experiences to upskill at your own pace."}
+              img={card}
+            />
+          </div>
         </div>
       </Container>
 
@@ -265,6 +271,15 @@ const Home = () => {
           </ImageSwiper>
         </div>
       </Container>
+      {/* Add Feedback Button near the footer or a visible section */}
+      <div className="w-full flex justify-center mt-12 mb-8">
+        <Link
+          to="/feedback"
+          className="px-8 py-4 rounded-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 text-white font-bold text-lg shadow-lg hover:scale-105 active:scale-95 transition-transform duration-200"
+        >
+          Give Feedback
+        </Link>
+      </div>
     </>
   );
 };

@@ -6,7 +6,7 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FaRegBell } from "react-icons/fa6";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import PopUp from "../dashboard/PopUp";
-import { useAuth } from "@/hooks/useAuth";
+// import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserProfile } from "@/services/api";
 import { Skeleton } from "../ui/skeleton";
@@ -38,7 +38,7 @@ const AviNav = ({ showNav, setShowNav }) => {
             className="text-xl text-tertiary-color-800"
           />
         </button>
-        <ul className="nav flex flex-col items-center gap-6 *:cursor-pointer *:capitalize *:text-[#23314A] md:flex-row md:gap-10">
+        <ul className="nav *:cursor-pointer *:capitalize *:text-[#23314A] flex flex-col items-center gap-6 md:flex-row md:gap-10">
           {/* className="contents-[''] relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:bg-[#CC1747]" */}
           <li onClick={() => setShowNav((prev) => !prev)}>
             <NavLink to={"/"}>home</NavLink>
@@ -66,8 +66,6 @@ export const PreviewVideoNav = ({ setShowNav }) => {
     queryKey: ["userProfile"],
     queryFn: fetchUserProfile,
   });
-
-  const { userDetails } = useAuth();
 
   const navigate = useNavigate();
 
@@ -104,30 +102,15 @@ export const PreviewVideoNav = ({ setShowNav }) => {
 
         <PopUp className="relative cursor-pointer">
           <Avatar>
-            <AvatarImage
-              src={
-                userDetails?.avatar
-                  ? userDetails.avatar
-                  : isLoading
-                    ? "" // Skeleton will be shown when isLoading is true
-                    : data?.data?.data.avatar || ""
-              }
-              alt="User Avatar"
-            />
+            <AvatarImage src={data?.data?.data.avatar || ""} />
             {isLoading && <Skeleton className="h-12 w-12 rounded-full" />}
-
-            <AvatarFallback className="bg-primary-color-100 text-lg text-primary-color-600">
-              {userDetails.firstname ? (
-                `${userDetails.firstname.charAt(0).toUpperCase()}${userDetails.lastname.charAt(0).toUpperCase()}`
-              ) : isLoading ? (
-                <Skeleton className="h-12 w-12 rounded-full" />
-              ) : (
-                `${data?.data?.data.firstname.charAt(0).toUpperCase()}${data?.data?.data.lastname.charAt(0).toUpperCase()}`
-              )}
+            <AvatarFallback>
+              {isLoading
+                ? ""
+                : data?.data?.data.firstname[0].toUpperCase() +
+                  data?.data?.data.lastname[0].toUpperCase()}
             </AvatarFallback>
           </Avatar>
-
-          {/* {dropdownOpen && <ProfilePopUp />} */}
         </PopUp>
       </div>
     </nav>

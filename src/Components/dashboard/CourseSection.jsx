@@ -1,6 +1,6 @@
+import { useViewCourseSections } from "@/hooks/students/use-course-secion-view";
 import { cn } from "@/lib/utils";
-import { DocumentContext } from "@/pages/dashboard/ShareDocument";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { HiOutlinePencil } from "react-icons/hi";
 import {
   Accordion,
@@ -14,11 +14,7 @@ function CourseSection({ editButton, data }) {
   const [active, setActive] = useState("1");
   const [videoActive, setvideoActive] = useState("");
   const { setSession, setSectionDetails, setVideoId, setSectionActive } =
-    useContext(DocumentContext);
-
-  console.log("i am fro data", data);
-
-  // return <div>hellow</div>;
+    useViewCourseSections();
 
   return (
     <div>

@@ -44,7 +44,8 @@ export const GetCertificate = () => {
         {/* Live Session */}
         <div className="order-3 col-span-5 mb-4 rounded-lg py-4 md:mb-0 lg:order-2 lg:border-2 lg:border-gray-100 lg:bg-white lg:px-8">
           <h3 className="mb-2 text-[18px] font-[400] text-gray-800">
-            Live session + Mentoring (May Cohorts - 3.5 Months Programme)
+            Live session + Mentoring
+            {/* (May Cohorts - 3.5 Months Programme) */}
           </h3>
 
           <CourseDetails />

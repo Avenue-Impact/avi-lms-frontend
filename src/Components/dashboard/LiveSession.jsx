@@ -54,9 +54,9 @@ function LiveSession({ data }) {
         </div>
 
 
-        <button className="mt-5 rounded-md bg-tertiary-color-700 px-4 mr-4 py-2 text-sm text-[#C7D7F4] hover:bg-[#C7D7F4] hover:text-tertiary-color-700 md:text-base lg:mt-8">
+        {/* <button className="mt-5 rounded-md bg-tertiary-color-700 px-4 mr-4 py-2 text-sm text-[#C7D7F4] hover:bg-[#C7D7F4] hover:text-tertiary-color-700 md:text-base lg:mt-8">
           Meeting hasn’t started yet
-        </button>
+        </button> */}
 
         <CommonButton
           onClick={() =>

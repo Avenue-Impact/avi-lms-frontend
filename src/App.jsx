@@ -1,18 +1,19 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
-import AnniversarySpotlightBadge from './Components/MainContent/AnniversarySpotlightBadge';
 
 import AppLayout from "./layouts/AppLayout";
 import About from "./pages/About";
 import AvenueImpactDevelopment from "./pages/AvenueImpactDevelopment";
 import AVI from "./pages/AVI";
-import BusinessAnalysis from "./pages/courses/businessAnalysis";
-import ThanksPage from "./pages/thanksPage";
 import Contact from "./pages/Contact";
+import BusinessAnalysis from "./pages/courses/businessAnalysis";
+import DataAnalytics from "./pages/courses/dataAnalytics";
 import DataSolution from "./pages/DataSolution";
 import DigitalTransformation from "./pages/DigitalTransformation";
+import Feedback from "./pages/Feedback";
 import Home from "./pages/Home";
+import ThanksPage from "./pages/thanksPage";
 // import PreviewCourse from "./pages/PreviewCourse";
 import Component from "./Components/Component";
 import DashboardLayout from "./layouts/DashboardLayout";
@@ -25,11 +26,10 @@ import Wishlist from "./pages/dashboard/Wishlist";
 
 import AdminLayout from "./layouts/AdminLayout";
 import OtherLayout from "./layouts/OtherLayout";
-import Assignment from "./pages/dashboard/Assignment";
-import Documents from "./pages/dashboard/Documents";
-import Overview from "./pages/dashboard/Overview";
+import CourseViewLayout from "./layouts/course-view-layout";
+import LiveSessionView from "./pages/dashboard/live-session-view";
+import RecordedSessionView from "./pages/dashboard/recorded-session-view";
 import Referral from "./pages/dashboard/Referral";
-import ShareDocument from "./pages/dashboard/ShareDocument";
 import StudentSettings from "./pages/dashboard/StudentSettings";
 
 import DashboardDiscover from "./pages/dashboard/DashboardDiscover";
@@ -48,15 +48,14 @@ import NewPassword from "./pages/auth/NewPassword";
 import DiscoverCourses from "./pages/dashboard/DiscoverCourses";
 
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { AdminEmpty } from "./Components/admindashboard/AdminEmpty";
-import AdminPayment from "./pages/admin-pages/AdminPayment";
 import CourseCreation from "./Components/admindashboard/CourseCreation";
 import AuthProtectedRoute from "./Components/AuthProtectedRoute";
-import CoursesLayout from "./layouts/admin/CoursesLayout";
 import CourseLayout from "./layouts/admin/courseLayout";
+import CoursesLayout from "./layouts/admin/CoursesLayout";
 import FinancialLayout from "./layouts/admin/FinancialLayout";
 import ProjectAreaLayout from "./layouts/admin/ProjectAreaLayout";
 import AdminLogin from "./pages/admin-pages/AdminLogin";
+import AdminPayment from "./pages/admin-pages/AdminPayment";
 import CreatedCourse from "./pages/admin-pages/course-management/CreatedCourse";
 import EditCourse from "./pages/admin-pages/course-management/EditCourse";
 import CourseManagement from "./pages/admin-pages/CourseManagement";
@@ -96,17 +95,17 @@ import UserJoinMeeting from "./pages/dashboard/UserJoinMeeting";
 import PreviewCourse from "./pages/previewCourse";
 import PreviewVideoCourse from "./pages/previewVideoCourse";
 
+import AdminErrorPage from "./admin-error-page";
+import DashboardErrorPage from "./dashboard-error-page";
+import ErrorPage from "./error-page";
 import NotificationLayout from "./layouts/admin/NotificationLayout";
 import ReviewLayout from "./layouts/admin/ReviewsLayout";
+import RootLayout from "./layouts/RootLayout";
+import { homePageLoader } from "./loaders/student/home-page-loader";
 import Notifications from "./pages/admin-pages/notification/Notifications";
 import ReviewDetails from "./pages/admin-pages/reviews/ReviewInfo";
 import ReviewMainPage from "./pages/admin-pages/reviews/ReviewMainPage";
-import ErrorPage from "./error-page";
-import DashboardErrorPage from "./dashboard-error-page";
-import AdminErrorPage from "./admin-error-page";
-import { homePageLoader } from "./loaders/student/home-page-loader";
-import RootLayout from "./layouts/RootLayout";
-
+import { elements } from "chart.js";
 
 const queryClient = new QueryClient();
 
@@ -143,6 +142,10 @@ function App() {
               path: "/contact",
               element: <Contact />,
             },
+            {
+              path: "/feedback",
+              element: <Feedback />,
+            },
           ],
         },
 
@@ -177,6 +180,10 @@ function App() {
               element: <BusinessAnalysis />,
             },
             {
+              path: "/courses/data-analytics",
+              element: <DataAnalytics />,
+            },
+            {
               path: "/courses/thanks",
               element: <ThanksPage />,
             },
@@ -196,7 +203,9 @@ function App() {
                 },
                 {
                   path: "login",
-                  element: <Login setUserInfo={setUserInfo} userInfo={userInfo} />,
+                  element: (
+                    <Login setUserInfo={setUserInfo} userInfo={userInfo} />
+                  ),
                 },
                 {
                   path: "/signup",
@@ -281,20 +290,15 @@ function App() {
               path: "/dashboard",
               children: [
                 {
-                  element: <ShareDocument />,
-                  path: "/dashboard/:courseId",
+                  element: <CourseViewLayout />,
                   children: [
                     {
-                      path: "share-documents",
-                      element: <Documents />,
+                      element: <LiveSessionView />,
+                      path: "/dashboard/:courseId/live",
                     },
                     {
-                      path: "assignments",
-                      element: <Assignment />,
-                    },
-                    {
-                      path: "overview",
-                      element: <Overview />,
+                      element: <RecordedSessionView />,
+                      path: "/dashboard/:courseId/recorded",
                     },
                   ],
                 },
@@ -332,7 +336,9 @@ function App() {
           ],
         },
         {
-          element: <ProtectedRoute tokin={"adminToken"} path={"/admin/login"} />,
+          element: (
+            <ProtectedRoute tokin={"adminToken"} path={"/admin/login"} />
+          ),
           errorElement: <AdminErrorPage />,
 
           children: [
@@ -560,7 +566,7 @@ function App() {
             },
           ],
         },
-      ]
+      ],
     },
   ]);
 
@@ -569,7 +575,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools initialIsOpen={false} />
         <Toaster />
-        <AnniversarySpotlightBadge />
+        {/* <AnniversarySpotlightBadge /> */}
         <RouterProvider router={routes} />
       </QueryClientProvider>
     </>

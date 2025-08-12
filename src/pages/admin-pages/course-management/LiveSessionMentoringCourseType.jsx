@@ -28,9 +28,6 @@ const LiveSessionMentoringCourseType = () => {
 
   const { createCourseType, isCreating } = useCreateCourseType();
   const { setActiveTab, setSubTab } = useCourseManagementInfo();
-  
-
-  console.log("creation of course", createCourseType)
 
   const onSubmit = async (data) => {
     // const time = data.time.split(":");
@@ -44,7 +41,9 @@ const LiveSessionMentoringCourseType = () => {
     const courseType = {
       live_session: {
         original_price: Number(data.coursePrice),
-        discounted_price: isNaN(Number(data.discountPrice)) ? 0 : Number(data.discountPrice),
+        discounted_price: isNaN(Number(data.discountPrice))
+          ? 0
+          : Number(data.discountPrice),
         duration: data.duration,
         time: data.time,
         cohort,
@@ -52,12 +51,12 @@ const LiveSessionMentoringCourseType = () => {
         currency: "Pounds",
         currency_symbol: "£",
       },
-
-     
     };
-    
-    
-    localStorage.setItem("liveSessionForm", JSON.stringify({ ...data, cohort }));
+
+    localStorage.setItem(
+      "liveSessionForm",
+      JSON.stringify({ ...data, cohort }),
+    );
 
     createCourseType(
       { data: courseType, courseId: localStorage.getItem("courseId") },
@@ -71,37 +70,15 @@ const LiveSessionMentoringCourseType = () => {
     );
   };
 
-  //   const handleAddPrice = () => {
-  //     if (!amount || !duration) return;
-
-  //     setDurationPrice((prev) => {
-  //       return [
-  //         ...prev,
-  //         {
-  //           amount: Number(amount),
-  //           duration,
-  //           currency: "Pounds",
-  //           currency_symbol: "£",
-  //         },
-  //       ];
-  //     });
-
-  //     setAmount("");
-  //     setDuration("");
-  //   };
-
-
-const form = useForm({
-  resolver: zodResolver(courseTypeSchema),
-  defaultValues: {
-    duration: savedForm?.duration || "",
-    discountPrice: savedForm?.discountPrice || "",
-    coursePrice: savedForm?.coursePrice || "",
-    time: savedForm?.time || "",
-  },
-});
-
-
+  const form = useForm({
+    resolver: zodResolver(courseTypeSchema),
+    defaultValues: {
+      duration: savedForm?.duration || "",
+      discountPrice: savedForm?.discountPrice || "",
+      coursePrice: savedForm?.coursePrice || "",
+      time: savedForm?.time || "",
+    },
+  });
 
   return (
     <>

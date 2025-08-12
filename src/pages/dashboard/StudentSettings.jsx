@@ -7,13 +7,11 @@ import ConfirmDelete from "@/Components/dashboard/ConfirmDelete";
 import EditProfile from "@/Components/dashboard/EditProfile";
 import { cn } from "@/lib/utils";
 import ChangePassword from "@/Components/dashboard/ChangePassword";
-import { useAuth } from "@/hooks/useAuth";
+// import { useAuth } from "@/hooks/useAuth";
 
 function StudentSettings() {
   const [showModal, setShowModal] = useState(false);
   const [page, setPage] = useState("edit");
-
-
 
   return (
     <div className="">
@@ -33,10 +31,10 @@ function StudentSettings() {
       </header>
 
       <div className="h-full border-b-[2px] border-b-[#E4E7EC] px-4">
-        <ul className="flex gap-4 *:text-nowrap">
+        <ul className="*:text-nowrap flex gap-4">
           <li
             className={cn(
-              "after:contents-[''] relative h-full cursor-pointer py-4 text-sm font-medium capitalize text-[#344054] transition-colors duration-150 *:capitalize after:absolute after:-bottom-[2px] after:left-0 after:m-auto after:h-[2px] after:w-0 after:bg-primary-color-600 after:transition-all after:duration-150 hover:text-primary-color-600 hover:after:w-full",
+              "after:contents-[''] *:capitalize relative h-full cursor-pointer py-4 text-sm font-medium capitalize text-[#344054] transition-colors duration-150 after:absolute after:-bottom-[2px] after:left-0 after:m-auto after:h-[2px] after:w-0 after:bg-primary-color-600 after:transition-all after:duration-150 hover:text-primary-color-600 hover:after:w-full",
               page === "edit" ? "text-primary-color-600 after:w-full" : "",
             )}
           >
@@ -44,7 +42,7 @@ function StudentSettings() {
           </li>
           <li
             className={cn(
-              "after:contents-[''] relative h-full cursor-pointer py-4 text-sm font-medium capitalize text-[#344054] transition-colors duration-150 *:capitalize after:absolute after:-bottom-[2px] after:left-0 after:m-auto after:h-[2px] after:w-0 after:bg-primary-color-600 after:transition-all after:duration-150 hover:text-primary-color-600 hover:after:w-full",
+              "after:contents-[''] *:capitalize relative h-full cursor-pointer py-4 text-sm font-medium capitalize text-[#344054] transition-colors duration-150 after:absolute after:-bottom-[2px] after:left-0 after:m-auto after:h-[2px] after:w-0 after:bg-primary-color-600 after:transition-all after:duration-150 hover:text-primary-color-600 hover:after:w-full",
               page === "change-password"
                 ? "text-primary-color-600 after:w-full"
                 : "",

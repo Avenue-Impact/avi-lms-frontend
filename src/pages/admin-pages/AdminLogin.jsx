@@ -1,20 +1,16 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Link, useNavigate } from "react-router-dom";
 import BorderCard from "@/Components/BorderCard";
 import { Form } from "@/Components/ui/form";
 import FormInput from "@/Components/ui/form-input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+import { z } from "zod";
 
 import { CommonButton } from "@/Components/ui/button";
 import PasswordInput from "@/Components/ui/password-input";
-import axios from "axios";
-import toast from "react-hot-toast";
-import { useAuth } from "@/hooks/useAuth";
+// import { useAuth } from "@/hooks/useAuth";
 
-import { jwtDecode } from "jwt-decode";
-import Cookies from "js-cookie";
-
+import { useLoginAdmin } from "@/hooks/admin-auth/use-admin-login";
 import { ClipLoader } from "react-spinners";
 import { Heading, Paragraph } from "../auth/components/Text";
 // {
@@ -59,44 +55,18 @@ const loginSchema = z.object({
     .min(4, { message: "password must be at least 4 characters long" }),
 });
 
-const url = import.meta.env.VITE_ADMIN_URL;
-
 const AdminLogin = () => {
   const navigate = useNavigate();
-  const { dispatch } = useAuth();
+  // const { dispatch } = useAuth();
+
+  const { mutate, isPending } = useLoginAdmin();
 
   const handleSubmit = async (values) => {
     const user = {
       email: values.email,
       password: values.password,
     };
-
-    try {
-      const response = await axios.post(`${url}/login`, user);
-
-      if (response.data.status === "success") {
-        dispatch({
-          type: "auth/login",
-          payload: {
-            ...response.data.data.user,
-            token: response.data.data.token,
-          },
-        });
-
-        Cookies.set("adminToken", response.data.data.token, {
-          expires: 1,
-          secure: true,
-        });
-
-        const decoded = jwtDecode(response.data.data.token);
-
-        navigate("/admin/course/management");
-        toast.success("login successful");
-      }
-    } catch (error) {
-      if (!error.response) return toast.error("network fail");
-      toast.error(error.response.data.message);
-    }
+    mutate(user, { onSuccess() {} });
   };
 
   const form = useForm({
@@ -106,8 +76,6 @@ const AdminLogin = () => {
       password: "",
     },
   });
-
-  const { isSubmitting } = form.formState;
 
   return (
     <>
@@ -131,6 +99,7 @@ const AdminLogin = () => {
                   id="email"
                   type="email"
                   control={form.control}
+                  disabled={isPending}
                 />
                 <PasswordInput
                   id="password"
@@ -138,6 +107,7 @@ const AdminLogin = () => {
                   label="password"
                   name="password"
                   control={form.control}
+                  disabled={isPending}
                   placeholder=""
                 />
 
@@ -151,9 +121,9 @@ const AdminLogin = () => {
                 <CommonButton
                   className="mt-8 w-full bg-primary-color-600 font-poppins text-[16px] font-[500] capitalize text-white hover:bg-primary-color-600"
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isPending}
                 >
-                  {isSubmitting ? (
+                  {isPending ? (
                     <ClipLoader size={20} color={"#fff"} />
                   ) : (
                     "sign in"

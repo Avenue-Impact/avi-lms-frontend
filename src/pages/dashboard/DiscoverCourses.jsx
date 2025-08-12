@@ -1,6 +1,6 @@
 //
 
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import Container from "@/Components/Container";
 import CourseCard from "@/Components/CourseCard";
 import { DarkLogo } from "@/Components/Logo";
@@ -11,7 +11,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import PopUp from "@/Components/dashboard/PopUp";
-import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserProfile } from "@/services/api";
 import { Skeleton } from "@/Components/ui/skeleton";
@@ -19,36 +18,11 @@ import { useFetchAllCourses } from "@/hooks/students/use-fetch-all-courses";
 import joinTeam from "../../assets/images/accordion-img2.png";
 import _ from "lodash";
 
-// Demo courses for testing (IDs must match preview logic)
-// export const demoCourses = [
-//   {
-//     id: "01",
-//     title: "Demo: Intro to Business Analysis",
-//     cover_image: joinTeam,
-//     average_rating: 4.5,
-//     total_reviews: 32,
-//     overview: "Learn the basics of business analysis and how to apply them in real-world scenarios.",
-//     course_includes: ["10+ hours of video", "Certificate of completion", "Downloadable resources"],
-//     tools_and_technologies: ["Excel", "Power BI", "Jira"],
-//     benefits: ["Career advancement", "Practical skills", "Industry insights"],
-//     program_highlights: ["Live sessions", "Hands-on projects", "Expert instructors"],
-//     reviews: [
-//       {
-//         id: 1,
-//         user_id: { firstname: "Jane", lastname: "Doe", avatar: "https://i.pravatar.cc/150?img=1" },
-//         rating: 5,
-//         content: "Great introduction to business analysis!"
-//       }
-//     ]
-//   },
-//   ...
-// ];
-
 const DiscoverCourses = () => {
   // const [useDemo, setUseDemo] = useState(true); // default to demo mode
   const { data: allCourses, isLoading: isFetchingAllCourses } =
     useFetchAllCourses();
-  const { userDetails } = useAuth();
+  // const { userDetails } = useAuth();
   const { data, isLoading } = useQuery({
     queryKey: ["userProfile"],
     queryFn: fetchUserProfile,
@@ -68,10 +42,9 @@ const DiscoverCourses = () => {
 
   // Filter courses by title
   const displayedCourses =
-  allCourses?.data?.data?.courses?.filter((course) =>
-    course.title.toLowerCase().includes(searchQuery.toLowerCase())
-  ) || [];
-
+    allCourses?.data?.data?.courses?.filter((course) =>
+      course.title.toLowerCase().includes(searchQuery.toLowerCase()),
+    ) || [];
 
   // const displayedCourses = allCourses?.data?.data?.courses || [];
 
@@ -103,18 +76,13 @@ const DiscoverCourses = () => {
           </Link>
           <PopUp>
             <Avatar>
-              <AvatarImage
-                src={userDetails.avatar || data?.data?.data.avatar || ""}
-              />
+              <AvatarImage src={data?.data?.data.avatar || ""} />
               {isLoading && <Skeleton className="h-12 w-12 rounded-full" />}
               <AvatarFallback>
-                {userDetails.firstname
-                  ? userDetails.firstname[0].toUpperCase() +
-                    userDetails.lastname[0].toUpperCase()
-                  : isLoading
-                    ? ""
-                    : data?.data?.data.firstname[0].toUpperCase() +
-                      data?.data?.data.lastname[0].toUpperCase()}
+                {isLoading
+                  ? ""
+                  : data?.data?.data.firstname[0].toUpperCase() +
+                    data?.data?.data.lastname[0].toUpperCase()}
               </AvatarFallback>
             </Avatar>
           </PopUp>

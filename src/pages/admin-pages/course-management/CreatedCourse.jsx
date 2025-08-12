@@ -13,6 +13,8 @@ const CreatedCourse = () => {
   const { data, isLoading, error } = useFetchAllAdminCourses(1, 10, true);
   const [searchQuery, setSearchQuery] = useState("");
 
+
+  console.log("These is all the coureses", data)
   const handleSearch = useCallback(
     _.debounce((query) => {
       setSearchQuery(query);

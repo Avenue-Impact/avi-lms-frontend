@@ -89,7 +89,6 @@ function RecordedSession() {
       };
     }
 
-    console.log(recorded);
     createRecordedSession(
       { data: recorded, courseId, section },
       {
@@ -178,9 +177,9 @@ function RecordedSession() {
                 </p>
                 <div
                   className={cn(
-                    "flex min-h-52 w-full items-center justify-center rounded-lg border-2 border-dashed border-[#23314A]",
+                    "min-h-52 flex w-full items-center justify-center rounded-lg border-2 border-dashed border-[#23314A]",
                     form.watch("video_from_url").length >= 1 &&
-                      "cursor-not-allowed opacity-45",
+                      "opacity-45 cursor-not-allowed",
                   )}
                   onClick={() => {
                     videoRef.current.click();

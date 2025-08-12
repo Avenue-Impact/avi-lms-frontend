@@ -17,15 +17,15 @@ const courses = [
     },
     {
       id: 2,
-      title: "Digital Design Mastery",
-      description: "Master UI/UX design principles and tools",
-      duration: "8 weeks",
+      title: "Data Analytics/Business Intelligence",
+      description: "Learn practical data skills and tools (No experience needed)",
+      duration: "4 months",
       students: 1923,
       rating: 4.9,
       price: "$50",
       icon: Palette,
       color: "bg-purple-500",
-      url: "/courses/digital-design-mastery",
+      url: "/courses/data-analytics",
     },
     {
       id: 3,
@@ -82,7 +82,7 @@ export const ListOfCourses = ({ onClose }) => {
                     return (
                     <div
                         key={course.id}
-                        onClick={() => window.location.href = course.url}
+                        onClick={() => window.open(course.url, '_blank')}
                         className="group hover:shadow-xl cursor-pointer transition-all duration-300 hover:-translate-y-2 border-0 shadow-lg overflow-hidden"
                         style={{
                         animationDelay: `${index * 100}ms`,

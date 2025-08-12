@@ -1,11 +1,12 @@
 import { cn } from "@/lib/utils";
-import { useContext, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import { CloudUpload } from "@/Components/Icons";
 import { CommonButton } from "@/Components/ui/button";
 
 import { Form } from "@/Components/ui/form";
 import FormInput from "@/Components/ui/form-input";
+import { useViewCourseSections } from "@/hooks/students/use-course-secion-view";
 import { useSubmitAssignment } from "@/hooks/students/use-submit-assingment";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,7 +15,6 @@ import { File } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { z } from "zod";
-import { DocumentContext } from "./ShareDocument";
 
 const Assignment = ({ data }) => {
   const inputRef = useRef(null);
@@ -24,9 +24,7 @@ const Assignment = ({ data }) => {
   // const [queryString] = useSearchParams();
   const cohortId = data.cohort_id;
   const { courseId } = useParams();
-  const { sectionActive, setSectionActive } = useContext(DocumentContext);
-
-  console.log(data.cohort_id, "from assignment");
+  const { sectionActive } = useViewCourseSections();
 
   const validFileSize = (file, maxSizeMb) => {
     let maxfilesize_in_mb = maxSizeMb || 100,

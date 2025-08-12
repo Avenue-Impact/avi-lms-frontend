@@ -1,4 +1,3 @@
-import React from "react";
 import LiveSession from "./LiveSession";
 import RecordedSession from "./RecordedSession";
 

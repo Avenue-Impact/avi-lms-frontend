@@ -24,7 +24,12 @@ const stringToArray = (str) => {
 };
 
 const EditCourseInformationForm = ({ courseInformation, setOnOpenChange }) => {
-  const [image, setImage] = useState({ file: null, preview: null });
+  const { courseId } = useParams();
+  const isEdit = Boolean(courseId);
+  const [image, setImage] = useState({
+    file: null,
+    preview: isEdit ? courseInformation.cover_image : null,
+  });
   const [video, setVideo] = useState({ file: null, preview: null });
 
   const { editCourseInformation, isEditing } = useEditCourseInformation();
@@ -32,8 +37,7 @@ const EditCourseInformationForm = ({ courseInformation, setOnOpenChange }) => {
   const imageRef = useRef(null);
   const btnRef = useRef(null);
 
-  const { courseId } = useParams();
-
+  console.log("data to edit", courseInformation);
   const dataToEdit = courseInformation && {
     courseTitle: courseInformation.title,
     benefits: courseInformation.benefits.join("\n"),
@@ -43,8 +47,6 @@ const EditCourseInformationForm = ({ courseInformation, setOnOpenChange }) => {
     overview: courseInformation.overview,
     url: "",
   };
-
-  const isEdit = Boolean(courseId);
 
   const [message, setMessage] = useState({
     error: "",

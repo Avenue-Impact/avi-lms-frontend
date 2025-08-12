@@ -6,12 +6,12 @@ const ErrorPage = () => {
   console.error(error);
   return (
     <div className="flex h-screen w-full items-center justify-center">
-      <div>
+      <div className="">
         <h1 className="text3xl text-center font-bold capitalize">
           something went wrong
         </h1>
         <p>{error.statusText ?? error.message}</p>
-        <CommonButton className="mt-4">
+        <CommonButton className="mx-auto mt-4 block max-w-xl bg-red-600">
           <Link to="/">Back to home</Link>
         </CommonButton>
       </div>
