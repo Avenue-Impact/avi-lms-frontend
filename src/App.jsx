@@ -12,15 +12,15 @@ import DataAnalytics from "./pages/courses/dataAnalytics";
 import ThanksPage from "./pages/thanksPage";
 
 import Contact from "./pages/Contact";
-import BusinessAnalysis from "./pages/courses/businessAnalysis";
-import DataAnalytics from "./pages/courses/dataAnalytics";
+// import BusinessAnalysis from "./pages/courses/businessAnalysis";
+// import DataAnalytics from "./pages/courses/dataAnalytics";
 import DataSolution from "./pages/DataSolution";
 import DigitalTransformation from "./pages/DigitalTransformation";
 import Feedback from "./pages/Feedback";
 import Home from "./pages/Home";
-import ThanksPage from "./pages/thanksPage";
+// import ThanksPage from "./pages/thanksPage";
 
-import Feedback from "./pages/Feedback";
+// import Feedback from "./pages/Feedback";
 
 // import PreviewCourse from "./pages/PreviewCourse";
 import Component from "./Components/Component";
