@@ -6,6 +6,11 @@ import AppLayout from "./layouts/AppLayout";
 import About from "./pages/About";
 import AvenueImpactDevelopment from "./pages/AvenueImpactDevelopment";
 import AVI from "./pages/AVI";
+
+import BusinessAnalysis from "./pages/courses/businessAnalysis";
+import DataAnalytics from "./pages/courses/dataAnalytics";
+import ThanksPage from "./pages/thanksPage";
+
 import Contact from "./pages/Contact";
 import BusinessAnalysis from "./pages/courses/businessAnalysis";
 import DataAnalytics from "./pages/courses/dataAnalytics";
@@ -14,6 +19,9 @@ import DigitalTransformation from "./pages/DigitalTransformation";
 import Feedback from "./pages/Feedback";
 import Home from "./pages/Home";
 import ThanksPage from "./pages/thanksPage";
+
+import Feedback from "./pages/Feedback";
+
 // import PreviewCourse from "./pages/PreviewCourse";
 import Component from "./Components/Component";
 import DashboardLayout from "./layouts/DashboardLayout";
