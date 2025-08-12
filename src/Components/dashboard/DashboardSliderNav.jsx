@@ -1,6 +1,5 @@
+import { useViewCourseSections } from "@/hooks/students/use-course-secion-view";
 import { cn } from "@/lib/utils";
-import { DocumentContext } from "@/pages/dashboard/ShareDocument";
-import { useContext } from "react";
 
 const desktopNav = [
   {
@@ -18,10 +17,10 @@ const desktopNav = [
 ];
 
 const DashboardSliderNav = () => {
-  const { sections, setSections } = useContext(DocumentContext);
+  const { sections, setSections } = useViewCourseSections();
   return (
     <div className="border-b-[2px] border-b-[#E4E7EC] px-4">
-      <ul className="flex gap-4 *:text-nowrap">
+      <ul className="*:text-nowrap flex gap-4">
         {desktopNav.map((item) => {
           return (
             <li
@@ -82,11 +81,11 @@ const mobileNav = [
   },
 ];
 export const MobileSlideNav = () => {
-  const { sections, setSections } = useContext(DocumentContext);
+  const { sections, setSections } = useViewCourseSections();
   return (
     <div className="relative mb-6 w-full overflow-x-hidden px-4">
       <div className="absolute bottom-0 left-0 h-[2px] w-full bg-[#E4E7EC]"></div>
-      <ul className="baby flex gap-4 overflow-x-scroll *:text-nowrap">
+      <ul className="baby *:text-nowrap flex gap-4 overflow-x-scroll">
         {mobileNav.map((item) => {
           return (
             <li

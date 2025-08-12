@@ -1,35 +1,26 @@
-import React, { useState } from "react";
-import styles from "./pages.module.css";
+import Container from "@/Components/Container";
+import { Skeleton } from "@/Components/ui/skeleton";
+import { usePreviewCourses } from "@/hooks/students/use-fetch-all-courses";
+import { useFetchVideo } from "@/hooks/students/use-fetch-taster-video";
+import { cn } from "@/lib/utils";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ScrollRestoration, useNavigate, useParams } from "react-router-dom";
 import ImageOverlay from "../Components/ImageOverlay";
-import { PreviewVideoSelect } from "./auth/components/DashSelect";
+import { WhiteLogo } from "../Components/Logo";
 import SocialMediaLinks, {
   socialMediaData,
 } from "../Components/SocialMediaLink";
-import { WhiteLogo } from "../Components/Logo";
 import { PreviewVideoNav } from "../Components/avi/AviNav";
-import { ScrollRestoration, useParams } from "react-router-dom";
-import { cn } from "@/lib/utils";
-import Container from "@/Components/Container";
-import DashButton from "./auth/ButtonDash";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
-import { usePreviewCourses } from "@/hooks/students/use-fetch-all-courses";
-import { useFetchVideo } from "@/hooks/students/use-fetch-taster-video";
-import { Skeleton } from "@/Components/ui/skeleton";
-import { useAddToWishlist } from "@/hooks/students/use-add-to-wishlist";
-import { useRemoveFromWishlist } from "@/hooks/students/use-remove-from-wishlist";
-import { useAddPayment } from "@/hooks/students/use-add-payment";
-import { Form } from "@/Components/ui/form";
 import LivePayment from "./auth/components/LivePayment";
 import OnDemandPayment from "./auth/components/OnDemandPayment";
+import styles from "./pages.module.css";
 
 const PreviewVideoCourse = () => {
   const navigate = useNavigate();
   let { courseId } = useParams();
   const { previewCourse } = usePreviewCourses(courseId);
-  console.log("Preview the video", previewCourse)
+  console.log("Preview the video", previewCourse);
 
   return (
     <>
@@ -51,7 +42,7 @@ const PreviewVideoCourse = () => {
                 </div>
 
                 <div className="mx-auto flex flex-col items-center justify-center lg:text-center">
-                  <p className="pb-6 text-[24px] font-[300] text-[white] lg:text-[40px]">
+                  <p className="pb-6 text-[24px] font-[300] text-[white] lg:text-[40px] truncate">
                     {previewCourse?.data?.data.course.title ?? ""}
                   </p>
 
@@ -123,27 +114,30 @@ const PreviewVideoCourse = () => {
 
 const PreviewVideo = () => {
   const { courseId } = useParams();
-
   const { data, isLoading } = useFetchVideo(courseId);
 
-  console.log({ data, isLoading });
+  console.log("Playing video", data);
 
-  if (isLoading)
+  if (isLoading) {
     return (
       <div className="max-h-[690px] w-full text-white">
-        <Skeleton className={"h-[690px] w-full"} />
+        <Skeleton className="h-[690px] w-full" />
       </div>
     );
+  }
 
-  const blob = data && URL.createObjectURL(data?.data);
+  const videoUrl = data?.data?.data?.previewUrl;
 
   return (
     <video
-      src={blob}
+      src={videoUrl}
       controls
+      autoPlay
       className="max-h-[699px] w-full object-cover shadow-lg lg:rounded-3xl"
-    ></video>
+    />
   );
 };
+
+
 
 export default PreviewVideoCourse;

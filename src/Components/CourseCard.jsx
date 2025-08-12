@@ -1,6 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar } from "@fortawesome/free-solid-svg-icons";
-import styles from "../pages/pages.module.css"; // Ensure this imports the correct CSS file with the styles
 // import joinTeam from "../assets/images/join_team.png";
 import { Link } from "react-router-dom";
 import PreviewButton from "./PreviewButton";
@@ -40,9 +37,7 @@ const CourseCard = ({
                   {Math.floor(rating * 10) / 10}
                 </span>
                 <StarRating rating={rating} />
-                <span className="text-sm text-[#667185]">
-                  {review}
-                </span>
+                <span className="text-sm text-[#667185]">{review}</span>
               </div>
             ) : (
               <p className="text-sm italic text-gray-400">No reviews yet...</p>

@@ -1,16 +1,15 @@
 import { useFetchSharedDocuments } from "@/hooks/students/use-fetch-shared-document";
-import { useContext } from "react";
+import { useViewCourseSections } from "@/hooks/students/use-course-secion-view";
 import { RxDownload } from "react-icons/rx";
 import { useParams } from "react-router-dom";
 import docsimg from "../../assets/images/dashboard/docs.png";
 import pdf from "../../assets/images/dashboard/pdf.png";
-import { DocumentContext } from "./ShareDocument";
 
 const Documents = ({ data }) => {
   const { courseId } = useParams();
 
   const cohortId = data.cohort_id;
-  const { sectionActive } = useContext(DocumentContext);
+  const { sectionActive } = useViewCourseSections();
 
   const imageUrl = (filetype, url) => {
     const file = filetype.split("/").pop();

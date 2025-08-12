@@ -15,6 +15,8 @@ import Modal from "../auth/components/Modal";
 import NoDemandCourses from "../auth/components/NoDemandCourses";
 import NoCoursesMessage from "../auth/components/NoLiveCourses";
 import ModalContent from "../lms-pages/ReminderModalContent";
+import LiveSessionCourseCard from "../../Components/student/live-session/course-card";
+import RecordedSessionCourseCard from "@/Components/student/recorded-session/course-card";
 // import Cookies from "js-cookie";
 // import { useProfile } from "@/services/queries";
 
@@ -127,7 +129,7 @@ const OnDemandSessionCourses = () => {
         >
           {data?.data?.data?.courses.map((course) => {
             return (
-              <DashboardDiscover
+              <RecordedSessionCourseCard
                 key={course.id}
                 imgSrc={course.cover_image}
                 altText={course.title}
@@ -151,7 +153,6 @@ const LiveSessionCourses = () => {
   // const data = useLoaderData();
 
   const { data } = useQuery(liveSessionDetailQuery());
-  console.log(data, "live sessiong");
 
   if (data) {
     return (
@@ -164,7 +165,7 @@ const LiveSessionCourses = () => {
           >
             {data?.data?.data?.courses.map((course) => {
               return (
-                <DashboardDiscover
+                <LiveSessionCourseCard
                   key={course.id}
                   imgSrc={course?.cover_image}
                   altText={course?.title}

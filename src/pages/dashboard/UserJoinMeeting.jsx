@@ -4,9 +4,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import StartMeeting from "../admin-pages/meeting/StartMeeting";
 
 const UserJoinMeeting = () => {
-
   const { data: userProfileDetails, error: userError } = useProfile();
-
 
   const [queryString] = useSearchParams();
 

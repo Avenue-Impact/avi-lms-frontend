@@ -15,6 +15,10 @@ export const useFetchAllCourses = () => {
   });
 };
 
+
+
+
+
 export const previewCourses = async (courseId) => {
   return await axios.get(`${STUDENT_BASE_URL}/courses/${courseId}`);
 };

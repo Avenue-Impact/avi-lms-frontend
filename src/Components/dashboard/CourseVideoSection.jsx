@@ -1,5 +1,5 @@
 import { useStreamVideo } from "@/hooks/course-management/on-demand-section/use-stream-ondemand-video";
-import { DocumentContext } from "@/pages/dashboard/ShareDocument";
+import { useViewCourseSections } from "@/hooks/students/use-course-secion-view";
 import { Loader2 } from "lucide-react";
 import {
   MediaControlBar,
@@ -14,14 +14,14 @@ import {
   MediaTimeRange,
   MediaVolumeRange,
 } from "media-chrome/react";
-import { useContext, useRef, useState } from "react";
+import { useState } from "react";
 import ReactPlayer from "react-player";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Skeleton } from "../ui/skeleton";
 import DashboardSliderNav, { MobileSlideNav } from "./DashboardSliderNav";
 import { DesktopContent, MobileContent } from "./MobileContent";
 function CourseVideoSection({ data }) {
-  const { sectionDetails, videoId } = useContext(DocumentContext);
+  const { sectionDetails, videoId } = useViewCourseSections();
 
   return (
     <section>
@@ -32,7 +32,7 @@ function CourseVideoSection({ data }) {
           cohortId={data?.data?.data?.cohort_id}
         />
       </div>
-      <h1 className="my-6 text-2xl font-semibold leading-[28px] text-black *:block *:capitalize">
+      <h1 className="*:block *:capitalize my-6 text-2xl font-semibold leading-[28px] text-black">
         <span>Section {sectionDetails.section}</span>
         <span> {sectionDetails.topic} </span>
       </h1>
@@ -65,8 +65,6 @@ const PreviewVideo = ({ videoId, section, cohortId }) => {
     currentRange,
     cohortId,
   );
-
-  console.log({ data, isLoading, error, from: "videos" });
 
   if (isLoading) {
     return (
@@ -103,7 +101,7 @@ const PreviewVideo = ({ videoId, section, cohortId }) => {
       >
         <ReactPlayer
           slot="media"
-          src={data.data.data.videoUrl}
+          src={data?.data?.data?.videoUrl}
           controls={false}
           onSeeking={() => {
             setWaiting(true);

@@ -1,6 +1,6 @@
 import { useViewCourseSections } from "@/hooks/students/use-course-secion-view";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HiOutlinePencil } from "react-icons/hi";
 import {
   Accordion,
@@ -10,11 +10,17 @@ import {
 } from "../ui/accordion";
 import { CommonButton } from "../ui/button";
 
-function CourseSection({ editButton, data }) {
+function RecordedCourseSection({ editButton, data }) {
   const [active, setActive] = useState("1");
   const [videoActive, setvideoActive] = useState("");
   const { setSession, setSectionDetails, setVideoId, setSectionActive } =
     useViewCourseSections();
+
+  useEffect(() => {
+    if (data?.data?.data?.recorded_sessions.length < 1) return;
+
+    setVideoId(data?.data?.data?.recorded_sessions[0].videos[0]._id);
+  }, [data?.data?.data?.recorded_sessions, setVideoId]);
 
   return (
     <div>
@@ -46,38 +52,7 @@ function CourseSection({ editButton, data }) {
       </div>
       {/* <CourseSections  active={active} /> */}
       <>
-        {data?.data?.data?.live_session.time && (
-          <Accordion type="single" collapsible>
-            <AccordionItem value={"section.title"}>
-              <AccordionTrigger
-                className={cn(
-                  "group/section [&[data-state=open]]:bg-bg-primary-color-300/20 px-5 pb-[10px] hover:bg-primary-color-300/20",
-                  active === "1" && "bg-primary-color-300/20",
-                )}
-                onClick={() => {
-                  setActive("1");
-                  setSession("live");
-                }}
-              >
-                <div className="text-left">
-                  <p className="font-poppins text-lg font-light capitalize text-tertiary-color-900 lg:text-xl">
-                    Section 1
-                  </p>
-                  <p
-                    className={cn(
-                      "text-base font-light capitalize leading-6 text-tertiary-color-700 group-hover/section:font-semibold group-hover/section:text-primary-color-600",
-                      active === "1" && "font-semibold text-primary-color-600",
-                    )}
-                  >
-                    Join live session
-                  </p>
-                </div>
-              </AccordionTrigger>
-            </AccordionItem>
-          </Accordion>
-        )}
-        {data?.data?.data?.recorded_sessions.length < 1 &&
-        !data?.data?.data?.live_session.time ? (
+        {data?.data?.data?.recorded_sessions.length < 1 ? (
           <p>No courses yet...</p>
         ) : (
           <Accordion type="single" collapsible className="w-full">
@@ -153,4 +128,4 @@ function CourseSection({ editButton, data }) {
   );
 }
 
-export default CourseSection;
+export default RecordedCourseSection;

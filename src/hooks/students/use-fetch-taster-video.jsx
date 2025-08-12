@@ -9,7 +9,7 @@ const fetchVideo = async (courseId) => {
     `https://avi-lms-5478f16284c6.herokuapp.com/api/v1/courses/stream-preview/${courseId}`,
 
     {
-      responseType: "blob",
+      // responseType: "blob",      
       headers: {
         Authorization: `Bearer ${token}`,
       },

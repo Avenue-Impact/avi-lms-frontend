@@ -1,11 +1,8 @@
 import SaveButton from "@/Components/admindashboard/course-management/courses/SaveButton";
-import { ScrollRestoration } from "react-router-dom";
-import LiveSession from "./LiveSession";
-import RecordedSession from "./RecordedSession";
-import { useCourseManagementInfo } from "@/hooks/useCourseManagementInfo";
-import { useQuery } from "@tanstack/react-query";
-import LIveOrRecordedSelectionTabs from "./LIveOrRecordedSelectionTabs";
 import { useGetSingleCohort } from "@/hooks/course-management/use-get-singleCohorts";
+import { useCourseManagementInfo } from "@/hooks/useCourseManagementInfo";
+import { ScrollRestoration } from "react-router-dom";
+import LIveOrRecordedSelectionTabs from "./LIveOrRecordedSelectionTabs";
 
 const LiveOrRecordedSelection = () => {
   const { setSubTab, subTab, setActiveTab } = useCourseManagementInfo();
@@ -34,26 +31,6 @@ const LiveOrRecordedSelection = () => {
       </div>
 
       <LIveOrRecordedSelectionTabs tab={subTab} setTab={setSubTab} />
-
-      {/* <div className="mb-4 flex w-max gap-4 border-b border-[#98A2B3]">
-        <button
-          className={`border-b-2 px-4 py-2 font-[600] ${subTab === 1 ? "border-b-2 border-[#CC1747] text-[#CC1747]" : "border-b-transparent text-[#344054]"} `}
-          onClick={() => handleSubTabClick(1)}
-        >
-          Live Session
-        </button>
-
-        <button
-          className={`border-b-2 px-4 py-2 font-[600] ${subTab === 2 ? "border-b-primary-color-600 text-primary-color-600" : "border-b-transparent text-[#344054]"} `}
-          onClick={() => handleSubTabClick(2)}
-        >
-          Recorded
-        </button>
-      </div>
-
-      {subTab === 1 && <LiveSession />}
-
-      {subTab === 2 && <RecordedSession />} */}
     </div>
   );
 };
