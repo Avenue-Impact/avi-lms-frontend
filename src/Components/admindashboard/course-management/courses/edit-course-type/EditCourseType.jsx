@@ -8,7 +8,7 @@ import EditOnDemandSessionCourseType from "./EditOnDemandSessionCourseType";
 const EditCourseType = ({ data }) => {
   const [tab, setTab] = useState(1);
 
-  console.log(data.data.data.course.live_class_price);
+  console.log("The Live Price Info details", data.data.data.course.live_class_price);
 
   return (
     <div className="h-full w-full max-w-[900px]">

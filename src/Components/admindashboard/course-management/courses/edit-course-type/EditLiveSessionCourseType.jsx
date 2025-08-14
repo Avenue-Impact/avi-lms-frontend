@@ -18,6 +18,18 @@ import { courseTypeSchema } from "@/lib/form-schemas/forms-schema";
 import { cn } from "@/lib/utils";
 import { ClipLoader } from "react-spinners";
 
+function convertTo24Hour(timeStr) {
+  if (!timeStr) return null;
+  let [time, modifier] = timeStr.toLowerCase().split(/(am|pm)/).filter(Boolean);
+  let [hours, minutes] = time.split(":").map(Number);
+
+  if (modifier === "pm" && hours < 12) hours += 12;
+  if (modifier === "am" && hours === 12) hours = 0;
+
+  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+}
+
+
 const EditLiveSessionCourseType = ({ priceInfo }) => {
   const str = "dkj";
   str.endsWith;
@@ -39,42 +51,37 @@ const EditLiveSessionCourseType = ({ priceInfo }) => {
     }
   };
 
-  console.log(getTime("3:00pm"));
-  console.log(getTime("3:00am"));
+  // console.log(getTime("3:00pm"));
+  // console.log(getTime("3:00am"));
+
+  // console.log("Check the price priceInfo", priceInfo)
 
   const { courseId } = useParams();
+  
 
   const [cohortErr, setCohortErr] = useState("");
 
   const { createCourseType, isCreating } = useCreateCourseType();
 
-  const onSubmit = async (data) => {
-    const time = data.time.split(":");
-    const hour =
-      parseInt(time[0]) > 12 ? Number(time[0]) - 12 : parseInt(time[0]);
+const onSubmit = async (data) => {
+  if (!cohort) return setCohortErr("Input cohort");
 
-    const min = Number(time[1]) < 10 ? `${time[1]}` : Number(time[1]);
-    const amOrPm = Number(time[0]) >= 12 ? "pm" : "am";
-    if (!cohort) return setCohortErr("Input  cohort");
-
-    const courseType = {
-      live_session: {
-        original_price: Number(data.coursePrice),
-        discounted_price: Number(data.discountPrice),
-        duration: data.duration,
-        time: `${hour}:${min}${amOrPm}`,
-        cohort,
-        year: 2025,
-        currency: "Pounds",
-        currency_symbol: "£",
-      },
-
-      //   on_demand_session: [...durationPrice],
-    };
-    // console.log(courseType);
-
-    createCourseType({ data: courseType, courseId });
+  const courseType = {
+    live_session: {
+      original_price: Number(data.coursePrice),
+      discounted_price: Number(data.discountPrice),
+      duration: data.duration,
+      time: data.time, // keep as "HH:MM"
+      cohort,
+      year: 2025,
+      currency: "Pounds",
+      currency_symbol: "£",
+    }
   };
+
+  createCourseType({ data: courseType, courseId });
+};
+
 
   //   const handleAddPrice = () => {
   //     if (!amount || !duration) return;
@@ -99,12 +106,13 @@ const EditLiveSessionCourseType = ({ priceInfo }) => {
 
   const form = useForm({
     resolver: zodResolver(courseTypeSchema),
-    defaultValues: {
-      duration: priceInfo.duration,
-      discountPrice: priceInfo?.discounted_price?.amount,
-      coursePrice: priceInfo?.original_price?.amount,
-      time: "13:18",
-    },
+   defaultValues: {
+  duration: priceInfo.duration,
+  discountPrice: priceInfo?.discounted_price?.amount,
+  coursePrice: priceInfo?.original_price?.amount,
+  time: convertTo24Hour(priceInfo.time) || "13:18",
+},
+
   });
 
   return (

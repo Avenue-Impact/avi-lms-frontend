@@ -127,9 +127,10 @@ const ZoomMeeting = () => {
 
   function startMeeting(meetingDetailss) {
     document.getElementById("zmmtg-root").style.display = "block";
+  const baseUrl = import.meta.env.VITE_USER_BASE_URL;
 
     ZoomMtg.init({
-      leaveUrl: "http://localhost:5173",
+      leaveUrl: `${baseUrl}`,
       patchJsMedia: true,
       leaveOnPageUnload: true,
       success: (success) => {

@@ -4,6 +4,8 @@ import { useParams, useSearchParams } from "react-router-dom";
 import StartMeeting from "../admin-pages/meeting/StartMeeting";
 
 const UserJoinMeeting = () => {
+  const userBaseUrl = import.meta.env.VITE_USER_BASE_URL;
+
   const { data: userProfileDetails, error: userError } = useProfile();
 
   const [queryString] = useSearchParams();
@@ -14,6 +16,8 @@ const UserJoinMeeting = () => {
 
   const { isLoading, data, error } = useJoinSession(courseId, cohortId);
 
+
+  
   if (isLoading) return <p>Loading ...</p>;
 
   if (error || userError)
@@ -34,7 +38,7 @@ const UserJoinMeeting = () => {
           signature={data?.data?.data?.signature}
           apiKey={`${import.meta.env.VITE_ZOOM_API_KEY}`}
           password={data?.data?.data?.password}
-          leaveUrl={`http://localhost:5173/dashboard/${courseId}/share-documents?title=${queryString.get("title")}`}
+          leaveUrl={`${userBaseUrl}/dashboard/${courseId}/share-documents?title=${queryString.get("title")}`}
           userEmail={
             userProfileDetails?.data?.data?.email ?? "tobiemma200@gmail.com"
           }
