@@ -30,10 +30,13 @@ function convertTo24Hour(timeStr) {
 }
 
 
-const EditLiveSessionCourseType = ({ priceInfo }) => {
+const EditLiveSessionCourseType = ({ priceInfo, cohorts }) => {
   const str = "dkj";
   str.endsWith;
-  const [cohort, setCohort] = useState("");
+  const [cohort, setCohort] = useState(() => cohorts?.[0]?.cohort || "");
+
+
+  console.log("Under EditLivession", cohorts.cohort)
 
   const getTime = (timeStr) => {
     const t = timeStr;
@@ -101,6 +104,10 @@ const onSubmit = async (data) => {
   //     setAmount("");
   //     setDuration("");
   //   };
+
+
+
+
   const time = priceInfo.time.slice(0, -2).split(":");
   const checkFormat = priceInfo.time.endsWith("am");
 
@@ -111,6 +118,7 @@ const onSubmit = async (data) => {
   discountPrice: priceInfo?.discounted_price?.amount,
   coursePrice: priceInfo?.original_price?.amount,
   time: convertTo24Hour(priceInfo.time) || "13:18",
+ 
 },
 
   });
@@ -190,12 +198,24 @@ const onSubmit = async (data) => {
 
               <div className="w-full pt-9">
                 <p className="font-[600] text-gray-600">Cohort</p>
+                <select
+                  value={cohort}
+                  onChange={(e) => setCohort(e.target.value)}
+                  className="w-full rounded border border-gray-300 p-2"
+                >
+                  <option value="">Select cohort</option>
+                  {cohorts?.map((c) => (
+                    <option key={c.id} value={c.cohort}>
+                      {c.cohort}
+                    </option>
+                  ))}
+                </select>
 
-                <CohortSelection
+                {/* <CohortSelection
                   data={cohorts}
                   setCohort={setCohort}
                   text={"Select cohort"}
-                />
+                /> */}
                 <div>
                   <span
                     className={cn("text-primary-color-600", cohort && "hidden")}
