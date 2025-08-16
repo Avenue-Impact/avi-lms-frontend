@@ -144,6 +144,11 @@ function AdminSideNav() {
 
 function SideNav({ children }) {
   const handleSignOut = () => {
+    localStorage.clear();
+
+  // (Optional) If you're using sessionStorage too, clear it
+  sessionStorage.clear();
+
     Cookies.remove("adminToken");
     window.location.href = "/admin/login";
   };

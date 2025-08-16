@@ -28,7 +28,8 @@ const UserJoinMeeting = () => {
           "Something went wrong"}
       </p>
     );
-
+// http://localhost:5173/dashboard/68834698606589f47cdfb45b/live?title=Web%20Development%20Bootcamp:%20From%20Beginner%20to%20Pro
+// http://localhost:5173/dashboard/68834698606589f47cdfb45b/live?title=Web%20Development%20Bootcamp:%20From%20Beginner%20to%20Pro
   if (data)
     return (
       <div>
@@ -38,7 +39,7 @@ const UserJoinMeeting = () => {
           signature={data?.data?.data?.signature}
           apiKey={`${import.meta.env.VITE_ZOOM_API_KEY}`}
           password={data?.data?.data?.password}
-          leaveUrl={`${userBaseUrl}/dashboard/${courseId}/share-documents?title=${queryString.get("title")}`}
+          leaveUrl={`${userBaseUrl}/dashboard/${courseId}/live?title=${queryString.get("title")}`}
           userEmail={
             userProfileDetails?.data?.data?.email ?? "tobiemma200@gmail.com"
           }
