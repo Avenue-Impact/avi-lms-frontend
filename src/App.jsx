@@ -150,11 +150,11 @@ function App() {
               path: "/contact",
               element: <Contact />,
             },
-            {
-              path: "/feedback",
-              element: <Feedback />,
-            },
           ],
+        },
+        {
+          path: "/feedback",
+          element: <Feedback />,
         },
 
         {
