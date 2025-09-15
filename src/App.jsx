@@ -9,6 +9,7 @@ import AVI from "./pages/AVI";
 
 import BusinessAnalysis from "./pages/courses/businessAnalysis";
 import DataAnalytics from "./pages/courses/dataAnalytics";
+import CloudComputing from "./pages/courses/cloudComputing";
 import ThanksPage from "./pages/thanksPage";
 
 import Contact from "./pages/Contact";
@@ -17,6 +18,7 @@ import Contact from "./pages/Contact";
 import DataSolution from "./pages/DataSolution";
 import DigitalTransformation from "./pages/DigitalTransformation";
 import Feedback from "./pages/Feedback";
+import BusinessInterestForm from "./pages/businessInterest/index";
 import Home from "./pages/Home";
 // import ThanksPage from "./pages/thanksPage";
 
@@ -156,6 +158,10 @@ function App() {
           path: "/feedback",
           element: <Feedback />,
         },
+        {
+          path: "/business-interest-form",
+          element: <BusinessInterestForm />,
+        },
 
         {
           path: "/",
@@ -190,6 +196,10 @@ function App() {
             {
               path: "/courses/data-analytics",
               element: <DataAnalytics />,
+            },
+            {
+              path: "/courses/cloud-computing",
+              element: <CloudComputing />,
             },
             {
               path: "/courses/thanks",

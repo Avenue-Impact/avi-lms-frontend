@@ -40,6 +40,8 @@ module.exports = {
         'primary-color-300': "#FF7EA0",
         'primary-color-600': "#CC1747",
         'primary-color-500': "#F53366",
+        'primary': "#F53366",
+        'secondary': "#F53A4C6C",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

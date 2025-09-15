@@ -29,15 +29,15 @@ const courses = [
     },
     {
       id: 3,
-      title: "Data Science Essentials",
-      description: "Statistics, Python, and machine learning basics",
+      title: "Cloud Computing",
+      description: "Master cloud computing with Microsoft Azure, Amazon AWS, and Google Cloud Platform",
       duration: "16 weeks",
       students: 1456,
       rating: 4.7,
       price: "$40",
       icon: Calculator,
       color: "bg-green-500",
-      url: "/courses/data-science-essentials",
+      url: "/courses/cloud-computing",
     },
     {
       id: 4,
@@ -110,9 +110,9 @@ export const ListOfCourses = ({ onClose }) => {
                                 </h3>
                                 <p className="text-xs text-muted-foreground line-clamp-2">{course.description}</p>
                                 </div>
-                                <div className="text-right">
-                                <div className="font-bold text-lg text-blue-600">{course.price}</div>
-                                </div>
+                                {/* <div className="text-right">
+                                 <div className="font-bold text-lg text-blue-600">{course.price}</div>
+                                </div> */}
                             </div>
 
                             <div className="flex items-center justify-between text-xs text-muted-foreground">
