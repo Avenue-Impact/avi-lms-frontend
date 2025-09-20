@@ -56,7 +56,7 @@ export default function BusinessInterestForms() {
   const [formData, setFormData] = useState({
     businessName: "",
     contactName: "",
-    phoneNumber: "",
+    phone: "",
     email: "",
     website: "",
     location: "",
@@ -95,9 +95,20 @@ export default function BusinessInterestForms() {
     }
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async (e) => {
     setIsSubmitted(true)
     // Handle form submission logic here
+    const response = await fetch("https://script.google.com/macros/s/AKfycbwB-7IoTJLLTXh9nH9HAOayiRRdc-4JEGjPLKfpZ85HFiemkr7Yz0wazoB38VpqqhgR/exec", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+    console.log('response', response)
+    const data = await response.json()
+    console.log('data', data)
+    // https://script.google.com/macros/s/AKfycbwB-7IoTJLLTXh9nH9HAOayiRRdc-4JEGjPLKfpZ85HFiemkr7Yz0wazoB38VpqqhgR/exec
     console.log("Form submitted:", formData)
   }
 

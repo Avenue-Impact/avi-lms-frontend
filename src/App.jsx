@@ -10,6 +10,7 @@ import AVI from "./pages/AVI";
 import BusinessAnalysis from "./pages/courses/businessAnalysis";
 import DataAnalytics from "./pages/courses/dataAnalytics";
 import CloudComputing from "./pages/courses/cloudComputing";
+import ProjectManagement from "./pages/courses/projectManagement";
 import ThanksPage from "./pages/thanksPage";
 
 import Contact from "./pages/Contact";
@@ -200,6 +201,10 @@ function App() {
             {
               path: "/courses/cloud-computing",
               element: <CloudComputing />,
+            },
+            {
+              path: "/courses/project-management",
+              element: <ProjectManagement />,
             },
             {
               path: "/courses/thanks",

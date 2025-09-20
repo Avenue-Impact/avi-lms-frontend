@@ -188,7 +188,7 @@ export function ProgramOverview() {
                     </div>
                     <div className="w-full bg-muted rounded-full h-2">
                       <div
-                        className="h-2 bg-gradient-to-r from-primary to-secondary rounded-full transition-all duration-1000 group-hover:animate-pulse"
+                        className="h-2 bg-gradient-to-r from-primary-color-600 to-white rounded-full transition-all duration-1000 group-hover:animate-pulse"
                         style={{ width: `${skill.progress}%` }}
                       ></div>
                     </div>

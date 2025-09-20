@@ -1,105 +1,52 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card"
 import { Input } from "@/Components/ui/input"
 import { Label } from "@/Components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select"
-import { Textarea } from "@/Components/ui/textarea"
-import { CheckCircle, Phone, Mail, User, MessageSquare, Star, Trophy, Clock, Users } from "lucide-react"
+// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select"
+// import { Textarea } from "@/Components/ui/textarea"
+import { Phone, Mail, User, Star, Trophy, Clock, Users } from "lucide-react"
 
 export function RegistrationForm() {
-  const [isSubmitted, setIsSubmitted] = useState(false)
   const [formData, setFormData] = useState({
-    name: "",
+    first_name: "",
+    last_name: "",
     email: "",
     phone: "",
-    platform: "",
-    experience: "",
-    message: "",
+    course: "cloud-computing",
   })
 
-  useEffect(() => {
-    const handleModuleSelection = (event) => {
-      const customEvent = event
-      if (customEvent.detail?.module) {
-        let platformValue = ""
-        switch (customEvent.detail.module) {
-          case "Microsoft Azure":
-            platformValue = "azure"
-            break
-          case "Amazon AWS":
-            platformValue = "aws"
-            break
-          case "Google Cloud Platform":
-            platformValue = "gcp"
-            break
-          case "All Modules":
-            platformValue = "all"
-            break
-        }
-        setFormData((prev) => ({ ...prev, platform: platformValue }))
-      }
-    }
+  // useEffect(() => {
+  //   const handleModuleSelection = (event) => {
+  //     const customEvent = event
+  //     if (customEvent.detail?.module) {
+  //       let platformValue = ""
+  //       switch (customEvent.detail.module) {
+  //         case "Microsoft Azure":
+  //           platformValue = "azure"
+  //           break
+  //         case "Amazon AWS":
+  //           platformValue = "aws"
+  //           break
+  //         case "Google Cloud Platform":
+  //           platformValue = "gcp"
+  //           break
+  //         case "All Modules":
+  //           platformValue = "all"
+  //           break
+  //       }
+  //       setFormData((prev) => ({ ...prev, course: platformValue }))
+  //     }
+  //   }
 
-    window.addEventListener("moduleSelected", handleModuleSelection)
-    return () => window.removeEventListener("moduleSelected", handleModuleSelection)
-  }, [])
+  //   window.addEventListener("moduleSelected", handleModuleSelection)
+  //   return () => window.removeEventListener("moduleSelected", handleModuleSelection)
+  // }, [])
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    // Handle form submission here
-    setIsSubmitted(true)
-  }
-
-  const handleInputChange = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-  }
-
-  if (isSubmitted) {
-    return (
-      <section id="register" className="py-24 bg-gradient-to-br from-primary/5 via-background to-secondary/5">
-        <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto">
-            <Card className="border-2 border-primary/20 shadow-2xl bg-gradient-to-br from-card to-card/50 backdrop-blur-sm">
-              <CardContent className="p-12 text-center">
-                <div className="animate-bounce mb-6">
-                  <CheckCircle className="w-20 h-20 text-primary mx-auto" />
-                </div>
-                <h3 className="text-4xl font-black mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                  {"Registration Successful!"}
-                </h3>
-                <p className="text-muted-foreground mb-8 text-lg">
-                  {
-                    "Welcome to the Cloud Computing Program! We'll contact you within 24 hours with program details and next steps."
-                  }
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                  <div className="bg-primary/10 p-4 rounded-lg">
-                    <Mail className="w-6 h-6 text-primary mx-auto mb-2" />
-                    <p className="text-sm font-medium">{"Check Email"}</p>
-                    <p className="text-xs text-muted-foreground">{"Confirmation sent"}</p>
-                  </div>
-                  <div className="bg-secondary/10 p-4 rounded-lg">
-                    <Phone className="w-6 h-6 text-secondary mx-auto mb-2" />
-                    <p className="text-sm font-medium">{"Expect Call"}</p>
-                    <p className="text-xs text-muted-foreground">{"Within 24 hours"}</p>
-                  </div>
-                  <div className="bg-accent/10 p-4 rounded-lg">
-                    <Trophy className="w-6 h-6 text-accent mx-auto mb-2" />
-                    <p className="text-sm font-medium">{"Start Date"}</p>
-                    <p className="text-xs text-muted-foreground">{"Oct 6, 2025"}</p>
-                  </div>
-                </div>
-                <button className="bg-gradient-to-r from-primary to-secondary">
-                  {"Join WhatsApp Group"}
-                </button>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-    )
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
   return (
@@ -144,17 +91,43 @@ export function RegistrationForm() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6 p-8">
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form 
+                  action="https://webto.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8"
+                  method="POST"
+                  className="space-y-6"
+                >
+                  <input type="hidden" name="oid" value="00D4J000000FoZV" />
+                  <input type="hidden" name="retURL" value="https://www.avenueimpact.com/courses/thanks" />
+
                   <div className="space-y-2">
-                    <Label htmlFor="name" className="flex items-center gap-2 text-base font-semibold">
+                    <Label htmlFor="first_name" className="flex items-center gap-2 text-base font-semibold">
                       <User className="w-5 h-5 text-primary" />
-                      {"Full Name"}
+                      {"First Name"}
                     </Label>
                     <Input
-                      id="name"
+                      id="first_name"
+                      name="first_name"
+                      type="text"
                       placeholder="Enter your full name"
-                      value={formData.name}
-                      onChange={(e) => handleInputChange("name", e.target.value)}
+                      value={formData.first_name}
+                      onChange={(e) => handleInputChange(e)}
+                      required
+                      className="h-12 text-base border-2 focus:border-primary/50 transition-all duration-300"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="last_name" className="flex items-center gap-2 text-base font-semibold">
+                      <User className="w-5 h-5 text-primary" />
+                      {"Last Name"}
+                    </Label>
+                    <Input
+                      id="last_name"
+                      name="last_name"
+                      type="text"
+                      placeholder="Enter your full name"
+                      value={formData.last_name}
+                      onChange={(e) => handleInputChange(e)}
                       required
                       className="h-12 text-base border-2 focus:border-primary/50 transition-all duration-300"
                     />
@@ -168,9 +141,10 @@ export function RegistrationForm() {
                     <Input
                       id="email"
                       type="email"
+                      name="email"
                       placeholder="Enter your email"
                       value={formData.email}
-                      onChange={(e) => handleInputChange("email", e.target.value)}
+                      onChange={(e) => handleInputChange(e)}
                       required
                       className="h-12 text-base border-2 focus:border-primary/50 transition-all duration-300"
                     />
@@ -183,16 +157,17 @@ export function RegistrationForm() {
                     </Label>
                     <Input
                       id="phone"
+                      name="phone"
                       type="tel"
                       placeholder="Enter your phone number"
                       value={formData.phone}
-                      onChange={(e) => handleInputChange("phone", e.target.value)}
+                      onChange={(e) => handleInputChange(e)}
                       required
                       className="h-12 text-base border-2 focus:border-primary/50 transition-all duration-300"
                     />
                   </div>
 
-                  <div className="space-y-2">
+                  {/* <div className="space-y-2">
                     <Label htmlFor="platform" className="text-base font-semibold">
                       {"Preferred Cloud Platform"}
                     </Label>
@@ -211,9 +186,9 @@ export function RegistrationForm() {
                         <SelectItem value="all">{"⭐ All Platforms (Recommended)"}</SelectItem>
                       </SelectContent>
                     </Select>
-                  </div>
+                  </div> */}
 
-                  <div className="space-y-2">
+                  {/* <div className="space-y-2">
                     <Label htmlFor="experience" className="text-base font-semibold">
                       {"Current Experience Level"}
                     </Label>
@@ -227,22 +202,23 @@ export function RegistrationForm() {
                         <SelectItem value="advanced">{"⚡ Advanced (3+ years)"}</SelectItem>
                       </SelectContent>
                     </Select>
-                  </div>
+                  </div> */}
 
-                  <div className="space-y-2">
+                  {/* <div className="space-y-2">
                     <Label htmlFor="message" className="flex items-center gap-2 text-base font-semibold">
                       <MessageSquare className="w-5 h-5 text-primary" />
                       {"Additional Message (Optional)"}
                     </Label>
                     <Textarea
                       id="message"
+                      name="message"
                       placeholder="Tell us about your goals or any questions..."
                       value={formData.message}
-                      onChange={(e) => handleInputChange("message", e.target.value)}
+                      onChange={(e) => handleInputChange(e)}
                       rows={4}
                       className="text-base border-2 focus:border-primary/50 transition-all duration-300"
                     />
-                  </div>
+                  </div> */}
 
                   <button
                     type="submit"

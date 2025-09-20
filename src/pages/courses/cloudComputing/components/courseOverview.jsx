@@ -83,7 +83,7 @@ export function CourseOverview() {
             <Card className="bg-gradient-to-br from-card to-card/50 backdrop-blur-sm border-2 border-primary/20 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500">
               <CardContent className="p-8">
                 <div className="text-center mb-6">
-                  <div className="w-20 h-20 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <div className="w-20 h-20 bg-gradient-to-br from-primary-color-600 to-primary-color-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <Cloud className="w-10 h-10 text-white" />
                   </div>
                   <h3 className="text-2xl font-bold mb-2">Cloud Market Growth</h3>
@@ -121,8 +121,8 @@ export function CourseOverview() {
                 style={{ animationDelay: `${(index + 5) * 100}ms` }}
               >
                 <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-gradient-to-br group-hover:from-primary/20 group-hover:to-secondary/20 transition-all duration-300 group-hover:scale-110">
-                    <IconComponent className="w-8 h-8 text-primary" />
+                  <div className="w-16 h-16 bg-gradient-to-br from-tertiary-color-800 to-tertiary-color-900 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-gradient-to-br group-hover:from-primary/20 group-hover:to-secondary/20 transition-all duration-300 group-hover:scale-110">
+                    <IconComponent className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">{benefit.title}</h3>
                   <p className="text-foreground leading-relaxed">{benefit.description}</p>

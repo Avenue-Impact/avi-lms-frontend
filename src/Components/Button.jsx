@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
-const Button = ({ children, className, type = "button", hover = true }) => {
+const Button = ({ children, className, type = "button", hover = true, onClick }) => {
   const navigate = useNavigate();
   return (
     <button
@@ -10,7 +10,7 @@ const Button = ({ children, className, type = "button", hover = true }) => {
         className,
         hover ? "hover:bg-white hover:text-primary-color-600" : "",
       )}
-      onClick={() => navigate("/contact")}
+      onClick={onClick || (() => navigate("/contact"))}
       type={type}
     >
       <span className="self-end text-xl"> {children}</span>

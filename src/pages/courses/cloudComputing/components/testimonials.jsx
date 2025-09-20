@@ -8,7 +8,7 @@ export function Testimonials() {
       name: "Sarah Johnson",
       role: "Cloud Solutions Architect",
       company: "Microsoft",
-      image: "/professional-woman-smiling.png",
+      image: "https://randomuser.me/api/portraits/women/0.jpg",
       content:
         "The program transformed my career completely. Within 3 months of graduation, I landed my dream job as a Cloud Architect. The hands-on projects were invaluable.",
       rating: 5,
@@ -17,7 +17,7 @@ export function Testimonials() {
       name: "Michael Chen",
       role: "DevOps Engineer",
       company: "Amazon",
-      image: "/professional-man-smiling.png",
+      image: "https://randomuser.me/api/portraits/men/80.jpg",
       content:
         "Excellent mentoring and practical approach. The instructors are industry experts who really care about your success. Highly recommend this program.",
       rating: 5,
@@ -26,7 +26,7 @@ export function Testimonials() {
       name: "Priya Patel",
       role: "Senior Cloud Engineer",
       company: "Google",
-      image: "/professional-woman-confident.jpg",
+      image: "https://randomuser.me/api/portraits/women/26.jpg",
       content:
         "Best investment I made for my career. The comprehensive coverage of all three platforms gave me a competitive edge in the job market.",
       rating: 5,

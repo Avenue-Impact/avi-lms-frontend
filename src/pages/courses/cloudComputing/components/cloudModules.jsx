@@ -6,6 +6,7 @@ import { Cloud, Server, Database, CheckCircle, Star, ArrowRight, Users, Clock, A
 import Button from "@/Components/Button"
 
 export function CloudModules() {
+
   const modules = [
     {
       name: "Microsoft Azure",
@@ -85,18 +86,12 @@ export function CloudModules() {
     },
   ]
 
-  const handleRegister = (moduleName) => {
-    // Dispatch custom event with module information
-    window.dispatchEvent(
-      new CustomEvent("moduleSelected", {
-        detail: { module: moduleName },
-      }),
-    )
-
-    // Scroll to registration form
-    const registrationForm = document.getElementById("registration-form")
-    if (registrationForm) {
-      registrationForm.scrollIntoView({ behavior: "smooth" })
+  const handleRegister = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    const form = document.getElementById('registration-form')
+    if (form) {
+      form.scrollIntoView({ behavior: 'smooth' })
     }
   }
 
@@ -202,11 +197,10 @@ export function CloudModules() {
 
                   <div className="pt-4 border-t">
                     <Button
-                      onClick={() => handleRegister(module.name)}
+                      onClick={(e) => handleRegister(e)}
                       className={`w-full ${module.color} hover:opacity-90 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 hover:scale-105 group-hover:shadow-lg`}
                     >
                       Register for {module.name}
-                      {/* <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" /> */}
                     </Button>
                   </div>
                 </CardContent>
@@ -223,7 +217,7 @@ export function CloudModules() {
               integrated curriculum ensures you understand the strengths and use cases of each platform.
             </p>
             <Button
-              onClick={() => handleRegister("All Modules")}
+              onClick={(e) => handleRegister(e)}
               size="lg"
               className="bg-gradient-to-r from-tertiary-color-800 to-primary-color-600 hover:from-primary-color-600 hover:to-tertiary-color-800 text-white font-bold px-8 py-4 rounded-xl transition-all duration-300 hover:scale-105"
             >

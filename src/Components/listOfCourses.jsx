@@ -41,15 +41,15 @@ const courses = [
     },
     {
       id: 4,
-      title: "Digital Marketing Strategy",
-      description: "SEO, social media, and content marketing",
+      title: "Project Management",
+      description: "Learn project management and leadership skills",
       duration: "10 weeks",
       students: 3241,
       rating: 4.6,
       price: "$43",
       icon: Globe,
       color: "bg-orange-500",
-      url: "/courses/digital-marketing-strategy",
+      url: "/courses/project-management",
     },
   ]
 

@@ -2,8 +2,18 @@
 import { ArrowRight, Calendar, Clock, Users, Award, Zap } from "lucide-react"
 
 export function Hero() {
+
+  const handleRegister = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    const form = document.getElementById('registration-form')
+    if (form) {
+      form.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+  
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary-color-600/10 via-background to-secondary/5">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary-color-600/10 via-background to-secondary/5  pt-12 sm:pt-0 pb-12 sm:pb-0">
       <div className="absolute inset-0">
         {/* Animated gradient orbs */}
         <div className="absolute top-20 left-20 w-32 h-32 bg-primary-color-600/20 rounded-full blur-3xl animate-pulse"></div>
@@ -92,6 +102,7 @@ export function Hero() {
 
             <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up delay-800">
               <button
+                onClick={(e) => handleRegister(e)}
                 className="text-lg text-white px-8 py-2 group bg-gradient-to-r flex items-center from-primary-color-600 to-tertiary-color-800 hover:from-primary-color-600/90 hover:to-tertiary-color-800/90 shadow-lg hover:shadow-xl transition-all duration-300"
               >
                 {"Enroll Now"}
