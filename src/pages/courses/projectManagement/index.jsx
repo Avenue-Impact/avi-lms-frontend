@@ -28,8 +28,8 @@ export default function ProjectManagement() {
   const [isEarlyBird, setIsEarlyBird] = useState(false);
   const [hoveredWeek, setHoveredWeek] = useState(null)
   
-  const programStartDate = new Date('2025-07-21T00:00:00');
-  const earlyBirdEndDate = new Date('2025-07-10T23:59:59');
+  const programStartDate = new Date('2025-10-06T00:00:00');
+  const earlyBirdEndDate = new Date('2025-10-06T23:59:59');
 
   useEffect(() => {
     // Check if early bird is still valid

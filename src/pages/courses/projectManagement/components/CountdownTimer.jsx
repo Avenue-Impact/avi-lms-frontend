@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Clock } from 'lucide-react';
 
 // Default target date: July 21, 2025 00:00:00
-const DEFAULT_TARGET_DATE = new Date('2025-07-21T00:00:00');
+const DEFAULT_TARGET_DATE = new Date('2025-10-06T00:00:00');
 
 export const CountdownTimer = ({ targetDate = DEFAULT_TARGET_DATE }) => {
   const [timeLeft, setTimeLeft] = useState({
