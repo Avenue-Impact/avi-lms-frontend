@@ -2,12 +2,21 @@
 
 import { useState } from "react"
 import { Checkbox } from "@/Components/ui/checkbox"
-import { Star, GraduationCap, Users, BookOpen, Target } from "lucide-react"
+import { Star, GraduationCap, Users, BookOpen, Target, AlertTriangle, CheckCircle } from "lucide-react"
 import Card, { CardContent, CardDescription, CardHeader, CardTitle } from "@/Components/ui/card"
 import { Input } from "@/Components/ui/input"
 import { Label } from "@/Components/ui/label"
 import { Textarea } from "@/Components/ui/textarea"
 import { RadioGroup, RadioGroupItem } from "@/Components/ui/radio-group"
+import axios from "axios"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/Components/ui/dialog"
+import Button from "@/Components/Button"
 
 /**
  * @typedef {Object} FeedbackData
@@ -30,11 +39,11 @@ import { RadioGroup, RadioGroupItem } from "@/Components/ui/radio-group"
  */
 
 const ratingOptions = [
-  { value: "5", label: "Excellent" },
-  { value: "4", label: "Very Good" },
-  { value: "3", label: "Good" },
-  { value: "2", label: "Fair" },
-  { value: "1", label: "Poor" },
+  { value: "Excellent (5)", label: "Excellent" },
+  { value: "Very Good (4)", label: "Very Good" },
+  { value: "Good (3)", label: "Good" },
+  { value: "Fair (2)", label: "Fair" },
+  { value: "Poor (1)", label: "Poor" },
 ]
 
 const futureTopicsOptions = [
@@ -50,6 +59,10 @@ const futureTopicsOptions = [
 
 export default function StudentFeedbackForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false)
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
   const [formData, setFormData] = useState({
     studentName: "",
     email: "",
@@ -83,15 +96,32 @@ export default function StudentFeedbackForm() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setIsSubmitted(true)
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    const payload = {
+      "Student Name": formData.studentName,
+      "email address": formData.email,
+      "Course Name": formData.courseName,
+      "Instructor Name": formData.instructor,
+      "Course Completion Date": formData.completionDate,
+      "Overall Course Rating": formData.overallRating,
+      "Content Quality & Relevance": formData.contentQuality,
+      "Instructor Effectiveness": formData.instructorEffectiveness,
+      "Course Pacing": formData.coursePacing,
+      "Material Clarity": formData.materialClarity,
+      "Practical Application": formData.practicalApplication,
+      "What was the most valuable part of this course?": formData.mostValuable,
+      "What areas could be improved?": formData.improvements,
+      "Would you recommend this course to others?": formData.recommend,
+      "Additional Comments": formData.additionalComments,
+      "What topics would you like to see in future courses?": formData.futureTopics.join(", "),
+      "Date created": new Date().toLocaleString(),
+    }
 
-    alert(
-      "Thank you for your valuable feedback. It helps us improve our courses and better serve our students.",
-    )
-
-    setIsSubmitting(false)
+    try {
+      const response = await axios.post("https://aviproxy-be.onrender.com/api/submit-feedback-form", payload)
+      console.log("Form submission successful:", response.data)
+      setIsSuccessModalOpen(true)
 
     // Reset form
     setFormData({
@@ -112,7 +142,82 @@ export default function StudentFeedbackForm() {
       additionalComments: "",
       futureTopics: [],
     })
+
+
+    } catch (error) {
+      console.error("Error submitting form:", error)
+      setErrorMessage(
+        error.response?.data?.message || 
+        'There was an error submitting your form. Please try again later.'
+      )
+      setIsErrorModalOpen(true)
+    }
+
+    setIsSubmitting(false)
+    setIsSubmitted(false)
+
   }
+
+    // Success Modal
+    const SuccessModal = () => (
+      <Dialog open={isSuccessModalOpen} onOpenChange={setIsSuccessModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+              <CheckCircle className="h-8 w-8 text-green-600" />
+            </div>
+            <DialogTitle className="text-center text-2xl font-bold text-gray-900">
+              Thank You!
+            </DialogTitle>
+            <DialogDescription className="text-center text-gray-600">
+              {formData.nextSteps === "book-now"
+                ? "We'll redirect you to our calendar booking system shortly."
+                : "We've received your information and will be in touch soon to discuss your business needs."}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="mt-6">
+            <Button
+              onClick={() => setIsSuccessModalOpen(false)}
+              type="submit"
+              hover={false}
+              className="w-full bg-green-600 hover:bg-green-700"
+              disabled={isSubmitted}
+            >
+              Close
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    )
+  
+    // Error Modal
+    const ErrorModal = () => (
+      <Dialog open={isErrorModalOpen} onOpenChange={setIsErrorModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
+              <AlertTriangle className="h-8 w-8 text-red-600" />
+            </div>
+            <DialogTitle className="text-center text-2xl font-bold text-gray-900">
+              Oops! Something went wrong
+            </DialogTitle>
+            <DialogDescription className="text-center text-gray-600">
+              {errorMessage}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="mt-6">
+            <Button
+              type="button"
+              hover={false}
+              className="w-full bg-[#cc1747] hover:bg-[#cc1747]/80"
+              onClick={() => setIsErrorModalOpen(false)}
+            >
+              Try Again
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    )
 
   /**
    * @param {Object} props
@@ -158,6 +263,8 @@ export default function StudentFeedbackForm() {
       }}
       className="bg-red-600"
     >
+      <SuccessModal />
+      <ErrorModal />
       <div className="bg-[#000000A8] py-8">
         <div className="max-w-4xl mx-auto space-y-8 max-sm:px-2">
           <div className="fixed top-4 left-4">

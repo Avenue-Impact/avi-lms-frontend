@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/Components/ui/card"
 import { Input } from "@/Components/ui/input"
 import { Label } from "@/Components/ui/label"
@@ -24,9 +24,18 @@ import {
   CheckCircle,
   ArrowRight,
   ArrowLeft,
-  Sparkles,
+  AlertTriangle,
+  Loader2,
 } from "lucide-react"
 import Button from "@/Components/Button"
+import axios from "axios"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/Components/ui/dialog"
 
 const steps = [
   { id: 1, title: "Business & Contact Details", icon: Building2 },
@@ -53,6 +62,11 @@ const timingOptions = [
 export default function BusinessInterestForms() {
   const [currentStep, setCurrentStep] = useState(1)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false)
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const formRef = useRef(null)
   const [formData, setFormData] = useState({
     businessName: "",
     contactName: "",
@@ -96,48 +110,133 @@ export default function BusinessInterestForms() {
   }
 
   const handleSubmit = async (e) => {
+    e.preventDefault()
     setIsSubmitted(true)
-    // Handle form submission logic here
-    const response = await fetch("https://script.google.com/macros/s/AKfycbwB-7IoTJLLTXh9nH9HAOayiRRdc-4JEGjPLKfpZ85HFiemkr7Yz0wazoB38VpqqhgR/exec", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
-    console.log('response', response)
-    const data = await response.json()
-    console.log('data', data)
-    // https://script.google.com/macros/s/AKfycbwB-7IoTJLLTXh9nH9HAOayiRRdc-4JEGjPLKfpZ85HFiemkr7Yz0wazoB38VpqqhgR/exec
-    console.log("Form submitted:", formData)
+    setIsSubmitting(true)
+
+    try {
+      const payload = {
+        "Business Name": formData.businessName,
+        "Contact Name": formData.contactName,
+        "Phone": formData.phone,
+        "Email": formData.email,
+        "website": formData.website,
+        "Location": formData.location,
+        "Interests": formData.interests.join(", "),
+        "proposed time to enrol": formData.timing,
+        "About Business": formData.businessDescription,
+        "Company Size": formData.companySize,
+        "Awareness Channel": formData.howDidYouHear,
+        "Contact Method": formData.preferredContact,
+        "Best time to Contact": formData.bestTimeToContact,
+        "Next Steps": formData.nextSteps,
+        "Date created": new Date().toLocaleString(),
+      };
+
+      console.log('Submitting form with payload:', payload);
+      
+      const response = await axios.post("https://aviproxy-be.onrender.com/api/submit-business-interest-form", payload)
+      console.log('Form submission successful:', response.data)
+      
+      // Show success modal
+      setIsSuccessModalOpen(true)
+      
+      // Reset form after successful submission if needed
+      setFormData({
+        businessName: "",
+        contactName: "",
+        phone: "",
+        email: "",
+        website: "",
+        location: "",
+        interests: [],
+        timing: "",
+        businessDescription: "",
+        companySize: "",
+        howDidYouHear: "",
+        preferredContact: "",
+        bestTimeToContact: "",
+        nextSteps: "",
+      })
+      
+    } catch (error) {
+      console.error('Error submitting form:', error)
+      setErrorMessage(
+        error.response?.data?.message || 
+        'There was an error submitting your form. Please try again later.'
+      )
+      setIsErrorModalOpen(true)
+    } finally {
+      setIsSubmitted(false)
+      setIsSubmitting(false)
+    }
   }
 
-  if (isSubmitted) {
-    return (
-      <div className="max-w-2xl mx-auto animate-scale-in">
-        <Card className="text-center shadow-2xl border-0 bg-gradient-to-br from-card to-muted/50">
-          <CardContent className="p-12">
-            <div className="mb-6">
-              <CheckCircle className="w-16 h-16 text-primary mx-auto mb-4" />
-              <h2 className="text-3xl font-bold text-foreground mb-2">Thank You!</h2>
-              <p className="text-muted-foreground text-lg">
-                {formData.nextSteps === "book-now"
-                  ? "We'll redirect you to our calendar booking system shortly."
-                  : "We'll be in touch soon to discuss your business needs."}
-              </p>
-            </div>
-            <div className="flex items-center justify-center gap-2 text-primary">
-              <Sparkles className="w-5 h-5" />
-              <span className="font-medium">Avenue Impact Team</span>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
+  // Success Modal
+  const SuccessModal = () => (
+    <Dialog open={isSuccessModalOpen} onOpenChange={setIsSuccessModalOpen}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+            <CheckCircle className="h-8 w-8 text-green-600" />
+          </div>
+          <DialogTitle className="text-center text-2xl font-bold text-gray-900">
+            Thank You!
+          </DialogTitle>
+          <DialogDescription className="text-center text-gray-600">
+            {formData.nextSteps === "book-now"
+              ? "We'll redirect you to our calendar booking system shortly."
+              : "We've received your information and will be in touch soon to discuss your business needs."}
+          </DialogDescription>
+        </DialogHeader>
+        <div className="mt-6">
+          <Button
+            onClick={() => setIsSuccessModalOpen(false)}
+            type="submit"
+            hover={false}
+            className="w-full bg-green-600 hover:bg-green-700"
+            disabled={isSubmitted}
+          >
+            Close
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+
+  // Error Modal
+  const ErrorModal = () => (
+    <Dialog open={isErrorModalOpen} onOpenChange={setIsErrorModalOpen}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
+            <AlertTriangle className="h-8 w-8 text-red-600" />
+          </div>
+          <DialogTitle className="text-center text-2xl font-bold text-gray-900">
+            Oops! Something went wrong
+          </DialogTitle>
+          <DialogDescription className="text-center text-gray-600">
+            {errorMessage}
+          </DialogDescription>
+        </DialogHeader>
+        <div className="mt-6">
+          <Button
+            type="button"
+            hover={false}
+            className="w-full bg-[#cc1747] hover:bg-[#cc1747]/80"
+            onClick={() => setIsErrorModalOpen(false)}
+          >
+            Try Again
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
 
   return (
     <div className="max-w-4xl mx-auto animate-fade-in">
+      <SuccessModal />
+      <ErrorModal />
       {/* Header */}
       <div className="text-center mb-8 animate-slide-in-up">
         <h1 className="text-4xl font-bold text-[#cc1747] mb-2 text-balance">
@@ -191,10 +290,7 @@ export default function BusinessInterestForms() {
       </div>
 
       {/* Form Steps */}
-      <form 
-      action="https://script.google.com/macros/s/AKfycbzkHDXx8j2H07JOWDetbOTbdZGxQqJY-4ntFjB9yP96ZeQqQKsI_1ZDF5LoNjnfzQvj/exec"
-      method="POST"
-      >
+      <div >
         <Card className="shadow-2xl border-0 bg-gradient-to-br from-card to-background animate-scale-in">
           <CardHeader className="pb-6">
             <CardTitle className="text-2xl flex items-center gap-3">
@@ -252,8 +348,8 @@ export default function BusinessInterestForms() {
                     <Input
                       id="phoneNumber"
                       type="tel"
-                      value={formData.phoneNumber}
-                      onChange={(e) => handleInputChange("phoneNumber", e.target.value)}
+                      value={formData.phone}
+                      onChange={(e) => handleInputChange("phone", e.target.value)}
                       className="transition-all duration-200 focus:scale-[1.02]"
                     />
                   </div>
@@ -500,17 +596,18 @@ export default function BusinessInterestForms() {
                 </button>
               ) : (
                 <button
-                  // onClick={handleSubmit}
+                  onClick={handleSubmit}
+                  disabled={isSubmitting}
                   className="flex items-center gap-2 cursor-pointer text-white py-3 px-6 rounded-lg transition-all duration-200 hover:scale-105 shadow-lg bg-gradient-to-r from-primary-color-600 to-tertiary-color-800"
                 >
-                  Submit Form
-                  <CheckCircle className="w-4 h-4" />
+                  {isSubmitting ? "Submitting..." : "Submit Form"}
+                  {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
                 </button>
               )}
             </div>
           </CardContent>
         </Card>
-      </form>
+      </div>
     </div>
   )
 }
