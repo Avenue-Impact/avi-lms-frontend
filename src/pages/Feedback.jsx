@@ -164,15 +164,13 @@ export default function StudentFeedbackForm() {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-              <CheckCircle className="h-8 w-8 text-green-600" />
+              <CheckCircle className="h-8 w-8 text-tertiary-color-900" />
             </div>
             <DialogTitle className="text-center text-2xl font-bold text-gray-900">
               Thank You!
             </DialogTitle>
             <DialogDescription className="text-center text-gray-600">
-              {formData.nextSteps === "book-now"
-                ? "We'll redirect you to our calendar booking system shortly."
-                : "We've received your information and will be in touch soon to discuss your business needs."}
+              "We've received your feedback and will be in touch with you soon"
             </DialogDescription>
           </DialogHeader>
           <div className="mt-6">
@@ -180,7 +178,7 @@ export default function StudentFeedbackForm() {
               onClick={() => setIsSuccessModalOpen(false)}
               type="submit"
               hover={false}
-              className="w-full bg-green-600 hover:bg-green-700"
+              className="w-full bg-tertiary-color-900 hover:tertiary-color-800"
               disabled={isSubmitted}
             >
               Close

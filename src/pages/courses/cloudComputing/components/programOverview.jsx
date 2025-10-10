@@ -95,7 +95,7 @@ export function ProgramOverview() {
             return (
               <Card
                 key={index}
-                className={`group hover:shadow-2xl ${platform.glowColor} transition-all duration-500 hover:-translate-y-4 hover:scale-105 border-2 ${platform.borderColor} bg-gradient-to-br from-card to-card/50 backdrop-blur-sm animate-fade-in-up cursor-pointer`}
+                className={`group hover:shadow-2xl ${platform.glowColor} transition-all duration-500 hover:-translate-y-4 hover:scale-105 border-2 ${platform.borderColor} bg-gradient-to-br from-card to-card/50 backdrop-blur-sm animate-fade-in-up`}
                 style={{ animationDelay: `${(index + 3) * 100}ms` }}
               >
                 <CardHeader className="text-center pb-4 relative">

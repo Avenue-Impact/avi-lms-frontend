@@ -57,9 +57,9 @@ const AVI = () => {
             <div className="mt-2 h-[1px] w-full bg-[#C7D7F4]" />
 
             <div
-              className={`${styles.career_content} w-full py-8 text-[#667185] lg:w-1/2`}
+              className={`${styles.career_content} w-full py-8 text-[#667185] lg:w-1/2 mt-12`}
             >
-              <p>
+              <p className="text-2xl">
                 {" "}
                 Discover our most popular courses, carefully curated to enhance
                 your skills and advance your career. Join thousands of learners
@@ -174,6 +174,7 @@ const AVI = () => {
 
 const AllCourses = () => {
   const { data, isLoading, error } = useFetchAllCourses();
+  console.log({"data": data, "isLoading": isLoading, "error": error});
 
   if (isLoading)
     return (

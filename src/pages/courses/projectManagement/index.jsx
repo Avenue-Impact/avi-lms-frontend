@@ -1,5 +1,17 @@
 import { useState, useEffect } from 'react';
-import { Clock, Users, Award, Briefcase, Check, ArrowRight, Star, Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram } from 'lucide-react';
+import { Clock, Users, Award, Briefcase, Check, ArrowRight, Star, Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram, Share2 } from 'lucide-react';
+import {
+  FacebookShareButton,
+  TwitterShareButton,
+  LinkedinShareButton,
+  WhatsappShareButton,
+  EmailShareButton,
+  FacebookIcon,
+  TwitterIcon,
+  LinkedinIcon,
+  WhatsappIcon,
+  EmailIcon,
+} from "react-share"
 import { motion } from 'framer-motion';
 import { CountdownTimer } from './components/CountdownTimer';
 import { FeatureCard } from './components/FeatureCard';
@@ -26,7 +38,10 @@ const Poppins = () => {
 export default function ProjectManagement() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isEarlyBird, setIsEarlyBird] = useState(false);
-  const [hoveredWeek, setHoveredWeek] = useState(null)
+  const [hoveredWeek, setHoveredWeek] = useState(null);
+  const [showShareOptions, setShowShareOptions] = useState(false);
+  const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
+  const title = "Project Management Professional Training Program";
   
   const programStartDate = new Date('2025-10-06T00:00:00');
   const earlyBirdEndDate = new Date('2025-10-06T23:59:59');
@@ -181,22 +196,69 @@ export default function ProjectManagement() {
 
   const cpdLink = `https://www.cpduk.co.uk/providers/avenue-impact`
 
-//   Live training
-
-// Self-directed study
-
-// 1:1 mentorship
+  const handleShareClick = () => {
+    setShowShareOptions(!showShareOptions);
+  };
+  
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      alert('Link copied to clipboard!');
+      setShowShareOptions(false);
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+    }
+  };
 
   return (
     <>
       <Poppins />
+      {/* Share Button */}
+      <div className="fixed bottom-8 left-8 z-50 flex flex-col items-end space-y-4">
+        {showShareOptions && (
+          <div className="bg-card/80 backdrop-blur-md rounded-full p-2 shadow-lg flex items-center space-x-2 mb-2 animate-fade-in-up">
+            <FacebookShareButton url={shareUrl} quote={title}>
+              <FacebookIcon size={32} round />
+            </FacebookShareButton>
+            <TwitterShareButton url={shareUrl} title={title}>
+              <TwitterIcon size={32} round />
+            </TwitterShareButton>
+            <LinkedinShareButton url={shareUrl} title={title}>
+              <LinkedinIcon size={32} round />
+            </LinkedinShareButton>
+            <WhatsappShareButton url={shareUrl} title={title}>
+              <WhatsappIcon size={32} round />
+            </WhatsappShareButton>
+            <EmailShareButton url={shareUrl} subject={title} body="Check out this awesome course:">
+              <EmailIcon size={32} round />
+            </EmailShareButton>
+            <button 
+              onClick={handleCopyLink}
+              className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 transition-colors"
+              title="Copy link"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+          </div>
+        )}
+        <button
+          onClick={handleShareClick}
+          className="w-14 h-14 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 focus:outline-none"
+          aria-label="Share"
+        >
+          <Share2 className="w-6 h-6" />
+        </button>
+      </div>
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white font-poppins">
       {/* Top Banner */}
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 px-4">
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-center gap-2 text-sm">
           <div className="flex items-center whitespace-nowrap max-w-[100vw] overflow-x-auto hideScrollBar">
             <Clock className="h-4 w-4 mr-2" />
-            <span>Next Project Management Training Starts July 21st - Secure Your Spot Now!</span>
+            <span>Next Project Management Training Starts October 10th - Secure Your Spot Now!</span>
           </div>
           <div className="hidden md:block">•</div>
           <div className="flex hidden md:block items-center">

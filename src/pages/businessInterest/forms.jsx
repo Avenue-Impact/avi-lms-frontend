@@ -36,6 +36,8 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/Components/ui/dialog"
+import CalendlyModal from "@/services/calendly"
+import TidyCalModal from "@/services/calendly"
 
 const steps = [
   { id: 1, title: "Business & Contact Details", icon: Building2 },
@@ -66,6 +68,7 @@ export default function BusinessInterestForms() {
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isBookingCompleted, setIsBookingCompleted] = useState(false)
   const formRef = useRef(null)
   const [formData, setFormData] = useState({
     businessName: "",
@@ -111,6 +114,12 @@ export default function BusinessInterestForms() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    
+    // Don't submit if we're just showing the last step
+    if (currentStep !== steps.length) {
+      return;
+    }
+    
     setIsSubmitted(true)
     setIsSubmitting(true)
 
@@ -178,7 +187,7 @@ export default function BusinessInterestForms() {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-            <CheckCircle className="h-8 w-8 text-green-600" />
+            <CheckCircle className="h-8 w-8 text-tertiary-color-900" />
           </div>
           <DialogTitle className="text-center text-2xl font-bold text-gray-900">
             Thank You!
@@ -194,7 +203,7 @@ export default function BusinessInterestForms() {
             onClick={() => setIsSuccessModalOpen(false)}
             type="submit"
             hover={false}
-            className="w-full bg-green-600 hover:bg-green-700"
+            className="w-full bg-tertiary-color-900 hover:bg-tertiary-color-800"
             disabled={isSubmitted}
           >
             Close
@@ -290,7 +299,7 @@ export default function BusinessInterestForms() {
       </div>
 
       {/* Form Steps */}
-      <div >
+      <form onSubmit={handleSubmit}>
         <Card className="shadow-2xl border-0 bg-gradient-to-br from-card to-background animate-scale-in">
           <CardHeader className="pb-6">
             <CardTitle className="text-2xl flex items-center gap-3">
@@ -551,7 +560,15 @@ export default function BusinessInterestForms() {
                     className="space-y-4"
                   >
                     <div className="flex items-start space-x-3 p-4 rounded-lg border border-border hover:bg-muted/50 transition-all duration-200">
-                      <RadioGroupItem value="book-now" id="book-now" className="mt-1" />
+                      <RadioGroupItem 
+                        value="book-now" 
+                        id="book-now" 
+                        className="mt-1" 
+                        onClick={(e) => {
+                          // Prevent form submission when clicking the radio button
+                          e.stopPropagation();
+                        }}
+                      />
                       <div className="space-y-1">
                         <Label htmlFor="book-now" className="cursor-pointer font-medium">
                           Book a consultation now
@@ -559,6 +576,17 @@ export default function BusinessInterestForms() {
                         <p className="text-sm text-muted-foreground">We'll redirect you to our calendar booking system</p>
                       </div>
                     </div>
+                    {
+                      formData.nextSteps === "book-now" && (
+                        <TidyCalModal 
+                          onBookingComplete={() => {
+                            setIsBookingCompleted(true);
+                          }} 
+                          name={formData.contactName}
+                          email={formData.email}
+                        />
+                      )
+                    }
                     <div className="flex items-start space-x-3 p-4 rounded-lg border border-border hover:bg-muted/50 transition-all duration-200">
                       <RadioGroupItem value="contact-later" id="contact-later" className="mt-1" />
                       <div className="space-y-1">
@@ -588,7 +616,11 @@ export default function BusinessInterestForms() {
 
               {currentStep < steps.length ? (
                 <button
-                  onClick={nextStep}
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    nextStep();
+                  }}
                   className="flex items-center gap-2 bg-primary-color-600 cursor-pointer text-white py-3 px-6 rounded-lg transition-all duration-200 hover:scale-105 shadow-lg"
                 >
                   Next
@@ -596,18 +628,36 @@ export default function BusinessInterestForms() {
                 </button>
               ) : (
                 <button
-                  onClick={handleSubmit}
-                  disabled={isSubmitting}
-                  className="flex items-center gap-2 cursor-pointer text-white py-3 px-6 rounded-lg transition-all duration-200 hover:scale-105 shadow-lg bg-gradient-to-r from-primary-color-600 to-tertiary-color-800"
+                  type="submit"
+                  disabled={
+                    isSubmitting || 
+                    !formData.nextSteps || 
+                    (formData.nextSteps === 'book-now' && !isBookingCompleted)
+                  }
+                  className={`flex items-center gap-2 py-3 px-6 rounded-lg transition-all 
+                    duration-200 hover:scale-105 shadow-lg
+                    ${
+                      isSubmitting || 
+                      !formData.nextSteps || 
+                      (formData.nextSteps === 'book-now' && !isBookingCompleted)
+                        ? 'bg-gray-400 cursor-not-allowed opacity-70'
+                        : 'bg-gradient-to-r from-primary-color-600 to-tertiary-color-800 text-white hover:bg-tertiary-color-800'
+                    }`}
                 >
-                  {isSubmitting ? "Submitting..." : "Submit Form"}
-                  {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Submitting...
+                    </>
+                  ) : (
+                    'Submit'
+                  )}
                 </button>
               )}
             </div>
           </CardContent>
         </Card>
-      </div>
+      </form>
     </div>
   )
 }

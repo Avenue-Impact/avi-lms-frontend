@@ -1,7 +1,37 @@
 
-import { ArrowRight, Calendar, Clock, Users, Award, Zap } from "lucide-react"
+import { ArrowRight, Calendar, Clock, Users, Award, Zap, Share2 } from "lucide-react"
+import { useState } from "react"
+import {
+  FacebookShareButton,
+  TwitterShareButton,
+  LinkedinShareButton,
+  WhatsappShareButton,
+  EmailShareButton,
+  FacebookIcon,
+  TwitterIcon,
+  LinkedinIcon,
+  WhatsappIcon,
+  EmailIcon,
+} from "react-share"
 
 export function Hero() {
+  const [showShareOptions, setShowShareOptions] = useState(false)
+  const shareUrl = typeof window !== 'undefined' ? window.location.href : ''
+  const title = "4 Months Complete CLOUD Computing Program"
+  
+  const handleShareClick = () => {
+    setShowShareOptions(!showShareOptions)
+  }
+  
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl)
+      alert('Link copied to clipboard!')
+      setShowShareOptions(false)
+    } catch (err) {
+      console.error('Failed to copy: ', err)
+    }
+  }
 
   const handleRegister = (e) => {
     e.preventDefault()
@@ -13,7 +43,46 @@ export function Hero() {
   }
   
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary-color-600/10 via-background to-secondary/5  pt-12 sm:pt-0 pb-12 sm:pb-0">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary-color-600/10 via-background to-secondary/5 pt-12 sm:pt-0 pb-12 sm:pb-0">
+      {/* Share Button */}
+      <div className="fixed bottom-8 right-8 z-50 flex flex-col items-end space-y-4">
+        {showShareOptions && (
+          <div className="bg-card/80 backdrop-blur-md rounded-full p-2 shadow-lg flex items-center space-x-2 mb-2 animate-fade-in-up">
+            <FacebookShareButton url={shareUrl} quote={title}>
+              <FacebookIcon size={32} round />
+            </FacebookShareButton>
+            <TwitterShareButton url={shareUrl} title={title}>
+              <TwitterIcon size={32} round />
+            </TwitterShareButton>
+            <LinkedinShareButton url={shareUrl} title={title}>
+              <LinkedinIcon size={32} round />
+            </LinkedinShareButton>
+            <WhatsappShareButton url={shareUrl} title={title}>
+              <WhatsappIcon size={32} round />
+            </WhatsappShareButton>
+            <EmailShareButton url={shareUrl} subject={title} body="Check out this awesome course:">
+              <EmailIcon size={32} round />
+            </EmailShareButton>
+            <button 
+              onClick={handleCopyLink}
+              className="w-8 h-8 rounded-full bg-primary-color-600 text-white flex items-center justify-center hover:bg-primary-color-700 transition-colors"
+              title="Copy link"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+          </div>
+        )}
+        <button
+          onClick={handleShareClick}
+          className="w-14 h-14 rounded-full bg-gradient-to-r from-primary-color-600 to-tertiary-color-800 text-white flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 focus:outline-none"
+          aria-label="Share"
+        >
+          <Share2 className="w-6 h-6" />
+        </button>
+      </div>
       <div className="absolute inset-0">
         {/* Animated gradient orbs */}
         <div className="absolute top-20 left-20 w-32 h-32 bg-primary-color-600/20 rounded-full blur-3xl animate-pulse"></div>
@@ -114,7 +183,7 @@ export function Hero() {
           <div className="relative animate-fade-in-up delay-900">
             <div className="grid grid-cols-1 gap-6">
               {/* Enhanced Cloud Platform Cards with hover effects and icons */}
-              <div className="group bg-gradient-to-r from-blue-500/10 to-blue-600/10 backdrop-blur-sm border-2 border-blue-500/20 rounded-2xl p-6 hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-500 hover:-translate-y-2 hover:scale-105 cursor-pointer">
+              <div className="group bg-gradient-to-r from-blue-500/10 to-blue-600/10 backdrop-blur-sm border-2 border-blue-500/20 rounded-2xl p-6 hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-500 hover:-translate-y-2 hover:scale-105">
                 <div className="flex items-center gap-4">
                   <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-blue-500/50 transition-all duration-300 group-hover:rotate-6">
                     <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
@@ -136,7 +205,7 @@ export function Hero() {
                 </div>
               </div>
 
-              <div className="group bg-gradient-to-r from-orange-500/10 to-orange-600/10 backdrop-blur-sm border-2 border-orange-500/20 rounded-2xl p-6 hover:shadow-2xl hover:shadow-orange-500/20 transition-all duration-500 hover:-translate-y-2 hover:scale-105 cursor-pointer">
+              <div className="group bg-gradient-to-r from-orange-500/10 to-orange-600/10 backdrop-blur-sm border-2 border-orange-500/20 rounded-2xl p-6 hover:shadow-2xl hover:shadow-orange-500/20 transition-all duration-500 hover:-translate-y-2 hover:scale-105">
                 <div className="flex items-center gap-4">
                   <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-orange-500/50 transition-all duration-300 group-hover:rotate-6">
                     <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
@@ -158,7 +227,7 @@ export function Hero() {
                 </div>
               </div>
 
-              <div className="group bg-gradient-to-r from-red-500/10 to-red-600/10 backdrop-blur-sm border-2 border-red-500/20 rounded-2xl p-6 hover:shadow-2xl hover:shadow-red-500/20 transition-all duration-500 hover:-translate-y-2 hover:scale-105 cursor-pointer">
+              <div className="group bg-gradient-to-r from-red-500/10 to-red-600/10 backdrop-blur-sm border-2 border-red-500/20 rounded-2xl p-6 hover:shadow-2xl hover:shadow-red-500/20 transition-all duration-500 hover:-translate-y-2 hover:scale-105">
                 <div className="flex items-center gap-4">
                   <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-red-500/50 transition-all duration-300 group-hover:rotate-6">
                     <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor">

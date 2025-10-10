@@ -110,7 +110,7 @@ export function Benefits() {
             return (
               <Card
                 key={index}
-                className={`group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:scale-105 border-2 ${benefit.borderColor} bg-gradient-to-br ${benefit.color} backdrop-blur-sm animate-fade-in-up cursor-pointer overflow-hidden relative`}
+                className={`group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:scale-105 border-2 ${benefit.borderColor} bg-gradient-to-br ${benefit.color} backdrop-blur-sm animate-fade-in-up overflow-hidden relative`}
                 style={{ animationDelay: `${(index + 3) * 100}ms` }}
               >
                 <div className="absolute top-2 right-2 w-8 h-8 bg-white/10 rounded-full blur-sm group-hover:scale-150 transition-transform duration-500"></div>
