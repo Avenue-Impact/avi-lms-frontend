@@ -25,8 +25,8 @@ export default function BusinessAnalysis() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isEarlyBird, setIsEarlyBird] = useState(false);
   
-  const programStartDate = new Date('2025-07-21T00:00:00');
-  const earlyBirdEndDate = new Date('2025-07-10T23:59:59');
+  const programStartDate = new Date('2025-10-20T00:00:00');
+  const earlyBirdEndDate = new Date('2025-10-10T23:59:59');
 
   useEffect(() => {
     // Check if early bird is still valid
@@ -124,7 +124,7 @@ export default function BusinessAnalysis() {
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-center gap-2 text-sm">
           <div className="flex items-center whitespace-nowrap max-w-[100vw] overflow-x-auto hideScrollBar">
             <Clock className="h-4 w-4 mr-2" />
-            <span>Next BA Training Starts July 21st - Secure Your Spot Now!</span>
+            <span>Next BA Training Starts October 20th - Secure Your Spot Now!</span>
           </div>
           <div className="hidden md:block">•</div>
           <div className="flex hidden md:block items-center">
