@@ -6,6 +6,7 @@ import AppLayout from "./layouts/AppLayout";
 import About from "./pages/About";
 import AvenueImpactDevelopment from "./pages/AvenueImpactDevelopment";
 import AVI from "./pages/AVI";
+import NewDashbaord from "./pages/new_dashbaord";
 
 import BusinessAnalysis from "./pages/courses/businessAnalysis";
 import DataAnalytics from "./pages/courses/dataAnalytics";
@@ -144,6 +145,10 @@ function App() {
             {
               index: true,
               element: <Home />,
+            },
+            {
+              path: "/home",
+              element: <NewDashbaord />,
             },
             {
               path: "/about",

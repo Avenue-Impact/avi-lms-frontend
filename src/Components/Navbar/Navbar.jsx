@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { DarkLogo, WhiteLogo } from "../Logo";
 import navImg from "../../assets/images/navImg.png";
+import arrowImg from "../../assets/imgs/arrow.png";
 import mobile from "../../assets/images/mobile-dark.png";
 import { faBars, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -36,13 +37,13 @@ const Navbar = () => {
 
   return (
     <div className="group absolute left-0 top-0 z-20 w-full">
-      <div className="flex justify-between overflow-x-hidden px-8 py-4 transition-all duration-300 ease-linear group-hover:bg-white md:px-12 lg:py-[25.72px] 2xl:px-20">
+      <div className="flex justify-between overflow-x-hidden px-8 py-4 transition-all duration-300 ease-linear md:px-12 lg:py-[25.72px] 2xl:px-20">
         <div className="nav-logo">
-          <WhiteLogo className="block h-[34.45px] w-[155.05px] group-hover:hidden lg:h-[40.55px] lg:w-[200px]" />
+          {/* <WhiteLogo className="block h-[34.45px] w-[155.05px] group-hover:hidden lg:h-[40.55px] lg:w-[200px]" /> */}
           <Link to={"/"} className="cursor-pointer">
           <DarkLogo
             className={
-              "hidden h-[34.45px] w-[155.05px] group-hover:block lg:h-[40.55px] lg:w-[200px]"
+              " h-[34.45px] w-[155.05px] group-hover:block lg:h-[40.55px] lg:w-[200px]"
             }
           />
           </Link>
@@ -64,6 +65,8 @@ const Navbar = () => {
                 <FontAwesomeIcon icon={faClose} />
               </button>
             </div>
+
+            {/* Desktop menu */}
             <ul className="nav flex flex-col items-start gap-6 px-12 text-[#23314A] md:flex-row md:items-center md:px-0 md:*:text-white">
               {menus.map((menu, id) => {
                 return (
@@ -86,7 +89,7 @@ const Navbar = () => {
               })}
               <div>
                 <li
-                  className="service flex cursor-pointer items-center space-x-2 text-[#23314A] transition-all duration-150 group-hover:text-[#23314A] md:text-white"
+                  className="service flex cursor-pointer items-center space-x-2 text-[#23314A] transition-all duration-150 group-hover:text-[#23314A] "
                   onClick={() => setDropDown((prev) => !prev)}
                 >
                   <span className="after:contents-[''] relative m-auto after:absolute after:left-0 after:m-auto after:block after:h-[2px] after:w-0 after:bg-red-500 after:transition-[width] after:duration-100 after:ease-in hover:after:w-full">
@@ -100,6 +103,8 @@ const Navbar = () => {
                   </span>
                 </li>
               </div>
+
+              {/* Mobile Dropdown */}
               {dropdown && <MobileDropdown handleNav={handleNav} />}
               <div className="mt-3 md:hidden">
                 <img
@@ -151,12 +156,22 @@ const Navbar = () => {
               </div>
             </ul>
 
-            <Link to={"/contact"}>
-              <button className="hidden rounded-lg bg-[#f4f5f7] px-4 py-2 capitalize text-[#23314A] group-hover:bg-[#CC1747] group-hover:text-[#FFEBF0] md:block">
-                contact
+
+          </div>
+        </div>
+
+        <div>
+        <Link to={"/contact"}>
+              <button className="hidden md:flex rounded-full bg-[#23314A] items-center gap-4 px-4 py-3 capitalize text-[#23314A] text-[#FFEBF0] ">
+                <div>
+                  contact
+                </div>
+                <div className="bg-[#CC1747] h-6 w-6 rounded-full relative">
+                  <div className="bg-[#CC1747] h-6 w-6 rounded-full"></div>
+                  <img src={arrowImg} alt="arrow" className="absolute bottom-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 " />
+                </div>
               </button>
             </Link>
-          </div>
         </div>
 
         <button
@@ -164,7 +179,7 @@ const Navbar = () => {
           role="show and hide menu"
           onClick={() => setShowNav((prev) => !prev)}
         >
-          <span className="inline-flex cursor-pointer items-center text-2xl text-white group-hover:text-[rgb(35,49,74)] md:hidden">
+          <span className="inline-flex cursor-pointer items-center text-2xl text-[rgb(35,49,74)] md:hidden">
             <FontAwesomeIcon icon={faBars} />
           </span>
         </button>
