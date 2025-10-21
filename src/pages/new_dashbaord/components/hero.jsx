@@ -5,7 +5,7 @@ import heroImgMobile from '../../../assets/imgs/hero_small.png'
 
 export function HeroSection() {
   return (
-    <section className=" sm:w-[85%] w-[95%] mx-auto px-6 py-16 md:py-24">
+    <section className=" sm:w-[85%] w-[95%] mx-auto py-16 md:py-24">
       <div className="grid lg:grid-cols-2 md:gap-0 gap-12 items-center">
         {/* Left Content */}
         <div className="space-y-6 font-poppins">

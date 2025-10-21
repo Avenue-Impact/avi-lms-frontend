@@ -48,7 +48,7 @@ const processSteps = [
 
 export function ImpactProcessSection() {
   return (
-    <section className="py-20 px-4 bg-gray-50">
+    <section className="py-20 bg-gray-50">
       <div className="sm:w-[85%] w-[95%] mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16 max-w-4xl mx-auto">

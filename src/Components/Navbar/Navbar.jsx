@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 // import styles from "./Navbar.module.css";
 import { Link, NavLink } from "react-router-dom";
-import { DarkLogo, WhiteLogo } from "../Logo";
+import { DarkLogo } from "../Logo";
 import navImg from "../../assets/images/navImg.png";
 import arrowImg from "../../assets/imgs/arrow.png";
 import mobile from "../../assets/images/mobile-dark.png";
@@ -37,7 +37,8 @@ const Navbar = () => {
 
   return (
     <div className="group absolute left-0 top-0 z-20 w-full">
-      <div className="flex justify-between overflow-x-hidden px-8 py-4 transition-all duration-300 ease-linear md:px-12 lg:py-[25.72px] 2xl:px-20">
+     <div className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="flex items-center sm:w-[85%] w-[95%] mx-auto justify-between overflow-x-hidden py-4 transition-all duration-300 ease-linear lg:py-[10px] ">
         <div className="nav-logo">
           {/* <WhiteLogo className="block h-[34.45px] w-[155.05px] group-hover:hidden lg:h-[40.55px] lg:w-[200px]" /> */}
           <Link to={"/"} className="cursor-pointer">
@@ -184,6 +185,7 @@ const Navbar = () => {
           </span>
         </button>
       </div>
+     </div>
       {dropdown && (
         <div
           className="dropdown mb-16 hidden bg-white px-12 md:block"
