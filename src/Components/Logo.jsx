@@ -1,5 +1,5 @@
-import whiteLogo from "../assets/images/logo_white.png";
-import darkLogo from "/images/logo.svg";
+import whiteLogo from "../assets/logo/logo_white.png";
+import darkLogo from "../assets/logo/logo.svg";
 export const WhiteLogo = ({ className }) => {
   return (
     <img src={whiteLogo} alt="" className={`${className} cursor-pointer`} />

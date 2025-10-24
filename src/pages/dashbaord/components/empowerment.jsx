@@ -1,7 +1,9 @@
 import { ArrowRight } from "lucide-react"
 import empowermentImg from '../../../assets/imgs/Rectangle 678.png'
+import { useNavigate } from "react-router-dom"
 
 export function EmpowermentSection() {
+  const navigate = useNavigate();
   return (
     <section className="py-16 md:py-24">
       <div className="sm:w-[85%] w-full mx-auto ">
@@ -18,6 +20,7 @@ export function EmpowermentSection() {
             </p>
             <div>
                 <button
+                onClick={() => navigate("/about")}
                 size="lg"
                 className="bg-gradient-to-r from-[#EA5480] to-[#14345F] flex items-center hover:bg-white/20 text-white border border-white/20 rounded-full ps-8 p-[5px] gap-4 group"
                 >

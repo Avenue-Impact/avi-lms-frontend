@@ -1,7 +1,10 @@
-import { Linkedin, Facebook, Instagram } from "lucide-react"
+import { Linkedin, Facebook, Instagram, Youtube } from "lucide-react"
 import { CommonButton as Button } from "@/Components/ui/button"
 import { ArrowRight } from "lucide-react"
-import { WhiteLogo } from "@/Components/Logo"
+import { DarkLogo, WhiteLogo } from "@/Components/Logo"
+import { useNavigate } from "react-router-dom"
+import { socialLinks } from "@/utils/socialLinks"
+import { BsTiktok } from "react-icons/bs"
 
 // Custom X (Twitter) icon component
 function XIcon({ className }) {
@@ -13,8 +16,10 @@ function XIcon({ className }) {
 }
 
 export function Footer() {
+    const navigate = useNavigate();
+
   return (
-    <footer className="bg-[#1e3a5f] text-white py-16 px-6 md:px-12 lg:px-24">
+    <footer className="bg-[#1e3a5f] text-white py-16 lg:px-24">
       <div className="sm:w-[85%] w-[95%] mx-auto">
         <div className="grid md:grid-cols-2 items-start gap-12 mb-16">
           {/* Left Column */}
@@ -26,6 +31,7 @@ export function Footer() {
             </h2>
             <div>
                 <button
+                onClick={() => navigate("/contact")}
                 size="lg"
                 className="bg-[#D50241]  flex items-center hover:bg-white/20 text-white border border-white/20 rounded-full ps-8 p-[5px] gap-4 group"
                 >
@@ -48,36 +54,52 @@ export function Footer() {
         <div className="grid md:grid-cols-2 gap-8 pt-8 border-t border-white/20">
           {/* Left: Logo, Social, Copyright */}
           <div className=" space-y-12">
-            <WhiteLogo/>
+            <div className="w-[200px] h-[50px]" onClick={() => navigate("/")}>
+                <WhiteLogo/>
+            </div>
 
-            <div className="flex gap-4 mb-6">
+            <div className="flex max-sm:items-center max-sm:justify-center gap-4 mb-6">
               <a
-                href="#"
+                href={socialLinks.linkedin}
                 className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded flex items-center justify-center transition-colors"
                 aria-label="LinkedIn"
               >
                 <Linkedin className="h-5 w-5" />
               </a>
               <a
-                href="#"
+                href={socialLinks.twitter}
                 className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded flex items-center justify-center transition-colors"
                 aria-label="X (Twitter)"
               >
                 <XIcon className="h-5 w-5" />
               </a>
               <a
-                href="#"
+                href={socialLinks.facebook}
                 className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded flex items-center justify-center transition-colors"
                 aria-label="Facebook"
               >
                 <Facebook className="h-5 w-5" />
               </a>
               <a
-                href="#"
+                href={socialLinks.instagram}
                 className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded flex items-center justify-center transition-colors"
                 aria-label="Instagram"
               >
                 <Instagram className="h-5 w-5" />
+              </a>
+              <a
+                href={socialLinks.youtube}
+                className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded flex items-center justify-center transition-colors"
+                aria-label="YouTube"
+              >
+                <Youtube className="h-5 w-5" />
+              </a>
+              <a
+                href={socialLinks.tiktok}
+                className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded flex items-center justify-center transition-colors"
+                aria-label="TikTok"
+              >
+                <BsTiktok className="h-5 w-5" />
               </a>
             </div>
 
@@ -85,7 +107,7 @@ export function Footer() {
           </div>
 
           {/* Right: Contact Info */}
-          <div className="text-right space-y-2">
+          <div className="sm:text-right text-center space-y-2">
             <div className="space-y-4 ">
               <p className="text-xl font-semibold">+44 8000 541 0720</p>
               <p className="text-lg">London, UK</p>

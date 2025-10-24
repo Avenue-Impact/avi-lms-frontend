@@ -2,8 +2,11 @@ import { CommonButton as Button } from "@/Components/ui/button"
 import { ArrowRight } from "lucide-react"
 import heroImg from '../../../assets/imgs/Rectangle 696.png'
 import heroImgMobile from '../../../assets/imgs/hero_small.png'
+import { useNavigate } from "react-router-dom"
 
 export function HeroSection() {
+  const navigate = useNavigate();
+  
   return (
     <section className=" sm:w-[85%] w-[95%] mx-auto py-16 md:py-24">
       <div className="grid lg:grid-cols-2 md:gap-0 gap-12 items-center">
@@ -27,7 +30,9 @@ export function HeroSection() {
           </p>
 
           {/* CTA Button */}
-          <button className="bg-[#14345F] flex items-center gap-2 p-[7px] ps-12 rounded-full text-primary-foreground hover:bg-primary/90 group">
+          <button 
+          onClick={() => navigate("/about")}
+          className="bg-[#14345F] flex items-center gap-2 p-[7px] ps-12 rounded-full text-primary-foreground hover:bg-primary/90 group">
             Get Started
             <ArrowRight className="ml-2 h-12 w-12 p-2 bg-[#F53366] rounded-full group-hover:translate-x-1 transition-transform" />
           </button>

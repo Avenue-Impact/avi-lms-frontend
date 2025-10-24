@@ -6,7 +6,6 @@ import AppLayout from "./layouts/AppLayout";
 import About from "./pages/About";
 import AvenueImpactDevelopment from "./pages/AvenueImpactDevelopment";
 import AVI from "./pages/AVI";
-import NewDashbaord from "./pages/new_dashbaord";
 
 import BusinessAnalysis from "./pages/courses/businessAnalysis";
 import DataAnalytics from "./pages/courses/dataAnalytics";
@@ -118,6 +117,7 @@ import Notifications from "./pages/admin-pages/notification/Notifications";
 import ReviewDetails from "./pages/admin-pages/reviews/ReviewInfo";
 import ReviewMainPage from "./pages/admin-pages/reviews/ReviewMainPage";
 import { elements } from "chart.js";
+import Dashbaord from "./pages/dashbaord";
 
 const queryClient = new QueryClient();
 
@@ -143,12 +143,12 @@ function App() {
           element: <AppLayout />,
           children: [
             {
-              index: true,
+              path: "/home",
               element: <Home />,
             },
             {
-              path: "/home",
-              element: <NewDashbaord />,
+              index: true,
+              element: <Dashbaord />,
             },
             {
               path: "/about",

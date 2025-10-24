@@ -1,4 +1,3 @@
-import { useRef } from 'react';
 import { ArrowRight } from "lucide-react"
 import cardImg_1 from '../../../assets/imgs/impactCard1.png'
 import cardImg_2 from '../../../assets/imgs/impactCard2.png'
@@ -15,6 +14,7 @@ import 'swiper/css/pagination';
 
 // import required modules
 import { Navigation, Pagination, Mousewheel, Keyboard } from 'swiper/modules';
+import { useNavigate } from "react-router-dom"
 
 const processSteps = [
   {
@@ -47,8 +47,9 @@ const processSteps = [
 ]
 
 export function ImpactProcessSection() {
+  const navigate = useNavigate();
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-20 bg-gray-100">
       <div className="sm:w-[85%] w-[95%] mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16 max-w-4xl mx-auto">
@@ -110,13 +111,13 @@ export function ImpactProcessSection() {
                   <div className="py-6 px-4">
                     <h3 className="text-xl font-bold text-[#1a3a5c] mb-3">{step.title}</h3>
                     <p className="text-gray-600 text-sm leading-relaxed mb-4">{step.description}</p>
-                    <a
-                      href="#"
+                    <button
+                      onClick={() => navigate("/about")}
                       className="inline-flex sm:pt-4 items-center text-sm font-medium text-[#1a3a5c] hover:text-[#e91e63] transition-colors group"
                     >
                       Learn More
                       <ArrowRight className="ml-2 h-4 w-4 text-[#e91e63] group-hover:translate-x-1 transition-transform" />
-                    </a>
+                    </button>
                   </div>
                 </div>
               </SwiperSlide>
