@@ -18,18 +18,20 @@ import { useNavigate } from "react-router-dom"
 
 const processSteps = [
   {
-    title: "Analysis",
+    title: "Digital Transformation",
     description:
       "The first step in our services is to work closely with you to understand your business needs and goals.",
     image: cardImg_1,
     alt: "Digital data analysis visualization",
+    link: "/digital-transformation"
   },
   {
-    title: "Providing Tailored Solutions",
+    title: "Data Solutions",
     description:
       "Next, we will provide customised solutions that are specifically designed to drive growth and success.",
     image: cardImg_2,
     alt: "Light bulb representing innovative solutions",
+    link: "/data-solution"
   },
   {
     title: "Digital Learning Hub",
@@ -37,12 +39,14 @@ const processSteps = [
       "Explore our Digital Learning Hub for expert-led courses, resources, and interactive learning experiences to upskill at your own pace.",
     image: cardImg_3,
     alt: "Colorful books representing digital learning",
+    link: "/digital-learning-hub"
   },
   {
     title: "Implementation",
     description: "The final step in our services is to provide support throughout the implementation process.",
     image: cardImg_4,
     alt: "Person implementing solutions",
+    link: "/digital-transformation"
   },
 ]
 
@@ -97,7 +101,7 @@ export function ImpactProcessSection() {
           >
             {processSteps.map((step, index) => (
               <SwiperSlide key={index} className="h-auto min-w-[200px]">
-                <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow h-full">
+                <div onClick={() => navigate(step.link)} className="bg-white cursor-pointer border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow h-full">
                   {/* Card Image */}
                   <div className="relative h-64 w-full">
                     <img
@@ -112,7 +116,7 @@ export function ImpactProcessSection() {
                     <h3 className="text-xl font-bold text-[#1a3a5c] mb-3">{step.title}</h3>
                     <p className="text-gray-600 text-sm leading-relaxed mb-4">{step.description}</p>
                     <button
-                      onClick={() => navigate("/about")}
+                      onClick={() => navigate(step.link)}
                       className="inline-flex sm:pt-4 items-center text-sm font-medium text-[#1a3a5c] hover:text-[#e91e63] transition-colors group"
                     >
                       Learn More

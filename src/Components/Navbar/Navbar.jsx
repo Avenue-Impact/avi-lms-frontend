@@ -243,21 +243,21 @@ const Navbar = () => {
                 // className="after:contents-[''] relative w-max transition-all duration-150 after:absolute after:left-0 after:m-auto after:block after:h-[2px] after:w-0 after:bg-red-500 after:transition-[width] after:duration-100 after:ease-in hover:after:w-full"
                 >
                   <NavLink to={"/digital-transformation"}>
-                    digital transformation
+                    Digital Transformation
                   </NavLink>
                 </li>
                 <li
                   onClick={handleNav}
                 // className="after:contents-[''] relative w-max transition-all duration-150 after:absolute after:left-0 after:m-auto after:block after:h-[3px] after:w-0 after:bg-red-500 after:transition-[width] after:duration-100 after:ease-in hover:after:w-full"
                 >
-                  <NavLink to={"/data-solution"}> data solution</NavLink>
+                  <NavLink to={"/data-solution"}>Data Solution</NavLink>
                 </li>
                 <li
                   onClick={handleNav}
                 // className="after:contents-[''] relative w-max transition-all duration-150 after:absolute after:left-0 after:m-auto after:block after:h-[2px] after:w-0 after:bg-red-500 after:transition-[width] after:duration-100 after:ease-in hover:after:w-full"
                 >
                   <NavLink to={"/avenue-impact-development"}>
-                    avenue impact development CIC
+                    Avenue Impact Development CIC
                   </NavLink>
                 </li>
                 <li

@@ -20,7 +20,7 @@ import DataSolution from "./pages/DataSolution";
 import DigitalTransformation from "./pages/DigitalTransformation";
 import Feedback from "./pages/Feedback";
 import BusinessInterestForm from "./pages/businessInterest/index";
-import Home from "./pages/Home";
+// import Home from "./pages/Home";
 // import ThanksPage from "./pages/thanksPage";
 
 // import Feedback from "./pages/Feedback";
@@ -142,10 +142,10 @@ function App() {
           path: "/",
           element: <AppLayout />,
           children: [
-            {
-              path: "/home",
-              element: <Home />,
-            },
+            // {
+            //   path: "/home",
+            //   element: <Home />,
+            // },
             {
               index: true,
               element: <Dashbaord />,

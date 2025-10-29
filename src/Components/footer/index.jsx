@@ -54,7 +54,7 @@ export function Footer() {
         <div className="grid md:grid-cols-2 gap-8 pt-8 border-t border-white/20">
           {/* Left: Logo, Social, Copyright */}
           <div className=" space-y-12">
-            <div className="w-[200px] h-[50px]" onClick={() => navigate("/")}>
+            <div className="w-[200px] h-[50px] cursor-pointer" onClick={() => navigate("/")}>
                 <WhiteLogo/>
             </div>
 
