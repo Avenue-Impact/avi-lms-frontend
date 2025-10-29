@@ -17,6 +17,8 @@ import {
   DialogDescription,
 } from "@/Components/ui/dialog"
 import Button from "@/Components/Button"
+import { WhiteLogo } from "@/Components/Logo"
+import { useNavigate } from "react-router-dom"
 
 /**
  * @typedef {Object} FeedbackData
@@ -58,6 +60,7 @@ const futureTopicsOptions = [
 ]
 
 export default function StudentFeedbackForm() {
+  const navigate = useNavigate()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false)
@@ -265,12 +268,8 @@ export default function StudentFeedbackForm() {
       <ErrorModal />
       <div className="bg-[#000000A8] py-8">
         <div className="max-w-4xl mx-auto space-y-8 max-sm:px-2">
-          <div className="fixed top-4 left-4">
-            <img 
-              src="/images/aviLogo.png" 
-              alt="Logo" 
-              className="sm:w-20 sm:h-20 w-12 h-12 bg-white p-1 rounded-full"
-            />
+          <div onClick={() => navigate("/")} className="fixed w-[200px] h-[60px] cursor-pointer top-4 left-4">
+            <WhiteLogo />
           </div>
           {/* Header */}
           <div className="text-center space-y-4">

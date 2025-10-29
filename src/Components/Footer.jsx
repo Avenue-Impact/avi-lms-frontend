@@ -5,7 +5,7 @@ import Button from "./Button";
 import { WhiteLogo } from "./Logo";
 import SocialMediaLinks, { socialMediaData } from "./SocialMediaLink";
 
-const Footer = ({ heading, description }) => {
+const OldFooter = ({ heading, description }) => {
   return (
     <ImageHero imageSrc={footerImg} className={"items-start md:items-end"}>
       <div className="flex h-full w-full">
@@ -35,4 +35,4 @@ const Footer = ({ heading, description }) => {
   );
 };
 
-export default Footer;
+export default OldFooter;

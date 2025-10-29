@@ -26,6 +26,10 @@ module.exports = {
       fontFamily: {
         poppins: ['Poppins', 'sans-serif']
       },
+      lineHeight: {
+        'extra-loose': '2.5',
+        '12': '3rem',
+      },
       colors: {
         "lms-border": "#D0D5DD",
         "btn-bg": "#D6E3FA",

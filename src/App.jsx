@@ -20,7 +20,7 @@ import DataSolution from "./pages/DataSolution";
 import DigitalTransformation from "./pages/DigitalTransformation";
 import Feedback from "./pages/Feedback";
 import BusinessInterestForm from "./pages/businessInterest/index";
-import Home from "./pages/Home";
+// import Home from "./pages/Home";
 // import ThanksPage from "./pages/thanksPage";
 
 // import Feedback from "./pages/Feedback";
@@ -117,6 +117,7 @@ import Notifications from "./pages/admin-pages/notification/Notifications";
 import ReviewDetails from "./pages/admin-pages/reviews/ReviewInfo";
 import ReviewMainPage from "./pages/admin-pages/reviews/ReviewMainPage";
 import { elements } from "chart.js";
+import Dashbaord from "./pages/dashbaord";
 
 const queryClient = new QueryClient();
 
@@ -141,9 +142,13 @@ function App() {
           path: "/",
           element: <AppLayout />,
           children: [
+            // {
+            //   path: "/home",
+            //   element: <Home />,
+            // },
             {
               index: true,
-              element: <Home />,
+              element: <Dashbaord />,
             },
             {
               path: "/about",
