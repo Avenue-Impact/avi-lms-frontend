@@ -36,8 +36,8 @@ const Navbar = () => {
   ];
 
   return (
-    <div className="group absolute left-0 top-0 z-20 w-full">
-     <div className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <div className="fixed left-0 top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+     <div className="w-full">
       <div className="flex items-center sm:w-[85%] w-[95%] mx-auto justify-between overflow-x-hidden py-4 transition-all duration-300 ease-linear lg:py-[10px] ">
         <div className="nav-logo">
           {/* <WhiteLogo className="block h-[34.45px] w-[155.05px] group-hover:hidden lg:h-[40.55px] lg:w-[200px]" /> */}

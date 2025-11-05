@@ -9,6 +9,33 @@ module.exports = {
   ],
   prefix: "",
   theme: {
+    extend: {
+      keyframes: {
+        'wave-slow': {
+          '0%, 100%': { transform: 'translateX(0) translateY(0)' },
+          '25%': { transform: 'translateX(5%) translateY(-5px)' },
+          '50%': { transform: 'translateX(10%) translateY(0)' },
+          '75%': { transform: 'translateX(5%) translateY(5px)' },
+        },
+        'wave-medium': {
+          '0%, 100%': { transform: 'translateX(0) translateY(0)' },
+          '25%': { transform: 'translateX(3%) translateY(-8px)' },
+          '50%': { transform: 'translateX(6%) translateY(0)' },
+          '75%': { transform: 'translateX(3%) translateY(8px)' },
+        },
+        'wave-fast': {
+          '0%, 100%': { transform: 'translateX(0) translateY(0)' },
+          '25%': { transform: 'translateX(-2%) translateY(-10px)' },
+          '50%': { transform: 'translateX(-4%) translateY(0)' },
+          '75%': { transform: 'translateX(-2%) translateY(10px)' },
+        },
+      },
+      animation: {
+        'wave-slow': 'wave-slow 8s ease-in-out infinite',
+        'wave-medium': 'wave-medium 6s ease-in-out infinite',
+        'wave-fast': 'wave-fast 4s ease-in-out infinite',
+      },
+    },
 
     container: {
       center: true,
