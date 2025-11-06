@@ -14,10 +14,10 @@ const CourseCard = ({
   noShadow = false,
 }) => {
   return (
-    <div className={`max-w-[300px] rounded-lg bg-[rgb(252,252,252)] shadow-md`}>
-      <div className="h-[150px] w-full overflow-hidden rounded-t-lg lg:h-[200px]">
+    <div className={`rounded-lg bg-[rgb(252,252,252)] shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1`}>
+      <div className="h-[150px] w-full overflow-hidden rounded-t-lg lg:h-[200px] group">
         <img
-          className="h-full w-full object-cover text-[12px]"
+          className="h-full w-full object-cover text-[12px] transition-transform duration-500 ease-in-out group-hover:scale-110"
           src={imgSrc}
           alt={altText}
         />
@@ -26,7 +26,8 @@ const CourseCard = ({
         {/* Title Section */}
         <div className="flex flex-col justify-center">
           <p className="w-full max-w-[299px] text-left text-sm font-light text-[#667185] lg:text-base">
-            {title}
+            <span className="block md:hidden">{title.length > 40 ? `${title.slice(0, 40)}...` : title}</span>
+            <span className="hidden md:block">{title}</span>
           </p>
 
           {/* Rating Section */}
@@ -46,7 +47,7 @@ const CourseCard = ({
         </div>
 
         {/* Button Section */}
-        <div className="mt-auto">
+        <div className="mt-auto ">
           <Link to={path}>
             <PreviewButton className="w-full bg-[#CC1747] py-3 text-[12px] lg:text-[14px]">
               Preview Course

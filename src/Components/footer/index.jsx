@@ -19,7 +19,7 @@ export function Footer() {
     const navigate = useNavigate();
 
   return (
-    <footer className="bg-[#1e3a5f] text-white py-16 lg:px-24">
+    <footer className="bg-tertiary-color-900 text-white py-16 lg:px-24">
       <div className="sm:w-[85%] w-[95%] mx-auto">
         <div className="grid md:grid-cols-2 items-start gap-12 mb-16">
           {/* Left Column */}
