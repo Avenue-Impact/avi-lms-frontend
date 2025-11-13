@@ -85,7 +85,7 @@ const Review = () => {
                           {course.title}
                         </p>
 
-                        <div className="flex justify-between">
+                        <div className="flex flex-col justify-between">
                           <div>
                             <p className="text-[12px] font-[300] text-[#CC1747]">
                               Course Duration
@@ -103,6 +103,15 @@ const Review = () => {
                               {course?.cohorts[0]
                                 ? formatDate(course?.cohorts[0].created_at)
                                 : "not published"}
+                            </p>
+                          </div>
+
+                          <div>
+                            <p className="text-[12px] font-[300] text-[#CC1747]">
+                              Total Reviews
+                            </p>
+                            <p className="text-[14px] font-[400] text-[#23314A]">
+                              {course.reviews?.filter(review => !review.is_deleted).length || 0}
                             </p>
                           </div>
                         </div>
