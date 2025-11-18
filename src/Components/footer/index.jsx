@@ -1,10 +1,13 @@
-import { Linkedin, Facebook, Instagram, Youtube } from "lucide-react"
+import { Linkedin } from "lucide-react"
 import { CommonButton as Button } from "@/Components/ui/button"
-import { ArrowRight } from "lucide-react"
+// import { ArrowRight } from "lucide-react"
 import { DarkLogo, WhiteLogo } from "@/Components/Logo"
 import { useNavigate } from "react-router-dom"
 import { socialLinks } from "@/utils/socialLinks"
-import { BsTiktok } from "react-icons/bs"
+import { PiYoutubeLogoFill } from "react-icons/pi"
+import { BsInstagram } from "react-icons/bs"
+import { FaFacebook } from "react-icons/fa6"
+import { GrTiktok } from "react-icons/gr"
 
 // Custom X (Twitter) icon component
 function XIcon({ className }) {
@@ -36,7 +39,7 @@ export function Footer() {
                 className="bg-[#D50241]  flex items-center hover:bg-white/20 text-white border border-white/20 rounded-full ps-8 p-[5px] gap-4 group"
                 >
                 Send Us A Message
-                <ArrowRight className="ml-2 h-12 w-12 p-2 group-hover:translate-x-1 transition-transform" />
+                {/* <ArrowRight className="ml-2 h-12 w-12 p-2 group-hover:translate-x-1 transition-transform" /> */}
                 </button>
             </div>
           </div>
@@ -58,7 +61,7 @@ export function Footer() {
                 <WhiteLogo/>
             </div>
 
-            <div className="flex max-sm:items-center max-sm:justify-center gap-4 mb-6">
+            {/* <div className="flex max-sm:items-center max-sm:justify-center gap-4 mb-6">
               <a
                 href={socialLinks.linkedin}
                 className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded flex items-center justify-center transition-colors"
@@ -78,30 +81,30 @@ export function Footer() {
                 className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded flex items-center justify-center transition-colors"
                 aria-label="Facebook"
               >
-                <Facebook className="h-5 w-5" />
+                <FaFacebook className="h-5 w-5" />
               </a>
               <a
                 href={socialLinks.instagram}
                 className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded flex items-center justify-center transition-colors"
                 aria-label="Instagram"
               >
-                <Instagram className="h-5 w-5" />
+                <BsInstagram className="h-5 w-5" />
               </a>
               <a
                 href={socialLinks.youtube}
                 className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded flex items-center justify-center transition-colors"
                 aria-label="YouTube"
               >
-                <Youtube className="h-5 w-5" />
+                <PiYoutubeLogoFill className="h-5 w-5" />
               </a>
               <a
                 href={socialLinks.tiktok}
                 className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded flex items-center justify-center transition-colors"
                 aria-label="TikTok"
               >
-                <BsTiktok className="h-5 w-5" />
+                <GrTiktok className="h-5 w-5" />
               </a>
-            </div>
+            </div> */}
 
             <p className="text-sm text-white/70">© 2025 Avenue Impact Limited. All rights reserved</p>
           </div>
