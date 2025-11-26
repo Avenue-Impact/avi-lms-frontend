@@ -1,9 +1,10 @@
 // import MainContent from "../Components/MainContent/MainContent";
+import React from 'react';
 import { industriesItems, professionalItems } from "@/lib/professionalItems";
 import { ScrollRestoration } from "react-router-dom";
 import certificate from "../assets/images/certificate.png";
 import joinTeam from "../assets/images/join_team.png";
-import AVIbg from "../assets/images/live_coaching.png";
+import AVIbg from "../assets/images/pexels-divinetechygirl-1181304.jpg";
 import professionalBG from "../assets/images/proffessional.png";
 import teamDiscussion from "../assets/images/team_discussion.png";
 import ColorHero from "../Components/ColorHero";
@@ -24,76 +25,81 @@ import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
 // nill
 
 const AVI = () => {
+  const [searchQuery, setSearchQuery] = React.useState('');
   return (
     <>
       <ScrollRestoration />
-      <ColorHero />
+      {/* <ColorHero /> */}
+
+            {/* Checkout our top courses */}
+      <div className={styles.checkout_courses}>
+        <div className="px-8 pt-10 lg:px-14 lg:py-4">
+          <div className={styles.checkoutCoursesFlex}>
+            <div className={styles.checkoutCourses1}>
+              <div className="bg-[#ddd] relative h-16">
+                <p className="sm:text-3xl text-2xl bg-primary py-3 shadow-xl mt-2 ml-2 w-full absolute px-4 font-medium capitalize text-white">
+                  Checkout our top courses
+                </p>
+              </div>
+            </div>
+            <div className={styles.checkoutCourses2}>
+              <span className={styles.searchLabel}>Search</span>
+              <input
+                type="text"
+                className={styles.inputField}
+                placeholder="Search courses..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* <div className="mt-2 h-[1px] w-full bg-[#C7D7F4]" /> */}
+
+          <div
+            className={`${styles.career_content} w-full py-8 text-[#667185] lg:w-1/2 mt-0`}
+          >
+            <p className="sm:text-2xl text-xl">
+              {" "}
+              Discover our most popular courses, carefully curated to enhance
+              your skills and advance your career. Join thousands of learners
+              who have already taken the next step with Avenue Impact.
+            </p>
+          </div>
+
+          {/* Preview this Course */}
+          <AllCourses searchQuery={searchQuery} />
+          {/* Enhance your team's skills */}
+          <div className={`${styles.team_skills} py-24`}>
+            <div className={styles.team_skills_img}>
+              <img
+                className="w-full sm:w-full md:w-full lg:w-3/4"
+                src={teamDiscussion}
+                alt="teamDiscussion"
+              />
+            </div>
+
+            <div className={styles.team_skills_content}>
+              <h3 className="text-[24px] font-[300] capitalize leading-9 text-[#3A4C6C] lg:text-[40px]">
+                Enhance your team&apos;s skills <br /> with Avenue Impact
+                Academy.
+              </h3>
+              <p className="py-7 text-justify">
+                {" "}
+                Gain unlimited access to over 25,000 top courses anytime,
+                anywhere. Discover our international course collection
+                available in 14 languages and earn premier certifications in
+                technology and business.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <section>
         {/* AVI IMAGE */}
         <div className={`${styles.AVI_img} py-14`}>
-          <img src={AVIbg} alt="" className="w-full" />
-        </div>
-
-        {/* Checkout our top courses */}
-        <div className={styles.checkout_courses}>
-          <div className="px-8 pt-10 lg:px-14 lg:py-4">
-            <div className={styles.checkoutCoursesFlex}>
-              <div className={styles.checkoutCourses1}>
-                <p className="text-2xl font-normal capitalize text-[#23314A]">
-                  Checkout our top courses
-                </p>
-              </div>
-              <div className={styles.checkoutCourses2}>
-                <span className={styles.searchLabel}>Search</span>
-                <input
-                  type="text"
-                  className={styles.inputField}
-                  placeholder="Search courses..."
-                />
-              </div>
-            </div>
-
-            <div className="mt-2 h-[1px] w-full bg-[#C7D7F4]" />
-
-            <div
-              className={`${styles.career_content} w-full py-8 text-[#667185] lg:w-1/2 mt-12`}
-            >
-              <p className="text-2xl">
-                {" "}
-                Discover our most popular courses, carefully curated to enhance
-                your skills and advance your career. Join thousands of learners
-                who have already taken the next step with Avenue Impact.
-              </p>
-            </div>
-
-            {/* Preview this Course */}
-            <AllCourses />
-            {/* Enhance your team's skills */}
-            <div className={`${styles.team_skills} py-24`}>
-              <div className={styles.team_skills_img}>
-                <img
-                  className="w-full sm:w-full md:w-full lg:w-3/4"
-                  src={teamDiscussion}
-                  alt="teamDiscussion"
-                />
-              </div>
-
-              <div className={styles.team_skills_content}>
-                <h3 className="text-[24px] font-[300] capitalize leading-9 text-[#3A4C6C] lg:text-[40px]">
-                  Enhance your team&apos;s skills <br /> with Avenue Impact
-                  Academy.
-                </h3>
-                <p className="py-7 text-justify">
-                  {" "}
-                  Gain unlimited access to over 25,000 top courses anytime,
-                  anywhere. Discover our international course collection
-                  available in 14 languages and earn premier certifications in
-                  technology and business.
-                </p>
-              </div>
-            </div>
-          </div>
+          <img src={AVIbg} alt="" className="w-full sm:h-[800px] h-[400px] object-cover object-bottom" />
         </div>
 
         {/* Certificate */}
@@ -172,9 +178,19 @@ const AVI = () => {
   );
 };
 
-const AllCourses = () => {
+const AllCourses = ({ searchQuery = '' }) => {
   const { data, isLoading, error } = useFetchAllCourses();
-  console.log({"data": data, "isLoading": isLoading, "error": error});
+  
+  // Filter courses based on search query
+  const filteredCourses = React.useMemo(() => {
+    if (!data?.data?.data?.courses) return [];
+    
+    const query = searchQuery.toLowerCase();
+    return data.data.data.courses.filter(course => 
+      course.title.toLowerCase().includes(query) ||
+      (course.description?.toLowerCase().includes(query) ?? false)
+    );
+  }, [data, searchQuery]);
 
   if (isLoading)
     return (
@@ -189,17 +205,25 @@ const AllCourses = () => {
       </div>
     );
 
+  if (filteredCourses.length === 0) {
+    return (
+      <div className="w-full py-8 text-center">
+        <p className="text-gray-500">No courses found matching your search.</p>
+      </div>
+    );
+  }
+
   return (
     <div className={`${styles.previewCoursesFlex} overflow-visible`}>
-      {data?.data?.data?.courses?.map((course) => (
+      {filteredCourses.map((course) => (
         <CourseCard
           key={course.id}
           imgSrc={course.cover_image}
-          altText="joinTeam"
+          altText={course.title}
           title={course.title}
           rating={course.average_rating ?? 0}
           review={course.total_reviews}
-          path={`/preview-course/${course.id}`}
+          path={`/courses/landing-page/c/${course.id}`}
         />
       ))}
     </div>

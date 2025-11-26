@@ -264,7 +264,7 @@ const Navbar = () => {
                   onClick={handleNav}
                 // className="after:contents-[''] relative w-max transition-all duration-150 after:absolute after:left-0 after:m-auto after:block after:h-[2px] after:w-0 after:bg-red-500 after:transition-[width] after:duration-100 after:ease-in hover:after:w-full"
                 >
-                  <Link to={"/digital-learning-hub"}>Digital learning hub</Link>
+                  <Link to={"/digital-learning-hub"}>Digital Learning Hub</Link>
                 </li>
               </ul>
             </div>

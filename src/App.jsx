@@ -12,6 +12,7 @@ import DataAnalytics from "./pages/courses/dataAnalytics";
 import CloudComputing from "./pages/courses/cloudComputing";
 import ProjectManagement from "./pages/courses/projectManagement";
 import ThanksPage from "./pages/thanksPage";
+import LandingPage from "./pages/courses/landingPage";
 
 import Contact from "./pages/Contact";
 // import BusinessAnalysis from "./pages/courses/businessAnalysis";
@@ -195,6 +196,10 @@ function App() {
           path: "/courses",
           element: <CourseLayout />,
           children: [
+            {
+              path: "/courses/landing-page/c/:courseId",
+              element: <LandingPage />,
+            },
             {
               path: "/courses/business-analysis",
               element: <BusinessAnalysis />,

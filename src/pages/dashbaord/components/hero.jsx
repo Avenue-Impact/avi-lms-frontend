@@ -1,6 +1,6 @@
 import { CommonButton as Button } from "@/Components/ui/button"
 import { ArrowRight } from "lucide-react"
-import heroImg from '../../../assets/imgs/Rectangle 696.png'
+import heroImg from '../../../assets/imgs/Rectangle 700.svg'
 import heroImgMobile from '../../../assets/imgs/hero_small.png'
 import { useNavigate } from "react-router-dom"
 import AnimatedWaves from '@/Components/AnimatedWaves'
@@ -14,7 +14,7 @@ export function HeroSection() {
   
   return (
     // <section className="relative mx-auto py-16 flex flex-col h-svh bg-[#14345F] justify-between md:py-28 overflow-hidden">
-      <section className="relative mx-auto py-16 bg-tertiary-color-900 md:py-28 overflow-hidden">
+      <section className="relative mx-auto py-16 bg-tertiary-color-900 md:py-28">
       {/* <AnimatedWaves /> */}
       {/* <GL hovering={hovering} /> */}
       <div className="grid lg:grid-cols-2 sm:w-[85%] w-[95%] mx-auto md:gap-0 gap-12 items-center">
@@ -39,19 +39,19 @@ export function HeroSection() {
 
           {/* CTA Button */}
           <button 
-          onClick={() => navigate("/about")}
-          onMouseEnter={() => setHovering(true)}
-          onMouseLeave={() => setHovering(false)}
-          className="bg-primary-color-600 flex items-center gap-2 p-[7px] ps-12 rounded-full text-primary-foreground hover:bg-primary-color-600/90 group">
-            Get Started
-            <ArrowRight className="ml-2 h-12 w-12 p-2 bg-white text-tertiary-color-900 rounded-full group-hover:translate-x-1 transition-transform" />
+            onClick={() => navigate("/about")}
+            onMouseEnter={() => setHovering(true)}
+            onMouseLeave={() => setHovering(false)}
+            className="bg-primary-color-600 flex items-center gap-2 p-[7px] ps-12 rounded-full text-primary-foreground hover:bg-primary-color-600/90 group">
+              Get Started
+              <ArrowRight className="ml-2 h-12 w-12 p-2 bg-white text-tertiary-color-900 rounded-full group-hover:translate-x-1 transition-transform" />
           </button>
         </div>
 
         {/* Right Image with Decorative Elements */}
         <div className="relative">
           {/* Main Image Container */}
-          <div className="relative rounded-3xl overflow-hidden">
+          <div className="relative ">
           {/* <motion.div 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ 
@@ -68,7 +68,7 @@ export function HeroSection() {
               <img
                 src={ window.innerWidth < 768 ? heroImgMobile : heroImg}
                 alt="Business consultant presenting to team"
-                className="w-full h-[87vh] object-cover"
+                className="w-full h-[87vh] object-contain"
               />
             {/* </motion.div> */}
           </div>

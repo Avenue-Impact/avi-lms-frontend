@@ -216,7 +216,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="">
       {confirm && (
         <Modal>
           <ConfirmEmail
@@ -274,10 +274,10 @@ const SignUp = () => {
         </Modal>
       )}
 
-      <div className="flex w-full items-center justify-center px-6 2xl:h-[calc(100vh-100.547px)]">
+      <div className="flex w-full items-center justify-center px-6 ">
         <div className="w-fit">
           <div className="py-6">
-            <BorderCard className="mx-auto max-w-[465px]">
+            <BorderCard className="mx-auto ">
               <div className="mb-6 space-y-1">
                 <Heading>Sign up and start learning</Heading>
                 <Paragraph>Use your email to sign up</Paragraph>
@@ -285,50 +285,54 @@ const SignUp = () => {
               <Form {...form}>
                 <form ref={formRef} onSubmit={form.handleSubmit(handleSubmit)}>
                   <div className="space-y-[4px]">
+                    <div className="sm:grid grid-cols-2 gap-3">
+                      <FormInput
+                        label="firstname"
+                        name="firstName"
+                        control={form.control}
+                        type="text"
+                        id="firstName"
+                        placeholder=""
+                        onFocus={handleInputFocus}
+                        autoComplete="given-name"
+                        autoCapitalize="words"
+                      />
+                      <FormInput
+                        label="lastname"
+                        name="lastName"
+                        control={form.control}
+                        type="text"
+                        id="lastName"
+                        placeholder=""
+                        onFocus={handleInputFocus}
+                        autoComplete="family-name"
+                        autoCapitalize="words"
+                      />
+                    </div>
+                   <div className="sm:grid grid-cols-2 gap-3">
                     <FormInput
-                      label="firstname"
-                      name="firstName"
-                      control={form.control}
-                      type="text"
-                      id="firstName"
-                      placeholder=""
-                      onFocus={handleInputFocus}
-                      autoComplete="given-name"
-                      autoCapitalize="words"
-                    />
-                    <FormInput
-                      label="lastname"
-                      name="lastName"
-                      control={form.control}
-                      type="text"
-                      id="lastName"
-                      placeholder=""
-                      onFocus={handleInputFocus}
-                      autoComplete="family-name"
-                      autoCapitalize="words"
-                    />
-                    <FormInput
-                      label="username"
-                      name="username"
-                      control={form.control}
-                      type="text"
-                      id="username"
-                      placeholder=""
-                      onFocus={handleInputFocus}
-                      autoComplete="username"
-                      autoCapitalize="words"
-                    />
-                    <FormInput
-                      label="email"
-                      name={"email"}
-                      control={form.control}
-                      type="email"
-                      id="email"
-                      placeholder=""
-                      onFocus={handleInputFocus}
-                      autoComplete="email"
-                      autoCapitalize="none"
-                    />
+                        label="username"
+                        name="username"
+                        control={form.control}
+                        type="text"
+                        id="username"
+                        placeholder=""
+                        onFocus={handleInputFocus}
+                        autoComplete="username"
+                        autoCapitalize="words"
+                      />
+                      <FormInput
+                        label="email"
+                        name={"email"}
+                        control={form.control}
+                        type="email"
+                        id="email"
+                        placeholder=""
+                        onFocus={handleInputFocus}
+                        autoComplete="email"
+                        autoCapitalize="none"
+                      />
+                   </div>
                     <FormInput
                       label="Phone Number"
                       name="phoneNumber"
@@ -338,24 +342,26 @@ const SignUp = () => {
                       placeholder=""
                       autoComplete="tel"
                     />
+                   <div className="sm:grid grid-cols-2 gap-3">
                     <PasswordInput
-                      id="password"
-                      autoComplete="new-password"
-                      label="password"
-                      name="password"
-                      control={form.control}
-                      placeholder=""
-                      onFocus={handleInputFocus}
-                    />
-                    <PasswordInput
-                      id="confirmPassword"
-                      autoComplete="new-password"
-                      label="confirm password"
-                      name="confirmPassword"
-                      control={form.control}
-                      placeholder=""
-                      onFocus={handleInputFocus}
-                    />
+                        id="password"
+                        autoComplete="new-password"
+                        label="password"
+                        name="password"
+                        control={form.control}
+                        placeholder=""
+                        onFocus={handleInputFocus}
+                      />
+                      <PasswordInput
+                        id="confirmPassword"
+                        autoComplete="new-password"
+                        label="confirm password"
+                        name="confirmPassword"
+                        control={form.control}
+                        placeholder=""
+                        onFocus={handleInputFocus}
+                      />
+                   </div>
                     <FormInput
                       label="Referral Code (Optional)"
                       name="referralCode"
