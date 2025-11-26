@@ -1,6 +1,6 @@
 import { ArrowRight, Check } from "lucide-react"
 import { CommonButton as Button } from "@/Components/ui/button"
-import empowermentImg from '../../../../assets/imgs/2 1.svg'
+import empowermentImg from '../../../../assets/imgs/Frame 1984078367.svg'
 import { useNavigate } from "react-router-dom"
 
 export function JourneySection() {

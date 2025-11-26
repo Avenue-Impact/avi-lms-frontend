@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
+import SignUp from '@/pages/auth/Signup';
 
 export const CoursesRegistrationForm = () => {
   const [formData, setFormData] = useState({
@@ -58,7 +59,7 @@ export const CoursesRegistrationForm = () => {
         </div>
 
         {/* Right Form Panel */}
-        <div className="md:w-1/2 p-8 md:p-12">
+        {/* <div className="md:w-1/2 p-8 md:p-12">
           <h3 className="text-2xl font-bold text-gray-900 mb-6">Register Now</h3>
 
           <form
@@ -159,7 +160,8 @@ export const CoursesRegistrationForm = () => {
               Submit Application <ArrowRight className="w-5 h-5" />
             </button>
           </form>
-        </div>
+        </div> */}
+        <SignUp />
       </div>
     </div>
   );

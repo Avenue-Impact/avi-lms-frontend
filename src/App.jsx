@@ -197,7 +197,7 @@ function App() {
           element: <CourseLayout />,
           children: [
             {
-              path: "/courses/landing-page",
+              path: "/courses/landing-page/c/:courseId",
               element: <LandingPage />,
             },
             {

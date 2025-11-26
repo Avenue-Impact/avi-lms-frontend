@@ -30,12 +30,12 @@ const CoursesNavbar = () => {
       label: "hero",
     },
     {
-      path: "curriculum",
-      label: "curriculum",
+      path: "course-outline",
+      label: "course-outline",
     },
     {
-        path: "mentorship",
-        label: "mentorship",
+        path: "benefits",
+        label: "benefits",
     },
     {
         path: "reviews",
