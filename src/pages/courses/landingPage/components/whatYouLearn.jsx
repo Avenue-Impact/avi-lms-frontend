@@ -96,7 +96,7 @@ export function WhatYouLearnSection(
           </p>
         </div>
 
-        {/* Process Cards Slider */}
+        {/* Process Cards Slider... */}
         <div className="relative px-4">
           <Swiper
             slidesPerView={1.2}
