@@ -37,7 +37,37 @@ const changePasswordSchema = z
 const url = import.meta.env.VITE_USER_URL;
 
 const ChangePassword = () => {
-  const handleSubmit = async (values) => {
+  // const handleSubmit = async (values) => {
+  //   const token = Cookies.get("token");
+
+  //   const passwords = {
+  //     oldPassword: values.oldPassword,
+  //     newPassword: values.newPassword,
+  //     newPasswordConfirmation: values.confirmPassword,
+  //   };
+
+  //   try {
+  //     const response = await axios.patch(`${url}/password`, passwords, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
+
+  //     if (response.status) return toast.success(response.data.message);
+  //   } catch (error) {
+  //     return toast.error(
+  //       error.message ||
+  //         error?.response?.data?.message ||
+  //         error?.message ||
+  //         "something went wrong",
+  //     );
+  //   }
+  // };
+
+
+// In ChangePassword.jsx
+  
+const handleSubmit = async (values) => {
     const token = Cookies.get("token");
 
     const passwords = {
@@ -48,21 +78,23 @@ const ChangePassword = () => {
 
     try {
       const response = await axios.patch(`${url}/password`, passwords, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.status) return toast.success(response.data.message);
-    } catch (error) {
-      return toast.error(
-        error.message ||
-          error?.response?.data?.message ||
-          error?.message ||
-          "something went wrong",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
+
+      if (response.status === 200) {
+        toast.success("Password updated successfully");
+        // Optionally clear the form or redirect
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || "Failed to update password";
+      toast.error(errorMessage);
     }
   };
+
 
   const form = useForm({
     resolver: zodResolver(changePasswordSchema),
