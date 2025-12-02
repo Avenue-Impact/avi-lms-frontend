@@ -18,15 +18,16 @@ const ConfirmEmail = ({ setConfirm, setModal, setSuccess, user, form }) => {
   const { otp, setOtp } = useCredentials();
 
   const verify = async () => {
-    if (!otp || otp.length < 4) {
+    setIsLoading(true)
+    if (!otp) {
       toast.error("Please enter a valid verification code");
       return;
     }
 
     try {
       const verify = await axios.post(`${url}/verifyUser`, {
-        email: user.email,
-        phoneNumber: user.phoneNumber,
+        email: user.email ? user.email : user?.userid,
+        phoneNumber: user?.phoneNumber,
         confirmCode: otp,
         deliveryMethod,
       });
@@ -47,6 +48,7 @@ const ConfirmEmail = ({ setConfirm, setModal, setSuccess, user, form }) => {
       }
     } catch (error) {
       setSuccess("fail");
+      setIsLoading(false)
       if (error.response?.status === 400) {
         toast.error("Invalid verification code");
       } else if (error.response?.status === 401) {
@@ -57,6 +59,9 @@ const ConfirmEmail = ({ setConfirm, setModal, setSuccess, user, form }) => {
             "Verification failed. Please try again.",
         );
       }
+    }
+    finally {
+      setIsLoading(false)
     }
   };
 
@@ -166,9 +171,9 @@ const ConfirmEmail = ({ setConfirm, setModal, setSuccess, user, form }) => {
         </p>
       </div>
       <CommonButton
-        className="w-full bg-primary-color-600"
+        className="w-full cursor-pointer bg-primary-color-500 hover:bg-primary-color-600 z-[100]"
         onClick={verify}
-        disabled={isLoading || !otp || otp.length < 4}
+        disabled={isLoading}
       >
         {isLoading ? "Verifying..." : "Confirm"}
       </CommonButton>

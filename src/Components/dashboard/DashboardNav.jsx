@@ -43,7 +43,7 @@ function DashboardNav({ setToggleNav }) {
         <div className="flex items-center gap-4">
           <button
             type="button"
-            className="hidden text-sm text-[#667185] md:block md:text-nowrap"
+            className="hidden md:block md:text-nowrap cursor-pointer rounded bg-[#CC1747] text-white px-4 py-2 transition duration-300 disabled:hover:bg-slate-200 lg:hover:bg-[#B3123F]"
             onClick={() => navigate("/discover-courses")}
           >
             View all Courses

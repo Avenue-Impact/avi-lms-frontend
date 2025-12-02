@@ -77,6 +77,8 @@ export function HeroSection({
   const currentSlide = page % slides.length;
   const currentSlideData = slides[currentSlide];
 
+  const videoUrl = `https://avitrainingrecordings.s3.eu-west-2.amazonaws.com/live/wp-content/uploads/Business+Analysis/October+2025/Tester+Session/20+Oct+2025+Introduction+to+Business+Analysis+and+Success+Stories+(Live+Taster+Session).mp4`
+
   useEffect(() => {
     if (!autoSlide) return;
     
@@ -142,97 +144,19 @@ export function HeroSection({
           </motion.div>
         </div>
 
-        <AnimatePresence initial={false} custom={direction} mode="wait">
-          <motion.div
-            key={page}
-            custom={direction}
-            variants={slideVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            drag="x"
-            dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={1}
-            onDragEnd={(e, { offset, velocity }) => {
-              const swipe = swipePower(offset.x, velocity.x);
-              if (swipe < -swipeConfidenceThreshold) {
-                paginate(1);
-              } else if (swipe > swipeConfidenceThreshold) {
-                paginate(-1);
-              }
-            }}
-            className="relative"
-          >
+        <motion.div 
+          className="mt-12 md:mt-10 relative"
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}transition={{ delay: 0.1, type: "spring", stiffness: 120, damping: 12 }}
 
-            <motion.div 
-              className="mt-12 md:mt-10 relative"
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.1, duration: 0.5, type: 'spring', stiffness: 500 }}
-            >
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-                <img
-                  // src={currentSlideData.image}
-                  src={coverImage}
-                  alt={'course cover image'}
-                  className="w-full sm:h-[87vh] h-[60vh] object-cover object-center transform transition-transform duration-700 hover:scale-105"
-                />
-              </div>
-
-              <motion.div
-                className="absolute -top-6 -right-6 w-48 h-64 rounded-[3rem] z-50"
-                style={{ backgroundColor: currentSlideData.accentColor }}
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 0.8 }}
-                transition={{ delay: 0.4, duration: 0.5 }}
-              />
-
-              <motion.div
-                className="absolute top-1/3 -right-8 w-24 h-24 rounded-full z-50"
-                style={{ backgroundColor: currentSlideData.accentColor }}
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 0.6 }}
-                transition={{ delay: 0.6, duration: 0.5, type: 'spring' }}
-              />
-            </motion.div>
-
-            {/* Navigation Arrows */}
-            {/* <button 
-              onClick={() => paginate(-1)}
-              className="absolute left-0 top-1/2 bottom-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-100 transition-all duration-300 transform hover:scale-110 focus:outline-none"
-              aria-label="Previous slide"
-            >
-              <ChevronLeft className="w-6 h-6 text-gray-700" />
-            </button>
+        >
+          <div className="relative rounded-3xl overflow-hidden shadow-2xl">
             
-            <button 
-              onClick={() => paginate(1)}
-              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-100 transition-all duration-300 transform hover:scale-110 focus:outline-none"
-              aria-label="Next slide"
-            >
-              <ChevronRight className="w-6 h-6 text-gray-700" />
-            </button> */}
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Dots Indicator */}
-        <div className="flex justify-center mt-8 space-x-2">
-          {slides.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => {
-                const direction = index > currentSlide ? 1 : -1;
-                setPage([index, direction]);
-              }}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                index === currentSlide 
-                  ? 'w-8 bg-tertiary-color-900' 
-                  : 'bg-gray-300 hover:bg-gray-400'
-              }`}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
-        </div>
+        <video controls width="100%" src="https://avitrainingrecordings.s3.eu-west-2.amazonaws.com/live/wp-content/uploads/Business+Analysis/October+2025/Tester+Session/20+Oct+2025+Introduction+to+Business+Analysis+and+Success+Stories+(Live+Taster+Session).mp4">
+          Your browser does not support the video tag.
+        </video>
+          </div>
+        </motion.div>
       </div>
     </section>
   );

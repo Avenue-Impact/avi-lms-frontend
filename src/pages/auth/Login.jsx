@@ -1,3 +1,5 @@
+
+import { useState } from "react";
 import BorderCard from "@/Components/BorderCard";
 import { Form } from "@/Components/ui/form";
 import FormInput from "@/Components/ui/form-input";
@@ -15,6 +17,8 @@ import Cookies from "js-cookie";
 
 import { useLoginUser } from "@/hooks/students/use-login-user";
 import { ClipLoader } from "react-spinners";
+import Modal from "./components/Modal";
+import ConfirmEmail from "./components/ConfirmEmail";
 
 const loginSchema = z.object({
   username: z.string().min(1, { message: "name is required" }),
@@ -31,14 +35,24 @@ const Login = () => {
 
   const { mutate, isPending } = useLoginUser();
 
+  const [confirm, setConfirm] = useState(false);
+  const [user, setUser] = useState();
+  const [modal, setModal] = useState(false);
+  const [success, setSuccess] = useState("");
+
   const handleSubmit = async (values) => {
     const user = {
       userid: values.username,
       password: values.password,
     };
+    setUser(user);
 
     mutate(user, {
       onSuccess: ({ data }) => {
+      if (data.data.user.user_status !== "verified") {
+        setConfirm(true);
+        return;
+      }
         Cookies.set("token", data.data.token, {
           expires: 1,
           secure: true,
@@ -80,12 +94,25 @@ const Login = () => {
   });
 
   return (
-    <div className="flex min-h-[calc(100vh-100.547px)] w-full items-center justify-center px-4">
-      <div className="w-full max-w-[465px] py-10">
-        <BorderCard className="mx-auto">
-          <div className="mb-8 space-y-1">
-            <Heading>Welcome back!</Heading>
-            <Paragraph>Use your email to sign in to your dashboard</Paragraph>
+    <div>
+      {confirm && (
+        <Modal>
+          <ConfirmEmail
+            setConfirm={setConfirm}
+            setModal={setModal}
+            setSuccess={setSuccess}
+            user={user}
+            form={form}
+          />
+        </Modal>
+      )}
+
+      <div className="flex min-h-[calc(100vh-100.547px)] w-full items-center justify-center px-4">
+        <div className="w-full max-w-[465px] py-10">
+          <BorderCard className="mx-auto">
+            <div className="mb-8 space-y-1">
+              <Heading>Welcome back!</Heading>
+              <Paragraph>Use your email to sign in to your dashboard</Paragraph>
           </div>
           <Form {...form}>
             <form
@@ -145,7 +172,8 @@ const Login = () => {
               Sign up
             </Link>
           </p>
-        </BorderCard>
+          </BorderCard>
+        </div>
       </div>
     </div>
   );

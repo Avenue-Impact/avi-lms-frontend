@@ -38,7 +38,7 @@ function StudentSettings() {
               page === "edit" ? "text-primary-color-600 after:w-full" : "",
             )}
           >
-            <button onClick={() => setPage("edit")}>edit profile</button>
+            <button onClick={() => setPage("edit")}>Edit profile</button>
           </li>
           <li
             className={cn(
@@ -49,7 +49,7 @@ function StudentSettings() {
             )}
           >
             <button onClick={() => setPage("change-password")}>
-              change password
+              Change password
             </button>
           </li>
         </ul>
