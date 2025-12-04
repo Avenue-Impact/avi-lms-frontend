@@ -7,7 +7,8 @@ import { useAddPayment } from "@/hooks/students/use-add-payment";
 const OnDemandPayment = () => {
   let { courseId } = useParams();
   const { previewCourse, isLoading } = usePreviewCourses(courseId);
-  const { payment, paymentPending } = useAddPayment(courseId);
+  // No need to pass courseId into the hook – it's provided when calling `payment`
+  const { payment, paymentPending } = useAddPayment();
 
   const [selectedOption, setSelectedOption] = useState("");
 
@@ -27,6 +28,8 @@ const OnDemandPayment = () => {
         subscription_limit: selectedOption,
       },
       courseId,
+      // pass the full course object so we can optimistically add it to the dashboard
+      course: previewCourse?.data?.data?.course,
     });
   };
 
