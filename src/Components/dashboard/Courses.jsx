@@ -20,7 +20,7 @@ function Courses({ wishlist, handleWishlist }) {
       >
         <img
           src={wishlist.cover_image}
-          className="h-[180px] lg:h-[200px]"
+          className="h-[180px] lg:h-[200px] w-full object-cover"
           alt={title}
         />
       </div>

@@ -33,7 +33,9 @@ export default function LandingPage() {
         overview={courseDetails?.overview} 
         />
         <CoursesCountdownTimer />
-        <WhySection />
+        <WhySection 
+        title={courseDetails?.title}
+        />
         <WhatYouLearnSection 
         benefits={courseDetails?.benefits} 
         />

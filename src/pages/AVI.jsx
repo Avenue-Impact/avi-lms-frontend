@@ -22,7 +22,8 @@ import { motion } from "framer-motion";
 import { FaStar, FaRegStar, FaStarHalfAlt } from "react-icons/fa";
 import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
 // import img from "../assets/images/data-solution.jpg";
-// nill
+import HeroImg from "../assets/imgs/Union.svg";
+import { Search } from 'lucide-react';
 
 const AVI = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -34,37 +35,76 @@ const AVI = () => {
             {/* Checkout our top courses */}
       <div className={styles.checkout_courses}>
         <div className="px-8 pt-10 lg:px-14 lg:py-4">
-          <div className={styles.checkoutCoursesFlex}>
-            <div className={styles.checkoutCourses1}>
-              <div className="bg-[#ddd] relative h-16">
-                <p className="sm:text-3xl text-2xl bg-primary py-3 shadow-xl mt-2 ml-2 w-full absolute px-4 font-medium capitalize text-white">
-                  Checkout our top courses
-                </p>
+          <section className="lg:grid grid-cols-2 items-center md:gap-16 gap-8 mb-10">
+            {/* <div className={styles.checkoutCoursesFlex}>
+              <div className={styles.checkoutCourses1}>
+                <div className="bg-[#ddd] relative h-16">
+                  <p className="sm:text-3xl text-2xl bg-primary py-3 shadow-xl mt-2 ml-2 w-full absolute px-4 font-medium capitalize text-white">
+                    Checkout our top courses
+                  </p>
+                </div>
+              </div>
+              <div className={styles.checkoutCourses2}>
+                <span className={styles.searchLabel}>Search</span>
+                <input
+                  type="text"
+                  className={styles.inputField}
+                  placeholder="Search courses..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
               </div>
             </div>
-            <div className={styles.checkoutCourses2}>
-              <span className={styles.searchLabel}>Search</span>
-              <input
-                type="text"
-                className={styles.inputField}
-                placeholder="Search courses..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+
+            <div
+              className={`${styles.career_content} w-full py-8 text-[#667185] lg:w-1/2 mt-0`}
+            >
+              <p className="sm:text-2xl text-xl">
+                {" "}
+                Discover our most popular courses, carefully curated to enhance
+                your skills and advance your career. Join thousands of learners
+                who have already taken the next step with Avenue Impact.
+              </p>
+            </div> */}
+            <div>
+              <h1 className=' capitalize md:text-8xl sm:text-5xl text-3xl'>Checkout our top courses</h1>
+              <p className="sm:text-2xl font-thin text-lg text-black py-10">
+                Discover our most popular courses, carefully curated to enhance
+                your skills and advance your career. Join thousands of learners
+                who have already taken the next step with Avenue Impact.
+              </p>
+              <button className="md:flex hidden items-center gap-2 border border-gray-300 rounded-full py-2 px-4">
+                <Search />
+                <input
+                  type="text"
+                  className="border-none outline-none p-2"
+                  placeholder="Search courses..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </button>
             </div>
-          </div>
+            <div className='relative'>
+              <img 
+                src={HeroImg} 
+                alt="" 
+                className='w-full object-cover'
+              />
+              <div className='h-14 w-14 absolute top-0 right-[35%] bg-[#D50241] rounded-full'/>
+              <div className='h-14 w-14 absolute left-0 bottom-[45%] bg-[#FFB8CD] rounded-full'/>
+              <div className='h-14 w-14 absolute bottom-0 left-[35%] bg-[#14345F] rounded-full'/>
+            </div>
+          </section>
 
-          {/* <div className="mt-2 h-[1px] w-full bg-[#C7D7F4]" /> */}
-
-          <div
-            className={`${styles.career_content} w-full py-8 text-[#667185] lg:w-1/2 mt-0`}
-          >
-            <p className="sm:text-2xl text-xl">
-              {" "}
-              Discover our most popular courses, carefully curated to enhance
-              your skills and advance your career. Join thousands of learners
-              who have already taken the next step with Avenue Impact.
-            </p>
+          <div className="flex md:hidden items-center gap-2 border border-gray-300 rounded-full py-1 px-4 my-4">
+            <Search />
+            <input
+              type="text"
+              className="border-none outline-none p-2"
+              placeholder="Search courses..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
 
           {/* Preview this Course */}

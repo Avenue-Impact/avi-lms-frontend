@@ -17,6 +17,9 @@ import NoCoursesMessage from "../auth/components/NoLiveCourses";
 import ModalContent from "../lms-pages/ReminderModalContent";
 import LiveSessionCourseCard from "../../Components/student/live-session/course-card";
 import RecordedSessionCourseCard from "@/Components/student/recorded-session/course-card";
+import { useFetchWishlist } from "@/hooks/wishlists/use-fetch-wishlist";
+import Courses from "@/Components/dashboard/Courses";
+import { useGetRegisteredCourses } from "@/hooks/students/use-get-registered-courses";
 // import Cookies from "js-cookie";
 // import { useProfile } from "@/services/queries";
 
@@ -102,6 +105,21 @@ const DashBoardHomePage = () => {
         </div>
       </div>
 
+      {/* WISHLISTED COURSES */}
+      <div className="border-white-300 my-6 rounded-lg border-2 bg-white p-6">
+        <div className="flex flex-row items-center justify-between rounded-lg bg-white pb-6 lg:p-2">
+          <div className="flex-1 md:mb-0 lg:mb-4">
+            <h3 className="text-l font-semibold text-gray-800">
+              My Wishlist
+            </h3>
+          </div>
+        </div>
+
+        <div>
+          <WishlistedCourses />
+        </div>
+      </div>
+
       {modal && (
         <Modal>
           <BorderCard className="bg-white">
@@ -119,6 +137,7 @@ const DashBoardHomePage = () => {
 
 const OnDemandSessionCourses = () => {
   const { data } = useQuery(recordedSessionDetailQuery());
+  console.log("on demand data", data)
   return (
     <>
       {data?.data?.data?.courses.length < 1 ? (
@@ -153,36 +172,68 @@ const LiveSessionCourses = () => {
   // const data = useLoaderData();
 
   const { data } = useQuery(liveSessionDetailQuery());
+  const registeredCourses = useGetRegisteredCourses();
+  console.log("live session data", data)
+  console.log("registered courses from localStorage", registeredCourses)
 
-  if (data) {
+  // Use API data if available, otherwise fall back to localStorage
+  const courses = data?.data?.data?.courses && data?.data?.data?.courses.length > 0 
+    ? data?.data?.data?.courses 
+    : registeredCourses;
+
+  if (courses && courses.length > 0) {
     return (
-      <>
-        {data?.data?.data?.courses.length < 1 ? (
-          <NoCoursesMessage />
-        ) : (
-          <div
-            className={`grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-6 lg:grid-cols-4`}
-          >
-            {data?.data?.data?.courses.map((course) => {
-              return (
-                <LiveSessionCourseCard
-                  key={course.id}
-                  imgSrc={course?.cover_image}
-                  altText={course?.title}
-                  title={course?.title}
-                  rating={Number(course?.average_rating).toFixed(1)}
-                  numRatings="45,345"
-                  courseProgress="0% in progress"
-                  review={course?.total_reviews}
-                  courseId={course?.id}
-                />
-              );
-            })}
-          </div>
-        )}
-      </>
+      <div
+        className={`grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-6 lg:grid-cols-4`}
+      >
+        {courses.map((course) => {
+          return (
+            <LiveSessionCourseCard
+              key={course.id || course.courseId}
+              imgSrc={course?.cover_image}
+              altText={course?.title}
+              title={course?.title}
+              rating={Number(course?.average_rating || 0).toFixed(1)}
+              numRatings="45,345"
+              courseProgress="0% in progress"
+              review={course?.total_reviews || 0}
+              courseId={course?.id || course?.courseId}
+            />
+          );
+        })}
+      </div>
     );
   }
+
+  return <NoCoursesMessage />;
+};
+
+const WishlistedCourses = () => {
+  const { data } = useFetchWishlist();
+
+  return (
+    <>
+      {!data?.data?.data || data?.data?.data?.length < 1 ? (
+        <div className="flex items-center justify-center py-12">
+          <p className="text-gray-500 text-center">
+            No wishlisted courses yet. Start adding courses to your wishlist!
+          </p>
+        </div>
+      ) : (
+        <div
+          className={`grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-6 lg:grid-cols-4`}
+        >
+          {data?.data?.data?.map((course) => {
+            return (
+              <div key={course.id} className="bg-white shadow-md rounded-lg">
+                <Courses wishlist={course} />
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </>
+  );
 };
 
 export default DashBoardHomePage;

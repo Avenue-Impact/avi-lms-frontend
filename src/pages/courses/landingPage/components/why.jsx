@@ -46,14 +46,14 @@ const processSteps = [
   },
 ]
 
-export function WhySection() {
+export function WhySection({ title }) {
   const navigate = useNavigate();
   return (
     <section className="py-20 bg-gray-50">
       <div className="sm:w-[85%] w-[95%] mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16 max-w-4xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold text-[#1a3a5c] mb-6">Why Learn Data Analytics with Us?</h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-[#1a3a5c] mb-6">Why Learn {title} with Us?</h2>
           <p className="text-gray-600 text-lg leading-relaxed">
             We follow a clear, results-driven approach – analysing your challenges, crafting tailored solutions,
             implementing strategies effectively, and equipping your team through our digital learning hub to ensure

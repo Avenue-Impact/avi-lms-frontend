@@ -40,14 +40,23 @@ const AviNav = ({ showNav, setShowNav }) => {
         </button>
         <ul className="nav *:cursor-pointer *:capitalize *:text-[#23314A] flex flex-col items-center gap-6 md:flex-row md:gap-10">
           {/* className="contents-[''] relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:bg-[#CC1747]" */}
-          <li onClick={() => setShowNav((prev) => !prev)}>
+          {/* <li onClick={() => setShowNav((prev) => !prev)}>
             <NavLink to={"/"}>home</NavLink>
-          </li>
-          <li onClick={() => setShowNav((prev) => !prev)}>
+          </li> */}
+          {/* <li onClick={() => setShowNav((prev) => !prev)}>
             <NavLink to={"/login"}>login</NavLink>
-          </li>
+          </li> */}
         </ul>
         <button
+          onClick={() => {
+            navigate("/login");
+            setShowNav((prev) => !prev);
+          }}
+          className="rounded-full bg-[#CC1747] px-6 capitalize py-3 capitalize text-[#FFEBF0]"
+        >
+          Sign In to continue
+        </button>
+        {/* <button
           onClick={() => {
             navigate("/signup");
             setShowNav((prev) => !prev);
@@ -55,7 +64,7 @@ const AviNav = ({ showNav, setShowNav }) => {
           className="rounded-lg bg-[#CC1747] px-4 py-2 capitalize text-[#FFEBF0]"
         >
           register
-        </button>
+        </button> */}
       </div>
     </nav>
   );
