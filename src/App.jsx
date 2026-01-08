@@ -41,6 +41,7 @@ import OtherLayout from "./layouts/OtherLayout";
 import CourseViewLayout from "./layouts/course-view-layout";
 import LiveSessionView from "./pages/dashboard/live-session-view";
 import RecordedSessionView from "./pages/dashboard/recorded-session-view";
+import SampleCourseDetailDashboard from "./Components/dashboard/sample/dashbaord";
 import Referral from "./pages/dashboard/Referral";
 import StudentSettings from "./pages/dashboard/StudentSettings";
 
@@ -255,6 +256,12 @@ function App() {
               ],
             },
           ],
+        },
+
+
+        {
+          element: <SampleCourseDetailDashboard />,
+          path: "/dashboard-s/course-details",
         },
 
         {

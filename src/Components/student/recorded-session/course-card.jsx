@@ -13,6 +13,7 @@ const RecordedSessionCourseCard = ({
   return (
     <div className="overflow-hidden rounded-t-lg bg-[rgb(252,252,252)]">
       <Link to={`/dashboard/${courseId}/recorded?title=${title}`}>
+      {/* <Link to={`/dashboard-s/course-details`}> */}
         <div className="rounded-lg bg-[rgb(252,252,252)] shadow-md">
           <div className="h-[90px] w-full overflow-hidden rounded-t-lg md:h-[120px] lg:h-[190px] xl:h-[206px]">
             <img

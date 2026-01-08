@@ -23,7 +23,7 @@ const LivePayment = () => {
 
     payment({
       data: {
-        access_type: "live class",
+        access_type: ["live class"],
         live_class_cohort: selectedCourseId,
       },
       courseId,
