@@ -82,6 +82,8 @@ import { useEffect, useState } from "react";
 import { ZoomMtg } from "@zoom/meetingsdk";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { BASE_URL } from "../../../constant";
+
 const ZoomMeeting = () => {
   const [meetingDetails, setMeetingDetails] = useState(null);
   const [loading, setloading] = useState(false);
@@ -97,7 +99,7 @@ const ZoomMeeting = () => {
     setloading(true);
     try {
       const res = await axios.get(
-        `https://avi-lms-5478f16284c6.herokuapp.com/api/v1/admins/courses/6725c38cf96fa51479095277/cohorts/6725c3aff96fa5147909527f/live-session/start`,
+        `${BASE_URL}/courses/6725c38cf96fa51479095277/cohorts/6725c3aff96fa5147909527f/live-session/start`,
         {
           headers: {
             Authorization: `Bearer ${Cookies.get("adminToken")} `,

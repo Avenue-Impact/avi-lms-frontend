@@ -37,7 +37,7 @@ const ConfirmEmail = ({ setConfirm, setModal, setSuccess, user, form }) => {
 
         Cookies.set("token", verify.data.data.token, {
           expires: 1,
-          secure: true,
+          secure: false, // Set to false for localhost/HTTP
           sameSite: "strict",
           path: "/",
         });

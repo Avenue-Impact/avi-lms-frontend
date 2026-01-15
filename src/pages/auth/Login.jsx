@@ -15,6 +15,9 @@ import Cookies from "js-cookie";
 
 import { useLoginUser } from "@/hooks/students/use-login-user";
 import { ClipLoader } from "react-spinners";
+import { useState } from "react";
+import ConfirmEmail from "./components/ConfirmEmail";
+import Modal from "./components/Modal";
 
 const loginSchema = z.object({
   username: z.string().min(1, { message: "name is required" }),
@@ -29,6 +32,9 @@ const Login = () => {
   const courseId = queryString.get("id");
   const courseTitle = queryString.get("title");
 
+  const [showModal, setShowModal] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+
   const { mutate, isPending } = useLoginUser();
 
   const handleSubmit = async (values) => {
@@ -39,13 +45,31 @@ const Login = () => {
 
     mutate(user, {
       onSuccess: ({ data }) => {
+        console.log("Login Success Data:", data); // DEBUG: Check full response
+        console.log("Token from backend:", data?.data?.token); // DEBUG: Check specific token path
+
+        // Handle Pending User (OTP Sent, No Token)
+        if (data?.data?.user?.user_status === 'pending') {
+             toast.success(data?.message || "Verification code sent to your email.");
+             setCurrentUser(data.data.user);
+             setShowModal(true);
+             return;
+        }
+
+        if (!data?.data?.token) {
+             toast.error("Login succeeded but no token received!");
+             return;
+        }
+
         Cookies.set("token", data.data.token, {
           expires: 1,
-          secure: true,
-          sameSite: 'strict',
+          secure: false,
+          sameSite: 'Lax', // Relaxed from 'Strict' for testing
           path: '/'
         });
-        
+
+        console.log("Cookie Check immediately after set:", Cookies.get("token")); // DEBUG: Verify set
+
         if (courseId) {
           navigate(
             `/preview-video-course/${courseId}/enroll?title=${courseTitle}`,
@@ -147,6 +171,22 @@ const Login = () => {
           </p>
         </BorderCard>
       </div>
+      {showModal && (
+        <Modal>
+            <ConfirmEmail
+                setConfirm={setShowModal}
+                setModal={setShowModal}
+                setSuccess={(status) => {
+                    if (status === 'success') {
+                         setShowModal(false);
+                         // Optionally fetch profile or redirect
+                    }
+                }}
+                user={currentUser}
+                form={{}}
+            />
+        </Modal>
+      )}
     </div>
   );
 };

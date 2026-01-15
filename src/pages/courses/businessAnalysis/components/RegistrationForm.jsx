@@ -211,7 +211,7 @@ export const RegistrationForm = () => {
         <div className="md:w-1/2 bg-gradient-to-br from-[#CC1747] to-[#1E2A3F] text-white p-8 md:p-12">
           <h2 className="text-2xl font-bold mb-6">Ready to Start Your BA Journey?</h2>
           <p className="mb-8 text-blue-100">
-            Fill out the form to register for our upcoming training program starting July 21st.
+            Fill out the form to register for our upcoming training program starting Jan 23rd.
           </p>
 
           <div className="space-y-6">

@@ -161,8 +161,18 @@ const Navbar = () => {
           </div>
         </div>
 
-        <div>
-        <Link to={"/contact"}>
+        <div className="hidden md:flex items-center gap-4">
+          {/* <Link to={"/login"}>
+            <button className="rounded-full border border-[#23314A] bg-transparent px-6 py-3 font-medium capitalize text-[#23314A] hover:bg-[#23314A] hover:text-white transition-all">
+              Log In
+            </button>
+          </Link>
+          <Link to={"/signup"}>
+            <button className="rounded-full bg-[#CC1747] px-6 py-3 font-medium capitalize text-white hover:bg-[#a10f36] transition-all">
+              Sign up
+            </button>
+          </Link> */}
+          <Link to={"/contact"}>
               <button className="hidden md:flex rounded-full bg-[#23314A] items-center gap-4 px-4 py-3 capitalize text-[#23314A] text-[#FFEBF0] ">
                 <div>
                   contact

@@ -13,6 +13,9 @@ export const axiosAdmin = axios.create({
 
 export const fetchUserProfile = async () => {
   const token = Cookies.get("token");
+  console.log("fetchUserProfile Token:", token); 
+  console.log("All Cookies (Parsed):", Cookies.get()); 
+  console.log("Raw Cookie String:", document.cookie); // DEBUG: Check raw string
 
   return axios.get(url, {
     headers: {
