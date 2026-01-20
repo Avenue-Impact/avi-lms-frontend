@@ -5,7 +5,7 @@ import SaveButton from "../SaveButton";
 import EditLiveSessionCourseType from "./EditLiveSessionCourseType";
 import EditOnDemandSessionCourseType from "./EditOnDemandSessionCourseType";
 
-const EditCourseType = ({ data }) => {
+const EditCourseType = ({ data, setModalOpen }) => {
   const [tab, setTab] = useState(1);
 
   console.log("The Live Price Info details-1", data);
@@ -40,12 +40,14 @@ const EditCourseType = ({ data }) => {
         <EditLiveSessionCourseType
           priceInfo={data.data.data.course.live_class_price}
           cohorts={data.data.data.course.cohorts}
+          setModalOpen={setModalOpen}
         />
       )}
 
       {tab === 2 && (
         <EditOnDemandSessionCourseType
           dataToEdit={data.data.data.course.pre_recorded_price}
+          setModalOpen={setModalOpen}
         />
       )}
     </div>

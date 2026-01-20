@@ -1,16 +1,8 @@
+import { axiosAdmin } from "@/services/api";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import Cookies from "js-cookie";
 
 const fetchGraphData = async () =>
-  await axios.get(
-    "https://avi-lms-5478f16284c6.herokuapp.com/api/v1/admins/payments/graph-data?range=this-year",
-    {
-      headers: {
-        Authorization: `Bearer ${Cookies.get("adminToken")}`,
-      },
-    },
-  );
+  await axiosAdmin.get("/payments/graph-data?range=this-year");
 
 export const useFetchGraphData = () =>
   useQuery({

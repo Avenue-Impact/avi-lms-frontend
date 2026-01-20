@@ -9,7 +9,7 @@ const publishCourse = async () => {
   const token = Cookies.get("adminToken");
 
   return await axios.patch(
-    `${BASE_URL}/courses/${courseId}/publish`,
+    `${BASE_URL}/admins/courses/${courseId}/publish`,
     {},
     {
       headers: {

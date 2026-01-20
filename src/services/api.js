@@ -1,3 +1,4 @@
+console.log("Loading api.js - Version: FIX-TOKEN-UNDEFINED-V2");
 import { BASE_URL } from "@/constant";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -5,11 +6,68 @@ import Cookies from "js-cookie";
 const url = import.meta.env.VITE_USER_URL;
 
 export const axiosAdmin = axios.create({
-  baseURL: BASE_URL,
+  baseURL: `${BASE_URL}/admins`,
+  withCredentials: true, // Important for sending cookies
   headers: {
-    Authorization: `Bearer ${Cookies.get("adminToken")}`,
+    // Authorization header is managed by interceptors
   },
 });
+
+// Request Interceptor: Attach token dynamically
+axiosAdmin.interceptors.request.use(
+  (config) => {
+    const token = Cookies.get("adminToken");
+    // Ensure token is valid and not the string "undefined"
+    if (token && token !== "undefined") {
+      config.headers.Authorization = `Bearer ${token}`;
+    } else if (token === "undefined") {
+       // Cleanup bad cookie
+       Cookies.remove("adminToken");
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Response Interceptor: Handle 401/403 with Silent Refresh
+axiosAdmin.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (
+      error.response &&
+      (error.response.status === 401 || error.response.status === 403) &&
+      !originalRequest._retry
+    ) {
+      originalRequest._retry = true;
+
+      try {
+        // Attempt Silent Refresh
+        // We use a separate instance or raw axios to avoid infinite loop with interceptors
+        await axios.post(
+            `${BASE_URL}/admins/auth/refresh`,
+            {},
+            { withCredentials: true } // Ensure cookies are sent
+        );
+
+        // If successful, retry original request
+        return axiosAdmin(originalRequest);
+      } catch (refreshError) {
+        // Refresh failed (token expired or invalid)
+        Cookies.remove("adminSession"); // Clear session flag
+        Cookies.remove("adminToken"); // Clear token
+        if (!window.location.pathname.includes("/admin/login")) {
+          window.location.href = "/admin/login";
+        }
+        return Promise.reject(refreshError);
+      }
+    }
+    return Promise.reject(error);
+  },
+);
 
 export const fetchUserProfile = async () => {
   const token = Cookies.get("token");
@@ -22,138 +80,77 @@ export const fetchUserProfile = async () => {
 };
 
 export const addDemandSection = async ({ data, courseId }) => {
-  return axios.post(`${BASE_URL}/courses/${courseId}/on-demand-section`, data, {
+  return axiosAdmin.post(`/courses/${courseId}/on-demand-section`, data, {
     headers: {
       "Content-Type": "multipart/form-data",
-      Authorization: `Bearer ${Cookies.get("adminToken")}`,
     },
   });
 };
 
 export const addCourseInformation = async (data) => {
-  const token = Cookies.get("adminToken");
-
-  return axios.post(`${BASE_URL}/courses/course-informations`, data, {
+  return axiosAdmin.post(`/courses/course-informations`, data, {
     headers: {
       "Content-Type": "multipart/form-data",
-      Authorization: `Bearer ${token}`,
     },
   });
 };
 
 export const editCourseInformationApi = async ({ data, courseId }) => {
-  const token = Cookies.get("adminToken");
-
-  return axios.patch(
-    `${BASE_URL}/courses/${courseId}/course-informations`,
-    data,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token}`,
-      },
-    },
+  return axiosAdmin.patch(
+    `/courses/${courseId}/course-informations`,
+    data
   );
 };
 
 export const addCourseType = async ({ data, courseId }) => {
-  return axios.post(`${BASE_URL}/courses/${courseId}/coursetype`, data, {
-    headers: {
-      Authorization: `Bearer ${Cookies.get("adminToken")}`,
-    },
-  });
+  return axiosAdmin.post(`/courses/${courseId}/coursetype`, data);
 };
 
 export const addLiveSession = async (data) => {
-  const token = Cookies.get("adminToken");
   const courseId = localStorage.getItem("courseId");
-
   const cohort = localStorage.getItem("cohorts");
 
-  return await axios.post(
-    `${BASE_URL}/courses/${courseId}/live-session`,
+  return await axiosAdmin.post(
+    `/courses/${courseId}/live-session`,
     { ...data, cohort },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
   );
 };
 
 export const addRecordedSession = async ({ data, courseId, section }) => {
-  const token = Cookies.get("adminToken");
-  // let section = localStorage.getItem("recordedSection")
-  //   ? localStorage.getItem("recordedSection")
-  //   : 2;
-  // https://avi-lms-backend.onrender.com/api/v1/admins/courses/:courseId/sections/:section/recorded-session
-
-  return await axios.post(
-    `${BASE_URL}/courses/${courseId}/sections/${section}/recorded-session`,
+  return await axiosAdmin.post(
+    `/courses/${courseId}/sections/${section}/recorded-session`,
     data,
     {
       headers: {
         "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token}`,
       },
     },
   );
 };
 
 export const fetchDemandCourse = async (courseId) => {
-  const token = Cookies.get("adminToken");
-
-  return await axios.get(`${BASE_URL}/courses/${courseId}/on-demand-section`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  return await axiosAdmin.get(`/courses/${courseId}/on-demand-section`);
 };
 
 // Fetch course information
 export const fetchCourseInformation = async (courseId) => {
-  const token = Cookies.get("adminToken");
-
-  return await axios.get(
-    `${BASE_URL}/courses/${courseId}/course-informations`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
+  return await axiosAdmin.get(
+    `/courses/${courseId}/course-informations`,
   );
 };
 
 // Fetch cohorts
 export const fetchCohorts = async (courseId) => {
-  const token = Cookies.get("adminToken");
-  return await axios.get(`${BASE_URL}/courses/${courseId}/cohorts`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  return await axiosAdmin.get(`/courses/${courseId}/cohorts`);
 };
 
 // Add a single cohort
 export const addSingleCohort = async ({ data, courseId }) => {
-  const token = Cookies.get("adminToken");
-
-  return await axios.post(`${BASE_URL}/courses/${courseId}/cohorts`, data, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  return await axiosAdmin.post(`/courses/${courseId}/cohorts`, data);
 };
 
 export const getSingleCohort = async (courseId, cohortId) => {
-  const token = Cookies.get("adminToken");
-
-  return await axios.get(
-    `${BASE_URL}/courses/${courseId}/cohorts/${cohortId}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
+  return await axiosAdmin.get(
+    `/courses/${courseId}/cohorts/${cohortId}`,
   );
 };

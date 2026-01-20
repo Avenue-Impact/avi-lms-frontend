@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 const deleteRecordedSectionApi = ({ section, courseId, cohortId }) => {
   const token = Cookies.get("adminToken");
 
-  const url = `${BASE_URL}/courses/${courseId}/cohorts/${cohortId}/sections/${section}`;
+  const url = `${BASE_URL}/admins/courses/${courseId}/cohorts/${cohortId}/sections/${section}`;
 
   return axios.delete(url, {
     headers: {

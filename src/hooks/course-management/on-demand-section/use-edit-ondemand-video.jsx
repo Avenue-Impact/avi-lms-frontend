@@ -1,20 +1,17 @@
-import { BASE_URL } from "@/constant";
+import { axiosAdmin } from "@/services/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 
 const editVideo = async ({ data, section, id, courseId }) => {
-  const token = Cookies.get("adminToken");
-
-  const url = `${BASE_URL}/courses/${courseId}/on-demand-section/${section}/recordings/${id}`;
-
-  return axios.patch(url, data, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  return axiosAdmin.patch(
+    `/courses/${courseId}/on-demand-section/${section}/recordings/${id}`,
+    data,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
 };
 
 export const useEditOnDemandVideo = () => {

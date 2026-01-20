@@ -10,7 +10,7 @@ const deleteCourse = async ({courseId}) => {
 
   // https://avi-lms-backend.onrender.com/api/v1/admins/courses/:courseId
 
-  const response = await axios.delete(`${BASE_URL}/courses/${courseId}`, {
+  const response = await axios.delete(`${BASE_URL}/admins/courses/${courseId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

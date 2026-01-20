@@ -120,6 +120,7 @@ import ReviewDetails from "./pages/admin-pages/reviews/ReviewInfo";
 import ReviewMainPage from "./pages/admin-pages/reviews/ReviewMainPage";
 import { elements } from "chart.js";
 import Dashbaord from "./pages/dashbaord";
+import LoadingPage from "./Components/LoadingPage";
 
 const queryClient = new QueryClient();
 
@@ -363,7 +364,7 @@ function App() {
         {
           element: (
             <AuthProtectedRoute
-              tokin={"adminToken"}
+              tokin={"adminSession"}
               path={"admin/course/management"}
             />
           ),
@@ -377,7 +378,7 @@ function App() {
         },
         {
           element: (
-            <ProtectedRoute tokin={"adminToken"} path={"/admin/login"} />
+            <ProtectedRoute tokin={"adminSession"} path={"/admin/login"} />
           ),
           errorElement: <AdminErrorPage />,
 
@@ -616,7 +617,7 @@ function App() {
         <ReactQueryDevtools initialIsOpen={false} />
         <Toaster />
         {/* <AnniversarySpotlightBadge /> */}
-        <RouterProvider router={routes} />
+        <RouterProvider router={routes} fallbackElement={<LoadingPage />} />
       </QueryClientProvider>
     </>
   );

@@ -6,7 +6,7 @@ import Cookies from "js-cookie";
 const fetchAllStudent = async (courseId, cohortId) => {
   const token = Cookies.get("adminToken");
   return await axios.get(
-    `${BASE_URL}/courses/${courseId}/cohorts/${cohortId}/enrolled-students`,
+    `${BASE_URL}/admins/courses/${courseId}/cohorts/${cohortId}/enrolled-students`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

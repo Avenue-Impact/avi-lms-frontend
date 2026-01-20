@@ -2,11 +2,18 @@ import { CommonButton as Button } from "@/Components/ui/button"
 import { ArrowRight } from "lucide-react"
 import heroImg from '../../../assets/imgs/Rectangle 700.svg'
 import heroImgMobile from '../../../assets/imgs/hero_small.png'
+import secondSlide from '../../../assets/imgs/Frame 1984078367.svg'
 import { useNavigate } from "react-router-dom"
 import AnimatedWaves from '@/Components/AnimatedWaves'
 import { motion } from 'framer-motion';
 import { GL } from "@/Components/gl"
 import { useState } from "react";
+
+// Swiper imports
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/autoplay';
 
 export function HeroSection() {
   const navigate = useNavigate();
@@ -50,30 +57,59 @@ export function HeroSection() {
 
         {/* Right Image with Decorative Elements */}
         <div className="relative">
+          {/* Responsive Clip Path SVG Definition */}
+          <svg width="0" height="0" className="absolute">
+            <defs>
+              <clipPath id="hero-clip" clipPathUnits="objectBoundingBox">
+                <path 
+                  d="M151.862 91.1182C169.563 36.7779 220.222 0 277.372 0H608.276C681.177 0 740.276 59.0984 740.276 132V578C740.276 650.902 681.177 710 608.276 710H132.098C42.3809 710 -21.1981 622.424 6.58822 537.118L151.862 91.1182Z" 
+                  transform="scale(0.001349527, 0.001408451)" // 1/741, 1/710
+                />
+              </clipPath>
+            </defs>
+          </svg>
+
           {/* Main Image Container */}
-          <div className="relative ">
-          {/* <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ 
-                opacity: 1, 
-                y: [0, -20, 0],
-                transition: { 
-                  y: { duration: 2, repeat: Infinity, repeatType: 'loop', ease: 'easeInOut' },
-                  opacity: { duration: 0.5 }
-                }
+          <div 
+             className="relative w-full h-[87vh] overflow-hidden" 
+             style={{ 
+               clipPath: "url(#hero-clip)",
+               WebkitClipPath: "url(#hero-clip)", // Safari support
+             }} 
+          >
+            <Swiper
+              modules={[Autoplay]}
+              spaceBetween={5}
+              centeredSlides={true}
+              speed={1000}
+              autoplay={{
+                delay: 2500,
+                disableOnInteraction: false,
+                reverseDirection: true,
               }}
-              viewport={{ once: false, amount: 0.1 }}
-              // className="bg-white backdrop-blur-sm rounded-xl w-full max-w-md"
-            > */}
-              <img
-                src={ window.innerWidth < 768 ? heroImgMobile : heroImg}
-                alt="Business consultant presenting to team"
-                className="w-full h-[87vh] object-contain"
-              />
-            {/* </motion.div> */}
+              loop={true}
+              className="mySwiper w-full h-full"
+            >
+              {[1, 2, 3, 4].map((item) => (
+                <SwiperSlide key={item}>
+                  <img
+                    src={window.innerWidth < 768 ? heroImgMobile : heroImg}
+                    alt={`Business consultant presenting ${item}`}
+                    className="w-full h-full object-cover" // Changed to object-cover to fill shape
+                  />
+                </SwiperSlide>
+              ))}
+              <SwiperSlide>
+                  <img
+                    src={window.innerWidth < 768 ? heroImgMobile : secondSlide}
+                    alt={`Business consultant presenting`}
+                    className="w-full h-full object-cover" // Changed to object-cover to fill shape
+                  />
+                </SwiperSlide>
+            </Swiper>
           </div>
 
-          {/* Decorative Pink Rectangle */}
+          {/* Decorative Pink Rectangle - Adjusted position to fit new flow if needed, but keeping for now */}
           <div
             className="absolute -top-6 -right-6 w-48 h-64 rounded-[3rem] z-50"
             style={{ backgroundColor: "var(--accent-pink)" }}

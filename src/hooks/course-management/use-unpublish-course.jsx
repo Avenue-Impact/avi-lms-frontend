@@ -11,7 +11,7 @@ const unPublishCourse = async ( {courseId} ) => {
   const token = Cookies.get("adminToken");
 
   const response = await axios.patch(
-    `${BASE_URL}/courses/${courseId}/unpublish`,
+    `${BASE_URL}/admins/courses/${courseId}/unpublish`,
     {},
     {
       headers: {

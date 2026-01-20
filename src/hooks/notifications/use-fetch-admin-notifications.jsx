@@ -1,14 +1,9 @@
-import { BASE_URL } from "@/constant";
+import { axiosAdmin } from "@/services/api";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import Cookies from "js-cookie";
+import { BASE_URL } from "@/constant";
 
 const fetchNotifications = async () =>
-  await axios.get(`${BASE_URL}/me/notifications`, {
-    headers: {
-      Authorization: `Bearer ${Cookies.get("adminToken")}`,
-    },
-  });
+  await axiosAdmin.get("/me/notifications");
 
 export const useFetchNotifications = () =>
   useQuery({

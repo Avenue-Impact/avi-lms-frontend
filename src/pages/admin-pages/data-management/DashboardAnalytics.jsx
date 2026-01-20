@@ -21,29 +21,26 @@ export default function DashboardAnalytics() {
         Dashboard Analytics
       </h2>
 
-      <div className="my-7 flex gap-8 rounded-[20px] border border-[#F0F2F5] p-5 2xl:gap-[42px]">
+      <div className="my-7 flex gap-8 rounded-[20px] border border-[#F0F2F5] p-5 shadow-md 2xl:gap-[42px]">
         <StudentAndEnrollment />
         <div className="h-full min-h-[102px] w-px bg-[#E6EDFF]" />
         <RevenueAndPurchase />
       </div>
-      <div className="space-y-6">
+      <div className="grid grid-cols-3 gap-8 w-full items-start">
+        <div className="col-span-2 shadow-md rounded-[20px] border border-[#F0F2F5]">
         <TrendChart />
-        <RadarChartDot />
+        </div>
+        <div className="col-span-1 shadow-md rounded-[20px] border border-[#F0F2F5]">
+          <RadarChartDot />
+        </div>
       </div>
-      <div className="mt-7 grid grid-cols-[1.3fr_2.7fr] gap-6">
+      <div className="mt-7 grid grid-cols-3 gap-6">
         <TopStudents />
-        <div className="h-min rounded-[20px] border border-[#F0F2F5] p-6">
+        <div className="col-span-2 h-min rounded-[20px] shadow-md border border-[#F0F2F5] p-6">
           <p className="mb-5 font-bold text-[#1D2739]">
             Top-performing courses
           </p>
-          <div className="grid grid-cols-[1.6fr_3fr] gap-8">
-            <div>
-              <PieChartComponent />
-            </div>
-            <div className="space-y-3">
-              <PerformingCourses />
-            </div>
-          </div>
+          <PieChartComponent />
         </div>
       </div>
     </section>
@@ -55,8 +52,8 @@ const StudentAndEnrollment = () => {
   if (isLoading) {
     return (
       <>
-        <Skeleton className={"min-h-[117px] w-full max-w-[198px]"} />
-        <Skeleton className={"min-h-[117px] w-full max-w-[198px]"} />
+        <Skeleton className={"min-h-[117px] w-full flex-1"} />
+        <Skeleton className={"min-h-[117px] w-full flex-1"} />
       </>
     );
   }
@@ -66,7 +63,7 @@ const StudentAndEnrollment = () => {
 
   return (
     <>
-      <div className="w-full max-w-[198px]">
+      <div className="w-full flex-1">
         <div className="flex items-start justify-between">
           <div>
             <p className="text-[28px] font-bold text-[#101928]">
@@ -78,21 +75,10 @@ const StudentAndEnrollment = () => {
             <TotalStudentIcon />
           </span>
         </div>
-        {/* <div className="mt-3 flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <span>
-              <ArrowUpRight className="text-[#0F973D]" />
-            </span>
-            <span className="text-sm text-[#98A2B3]">
-              {data?.data?.data?.students.new_users_this_week}
-            </span>
-          </div>
-          <p className="text-sm text-[#98A2B3]">+1.01% this week</p>
-        </div> */}
       </div>
       <div className="h-full min-h-[102px] w-px bg-[#E6EDFF]" />
 
-      <div className="w-full max-w-[198px]">
+      <div className="w-full flex-1">
         <div className="flex items-start justify-between">
           <div>
             <p className="text-[28px] font-bold text-[#101928]">
@@ -104,17 +90,6 @@ const StudentAndEnrollment = () => {
             <EnrollmentIcon />
           </span>
         </div>
-        {/* <div className="mt-3 flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <span>
-              <ArrowUpRight className="text-[#0F973D]" />
-            </span>
-            <span className="text-sm text-[#98A2B3]">
-              {data?.data?.data?.enrollments.new_enrollments_this_week}
-            </span>
-          </div>
-          <p className="text-sm text-[#98A2B3]">+1.01% this week</p>
-        </div> */}
       </div>
     </>
   );
@@ -125,8 +100,8 @@ const RevenueAndPurchase = () => {
   if (isLoading) {
     return (
       <>
-        <Skeleton className={"min-h-[117px] w-full max-w-[198px]"} />
-        <Skeleton className={"min-h-[117px] w-full max-w-[198px]"} />
+        <Skeleton className={"min-h-[117px] w-full flex-1"} />
+        <Skeleton className={"min-h-[117px] w-full flex-1"} />
       </>
     );
   }
@@ -134,10 +109,9 @@ const RevenueAndPurchase = () => {
   if (error)
     return <p>{error?.response?.data?.message ?? "Something went wrong"}</p>;
 
-  // console.log(data);
   return (
     <>
-      <div className="w-full max-w-[198px]">
+      <div className="w-full flex-1">
         <div className="flex items-start justify-between">
           <div>
             <p className="text-[28px] font-bold text-[#101928]">
@@ -149,21 +123,10 @@ const RevenueAndPurchase = () => {
             <RevenueIcon />
           </div>
         </div>
-        {/* <div className="mt-3 flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <span>
-              <ArrowUpRight className="text-[#0F973D]" />
-            </span>
-            <span className="text-sm text-[#98A2B3]">
-              {data?.data?.data?.total_revenue_this_week}
-            </span>
-          </div>
-          <p className="text-sm text-[#98A2B3]">+1.01% this week</p>
-        </div> */}
       </div>
       <div className="h-full min-h-[102px] w-px bg-[#E6EDFF]" />
 
-      <div className="w-full max-w-[198px]">
+      <div className="w-full flex-1">
         <div className="flex items-start justify-between">
           <div>
             <p className="text-[28px] font-bold text-[#101928]">
@@ -175,15 +138,6 @@ const RevenueAndPurchase = () => {
             <PaymentIcon />
           </span>
         </div>
-        {/* <div className="mt-3 flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <span>
-              <ArrowUpRight className="text-[#0F973D]" />
-            </span>
-            <span className="text-sm text-[#98A2B3]">10.2</span>
-          </div>
-          <p className="text-sm text-[#98A2B3]">+1.01% this week</p>
-        </div> */}
       </div>
     </>
   );

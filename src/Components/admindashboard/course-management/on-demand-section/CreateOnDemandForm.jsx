@@ -13,12 +13,15 @@ import toast from "react-hot-toast";
 
 const CreateOndemandForm = ({ courseId }) => {
   const [video, setVideo] = useState({ file: null, preview: null });
+  const [document, setDocument] = useState({ file: null, name: null });
   const [errorMessage, setErrorMessage] = useState("");
+  const [documentError, setDocumentError] = useState("");
   const [disabled, setDisabled] = useState(false);
   const [disableInput, setDisableInput] = useState(false);
   const { data } = useFetchondemandCourse(courseId);
 
   const videoRef = useRef();
+  const documentRef = useRef();
   const { createOnDemandCourse, isCreating } = useCreateOnDemandCourse();
 
   const handleCreateNewSection = () => {
@@ -65,6 +68,35 @@ const CreateOndemandForm = ({ courseId }) => {
     reader.readAsDataURL(file);
   };
 
+  const handleDocumentUpload = (e) => {
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    // Validate file size (50MB limit for documents)
+    if (file.size > 50 * 1024 * 1024) {
+      return setDocumentError("Document size exceeds 50MB");
+    }
+
+    // Validate file type
+    const allowedTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'application/vnd.ms-powerpoint',
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      return setDocumentError("Invalid file type. Only PDF, Word, Excel, and PowerPoint files are allowed.");
+    }
+
+    setDocument({ file, name: file.name });
+    setDocumentError("");
+  };
+
   const handleCreateSection = async (data) => {
     const { title, video_title, overview } = data;
     const section = localStorage.getItem("demandSectionNumber");
@@ -81,11 +113,13 @@ const CreateOndemandForm = ({ courseId }) => {
         overview,
         section,
         video: video.file,
+        document: document.file, // Add document if uploaded
       };
     } else {
       recorded = {
         ...data,
         section,
+        document: document.file, // Add document if uploaded
       };
     }
 
@@ -104,6 +138,7 @@ const CreateOndemandForm = ({ courseId }) => {
           setVideo((prev) => {
             return { ...prev, file: null, preview: null };
           });
+          setDocument({ file: null, name: null });
         },
       },
     );
@@ -232,6 +267,48 @@ const CreateOndemandForm = ({ courseId }) => {
               placeholder="Input file URL "
               disabled={video.file ? true : false}
             />
+          </div>
+        }
+
+        {
+          <div className="space-y-2">
+            <p className="text-sm font-medium capitalize text-[#101928]">
+              Upload Document (Optional)
+            </p>
+            <div
+              className="flex min-h-32 w-full items-center justify-center rounded-lg border-2 border-dashed border-[#23314A] cursor-pointer hover:border-primary-color-600 transition-colors"
+              onClick={() => {
+                documentRef.current.click();
+              }}
+            >
+              {document.file ? (
+                <div className="flex flex-col items-center gap-2 p-4">
+                  <svg className="w-12 h-12 text-primary-color-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <p className="text-sm text-[#101928] font-medium">{document.name}</p>
+                  <p className="text-xs text-[#667185]">{(document.file.size / (1024 * 1024)).toFixed(2)} MB</p>
+                </div>
+              ) : (
+                <button type="button" className="flex gap-2 text-[#98A2B3]">
+                  <ImgUploadIcon />
+                  <span>Upload Document</span>
+                </button>
+              )}
+              <input
+                type="file"
+                hidden
+                ref={documentRef}
+                onChange={handleDocumentUpload}
+                accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+              />
+            </div>
+            {documentError && (
+              <p className="text-primary-color-600 text-sm">{documentError}</p>
+            )}
+            <p className="mb-1 mt-2 text-sm text-[#667185]">
+              Max 50MB. Accepted: PDF, Word, Excel, PowerPoint
+            </p>
           </div>
         }
 

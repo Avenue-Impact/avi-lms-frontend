@@ -8,7 +8,7 @@ const deleteStudentApi = async ({ data, courseId }) => {
   const token = Cookies.get("adminToken");
   //avi-lms-backend.onrender.com/api/v1/admins/courses/:courseId/on-demand-section/enrolled-students
   return await axios.delete(
-    `${BASE_URL}/courses/${courseId}/on-demand-section/enrolled-students`,
+    `${BASE_URL}/admins/courses/${courseId}/on-demand-section/enrolled-students`,
     {
       data,
       headers: {

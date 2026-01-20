@@ -10,7 +10,7 @@ const mutateVideo = async ({ section, id, courseId }) => {
   const token = Cookies.get('adminToken')
 
 
-  const url = `${BASE_URL}/courses/${courseId}/on-demand-section/${section}/recordings/${id}`
+  const url = `${BASE_URL}/admins/courses/${courseId}/on-demand-section/${section}/recordings/${id}`
   return axios.delete(url, {
     headers: {
       Authorization: `Bearer ${token}`,

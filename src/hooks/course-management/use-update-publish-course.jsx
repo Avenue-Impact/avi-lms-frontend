@@ -26,7 +26,7 @@ import toast from "react-hot-toast";
 
 const updatePublishCourse = async ({ data, courseId }) =>
   // https://avi-lms-backend.onrender.com/api/v1/admins/courses/:courseId/publish
-  await axios.patch(`${BASE_URL}/courses/${courseId}/publish`, data, {
+  await axios.patch(`${BASE_URL}/admins/courses/${courseId}/publish`, data, {
     headers: {
       Authorization: `Bearer ${Cookies.get("adminToken")}`,
     },

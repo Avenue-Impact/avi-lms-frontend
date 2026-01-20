@@ -7,6 +7,7 @@ import { HiOutlinePencil } from "react-icons/hi";
 import { ClipLoader } from "react-spinners";
 import EditModal from "../on-demand-section/EditModal";
 import EditCourseType from "../courses/edit-course-type/EditCourseType";
+import { useState } from "react";
 
 const writeDay = (dayString) => {
   if (!dayString || !dayString.includes("-")) {
@@ -42,6 +43,7 @@ const calcDiscountPercentage = (price, discount) => {
 
 function CourseType({ editButton = false, courseId }) {
   const { data, isLoading, isError } = useFetchCourseInfo(courseId);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   if (isLoading)
     return (
@@ -59,7 +61,9 @@ function CourseType({ editButton = false, courseId }) {
         {editButton && (
           <EditModal
             header="Edit course type"
-            form={<EditCourseType data={data} />}
+            form={<EditCourseType data={data} setModalOpen={setIsModalOpen} />}
+            open={isModalOpen}
+            setOpen={setIsModalOpen}
           >
             <CommonButton
               variant="outline"

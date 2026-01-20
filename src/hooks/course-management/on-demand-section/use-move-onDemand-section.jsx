@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 const moveSection = async ({ data, courseId }) => {
   const token = Cookies.get("adminToken");
 
-  const url = `${BASE_URL}/courses/${courseId}/on-demand/move-section`;
+  const url = `${BASE_URL}/admins/courses/${courseId}/on-demand/move-section`;
 
   return await axios.put(url, data, {
     headers: {

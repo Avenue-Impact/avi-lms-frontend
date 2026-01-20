@@ -11,7 +11,7 @@ import PasswordInput from "@/Components/ui/password-input";
 // import { useAuth } from "@/hooks/useAuth";
 
 import { useLoginAdmin } from "@/hooks/admin-auth/use-admin-login";
-import { ClipLoader } from "react-spinners";
+import { BeatLoader } from "react-spinners";
 import { Heading, Paragraph } from "../auth/components/Text";
 // {
 //     "status": "success",
@@ -59,14 +59,29 @@ const AdminLogin = () => {
   const navigate = useNavigate();
   // const { dispatch } = useAuth();
 
-  const { mutate, isPending } = useLoginAdmin();
+  const { mutate, isPending, error } = useLoginAdmin();
 
   const handleSubmit = async (values) => {
     const user = {
       email: values.email,
       password: values.password,
     };
-    mutate(user, { onSuccess() {} });
+    mutate(user, { 
+      // onSuccess handled by hook
+      onError(err) {
+        const validationErrors = err.response?.data?.error;
+        if (validationErrors) {
+          Object.keys(validationErrors).forEach((key) => {
+            if (validationErrors[key]?.msg) {
+              form.setError(key, {
+                type: "server",
+                message: validationErrors[key].msg,
+              });
+            }
+          });
+        }
+      }
+    });
   };
 
   const form = useForm({
@@ -85,6 +100,11 @@ const AdminLogin = () => {
             <div className="mb-8 space-y-1">
               <Heading>Welcome back!</Heading>
               <Paragraph>Use your email to sign in to your dashboard</Paragraph>
+              {error && (
+                <div className="mt-2 rounded bg-red-100 p-2 text-center text-sm text-red-600">
+                  {error.response?.data?.message || "Login failed"}
+                </div>
+              )}
             </div>
             <Form {...form}>
               <form
@@ -124,7 +144,7 @@ const AdminLogin = () => {
                   disabled={isPending}
                 >
                   {isPending ? (
-                    <ClipLoader size={20} color={"#fff"} />
+                    <BeatLoader size={10} color={"#fff"} />
                   ) : (
                     "sign in"
                   )}

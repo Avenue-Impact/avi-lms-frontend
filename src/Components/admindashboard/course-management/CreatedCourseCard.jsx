@@ -7,7 +7,6 @@ const CreatedCourseCard = ({
   imgSrc = joinTeam,
   altText,
   title,
-  path = "/admin/course/management/edit", 
   date = "18/09/2024",
   rating,
   review,
@@ -25,18 +24,10 @@ const CreatedCourseCard = ({
       <div className="rounded-b-lg px-[7px] py-[6px] text-[14px] text-[#667185] md:py-2 lg:py-[14px] lg:text-[16px]">
         <p className="truncate">{title}</p>
 
-        {path ? (
-          <Link to={path}>
-            <p className="flex space-x-1 py-[10px] text-[12px] font-medium text-[#CC1747]">
-              <span>Created</span>
-              <span>{date}</span>
-            </p>
-          </Link>
-        ) : (
-          <p className="py-[10px] text-[12px] font-medium text-[#CC1747]">
-            <span>Created</span> <span>{date}</span>
-          </p>
-        )}
+        <p className="flex space-x-1 py-[10px] text-[12px] font-medium text-[#CC1747]">
+          <span>Created</span>
+          <span>{date}</span>
+        </p>
 
         {rating ? (
           <div className="flex items-center gap-[10px]">

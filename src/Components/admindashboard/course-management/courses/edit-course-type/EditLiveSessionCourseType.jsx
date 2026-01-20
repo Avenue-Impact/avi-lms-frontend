@@ -12,7 +12,7 @@ import CohortSelection from "@/Components/admindashboard/course-management/cours
 import { CommonButton } from "@/Components/ui/button";
 import { Form } from "@/Components/ui/form";
 import FormInput from "@/Components/ui/form-input";
-import { useCreateCourseType } from "@/hooks/course-management/use-create-course-type";
+import { useEditCourseType } from "@/hooks/course-management/use-edit-course-type";
 import { cohorts } from "@/lib/cohorts";
 import { courseTypeSchema } from "@/lib/form-schemas/forms-schema";
 import { cn } from "@/lib/utils";
@@ -30,13 +30,15 @@ function convertTo24Hour(timeStr) {
 }
 
 
-const EditLiveSessionCourseType = ({ priceInfo, cohorts }) => {
+const EditLiveSessionCourseType = ({ priceInfo, cohorts: existingCohorts, setModalOpen }) => {
   const str = "dkj";
   str.endsWith;
-  const [cohort, setCohort] = useState(() => cohorts?.[0]?.cohort || "");
+  // Use existing cohort from course data if available, otherwise empty
+  const [cohort, setCohort] = useState(() => existingCohorts?.[0]?.cohort || "");
 
 
-  console.log("Under EditLivession", cohorts.cohort)
+  console.log("Cohorts list for selection:", cohorts);
+  console.log("Existing course cohorts:", existingCohorts);
 
   const getTime = (timeStr) => {
     const t = timeStr;
@@ -64,17 +66,26 @@ const EditLiveSessionCourseType = ({ priceInfo, cohorts }) => {
 
   const [cohortErr, setCohortErr] = useState("");
 
-  const { createCourseType, isCreating } = useCreateCourseType();
+  const { editCourseType, isPending } = useEditCourseType();
 
 const onSubmit = async (data) => {
   if (!cohort) return setCohortErr("Input cohort");
+
+  // Convert 24-hour time to 12-hour format with am/pm
+  const convertTo12Hour = (time24) => {
+    const [hours, minutes] = time24.split(':');
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? 'pm' : 'am';
+    const hour12 = hour % 12 || 12;
+    return `${hour12}:${minutes}${ampm}`;
+  };
 
   const courseType = {
     live_session: {
       original_price: Number(data.coursePrice),
       discounted_price: Number(data.discountPrice),
       duration: data.duration,
-      time: data.time, // keep as "HH:MM"
+      time: convertTo12Hour(data.time), // Convert to "7:00pm" format
       cohort,
       year: 2025,
       currency: "Pounds",
@@ -82,7 +93,14 @@ const onSubmit = async (data) => {
     }
   };
 
-  createCourseType({ data: courseType, courseId });
+  editCourseType({ data: courseType, courseId }, {
+    onSuccess: () => {
+      // Close the modal on successful submission
+      if (setModalOpen) {
+        setModalOpen(false);
+      }
+    }
+  });
 };
 
 
@@ -108,16 +126,19 @@ const onSubmit = async (data) => {
 
 
 
-  const time = priceInfo.time.slice(0, -2).split(":");
-  const checkFormat = priceInfo.time.endsWith("am");
+  // Only process time if it exists and has am/pm format
+  const time = priceInfo?.time && priceInfo.time.match(/(am|pm)$/i) 
+    ? priceInfo.time.slice(0, -2).split(":") 
+    : null;
+  const checkFormat = priceInfo?.time ? priceInfo.time.endsWith("am") : false;
 
   const form = useForm({
     resolver: zodResolver(courseTypeSchema),
    defaultValues: {
-  duration: priceInfo.duration,
-  discountPrice: priceInfo?.discounted_price?.amount,
-  coursePrice: priceInfo?.original_price?.amount,
-  time: convertTo24Hour(priceInfo.time) || "13:18",
+  duration: priceInfo?.duration || "",
+  discountPrice: priceInfo?.discounted_price?.amount || 0,
+  coursePrice: priceInfo?.original_price?.amount || 0,
+  time: convertTo24Hour(priceInfo?.time) || "13:00",
  
 },
 
@@ -205,8 +226,8 @@ const onSubmit = async (data) => {
                 >
                   <option value="">Select cohort</option>
                   {cohorts?.map((c) => (
-                    <option key={c.id} value={c.cohort}>
-                      {c.cohort}
+                    <option key={c.id} value={`${c.month} ${c.year}`}>
+                      {c.month} {c.year}
                     </option>
                   ))}
                 </select>
@@ -238,9 +259,9 @@ const onSubmit = async (data) => {
           <div className="w-full pt-10">
             <CommonButton
               className="ml-auto block min-w-32 rounded bg-primary-color-600"
-              disabled={isCreating}
+              disabled={isPending}
             >
-              {isCreating ? (
+              {isPending ? (
                 <ClipLoader size={20} color={"#fff"} />
               ) : (
                 "Save & Continue"
