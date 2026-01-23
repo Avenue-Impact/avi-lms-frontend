@@ -284,8 +284,8 @@ const SignUp = () => {
               </div>
               <Form {...form}>
                 <form ref={formRef} onSubmit={form.handleSubmit(handleSubmit)}>
-                  <div className="space-y-[4px]">
-                    <div className="sm:grid grid-cols-2 gap-3">
+                  <div className="space-y-6">
+                    <div className="sm:grid grid-cols-2 gap-x-3 gap-y-6">
                       <FormInput
                         label="firstname"
                         name="firstName"
@@ -296,6 +296,7 @@ const SignUp = () => {
                         onFocus={handleInputFocus}
                         autoComplete="given-name"
                         autoCapitalize="words"
+                        absoluteError
                       />
                       <FormInput
                         label="lastname"
@@ -307,9 +308,10 @@ const SignUp = () => {
                         onFocus={handleInputFocus}
                         autoComplete="family-name"
                         autoCapitalize="words"
+                        absoluteError
                       />
                     </div>
-                   <div className="sm:grid grid-cols-2 gap-3">
+                   <div className="sm:grid grid-cols-2 gap-x-3 gap-y-6">
                     <FormInput
                         label="username"
                         name="username"
@@ -320,6 +322,7 @@ const SignUp = () => {
                         onFocus={handleInputFocus}
                         autoComplete="username"
                         autoCapitalize="words"
+                        absoluteError
                       />
                       <FormInput
                         label="email"
@@ -331,6 +334,7 @@ const SignUp = () => {
                         onFocus={handleInputFocus}
                         autoComplete="email"
                         autoCapitalize="none"
+                        absoluteError
                       />
                    </div>
                     <FormInput
@@ -341,8 +345,9 @@ const SignUp = () => {
                       id="phoneNumber"
                       placeholder=""
                       autoComplete="tel"
+                      absoluteError
                     />
-                   <div className="sm:grid grid-cols-2 gap-3">
+                   <div className="sm:grid grid-cols-2 gap-x-3 gap-y-6">
                     <PasswordInput
                         id="password"
                         autoComplete="new-password"
@@ -351,6 +356,7 @@ const SignUp = () => {
                         control={form.control}
                         placeholder=""
                         onFocus={handleInputFocus}
+                        absoluteError
                       />
                       <PasswordInput
                         id="confirmPassword"
@@ -360,6 +366,7 @@ const SignUp = () => {
                         control={form.control}
                         placeholder=""
                         onFocus={handleInputFocus}
+                        absoluteError
                       />
                    </div>
                     <FormInput
@@ -371,6 +378,7 @@ const SignUp = () => {
                       placeholder=""
                       onFocus={handleInputFocus}
                       autoComplete="off"
+                      absoluteError
                     />
                   </div>
                   <div className="mt-[18px] flex items-center gap-4">

@@ -18,30 +18,17 @@ import { NavLink, useLocation } from "react-router-dom";
 
 // import { Sidebar, SidebarItem } from "./SideNav";
 const navItem = [
-  // {
-  //   id: 1,
-  //   text: "Buddy Hub",
-
-  //   icon: <GrHomeRounded />,
-
-  //   active: true,
-  //   alert: "alert",
-  //   path: "/admin/dashboard",
-  // },
   {
     id: 1,
-    text: "course management",
+    text: "Buddy Hub",
     icon: <ManagementIcon />,
-    path: "/admin/course/management",
-    active: "management",
+    path: "/admin/dashboard",
+    active: true,
   },
   {
     id: 2,
     text: "Course Work Area",
-
     icon: <CourseIcon />,
-    active: false,
-    alert: "alert",
     path: "/admin/course-work-area",
   },
   {
@@ -53,29 +40,30 @@ const navItem = [
 ];
 
 const navitem2 = [
-  // {
-  //   id: 1,
-  //   text: "course management",
-  //   icon: <ManagementIcon />,
-  //   path: "/admin/course/management",
-  // },
+  {
+    id: 1,
+    text: "Course Management",
+    icon: <ManagementIcon />,
+    path: "/admin/course/management",
+  },
   {
     id: 2,
-    text: "data management",
+    text: "Data Management",
     icon: <DataIcon />,
     path: "/admin/data-management",
   },
   {
     id: 3,
-    text: "account management",
+    text: "Account Management",
     icon: <AccountIcon />,
     path: "/admin/account-management",
   },
 ];
+
 const navitem3 = [
   {
     id: 1,
-    text: "payment",
+    text: "Payment",
     icon: <PaymentIcon />,
     path: "/admin/payment",
   },
@@ -93,6 +81,12 @@ const navitem3 = [
   },
   {
     id: 4,
+    text: "Coupons",
+    icon: <FinancialIcon />,
+    path: "/admin/coupons",
+  },
+  {
+    id: 5,
     text: "Certificate",
     icon: <CertificateIcon />,
     path: "/admin/certificate",
@@ -101,48 +95,11 @@ const navitem3 = [
 
 function AdminSideNav() {
   return (
-    <SideNav>
-      <div>
-        {navItem.map((item) => {
-          return (
-            <SidebarItem
-              key={item.text}
-              text={item.text}
-              icon={item.icon}
-              path={item.path}
-            />
-          );
-        })}
-      </div>
-      <div>
-        {navitem2.map((item) => {
-          return (
-            <SidebarItem
-              key={item.text}
-              text={item.text}
-              icon={item.icon}
-              path={item.path}
-            />
-          );
-        })}
-      </div>
-      <div className="border-b border-b-slate-200">
-        {navitem3.map((item) => {
-          return (
-            <SidebarItem
-              key={item.text}
-              text={item.text}
-              icon={item.icon}
-              path={item.path}
-            />
-          );
-        })}
-      </div>
-    </SideNav>
+    <SideNav />
   );
 }
 
-function SideNav({ children }) {
+function SideNav() {
   const handleSignOut = () => {
     localStorage.clear();
 
@@ -159,9 +116,51 @@ function SideNav({ children }) {
         <DarkLogo />
       </div>
       <div className="flex h-full flex-col justify-between">
-        <ul className="my-5 *:border-b *:border-b-[#E4E7EC]">{children}</ul>
+        <ul className="my-5 space-y-4">
+          {/* First Group - Buddy Hub, Course Work, Project */}
+          <div className="space-y-1 border-b border-b-[#E4E7EC] pb-3">
+            {navItem.map((item) => {
+              return (
+                <SidebarItem
+                  key={item.text}
+                  text={item.text}
+                  icon={item.icon}
+                  path={item.path}
+                />
+              );
+            })}
+          </div>
+          
+          {/* Second Group - Management */}
+          <div className="space-y-1 border-b border-b-[#E4E7EC] pb-3">
+            {navitem2.map((item) => {
+              return (
+                <SidebarItem
+                  key={item.text}
+                  text={item.text}
+                  icon={item.icon}
+                  path={item.path}
+                />
+              );
+            })}
+          </div>
+          
+          {/* Third Group - Financial */}
+          <div className="space-y-1 border-b border-b-[#E4E7EC] pb-3">
+            {navitem3.map((item) => {
+              return (
+                <SidebarItem
+                  key={item.text}
+                  text={item.text}
+                  icon={item.icon}
+                  path={item.path}
+                />
+              );
+            })}
+          </div>
+        </ul>
         <div className="divide-y">
-          <ul>
+          <ul className="space-y-1">
             <SidebarItem
               text={"review"}
               path={"/admin/reviews"}
@@ -215,15 +214,15 @@ function SidebarItem({ icon, text, path, setToggleNav }) {
       <NavLink
         to={path}
         className={cn(
-          "group relative my-1 flex cursor-pointer items-center border-4 border-transparent px-1 py-2 text-gray-600 transition-colors hover:border-l-primary-color-600 hover:bg-primary-color-100/30 hover:text-primary-color-600",
+          "group relative my-1 flex cursor-pointer items-center border-4 border-transparent px-1 py-2 text-sm text-gray-600 transition-colors hover:border-l-primary-color-600 hover:bg-primary-color-100/30 hover:text-primary-color-600",
 
           pathname === path || pathname?.includes(`${path}`)
             ? "border-l-4 border-l-primary-color-600 bg-primary-color-100/30 font-medium text-primary-color-600"
             : "",
         )}
       >
-        <span className={"text-xl"}>{icon}</span>
-        <span className={`ml-3 overflow-hidden transition-all lg:block`}>
+        <span className={"text-lg"}>{icon}</span>
+        <span className={`ml-3 overflow-hidden text-sm transition-all lg:block`}>
           {text}
         </span>
       </NavLink>

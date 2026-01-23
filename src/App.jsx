@@ -122,6 +122,7 @@ import { elements } from "chart.js";
 import Dashbaord from "./pages/dashbaord";
 import LoadingPage from "./Components/LoadingPage";
 
+
 const queryClient = new QueryClient();
 
 function App() {

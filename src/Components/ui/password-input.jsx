@@ -20,6 +20,7 @@ const PasswordInput = ({
   placeholder,
   id,
   value,
+  absoluteError = false,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -30,7 +31,7 @@ const PasswordInput = ({
       render={({ field }) => {
         const disabled = value === "" || value === undefined;
         return (
-          <FormItem className="w-full">
+          <FormItem className={cn("w-full", absoluteError && "relative mb-2")}>
             {label && (
               <FormLabel
                 className={cn(
@@ -79,7 +80,7 @@ const PasswordInput = ({
 				`}</style>
               </div>
             </FormControl>
-            <FormMessage />
+            <FormMessage className={cn(absoluteError && "absolute -bottom-5 left-0 text-xs")} />
           </FormItem>
         );
       }}

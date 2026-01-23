@@ -1,16 +1,10 @@
-import { BASE_URL } from "@/constant";
+import { axiosAdmin } from "@/services/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 
-const deleteAllCoupon = ({couponCodeId}) =>
-  
-  axios.delete(`${BASE_URL}/financial-aid/coupon-codes/${couponCodeId}`, {
-    headers: {
-      Authorization: `Bearer ${Cookies.get("adminToken")}`,
-    },
-  });
+const deleteAllCoupon = ({couponCodeId}) => {
+  return axiosAdmin.delete(`/financial-aid/coupon-codes/${couponCodeId}`);
+};
 
 export const useDeleteAllCoupon = () => {
   const queryClient = useQueryClient();
