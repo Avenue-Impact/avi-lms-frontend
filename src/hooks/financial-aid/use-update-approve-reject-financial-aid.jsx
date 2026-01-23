@@ -1,16 +1,10 @@
-import { BASE_URL } from "@/constant";
+import { axiosAdmin } from "@/services/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 
 const updateFinancialStatus = async ({ data, id }) =>
   // https://avi-lms-backend.onrender.com/api/v1/admins/financial-aid/:id
-  await axios.patch(`${BASE_URL}/financial-aid/${id}`, data, {
-    headers: {
-      Authorization: `Bearer ${Cookies.get("adminToken")}`,
-    },
-  });
+  await axiosAdmin.patch(`/financial-aid/${id}`, data);
 
 export const useFinancialStatus = () => {
   const queryClient = useQueryClient();

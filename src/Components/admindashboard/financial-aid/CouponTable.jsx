@@ -92,7 +92,7 @@ const CouponTable = () => {
                     name="coupon_name"
                     placeholder="Coupon Name"
                     control={form.control}
-                    input="text"
+                    type="text"
                     id="coupon_name"
                     className="w-full rounded border border-gray-300 px-4 py-7"
                   />
@@ -124,7 +124,7 @@ const CouponTable = () => {
                     name="percentage_discount"
                     placeholder="18%"
                     control={form.control}
-                    input="number"
+                    type="number"
                     id="percentage_discount"
                     className="w-full rounded border border-gray-300 px-4 py-7"
                   />

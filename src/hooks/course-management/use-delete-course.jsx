@@ -1,21 +1,11 @@
-import axios from "axios";
-import Cookies from "js-cookie";
+import { axiosAdmin } from "@/services/api";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { BASE_URL } from "@/constant";
 
 // Function to unpublish a course
-const deleteCourse = async ({courseId}) => {
-  const token = Cookies.get("adminToken");
-
-  // https://avi-lms-backend.onrender.com/api/v1/admins/courses/:courseId
-
-  const response = await axios.delete(`${BASE_URL}/admins/courses/${courseId}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return response.data; // Returning only the response data for better usability
+const deleteCourse = async ({ courseId }) => {
+  const response = await axiosAdmin.delete(`/courses/${courseId}`);
+  return response.data; 
 };
 
 // Custom hook for unpublishing a course

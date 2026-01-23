@@ -30,14 +30,17 @@ const EditCourseInformationForm = ({ courseInformation, setOnOpenChange }) => {
     file: null,
     preview: isEdit ? courseInformation.cover_image : null,
   });
-  const [video, setVideo] = useState({ file: null, preview: null });
+  const [video, setVideo] = useState({
+    file: null,
+    preview: isEdit ? courseInformation.preview_video?.url : null,
+  });
 
   const { editCourseInformation, isEditing } = useEditCourseInformation();
 
   const imageRef = useRef(null);
   const btnRef = useRef(null);
 
-  console.log("data to edit", courseInformation);
+
   const dataToEdit = courseInformation && {
     courseTitle: courseInformation.title,
     benefits: courseInformation.benefits.join("\n"),

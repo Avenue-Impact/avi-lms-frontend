@@ -8,10 +8,6 @@ import EditOnDemandSessionCourseType from "./EditOnDemandSessionCourseType";
 const EditCourseType = ({ data, setModalOpen }) => {
   const [tab, setTab] = useState(1);
 
-  console.log("The Live Price Info details-1", data);
-  console.log("The Live Price Info details live_class_price", data.data.data.course.live_class_price);
-  console.log("The Live Price Info details cohorts", data.data.data.course.cohorts);
-
   return (
     <div className="h-full w-full max-w-[900px]">
       <div className="mb-4 flex items-center justify-between">

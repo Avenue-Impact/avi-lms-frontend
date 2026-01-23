@@ -77,11 +77,11 @@ function CourseType({ editButton = false, courseId }) {
           </EditModal>
         )}
       </div>
-      <main className="mt-8 grid grid-cols-2">
+      <main className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
         {data?.data?.data?.course?.cohorts.length === 0 ? (
           <div>NO Live Course ....</div>
         ) : (
-          <section className="border-r border-r-[#F0F2F5] pr-11">
+          <section className="border-b border-[#F0F2F5] pb-10 lg:border-b-0 lg:border-r lg:pr-11 lg:pb-0">
             <h3 className="w-full max-w-[530px] text-xl font-light text-[#23314A]">
               Live session + Mentoring (
               {data?.data?.data.course.cohorts.at(0).cohort ?? "no cohort"})
@@ -147,7 +147,7 @@ function CourseType({ editButton = false, courseId }) {
           </section>
         )}
 
-        <section className="pl-10">
+        <section className="lg:pl-10">
           <h3 className="mb-[42px] w-full max-w-[530px] text-xl font-light text-[#23314A]">
             On Demand Course (Pre Recorded Session)
           </h3>

@@ -20,7 +20,7 @@ const PreviewVideoCourse = () => {
   const navigate = useNavigate();
   let { courseId } = useParams();
   const { previewCourse } = usePreviewCourses(courseId);
-  console.log("Preview the video", previewCourse);
+
 
   return (
     <>
@@ -46,10 +46,14 @@ const PreviewVideoCourse = () => {
                     {previewCourse?.data?.data.course.title ?? ""}
                   </p>
 
-                  <PreviewVideo />
+                  <PreviewVideo
+                    videoUrl={
+                      previewCourse?.data?.data.course.preview_video?.url
+                    }
+                  />
 
                   {/* <video
-                    src={previewCourse?.data?.data.course.preview_video}
+                    src={previewCourse?.data?.data.course.preview_video?.url}
                     controls
                     className="h-auto w-full shadow-lg lg:rounded-3xl"
                   ></video> */}
@@ -112,21 +116,21 @@ const PreviewVideoCourse = () => {
   );
 };
 
-const PreviewVideo = () => {
-  const { courseId } = useParams();
-  const { data, isLoading } = useFetchVideo(courseId);
+const PreviewVideo = ({ videoUrl }) => {
+  // const { courseId } = useParams();
+  // const { data, isLoading } = useFetchVideo(courseId);
 
-  console.log("Playing video", data);
+  // console.log("Playing video", data);
 
-  if (isLoading) {
-    return (
-      <div className="max-h-[690px] w-full text-white">
-        <Skeleton className="h-[690px] w-full" />
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="max-h-[690px] w-full text-white">
+  //       <Skeleton className="h-[690px] w-full" />
+  //     </div>
+  //   );
+  // }
 
-  const videoUrl = data?.data?.data?.previewUrl;
+  // const videoUrl = data?.data?.data?.previewUrl;
 
   return (
     <video

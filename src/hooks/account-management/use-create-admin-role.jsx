@@ -1,16 +1,10 @@
 // import { BASE_URL } from "@/constant";
-import { BASE_URL } from "@/constant";
+import { axiosAdmin } from "@/services/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 
 const createAdminRole = async (data) =>
-  await axios.post(BASE_URL, data, {
-    headers: {
-      Authorization: `Bearer ${Cookies.get("adminToken")}`,
-    },
-  });
+  await axiosAdmin.post('/', data);
 
 export const useCreateAdminRole = () => {
   const queryClient = useQueryClient();

@@ -80,12 +80,6 @@ const navitem3 = [
     path: "/admin/financial-aid",
   },
   {
-    id: 4,
-    text: "Coupons",
-    icon: <FinancialIcon />,
-    path: "/admin/coupons",
-  },
-  {
     id: 5,
     text: "Certificate",
     icon: <CertificateIcon />,
@@ -102,11 +96,10 @@ function AdminSideNav() {
 function SideNav() {
   const handleSignOut = () => {
     localStorage.clear();
-
-  // (Optional) If you're using sessionStorage too, clear it
-  sessionStorage.clear();
+    sessionStorage.clear();
 
     Cookies.remove("adminToken");
+    Cookies.remove("adminSession");
     window.location.href = "/admin/login";
   };
 
