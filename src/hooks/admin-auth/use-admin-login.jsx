@@ -18,7 +18,6 @@ export const useLoginAdmin = () => {
     onSuccess({ data }) {
       console.log("Login Response Data:", data);
       const token = data.data?.token || data.token;
-      console.log("Extracted Token:", token);
       
       // Strict check to prevent "undefined" string
       if (token && token !== "undefined") {

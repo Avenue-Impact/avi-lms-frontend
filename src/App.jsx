@@ -365,7 +365,7 @@ function App() {
         {
           element: (
             <AuthProtectedRoute
-              tokin={"adminSession"}
+              tokin={"adminToken"}
               path={"admin/course/management"}
             />
           ),
@@ -379,7 +379,7 @@ function App() {
         },
         {
           element: (
-            <ProtectedRoute tokin={"adminSession"} path={"/admin/login"} />
+            <ProtectedRoute tokin={"adminToken"} path={"/admin/login"} />
           ),
           errorElement: <AdminErrorPage />,
 
