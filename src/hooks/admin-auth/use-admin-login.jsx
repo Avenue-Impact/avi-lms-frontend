@@ -27,7 +27,7 @@ export const useLoginAdmin = () => {
       }
       toast.success("admin logged in successfully");
       // Cookies are now handled by the backend (HttpOnly)
-      navigate("/admin/data-management"); // Fixed path to course management
+      navigate("/admin/data-management");
     },
     onError(error) {
       toast.error(error.response?.data?.message || "Login failed. Please try again.");

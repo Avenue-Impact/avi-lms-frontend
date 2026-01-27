@@ -6,7 +6,7 @@ import Cookies from "js-cookie";
 const url = import.meta.env.VITE_USER_URL;
 
 export const axiosAdmin = axios.create({
-  baseURL: `${BASE_URL}/admins`,
+  baseURL: `${BASE_URL}`,
   withCredentials: true, // Important for sending cookies
   headers: {
     // Authorization header is managed by interceptors
