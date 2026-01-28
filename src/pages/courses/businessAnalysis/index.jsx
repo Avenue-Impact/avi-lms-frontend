@@ -25,7 +25,7 @@ export default function BusinessAnalysis() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isEarlyBird, setIsEarlyBird] = useState(false);
   
-  const programStartDate = new Date('2026-02-23T00:00:00');
+  const programStartDate = new Date('2026-02-16T00:00:00');
   const earlyBirdEndDate = new Date('2026-01-31T23:59:59');
 
   useEffect(() => {
