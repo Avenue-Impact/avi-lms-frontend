@@ -124,7 +124,7 @@ export default function BusinessAnalysis() {
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-center gap-2 text-sm">
           <div className="flex items-center whitespace-nowrap max-w-[100vw] overflow-x-auto hideScrollBar">
             <Clock className="h-4 w-4 mr-2" />
-            <span>Next BA Training Starts October 20th - Secure Your Spot Now!</span>
+            <span>Next BA Training Starts Febuary 16th - Secure Your Spot Now!</span>
           </div>
           <div className="hidden md:block">•</div>
           <div className="flex hidden md:block items-center">
