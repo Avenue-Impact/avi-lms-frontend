@@ -155,7 +155,8 @@ const OnDemandSessionCourses = () => {
                 title={course.title}
                 rating={course.average_rating}
                 numRatings="45,345"
-                courseProgress="0% in progress"
+                courseProgress={course.progress > 0 ? `${Math.round(course.progress)}% Completed` : "Not Started"}
+                progress={course.progress}
                 review={"200"}
                 courseId={course.id}
               />

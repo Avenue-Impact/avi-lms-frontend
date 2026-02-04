@@ -56,9 +56,9 @@ const LivePayment = () => {
   };
 
   const original_price =
-    previewCourse?.data?.data.course.live_class_price.original_price.amount;
+    previewCourse?.data?.data?.course?.live_class_price?.original_price?.amount;
   const discounted_price =
-    previewCourse?.data?.data.course.live_class_price.discounted_price.amount;
+    previewCourse?.data?.data?.course?.live_class_price?.discounted_price?.amount;
 
   // const finalAmount =
   //   original_price - (original_price * discounted_price) / 100;
@@ -77,8 +77,8 @@ const LivePayment = () => {
           <h3 className="text-[25px] font-[600] text-gray-800">
             {/* Price £2,200 */}
             {
-              previewCourse?.data?.data.course.live_class_price.original_price
-                .currency_symbol
+              previewCourse?.data?.data?.course?.live_class_price?.original_price
+                ?.currency_symbol
             }
 
             {Math.round(original_price - discounted_price)}
@@ -86,8 +86,8 @@ const LivePayment = () => {
           <p className="text-[20px] font-[400] line-through">
             {/* £39,900 */}
             {
-              previewCourse?.data?.data.course.live_class_price.discounted_price
-                .currency_symbol
+              previewCourse?.data?.data?.course?.live_class_price?.discounted_price
+                ?.currency_symbol
             }
 
             {Math.round(original_price)}
@@ -99,11 +99,11 @@ const LivePayment = () => {
 
         <p className="mt-2 text-gray-600">
           Every{" "}
-          {previewCourse?.data?.data.course.live_class_price.duration.replace(
+          {previewCourse?.data?.data?.course?.live_class_price?.duration?.replace(
             /\b\w/g,
             (char) => char.toUpperCase(),
           )}{" "}
-          {previewCourse?.data?.data.course.live_class_price.time}
+          {previewCourse?.data?.data?.course?.live_class_price?.time}
           {/* 7PM */}
         </p>
       </div>

@@ -8,7 +8,7 @@ import {
 
 import React, { useEffect, useRef, useState } from "react";
 import CouponEmptyTable from "./CouponEmptyTable";
-import { useFetchAllCoupons } from "@/hooks/financial-aid/use-fetch-all-coupon codes";
+import { useFetchAllCoupons } from "@/hooks/coupon-management/use-fetch-all-coupons";
 import { formatDateString } from "@/lib/formatdatestring";
 import { useDeleteAllCoupon } from "@/hooks/financial-aid/use-delete-coupon-code";
 import toast from "react-hot-toast";
@@ -64,28 +64,40 @@ const CreatedCouponCard = () => {
         "Network error"
       ) : isLoading ? (
         "Loading..."
-      ) : fetchAllCoupons?.data?.data?.length < 1 ? (
+      ) : fetchAllCoupons?.data?.length < 1 ? (
         <CouponEmptyTable />
       ) : (
         <table className="min-w-full border border-gray-300 bg-white text-[13px] text-[#344054]">
           <thead>
             <tr className="min-w-full border-0 border-red-500 bg-[#E4E7EC]">
               <th className="border-b p-4 text-left">S/N</th>
-              <th className="border-b p-4 text-left">Coupon Name</th>
               <th className="border-b p-4 text-left">Coupon Code</th>
-              <th className="border-b p-4 text-left">Percentage Discount</th>
-              <th className="border-b p-4 text-left">Coupon Creation Date</th>
+              <th className="border-b p-4 text-left">Discount</th>
+              <th className="border-b p-4 text-left">Expires On</th>
+              <th className="border-b p-4 text-left">Usage</th>
+              <th className="border-b p-4 text-left">Created At</th>
+              <th className="border-b p-4 text-left">Action</th>
             </tr>
           </thead>
           <tbody className="text-[14px]">
-            {fetchAllCoupons?.data?.data?.map((coupon, index) => (
+            {fetchAllCoupons?.data?.map((coupon, index) => (
               <tr key={index}>
                 <td className="border-b p-4">{index + 1}</td>
-                <td className="border-b p-4">{coupon.coupon_name}</td>
-                <td className="border-b p-4">{coupon.custom_coupon_code}</td>
-                <td className="border-b p-4">{coupon.percentage_discount}%</td>
-                <td className="flex justify-between border-b p-4">
-                  {formatDateString(coupon.updated_at)}
+                {/* <td className="border-b p-4">{coupon.coupon_name}</td> */}
+                <td className="border-b p-4 font-bold">{coupon.code}</td>
+                <td className="border-b p-4">
+                  {coupon.discountType === "percentage" ? `${coupon.discountValue}%` : `£${coupon.discountValue}`}
+                </td>
+                 <td className="border-b p-4">
+                  {coupon.expiryDate ? formatDateString(coupon.expiryDate) : "No Expiry"}
+                </td>
+                 <td className="border-b p-4">
+                  {coupon.usedCount} / {coupon.usageLimit || "∞"}
+                </td>
+                <td className="border-b p-4">
+                  {formatDateString(coupon.created_at)}
+                </td>
+                <td className="relative border-b p-4">
                   <button
                     onClick={() => toggleDropDown(index)}
                     className="ml-2 border border-gray-300 px-2 text-gray-600 focus:outline-none"

@@ -9,6 +9,7 @@ const RecordedSessionCourseCard = ({
   rating,
   review,
   courseId,
+  progress = 0,
 }) => {
   return (
     <div className="overflow-hidden rounded-t-lg bg-[rgb(252,252,252)]">
@@ -39,13 +40,24 @@ const RecordedSessionCourseCard = ({
 
           <div className="my-[5px] hidden h-[1px] w-full bg-[#F53366] lg:block" />
 
-          <div className="flex items-center justify-between px-[7px] pb-2">
-            <p className="text-[10px]">{courseProgress}</p>
-            <p>
+          <div className="flex flex-col gap-2 px-[7px] pb-2">
+            <div className="flex items-center justify-between text-[10px] text-[#667185]">
+              <p>{courseProgress}</p>
+              <p>{progress > 0 ? `${Math.round(progress)}%` : "0%"}</p>
+            </div>
+            
+            <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-[#F53366] rounded-full transition-all duration-300"
+                style={{ width: `${Math.max(0, Math.min(100, progress || 0))}%` }}
+              />
+            </div>
+
+            <div className="flex justify-end pt-1">
               <p className="text-[10px] text-[#F53366] underline">
-                Get started
+                {progress > 0 ? "Resume" : "Get started"}
               </p>
-            </p>
+            </div>
           </div>
         </div>
       </Link>

@@ -6,6 +6,7 @@ import heroImg1 from '../../../../assets/imgs/Rectangle 692.svg';
 import heroImg2 from '../../../../assets/imgs/Data-First.jpeg';
 import heroImg3 from '../../../../assets/imgs/Data-Fourth.jpeg';
 import { scrollToElement } from "@/utils/scrollToView";
+import { useFetchVideo } from "@/hooks/students/use-fetch-taster-video";
 
 const slides = [
   {
@@ -69,15 +70,20 @@ export function HeroSection({
   coverImage,
   title,
   overview,
+  courseId,
 }) {
   const navigate = useNavigate();
   const [[page, direction], setPage] = useState([0, 0]);
   const [autoSlide, setAutoSlide] = useState(true);
   
+  const { data: videoData, isLoading } = useFetchVideo(courseId);
+  const previewUrl = videoData?.data?.data?.previewUrl;
+  
   const currentSlide = page % slides.length;
   const currentSlideData = slides[currentSlide];
 
-  const videoUrl = `https://avitrainingrecordings.s3.eu-west-2.amazonaws.com/live/wp-content/uploads/Business+Analysis/October+2025/Tester+Session/20+Oct+2025+Introduction+to+Business+Analysis+and+Success+Stories+(Live+Taster+Session).mp4`
+  // Fallback if no dynamic video
+  const defaultVideoUrl = `https://avitrainingrecordings.s3.eu-west-2.amazonaws.com/live/wp-content/uploads/Business+Analysis/October+2025/Tester+Session/20+Oct+2025+Introduction+to+Business+Analysis+and+Success+Stories+(Live+Taster+Session).mp4`
 
   useEffect(() => {
     if (!autoSlide) return;
@@ -152,7 +158,7 @@ export function HeroSection({
         >
           <div className="relative rounded-3xl overflow-hidden shadow-2xl">
             
-        <video controls width="100%" src="https://avitrainingrecordings.s3.eu-west-2.amazonaws.com/live/wp-content/uploads/Business+Analysis/October+2025/Tester+Session/20+Oct+2025+Introduction+to+Business+Analysis+and+Success+Stories+(Live+Taster+Session).mp4">
+        <video controls width="100%" src={previewUrl || defaultVideoUrl}>
           Your browser does not support the video tag.
         </video>
           </div>

@@ -28,6 +28,7 @@ export default function LandingPage() {
       <CoursesNavbar />
       <div className="">
         <HeroSection 
+        courseId={courseId}
         coverImage={courseDetails?.cover_image} 
         title={courseDetails?.title} 
         overview={courseDetails?.overview} 
