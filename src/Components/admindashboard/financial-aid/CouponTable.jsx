@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import CreatedCouponCard from "./CreatedCouponCard";
 import DashButton from "@/pages/auth/ButtonDash";
-import CreatedCouponCard from "./CreatedCouponCard";
-import DashButton from "@/pages/auth/ButtonDash";
 import { useCreateCoupon } from "@/hooks/coupon-management/use-create-coupon";
-import { useFetchCourses } from "@/hooks/course-management/use-fetch-all-courses";
+import { useFetchAllAdminCourses as useFetchCourses } from "@/hooks/course-management/use-fetch-all-courses";
 import { z } from "zod";
 import { Form } from "@/Components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
