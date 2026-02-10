@@ -21,7 +21,6 @@ function RecordedCourseSection({ editButton, data }) {
 
     setVideoId(data?.data?.data?.on_demand_sections[0].lessons[0].video_url.link);
   }, [data?.data?.on_demand_sections, setVideoId]);
-  console.log(data?.data?.data?.on_demand_sections);
 
   return (
     <div>

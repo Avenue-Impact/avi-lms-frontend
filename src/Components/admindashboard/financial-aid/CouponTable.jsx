@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 import FormInput from "@/Components/ui/form-input";
 import { useFetchGenerateCoupon } from "@/hooks/financial-aid/use-generate-coupon-code";
 import toast from "react-hot-toast";
+import { MultiSelectDropdown } from "@/Components/ui/multi-select-dropdown";
 
 const createCouponCode = z.object({
   coupon_name: z.string().min(2, "Coupon Name is required"),
@@ -65,16 +66,21 @@ const CouponTable = () => {
     }
 
     create({
-      code: generatedData?.data?.data, // The new hook expects 'code' not 'custom_coupon_code'
-      // coupon_name: formData.coupon_name, // PromoCode model might not have coupon_name, check if it's needed or if we should map it
+      code: generatedData?.data?.data,
+      coupon_name: formData.coupon_name,
       discountType: "percentage",
       discountValue: formData.percentage_discount,
       expiryDate: new Date(formData.expiryDate).toISOString(),
-      usageLimit: formData.usageLimit || 1000,
+      usageLimit: formData.usageLimit || undefined,
       applicableToAll: formData.applicableToAll,
       applicableCourses: formData.applicableCourses,
       admin_applied: true,
       status: "active",
+    }, {
+      onSuccess: () => {
+        form.reset();
+        // Optionally reset specific default values if needed, but reset() should handle it based on defaultValues or empty.
+      }
     });
   };
 
@@ -156,7 +162,7 @@ const CouponTable = () => {
                   />
                 </div>
 
-                 <div className="col-span-4 mt-5">
+                {/* <div className="col-span-4 mt-5">
                   <FormInput
                     label="Usage Limit"
                     name="usageLimit"
@@ -166,7 +172,7 @@ const CouponTable = () => {
                     id="usageLimit"
                     className="w-full rounded border border-gray-300 px-4 py-7"
                   />
-                </div>
+                </div> */}
 
                  <div className="col-span-4 mt-5">
                    <div className="flex items-center gap-2 mb-2">
@@ -182,16 +188,16 @@ const CouponTable = () => {
                    {!form.watch("applicableToAll") && (
                      <div className="flex flex-col gap-2">
                        <label className="text-sm font-medium">Select Courses</label>
-                        <select 
-                          multiple 
-                          {...form.register("applicableCourses")} 
-                          className="w-full rounded border border-gray-300 px-4 py-3 h-32"
-                        >
-                          {coursesData?.data?.docs?.map((course) => (
-                            <option key={course.id} value={course.id}>{course.title}</option>
-                          ))}
-                        </select>
-                        <p className="text-xs text-gray-500">Hold Ctrl/Cmd to select multiple</p>
+                       <MultiSelectDropdown
+                          options={coursesData?.data?.data?.courses?.map((course) => ({
+                            label: course.title,
+                            value: course.id,
+                          })) || []}
+                          selectedValues={form.watch("applicableCourses") || []}
+                          onChange={(vals) => form.setValue("applicableCourses", vals)}
+                          placeholder="Select courses..."
+                          label="courses"
+                       />
                      </div>
                    )}
                 </div>

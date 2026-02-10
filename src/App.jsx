@@ -69,6 +69,7 @@ import FinancialLayout from "./layouts/admin/FinancialLayout";
 import ProjectAreaLayout from "./layouts/admin/ProjectAreaLayout";
 import AdminLogin from "./pages/admin-pages/AdminLogin";
 import AdminPayment from "./pages/admin-pages/AdminPayment";
+import AdminBankTransfers from "./pages/admin-pages/AdminBankTransfers";
 import CreatedCourse from "./pages/admin-pages/course-management/CreatedCourse";
 import EditCourse from "./pages/admin-pages/course-management/EditCourse";
 import CourseManagement from "./pages/admin-pages/CourseManagement";
@@ -503,6 +504,10 @@ function App() {
                 {
                   path: "/admin/payment",
                   element: <AdminPayment />,
+                },
+                {
+                  path: "/admin/bank-transfers",
+                  element: <AdminBankTransfers />,
                 },
 
                 {

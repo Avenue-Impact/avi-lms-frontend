@@ -67,6 +67,7 @@ const navitem3 = [
     icon: <PaymentIcon />,
     path: "/admin/payment",
   },
+
   {
     id: 2,
     text: "Affiliate",
