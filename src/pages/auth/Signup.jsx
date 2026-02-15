@@ -149,6 +149,7 @@ const SignUp = ({ isPage = true }) => {
         username,
         referral_code: referralCode,
         phoneNumber,
+        source_url: window.location.href,
       };
 
       const response = await axios.post(`${url}/signup`, users, {
@@ -161,6 +162,10 @@ const SignUp = ({ isPage = true }) => {
       console.log("Signup Response:", response.data);
 
       if (response.data.status === "success") {
+        console.log("forward Url:", response.data.forward_url)
+        if (response.data.forward_url) {
+          sessionStorage.setItem("signup_forward_url", response.data.forward_url);
+        }
         setSuccess("success");
         setUser({
           firstName,
