@@ -2,8 +2,7 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import BorderCard from "@/Components/BorderCard";
-import { Heading } from "./components/Text";
+import AuthLayout from "./components/AuthLayout";
 import { Form } from "@/Components/ui/form";
 import { CommonButton } from "@/Components/ui/button";
 import Modal from "./components/Modal";
@@ -93,53 +92,52 @@ const NewPassword = () => {
           />
         </Modal>
       )}
-      <div className="flex h-[calc(100vh-100.547px)] w-full items-center justify-center px-6 py-10">
-        <BorderCard className="mx-auto max-w-[465px]">
-          <div className="mb-8 space-y-1">
-            <Heading>Create Your New Password</Heading>
-          </div>
-          <Form {...form}>
-            <form
-              action=""
-              className="space-y-2"
-              onSubmit={form.handleSubmit(handleSubmit)}
+      <AuthLayout
+        title="Create Your New Password"
+        subtitle=""
+        isMobileStacked={true}
+      >
+        <Form {...form}>
+          <form
+            action=""
+            className="space-y-2"
+            onSubmit={form.handleSubmit(handleSubmit)}
+          >
+            <PasswordInput
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="new-password"
+              label="Enter Password"
+              name="password"
+              control={form.control}
+              placeholder=""
+            />
+            <PasswordInput
+              id="confirmPassword"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="new-password"
+              label="Confirm Password"
+              name="confirmPassword"
+              control={form.control}
+              placeholder=""
+            />
+
+            <p className="text-[12px] italic leading-[17.4px] text-primary-color-600">
+              Make sure your new password is different from any previous
+              passwords
+            </p>
+
+            <CommonButton
+              className="mt-8 w-full bg-primary-color-600 font-poppins text-xl font-semibold capitalize text-white hover:bg-primary-color-600"
+              type="submit"
             >
-              <PasswordInput
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoComplete="new-password"
-                label="Enter Password"
-                name="password"
-                control={form.control}
-                placeholder=""
-              />
-              <PasswordInput
-                id="confirmPassword"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoComplete="new-password"
-                label="Confirm Password"
-                name="confirmPassword"
-                control={form.control}
-                placeholder=""
-              />
-
-              <p className="text-[12px] italic leading-[17.4px] text-primary-color-600">
-                Make sure your new password is different from any previous
-                passwords
-              </p>
-
-              <CommonButton
-                className="mt-8 w-full bg-primary-color-600 font-poppins text-xl font-semibold capitalize text-white hover:bg-primary-color-600"
-                type="submit"
-              >
-                reset
-              </CommonButton>
-            </form>
-          </Form>
-        </BorderCard>
-      </div>
+              reset
+            </CommonButton>
+          </form>
+        </Form>
+      </AuthLayout>
     </>
   );
 };

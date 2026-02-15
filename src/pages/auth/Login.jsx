@@ -1,13 +1,12 @@
 
 import { useState } from "react";
-import BorderCard from "@/Components/BorderCard";
+import AuthLayout from "./components/AuthLayout";
 import { Form } from "@/Components/ui/form";
 import FormInput from "@/Components/ui/form-input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { z } from "zod";
-import { Heading, Paragraph } from "./components/Text";
 
 import { CommonButton } from "@/Components/ui/button";
 import PasswordInput from "@/Components/ui/password-input";
@@ -107,13 +106,11 @@ const Login = () => {
         </Modal>
       )}
 
-      <div className="flex min-h-[calc(100vh-100.547px)] w-full items-center justify-center px-4">
-        <div className="w-full max-w-[465px] py-10">
-          <BorderCard className="mx-auto">
-            <div className="mb-8 space-y-1">
-              <Heading>Welcome back!</Heading>
-              <Paragraph>Use your email to sign in to your dashboard</Paragraph>
-          </div>
+      <AuthLayout 
+        title="Welcome back!" 
+        subtitle="Use your email to sign in to your dashboard"
+        isMobileStacked={true}
+      >
           <Form {...form}>
             <form
               action=""
@@ -172,9 +169,7 @@ const Login = () => {
               Sign up
             </Link>
           </p>
-          </BorderCard>
-        </div>
-      </div>
+      </AuthLayout>
     </div>
   );
 };

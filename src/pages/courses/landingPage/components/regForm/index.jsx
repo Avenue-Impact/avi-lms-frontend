@@ -1,15 +1,16 @@
-import { useState } from 'react';
-import { Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
-import SignUp from '@/pages/auth/Signup';
+import { useState } from "react";
+import { Mail, Phone, MapPin, ArrowRight } from "lucide-react";
+import SignUp from "@/pages/auth/Signup";
+import CredentialsProvider from "@/providers/CredentialsProvider";
 
 export const CoursesRegistrationForm = () => {
   const [formData, setFormData] = useState({
-    first_name: '',
-    last_name: '',
-    email: '',
-    phone: '',
-    course: 'Business Analysis Bundle',
-    referrerCode: '',
+    first_name: "",
+    last_name: "",
+    email: "",
+    phone: "",
+    course: "Business Analysis Bundle",
+    referrerCode: "",
   });
 
   const handleChange = (e) => {
@@ -18,38 +19,53 @@ export const CoursesRegistrationForm = () => {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+    <div className="overflow-hidden rounded-2xl bg-white shadow-xl">
       <div className="md:flex">
         {/* Left Panel */}
-        <div className="md:w-1/2 bg-gradient-to-br from-[#CC1747] to-[#1E2A3F] text-white p-8 md:p-12">
-          <h2 className="text-2xl font-bold mb-6">Ready to Start Your BA Journey?</h2>
+        <div className="bg-gradient-to-br from-[#CC1747] to-[#1E2A3F] p-8 text-white md:w-1/2 md:p-12">
+          <h2 className="mb-6 text-2xl font-bold">
+            Ready to Start Your BA Journey?
+          </h2>
           <p className="mb-8 text-blue-100">
-            Fill out the form to register for our upcoming training program starting July 21st.
+            Fill out the form to register for our upcoming training program
+            starting July 21st.
           </p>
 
           <div className="space-y-6">
             <div className="flex items-start gap-4">
-              <div className="bg-white/20 p-3 rounded-lg"><Mail className="w-5 h-5" /></div>
+              <div className="rounded-lg bg-white/20 p-3">
+                <Mail className="h-5 w-5" />
+              </div>
               <div>
                 <h4 className="font-semibold">Email Us</h4>
-                <a href="mailto:info@avenueimpact.com" className="text-blue-100 hover:underline">
+                <a
+                  href="mailto:info@avenueimpact.com"
+                  className="text-blue-100 hover:underline"
+                >
                   info@avenueimpact.com
                 </a>
               </div>
             </div>
 
             <div className="flex items-start gap-4">
-              <div className="bg-white/20 p-3 rounded-lg"><Phone className="w-5 h-5" /></div>
+              <div className="rounded-lg bg-white/20 p-3">
+                <Phone className="h-5 w-5" />
+              </div>
               <div>
                 <h4 className="font-semibold">Call Us</h4>
-                <a href="tel:+4480005410720" className="text-blue-100 hover:underline">
+                <a
+                  href="tel:+4480005410720"
+                  className="text-blue-100 hover:underline"
+                >
                   +4480005410720
                 </a>
               </div>
             </div>
 
             <div className="flex items-start gap-4">
-              <div className="bg-white/20 p-3 rounded-lg"><MapPin className="w-5 h-5" /></div>
+              <div className="rounded-lg bg-white/20 p-3">
+                <MapPin className="h-5 w-5" />
+              </div>
               <div>
                 <h4 className="font-semibold">Visit Us</h4>
                 <p className="text-blue-100">London, UK</p>
@@ -161,7 +177,9 @@ export const CoursesRegistrationForm = () => {
             </button>
           </form>
         </div> */}
-        <SignUp />
+        <CredentialsProvider>
+          <SignUp isPage={false} />
+        </CredentialsProvider>
       </div>
     </div>
   );

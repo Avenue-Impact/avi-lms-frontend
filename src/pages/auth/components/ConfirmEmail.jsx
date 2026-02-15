@@ -1,5 +1,4 @@
 import OtpComponent from "@/Components/about/OtpComponent";
-import BorderCard from "@/Components/BorderCard";
 import { CommonButton } from "@/Components/ui/button";
 import { useEffect, useRef, useState } from "react"; // Add useEffect to imports
 // import { useAuth } from "@/hooks/useAuth";
@@ -18,9 +17,10 @@ const ConfirmEmail = ({ setConfirm, setModal, setSuccess, user, form }) => {
   const { otp, setOtp } = useCredentials();
 
   const verify = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     if (!otp) {
       toast.error("Please enter a valid verification code");
+      setIsLoading(false);
       return;
     }
 
@@ -48,7 +48,7 @@ const ConfirmEmail = ({ setConfirm, setModal, setSuccess, user, form }) => {
       }
     } catch (error) {
       setSuccess("fail");
-      setIsLoading(false)
+      setIsLoading(false);
       if (error.response?.status === 400) {
         toast.error("Invalid verification code");
       } else if (error.response?.status === 401) {
@@ -59,9 +59,8 @@ const ConfirmEmail = ({ setConfirm, setModal, setSuccess, user, form }) => {
             "Verification failed. Please try again.",
         );
       }
-    }
-    finally {
-      setIsLoading(false)
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -111,7 +110,7 @@ const ConfirmEmail = ({ setConfirm, setModal, setSuccess, user, form }) => {
   }, [setOtp]);
 
   return (
-    <BorderCard className="relative w-full max-w-[731px] rounded-xl bg-white py-11 text-center">
+    <div className="relative w-full max-w-[731px] rounded-xl bg-white py-11 text-center shadow-lg">
       {/* Close Modal Button */}
       {/* <div className="absolute top-5 right-5">
         <h1 
@@ -156,7 +155,7 @@ const ConfirmEmail = ({ setConfirm, setModal, setSuccess, user, form }) => {
         </div>
 
         <div className="mx-auto w-fit">
-          <OtpComponent setOtp={setOtp} inputRef={inputRef} />
+          <OtpComponent otp={otp} setOtp={setOtp} inputRef={inputRef} />
         </div>
         <p className="mb-[31px] mt-6 text-sm">
           <span className="text-[#645D5D]">Didn&apos;t receive a code?</span>{" "}
@@ -171,13 +170,13 @@ const ConfirmEmail = ({ setConfirm, setModal, setSuccess, user, form }) => {
         </p>
       </div>
       <CommonButton
-        className="w-full cursor-pointer bg-primary-color-500 hover:bg-primary-color-600 z-[100]"
-        onClick={verify}
+        className="z-[100] w-full cursor-pointer bg-primary-color-500 hover:bg-primary-color-600"
+        onClick={() => verify()}
         disabled={isLoading}
       >
         {isLoading ? "Verifying..." : "Confirm"}
       </CommonButton>
-    </BorderCard>
+    </div>
   );
 };
 

@@ -31,7 +31,6 @@
 
 // export default AuthLayout;
 
-
 import { useState, useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
@@ -51,8 +50,7 @@ const AuthLayout = () => {
 
     // Hide nav on login and signup pages
     const shouldHide =
-      pathname.includes("/login") ||
-      pathname.includes("/signup");
+      pathname.includes("/login") || pathname.includes("/signup") || pathname.includes("/forgot-password") || pathname.includes("/new-password");
 
     setHideNav(shouldHide);
   }, [location.pathname]); // runs on every route change
@@ -60,18 +58,7 @@ const AuthLayout = () => {
   return (
     <CredentialsProvider>
       <div className="relative">
-        {!hideNav && (
-          <AviNav showNav={showNav} setShowNav={setShowNav} />
-        )}
-
-       {
-        hideNav && (
-          <button onClick={() => navigate(-1)} className="flex items-center gap-2 cursor-pointer shadow-lg hover:bg-primary-color-500 hover:text-white mt-4 ml-4 border border-primary-color-500 rounded-full px-4 py-2">
-            <ChevronLeft />
-          Back
-        </button>
-        )
-       }
+        {!hideNav && <AviNav showNav={showNav} setShowNav={setShowNav} />}
 
         {!showNav && (
           <div className="fixed left-0 top-0 z-10 flex h-screen w-full items-center justify-center bg-black/25 md:hidden" />

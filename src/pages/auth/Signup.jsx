@@ -3,11 +3,10 @@ import { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useSearchParams } from "react-router-dom";
 import { z } from "zod";
-import BorderCard from "@/Components/BorderCard";
+import AuthLayout from "./components/AuthLayout";
 import { CommonButton } from "@/Components/ui/button";
 import { Form } from "@/Components/ui/form";
 import FormInput from "@/Components/ui/form-input";
-import { Heading, Paragraph } from "./components/Text";
 import Modal from "./components/Modal";
 import RegisterSuccess from "./components/RegisterSuccess";
 import ConfirmEmail from "./components/ConfirmEmail";
@@ -21,9 +20,12 @@ import { route } from "@/lib/route-checker";
 const loginSchema = z
   .object({
     email: z.string().email({ message: "Please enter a valid email address." }),
-    phoneNumber: z.string()
+    phoneNumber: z
+      .string()
       .min(10, { message: "Please enter a valid phone number" })
-      .regex(/^[0-9+\-\s()]*$/, { message: "Please enter a valid phone number format" }),
+      .regex(/^[0-9+\-\s()]*$/, {
+        message: "Please enter a valid phone number format",
+      }),
     password: z
       .string()
       .min(4, { message: "Password must be at least 8 characters long " })
@@ -54,7 +56,7 @@ const loginSchema = z
     path: ["confirmPassword"],
   });
 
-const SignUp = () => {
+const SignUp = ({ isPage = true }) => {
   const [success, setSuccess] = useState("");
   const [confirm, setConfirm] = useState(false);
   const [modal, setModal] = useState(false);
@@ -89,10 +91,25 @@ const SignUp = () => {
 
   const handleSubmit = async (values) => {
     try {
-      const { firstName, lastName, password, email, username, referralCode, phoneNumber } = values;
+      const {
+        firstName,
+        lastName,
+        password,
+        email,
+        username,
+        referralCode,
+        phoneNumber,
+      } = values;
 
       // Validate all required fields
-      if (!firstName || !lastName || !email || !password || !username || !phoneNumber) {
+      if (
+        !firstName ||
+        !lastName ||
+        !email ||
+        !password ||
+        !username ||
+        !phoneNumber
+      ) {
         toast.error("All fields are required");
         return;
       }
@@ -124,18 +141,6 @@ const SignUp = () => {
         return;
       }
 
-      // Log the request URL and data for debugging
-      console.log('Signup URL:', `${url}/signup`);
-      console.log('Signup Data:', {
-        firstname: firstName,
-        lastname: lastName,
-        email,
-        password,
-        username,
-        referral_code: referralCode,
-        phoneNumber,
-      });
-
       const users = {
         firstname: firstName,
         lastname: lastName,
@@ -148,12 +153,12 @@ const SignUp = () => {
 
       const response = await axios.post(`${url}/signup`, users, {
         headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        }
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
       });
 
-      console.log('Signup Response:', response.data);
+      console.log("Signup Response:", response.data);
 
       if (response.data.status === "success") {
         setSuccess("success");
@@ -176,7 +181,7 @@ const SignUp = () => {
       }
 
       // Log the full error response
-      console.error('Error Response:', error.response);
+      console.error("Error Response:", error.response);
 
       // Handle specific error cases
       if (error.response.status === 409) {
@@ -184,7 +189,10 @@ const SignUp = () => {
       } else if (error.response.status === 400) {
         toast.error(error.response.data.message || "Invalid input data");
       } else {
-        toast.error(error.response.data.message || "Registration failed. Please try again.");
+        toast.error(
+          error.response.data.message ||
+            "Registration failed. Please try again.",
+        );
       }
       setSuccess("fail");
     } finally {
@@ -199,9 +207,10 @@ const SignUp = () => {
 
   // Add viewport meta tag for iOS
   useEffect(() => {
-    const meta = document.createElement('meta');
-    meta.name = 'viewport';
-    meta.content = 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no';
+    const meta = document.createElement("meta");
+    meta.name = "viewport";
+    meta.content =
+      "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no";
     document.head.appendChild(meta);
 
     return () => {
@@ -212,7 +221,7 @@ const SignUp = () => {
   // Add iOS-specific input handling
   const handleInputFocus = (e) => {
     // Prevent zoom on focus for iOS
-    e.target.style.fontSize = '16px';
+    e.target.style.fontSize = "16px";
   };
 
   return (
@@ -231,14 +240,17 @@ const SignUp = () => {
 
       {showReferralReminder && (
         <Modal>
-          <div className="bg-white rounded-lg shadow-lg p-8 max-w-[350px] w-full text-center">
-            <h2 className="text-lg font-semibold mb-2 text-[#CC1747]">Did you enter a referral code?</h2>
-            <p className="mb-4 text-gray-700 text-sm">
-              If you have a referral code, please enter it before signing up to enjoy referral benefits. You cannot add it later.
+          <div className="w-full max-w-[350px] rounded-lg bg-white p-8 text-center shadow-lg">
+            <h2 className="mb-2 text-lg font-semibold text-[#CC1747]">
+              Did you enter a referral code?
+            </h2>
+            <p className="mb-4 text-sm text-gray-700">
+              If you have a referral code, please enter it before signing up to
+              enjoy referral benefits. You cannot add it later.
             </p>
-            <div className="flex flex-col gap-3 mt-4">
+            <div className="mt-4 flex flex-col gap-3">
               <button
-                className="bg-[#CC1747] text-white px-4 py-2 rounded hover:bg-[#b30e3b]"
+                className="rounded bg-[#CC1747] px-4 py-2 text-white hover:bg-[#b30e3b]"
                 onClick={() => {
                   setShowReferralReminder(false);
                   setPendingSignupValues(null);
@@ -249,14 +261,16 @@ const SignUp = () => {
               </button>
 
               <button
-                className="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300"
+                className="rounded bg-gray-200 px-4 py-2 text-gray-800 hover:bg-gray-300"
                 onClick={() => {
                   setShowReferralReminder(false);
                   setSkipReferralReminder(true);
                   if (pendingSignupValues) {
-                    Object.entries(pendingSignupValues).forEach(([key, value]) => {
-                      form.setValue(key, value);
-                    });
+                    Object.entries(pendingSignupValues).forEach(
+                      ([key, value]) => {
+                        form.setValue(key, value);
+                      },
+                    );
                     form.setValue("referralCode", "");
                     setTimeout(() => {
                       if (formRef.current) {
@@ -274,164 +288,160 @@ const SignUp = () => {
         </Modal>
       )}
 
-      <div className="flex w-full items-center justify-center px-6 ">
-        <div className="w-fit">
-          <div className="py-6">
-            <BorderCard className="mx-auto ">
-              <div className="mb-6 space-y-1">
-                <Heading>Sign up and start learning</Heading>
-                <Paragraph>Use your email to sign up</Paragraph>
+      <AuthLayout
+        title="Sign up and start learning"
+        subtitle="Use your email to sign up"
+        isMobileStacked={true}
+        isPage={isPage}
+      >
+        <Form {...form}>
+          <form ref={formRef} onSubmit={form.handleSubmit(handleSubmit)}>
+            <div className="">
+              <div className={`${isPage ? "" : "grid-cols-2"} grid gap-x-3`}>
+                <FormInput
+                  label="firstname"
+                  name="firstName"
+                  control={form.control}
+                  type="text"
+                  id="firstName"
+                  placeholder=""
+                  onFocus={handleInputFocus}
+                  autoComplete="given-name"
+                  autoCapitalize="words"
+                  absoluteError
+                />
+                <FormInput
+                  label="lastname"
+                  name="lastName"
+                  control={form.control}
+                  type="text"
+                  id="lastName"
+                  placeholder=""
+                  onFocus={handleInputFocus}
+                  autoComplete="family-name"
+                  autoCapitalize="words"
+                  absoluteError
+                />
               </div>
-              <Form {...form}>
-                <form ref={formRef} onSubmit={form.handleSubmit(handleSubmit)}>
-                  <div className="space-y-6">
-                    <div className="sm:grid grid-cols-2 gap-x-3 gap-y-6">
-                      <FormInput
-                        label="firstname"
-                        name="firstName"
-                        control={form.control}
-                        type="text"
-                        id="firstName"
-                        placeholder=""
-                        onFocus={handleInputFocus}
-                        autoComplete="given-name"
-                        autoCapitalize="words"
-                        absoluteError
-                      />
-                      <FormInput
-                        label="lastname"
-                        name="lastName"
-                        control={form.control}
-                        type="text"
-                        id="lastName"
-                        placeholder=""
-                        onFocus={handleInputFocus}
-                        autoComplete="family-name"
-                        autoCapitalize="words"
-                        absoluteError
-                      />
-                    </div>
-                   <div className="sm:grid grid-cols-2 gap-x-3 gap-y-6">
-                    <FormInput
-                        label="username"
-                        name="username"
-                        control={form.control}
-                        type="text"
-                        id="username"
-                        placeholder=""
-                        onFocus={handleInputFocus}
-                        autoComplete="username"
-                        autoCapitalize="words"
-                        absoluteError
-                      />
-                      <FormInput
-                        label="email"
-                        name={"email"}
-                        control={form.control}
-                        type="email"
-                        id="email"
-                        placeholder=""
-                        onFocus={handleInputFocus}
-                        autoComplete="email"
-                        autoCapitalize="none"
-                        absoluteError
-                      />
-                   </div>
-                    <FormInput
-                      label="Phone Number"
-                      name="phoneNumber"
-                      control={form.control}
-                      type="tel"
-                      id="phoneNumber"
-                      placeholder=""
-                      autoComplete="tel"
-                      absoluteError
-                    />
-                   <div className="sm:grid grid-cols-2 gap-x-3 gap-y-6">
-                    <PasswordInput
-                        id="password"
-                        autoComplete="new-password"
-                        label="password"
-                        name="password"
-                        control={form.control}
-                        placeholder=""
-                        onFocus={handleInputFocus}
-                        absoluteError
-                      />
-                      <PasswordInput
-                        id="confirmPassword"
-                        autoComplete="new-password"
-                        label="confirm password"
-                        name="confirmPassword"
-                        control={form.control}
-                        placeholder=""
-                        onFocus={handleInputFocus}
-                        absoluteError
-                      />
-                   </div>
-                    <FormInput
-                      label="Referral Code (Optional)"
-                      name="referralCode"
-                      control={form.control}
-                      type="text"
-                      id="referralCode"
-                      placeholder=""
-                      onFocus={handleInputFocus}
-                      autoComplete="off"
-                      absoluteError
-                    />
-                  </div>
-                  <div className="mt-[18px] flex items-center gap-4">
-                    <input
-                      type="checkbox"
-                      name=""
-                      id=""
-                      className="h-6 w-6 accent-[#D0D5DD]"
-                    />
-                    <p className="text-sm text-label">
-                      Send me exclusive offers, tailored recommendations, and
-                      educational tips.
-                    </p>
-                  </div>
+              <div className={`${isPage ? "" : "grid-cols-2"} grid gap-x-3`}>
+                <FormInput
+                  label="username"
+                  name="username"
+                  control={form.control}
+                  type="text"
+                  id="username"
+                  placeholder=""
+                  onFocus={handleInputFocus}
+                  autoComplete="username"
+                  autoCapitalize="words"
+                  absoluteError
+                />
+                <FormInput
+                  label="email"
+                  name={"email"}
+                  control={form.control}
+                  type="email"
+                  id="email"
+                  placeholder=""
+                  onFocus={handleInputFocus}
+                  autoComplete="email"
+                  autoCapitalize="none"
+                  absoluteError
+                />
+              </div>
+              <FormInput
+                label="Phone Number"
+                name="phoneNumber"
+                control={form.control}
+                type="tel"
+                id="phoneNumber"
+                placeholder=""
+                autoComplete="tel"
+                absoluteError
+              />
+              <div className={`${isPage ? "" : "grid-cols-2"} grid gap-x-3`}>
+                <PasswordInput
+                  id="password"
+                  autoComplete="new-password"
+                  label="password"
+                  name="password"
+                  control={form.control}
+                  placeholder=""
+                  onFocus={handleInputFocus}
+                  absoluteError
+                />
+                <PasswordInput
+                  id="confirmPassword"
+                  autoComplete="new-password"
+                  label="confirm password"
+                  name="confirmPassword"
+                  control={form.control}
+                  placeholder=""
+                  onFocus={handleInputFocus}
+                  absoluteError
+                />
+              </div>
+              <FormInput
+                label="Referral Code (Optional)"
+                name="referralCode"
+                control={form.control}
+                type="text"
+                id="referralCode"
+                placeholder=""
+                onFocus={handleInputFocus}
+                autoComplete="off"
+                absoluteError
+              />
+            </div>
+            <div className="mt-[10px] flex items-center gap-4">
+              <input
+                type="checkbox"
+                name=""
+                id=""
+                className="h-6 w-6 accent-[#D0D5DD]"
+              />
+              <p className="text-sm text-label">
+                Send me exclusive offers, tailored recommendations, and
+                educational tips.
+              </p>
+            </div>
 
-                  <div className="mt-[18px] flex items-center gap-4">
-                    <input
-                      type="checkbox"
-                      name=""
-                      id=""
-                      className="h-4 w-4 accent-[#D0D5DD]"
-                      required
-                    />
+            <div className="mt-[10px] flex items-center gap-4">
+              <input
+                type="checkbox"
+                name=""
+                id=""
+                className="h-4 w-4 accent-[#D0D5DD]"
+                required
+              />
 
-                    <p className="text-sm text-label">
-                      I agree to the terms and conditions
-                    </p>
-                  </div>
+              <p className="text-sm text-label">
+                I agree to the terms and conditions
+              </p>
+            </div>
 
-                  <CommonButton
-                    className="mt-6 w-full bg-primary-color-600 py-4 font-poppins text-base font-semibold capitalize text-white hover:bg-primary-color-600"
-                    type="submit"
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? "loading..." : " sign up"}
-                  </CommonButton>
-                </form>
-              </Form>
-            </BorderCard>
-            <p className="flex items-center justify-center gap-4 text-center">
-              <span className="text-sm text-[#514A4A]">
-                Already have an account?
-              </span>
-              <Link
-                to={route("/login", courseId, courseTitle)}
-                className="text-sm font-semibold capitalize text-primary-color-600"
-              >
-                sign in
-              </Link>
-            </p>
-          </div>
-        </div>
-      </div>
+            <CommonButton
+              className="mt-4 w-full bg-primary-color-600 py-4 font-poppins text-base font-semibold capitalize text-white hover:bg-primary-color-600"
+              type="submit"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "loading..." : " sign up"}
+            </CommonButton>
+          </form>
+        </Form>
+
+        <p className="mt-4 flex items-center justify-center gap-4 text-center">
+          <span className="text-sm text-[#514A4A]">
+            Already have an account?
+          </span>
+          <Link
+            to={route("/login", courseId, courseTitle)}
+            className="text-sm font-semibold capitalize text-primary-color-600"
+          >
+            sign in
+          </Link>
+        </p>
+      </AuthLayout>
 
       {modal && (
         <Modal>

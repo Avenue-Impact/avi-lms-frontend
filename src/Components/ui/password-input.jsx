@@ -71,16 +71,16 @@ const PasswordInput = ({
 
                 {/* hides browsers password toggles */}
                 <style>{`
-					.hide-password-toggle::-ms-reveal,
-					.hide-password-toggle::-ms-clear {
-						visibility: hidden;
-						pointer-events: none;
-						display: none;
-					}
-				`}</style>
+                .hide-password-toggle::-ms-reveal,
+                .hide-password-toggle::-ms-clear {
+                  visibility: hidden;
+                  pointer-events: none;
+                  display: none;
+                }
+              `}</style>
               </div>
             </FormControl>
-            <FormMessage className={cn(absoluteError && "absolute -bottom-5 left-0 text-xs")} />
+            <FormMessage className={cn(absoluteError && "pt-2 text-xs")} />
           </FormItem>
         );
       }}

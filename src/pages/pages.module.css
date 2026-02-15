@@ -72,6 +72,9 @@
   display: grid;
   grid-template-columns: 2fr 2fr;
   align-items: center;
+  background-color: #23314a;
+  max-width: 90%;
+  justify-self: center;
   /* gap: 1rem; */
 }
 

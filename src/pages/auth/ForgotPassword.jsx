@@ -6,7 +6,7 @@ import { CommonButton } from "@/Components/ui/button";
 import { Form } from "@/Components/ui/form";
 import FormInput from "@/Components/ui/form-input";
 import { Link, useNavigate } from "react-router-dom";
-import { Heading, Paragraph } from "./components/Text";
+import AuthLayout from "./components/AuthLayout";
 import BorderCard from "@/Components/BorderCard";
 import Modal from "./components/Modal";
 import OtpComponent from "@/Components/about/OtpComponent";
@@ -101,13 +101,11 @@ const ForgotPassword = () => {
           </BorderCard>
         </Modal>
       )}
-      <div className="flex h-[calc(100vh-100.547px)] w-full items-center justify-center">
-        <div className="py-10">
-          <BorderCard className="mx-auto max-w-[465px]">
-            <div className="mb-8 space-y-1">
-              <Heading>Welcome back!</Heading>
-              <Paragraph>Use your email to sign in to your dashboard</Paragraph>
-            </div>
+      <AuthLayout 
+        title="Welcome back!" 
+        subtitle="Use your email to sign in to your dashboard"
+        isMobileStacked={true}
+      >
             <Form {...form}>
               <form
                 action=""
@@ -132,7 +130,6 @@ const ForgotPassword = () => {
                 </CommonButton>
               </form>
             </Form>
-          </BorderCard>
           <p className="mt-10 flex items-center justify-center gap-4 text-center">
             <span className="text-sm text-[#514A4A]">
               Already have an account?
@@ -144,8 +141,7 @@ const ForgotPassword = () => {
               sign up
             </Link>
           </p>
-        </div>
-      </div>
+      </AuthLayout>
     </div>
   );
 };
