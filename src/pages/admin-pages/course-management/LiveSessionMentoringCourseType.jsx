@@ -2,14 +2,21 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaCheck } from "react-icons/fa6";
 
 import { useCourseManagementInfo } from "@/hooks/useCourseManagementInfo";
 // import SaveButton from "@/Components/admindashboard/course-management/courses/SaveButton";
 import { ScrollRestoration } from "react-router-dom";
 
-import { Form } from "@/Components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/Components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/Components/ui/select";
 import FormInput from "@/Components/ui/form-input";
 import CohortSelection from "@/Components/admindashboard/course-management/courses/CohortSelection";
 import { CommonButton } from "@/Components/ui/button";
@@ -50,6 +57,8 @@ const LiveSessionMentoringCourseType = () => {
         year: 2025,
         currency: "Pounds",
         currency_symbol: "£",
+        discount_type: data.discountType,
+        discount_value: Number(data.discountValue),
       },
     };
 
@@ -77,8 +86,34 @@ const LiveSessionMentoringCourseType = () => {
       discountPrice: savedForm?.discountPrice || "",
       coursePrice: savedForm?.coursePrice || "",
       time: savedForm?.time || "",
+      discountType: savedForm?.discountType || "None",
+      discountValue: savedForm?.discountValue || "0",
     },
   });
+
+  const coursePrice = form.watch("coursePrice");
+  const discountType = form.watch("discountType");
+  const discountValue = form.watch("discountValue");
+
+  useEffect(() => {
+    if (!coursePrice) return;
+    const price = parseFloat(coursePrice);
+    let discounted = price;
+    const val = parseFloat(discountValue) || 0;
+
+    if (discountType === "Percentage") {
+      discounted = price - (price * val) / 100;
+    } else if (discountType === "Fiat") {
+      discounted = price - val;
+    } else {
+        discounted = price;
+    }
+    
+    // Ensure not negative
+    discounted = Math.max(0, discounted);
+
+    form.setValue("discountPrice", discounted.toString());
+  }, [coursePrice, discountType, discountValue, form]);
 
   return (
     <>
@@ -109,16 +144,52 @@ const LiveSessionMentoringCourseType = () => {
                   type="number"
                 />
 
-                <p className="font-[500]"></p>
+                <div className="w-full">
+                    <FormField
+                      control={form.control}
+                      name="discountType"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-base font-medium">Discount Type</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger className="w-full rounded border border-gray-300 p-2 h-10">
+                                <SelectValue placeholder="Select type" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="None">None</SelectItem>
+                              <SelectItem value="Percentage">Percentage</SelectItem>
+                              <SelectItem value="Fiat">Fiat</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                </div>
+
+                <FormInput
+                  label={"Discount Value"}
+                  className="w-full rounded border border-gray-300 p-2"
+                  placeholder="0"
+                  control={form.control}
+                  name="discountValue"
+                  labelClass={"text-base font-medium"}
+                  id="discountValue"
+                  type="number"
+                />
+
                 <FormInput
                   label={"Discounted Price"}
-                  className="w-full rounded border border-gray-300 p-2"
+                  className="w-full rounded border border-gray-300 p-2 bg-gray-100"
                   placeholder="£2,200"
                   control={form.control}
                   name="discountPrice"
                   labelClass={"text-base font-medium"}
                   id="discountPrice"
                   type="number"
+                  disabled={true}
                 />
               </div>
 

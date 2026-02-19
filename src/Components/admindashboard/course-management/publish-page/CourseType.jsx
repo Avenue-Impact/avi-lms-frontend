@@ -45,6 +45,7 @@ function CourseType({ editButton = false, courseId }) {
   const { data, isLoading, isError } = useFetchCourseInfo(courseId);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const cohorts = data?.data?.data?.course?.cohorts ?? [];
   if (isLoading)
     return (
       <div className="flex h-full w-full items-center justify-center">
@@ -78,67 +79,80 @@ function CourseType({ editButton = false, courseId }) {
         )}
       </div>
       <main className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
-        {data?.data?.data?.course?.cohorts.length === 0 ? (
+        {cohorts.length === 0 ? (
           <div>NO Live Course ....</div>
         ) : (
-          <section className="border-b border-[#F0F2F5] pb-10 lg:border-b-0 lg:border-r lg:pr-11 lg:pb-0">
+          <section className="border-b border-[#F0F2F5] pb-10 lg:border-b-0 lg:border-r lg:pb-0 lg:pr-11">
             <h3 className="w-full max-w-[530px] text-xl font-light text-[#23314A]">
-              Live session + Mentoring (
-              {data?.data?.data.course.cohorts.at(0).cohort ?? "no cohort"})
+              Live session + Mentoring ({cohorts.at(0)?.cohort ?? "no cohort"})
             </h3>
+
+            {/* PRICE */}
             <div className="mb-3 mt-[42px] flex gap-6">
               <span className="text-xl font-semibold text-[#23314A]">
-                Price{" "}
-                {
-                  data?.data?.data.course.live_class_price.original_price
-                    .price_string
-                }
+                Price {cohorts.at(0)?.discounted_price?.price_string}
               </span>
+
               <span className="text-xl italic text-[#23314A] line-through">
-                {
-                  data?.data?.data.course.live_class_price.discounted_price
-                    .price_string
-                }
+                {cohorts.at(0)?.original_price?.price_string}
               </span>
+
               <span className="text-xl font-light text-[#667185]">
                 {calcDiscountPercentage(
-                  data?.data?.data.course.live_class_price.original_price
-                    .amount,
-                  data?.data?.data.course.live_class_price.discounted_price
-                    .amount,
+                  cohorts.at(0)?.original_price?.amount,
+                  cohorts.at(0)?.discounted_price?.amount,
                 )}
                 % off
               </span>
             </div>
+
+            {/* SCHEDULE */}
             <p className="text-xl font-light text-[#667185]">
-              Every{" "}
-              {writeDay(data?.data?.data.course.live_class_price.duration)}{" "}
+              Starts{" "}
               <span className="uppercase">
-                {data?.data?.data.course.live_class_price.time}
+                {cohorts.at(0)?.start_date
+                  ? new Date(cohorts.at(0)?.start_date).toDateString()
+                  : "TBA"}
               </span>
+              {" • "}
+              <span className="uppercase">{cohorts.at(0)?.time ?? "TBA"}</span>
             </p>
 
+            {/* COHORT SELECT */}
             <div className="mt-10">
               <h3 className="mb-6 text-xl font-light text-[#23314A]">
                 Select Cohort
               </h3>
-              <RadioGroup defaultValue="" className="space-y-3">
-                {data?.data?.data?.course?.cohorts.map((cohort) => (
+
+              <RadioGroup className="space-y-3">
+                {cohorts.map((cohort) => (
                   <div
                     className="flex items-center space-x-2 rounded-md border border-[#E0E0E0] px-3 py-[18px]"
                     key={cohort.id}
                   >
                     <RadioGroupItem
-                      value={cohort.cohort}
-                      id={cohort.cohort}
+                      value={cohort.id} // 👈 IMPORTANT (use id, not name)
+                      id={cohort.id}
                       className="border-[#98A2B3]"
-                      disabled={true}
                     />
+
                     <Label
-                      htmlFor={cohort.cohort}
-                      className="font-normal capitalize text-[#8F8F8E]"
+                      htmlFor={cohort.id}
+                      className="font-normal capitalize text-[#23314A]"
                     >
-                      {cohort.cohort}
+                      <div className="flex flex-col">
+                        <span>{cohort.cohort}</span>
+                        <span className="text-sm text-[#667185]">
+                          {cohort.class_days
+                            ? cohort.class_days
+                            : "Start date TBA"}{" "}
+                          • {cohort.time ?? "Time TBA"}
+                        </span>
+
+                        <span className="text-sm font-medium text-[#23314A]">
+                          {cohort.discounted_price?.price_string}
+                        </span>
+                      </div>
                     </Label>
                   </div>
                 ))}

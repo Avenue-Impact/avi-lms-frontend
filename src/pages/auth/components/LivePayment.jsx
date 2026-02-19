@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import DashButton from "../ButtonDash";
 import { PreviewVideoSelect } from "./DashSelect";
 import { useParams } from "react-router-dom";
-import { usePreviewCourses } from "@/hooks/students/use-fetch-all-courses";
+// import { usePreviewCourses } from "@/hooks/students/use-fetch-all-courses";
 import { useAddPayment } from "@/hooks/students/use-add-payment";
 import { useAddToWishlist } from "@/hooks/students/use-add-to-wishlist";
 import { useRemoveFromWishlist } from "@/hooks/students/use-remove-from-wishlist";
@@ -15,7 +15,7 @@ import toast from "react-hot-toast";
 
 
 
-const LivePayment = () => {
+const LivePayment = ({ courseData }) => {
   const [showPlanModal, setShowPlanModal] = useState(false);
   const [showMethodModal, setShowMethodModal] = useState(false);
   const [showBankModal, setShowBankModal] = useState(false);
@@ -26,7 +26,8 @@ const LivePayment = () => {
   const [bankTransferData, setBankTransferData] = useState(null);
 
   let { courseId } = useParams();
-  const { previewCourse, isLoading } = usePreviewCourses(courseId);
+  const previewCourse = courseData;
+  // const { previewCourse, isLoading } = usePreviewCourses(courseId);
   const { payment, paymentPending } = useAddPayment(courseId);
 
   const userLocation = previewCourse?.data?.data?.userLocation;
@@ -112,14 +113,18 @@ const LivePayment = () => {
       <div className="py-4">
         <div className="flex items-center space-x-4">
           <h3 className="text-[25px] font-[600] text-gray-800">
-            {currencySymbol}{Math.round(original_price)}
-          </h3>
-          <p className="text-[20px] font-[400] line-through">
             {currencySymbol}{Math.round(discounted_price)}
-          </p>
-          <p className="font-[bold] text-[13.42px] text-gray-500">
-            {percentageOff.toFixed(0)}% off
-          </p>
+          </h3>
+          {discounted_price < original_price && (
+            <>
+              <p className="text-[20px] font-[400] line-through text-gray-500">
+                {currencySymbol}{Math.round(original_price)}
+              </p>
+              <p className="font-[bold] text-[13.42px] text-green-600 bg-green-100 px-2 py-1 rounded">
+                {percentageOff.toFixed(0)}% off
+              </p>
+            </>
+          )}
         </div>
 
         <p className="mt-2 text-gray-600">

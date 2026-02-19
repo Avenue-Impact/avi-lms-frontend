@@ -74,7 +74,7 @@ const PreviewVideoCourse = () => {
             <div className="w-full grid-cols-12 gap-6 rounded-lg border-gray-100 bg-white pt-4 lg:grid lg:border-2 lg:p-8">
               {/* LIVE SESSION */}
               <div className="col-span-5 mb-4 md:mb-0">
-                <LivePayment />
+                <LivePayment courseData={previewCourse} />
               </div>
 
               <div className="mb-4 flex h-full items-center justify-center text-justify md:mb-0 lg:flex-col">
@@ -85,7 +85,7 @@ const PreviewVideoCourse = () => {
 
               {/* ON DEMAND SESSION */}
               <div className="col-span-5 mb-4 md:mb-0">
-                <OnDemandPayment />
+                <OnDemandPayment courseData={previewCourse} />
               </div>
             </div>
           </div>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import DashButton from "../ButtonDash";
 import { useParams } from "react-router-dom";
-import { usePreviewCourses } from "@/hooks/students/use-fetch-all-courses";
+// import { usePreviewCourses } from "@/hooks/students/use-fetch-all-courses";
 import { useAddPayment } from "@/hooks/students/use-add-payment";
 
 import BankTransferModal from "../../../Components/BankTransferModal";
@@ -9,9 +9,10 @@ import PaymentMethodModal from "../../../Components/PaymentMethodModal";
 import toast from "react-hot-toast";
 
 
-const OnDemandPayment = () => {
+const OnDemandPayment = ({ courseData }) => {
   let { courseId } = useParams();
-  const { previewCourse, isLoading } = usePreviewCourses(courseId);
+  const previewCourse = courseData;
+  // const { previewCourse, isLoading } = usePreviewCourses(courseId);
   const { payment, paymentPending } = useAddPayment(courseId);
 
   const [selectedOption, setSelectedOption] = useState("");
@@ -25,7 +26,7 @@ const OnDemandPayment = () => {
   const userLocation = previewCourse?.data?.data?.userLocation;
   const gateways = userLocation?.GATEWAYS?.map(g => ({ id: g, label: g.replace('_', ' ') })) || [{ id: 'stripe', label: 'Stripe' }];
   const currency = userLocation?.currency || 'GBP';
-  const currencySymbol = previewCourse?.data?.data?.course?.pre_recorded_price?.[0]?.currency_symbol || '£';
+  const currencySymbol = previewCourse?.data?.data?.course?.pre_recorded_price?.[0]?.original_price?.currency_symbol || '£';
   
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
@@ -72,7 +73,7 @@ const OnDemandPayment = () => {
   
   // Find selected amount for display in modal
   const selectedPlan = previewCourse?.data?.data.course.pre_recorded_price.find(p => p.duration === selectedOption);
-  const amountToPay = selectedPlan ? selectedPlan.amount : 0;
+  const amountToPay = selectedPlan ? (selectedPlan.discounted_price?.amount || selectedPlan.amount) : 0;
 
   return (
     <div className="">
@@ -83,14 +84,19 @@ const OnDemandPayment = () => {
       {/* Radio Button */}
       <div className="space-y-1 py-6">
         {previewCourse?.data?.data.course.pre_recorded_price.map(
-          (item, index) => (
+          (item, index) => {
+            const originalAmount = item.original_price?.amount || item.amount;
+            const discountedAmount = item.discounted_price?.amount || item.amount;
+            const hasDiscount = discountedAmount < originalAmount;
+            const currencySym = item.original_price?.currency_symbol || item.currency_symbol || '£';
+
+            return (
             <label
               key={index}
               className={`flex cursor-pointer items-center space-x-2 rounded border px-4 py-3 transition ${
                  selectedOption === item.duration ? 'border-[#CC1747] ring-1 ring-[#CC1747]' : 'border-gray-300 hover:border-gray-400'
               }`}
             >
-              {console.log(item)}
               <input
                 type="radio"
                 name="subscription"
@@ -99,12 +105,21 @@ const OnDemandPayment = () => {
                 onChange={handleOptionChange}
                 className="form-radio h-4 w-4 text-[#CC1747] focus:ring-[#CC1747]"
               />
-              <span>
-                {item.duration} - {item.currency_symbol}
-                {item.amount}
+              <span className="flex flex-col">
+                <span className="font-medium">{item.duration}</span>
+                <span className="flex items-center gap-2">
+                    <span className="font-bold text-[#CC1747]">
+                        {currencySym}{discountedAmount}
+                    </span>
+                    {hasDiscount && (
+                        <span className="text-sm text-gray-500 line-through">
+                            {currencySym}{originalAmount}
+                        </span>
+                    )}
+                </span>
               </span>
             </label>
-          ),
+          )},
         )}
       </div>
 
