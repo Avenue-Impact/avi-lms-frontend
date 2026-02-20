@@ -26,6 +26,7 @@ const StartMeeting = ({
     ZoomMtg.init({
       leaveUrl, // Redirect URL after leaving the meeting
       patchJsMedia: true,
+      isSupportAV: true,
       success: () => {
         console.log("Zoom Meeting Initialized");
         ZoomMtg.join({

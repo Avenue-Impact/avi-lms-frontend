@@ -106,13 +106,12 @@ export const addCourseType = async ({ data, courseId }) => {
   return axiosAdmin.post(`/courses/${courseId}/coursetype`, data);
 };
 
-export const addLiveSession = async (data) => {
-  const courseId = localStorage.getItem("courseId");
-  const cohort = localStorage.getItem("cohorts");
+export const addLiveSession = async ({ courseId, cohortId, ...data }) => {
+  // const cohort = localStorage.getItem("cohorts"); // No longer needed as we pass cohortId explicitly
 
   return await axiosAdmin.post(
-    `/courses/${courseId}/live-session`,
-    { ...data, cohort },
+    `/courses/${courseId}/live-session/${cohortId}`,
+    data
   );
 };
 

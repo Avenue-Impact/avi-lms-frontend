@@ -10,7 +10,14 @@ import { useParams } from "react-router-dom";
 
 import CohortSelection from "@/Components/admindashboard/course-management/courses/CohortSelection";
 import { CommonButton } from "@/Components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/Components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/Components/ui/form";
 import {
   Select,
   SelectContent,
@@ -25,10 +32,14 @@ import { cohorts } from "@/lib/cohorts";
 import { courseTypeSchema } from "@/lib/form-schemas/forms-schema";
 import { cn } from "@/lib/utils";
 import { ClipLoader } from "react-spinners";
+import WeekdaysSelector from "@/Components/ui/weekday-selector";
 
 function convertTo24Hour(timeStr) {
   if (!timeStr) return null;
-  let [time, modifier] = timeStr.toLowerCase().split(/(am|pm)/).filter(Boolean);
+  let [time, modifier] = timeStr
+    .toLowerCase()
+    .split(/(am|pm)/)
+    .filter(Boolean);
   let [hours, minutes] = time.split(":").map(Number);
 
   if (modifier === "pm" && hours < 12) hours += 12;
@@ -37,13 +48,17 @@ function convertTo24Hour(timeStr) {
   return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
 }
 
-
-const EditLiveSessionCourseType = ({ priceInfo, cohorts: existingCohorts, setModalOpen }) => {
+const EditLiveSessionCourseType = ({
+  priceInfo,
+  cohorts: existingCohorts,
+  setModalOpen,
+}) => {
   const str = "dkj";
   str.endsWith;
   // Use existing cohort from course data if available, otherwise empty
-  const [cohort, setCohort] = useState(() => existingCohorts?.[0]?.cohort || "");
-
+  const [cohort, setCohort] = useState(
+    () => existingCohorts?.[0]?.cohort || "",
+  );
 
   console.log("Cohorts list for selection:", cohorts);
   console.log("Existing course cohorts:", existingCohorts);
@@ -70,49 +85,50 @@ const EditLiveSessionCourseType = ({ priceInfo, cohorts: existingCohorts, setMod
   // console.log("Check the price priceInfo", priceInfo)
 
   const { courseId } = useParams();
-  
 
   const [cohortErr, setCohortErr] = useState("");
 
   const { editCourseType, isPending } = useEditCourseType();
 
-const onSubmit = async (data) => {
-  if (!cohort) return setCohortErr("Input cohort");
+  const onSubmit = async (data) => {
+    if (!cohort) return setCohortErr("Input cohort");
 
-  // Convert 24-hour time to 12-hour format with am/pm
-  const convertTo12Hour = (time24) => {
-    const [hours, minutes] = time24.split(':');
-    const hour = parseInt(hours);
-    const ampm = hour >= 12 ? 'pm' : 'am';
-    const hour12 = hour % 12 || 12;
-    return `${hour12}:${minutes}${ampm}`;
+    // Convert 24-hour time to 12-hour format with am/pm
+    const convertTo12Hour = (time24) => {
+      const [hours, minutes] = time24.split(":");
+      const hour = parseInt(hours);
+      const ampm = hour >= 12 ? "pm" : "am";
+      const hour12 = hour % 12 || 12;
+      return `${hour12}:${minutes}${ampm}`;
+    };
+
+    const courseType = {
+      live_session: {
+        original_price: Number(data.coursePrice),
+        discounted_price: Number(data.discountPrice),
+        duration: data.duration,
+        time: convertTo12Hour(data.time), // Convert to "7:00pm" format
+        cohort,
+        year: 2025,
+        currency: "Pounds",
+        currency_symbol: "£",
+        discount_type: data.discountType,
+        discount_value: Number(data.discountValue),
+      },
+    };
+
+    editCourseType(
+      { data: courseType, courseId },
+      {
+        onSuccess: () => {
+          // Close the modal on successful submission
+          if (setModalOpen) {
+            setModalOpen(false);
+          }
+        },
+      },
+    );
   };
-
-  const courseType = {
-    live_session: {
-      original_price: Number(data.coursePrice),
-      discounted_price: Number(data.discountPrice),
-      duration: data.duration,
-      time: convertTo12Hour(data.time), // Convert to "7:00pm" format
-      cohort,
-      year: 2025,
-      currency: "Pounds",
-      currency_symbol: "£",
-      discount_type: data.discountType,
-      discount_value: Number(data.discountValue),
-    }
-  };
-
-  editCourseType({ data: courseType, courseId }, {
-    onSuccess: () => {
-      // Close the modal on successful submission
-      if (setModalOpen) {
-        setModalOpen(false);
-      }
-    }
-  });
-};
-
 
   //   const handleAddPrice = () => {
   //     if (!amount || !duration) return;
@@ -133,26 +149,23 @@ const onSubmit = async (data) => {
   //     setDuration("");
   //   };
 
-
-
-
   // Only process time if it exists and has am/pm format
-  const time = priceInfo?.time && priceInfo.time.match(/(am|pm)$/i) 
-    ? priceInfo.time.slice(0, -2).split(":") 
-    : null;
+  const time =
+    priceInfo?.time && priceInfo.time.match(/(am|pm)$/i)
+      ? priceInfo.time.slice(0, -2).split(":")
+      : null;
   const checkFormat = priceInfo?.time ? priceInfo.time.endsWith("am") : false;
 
   const form = useForm({
     resolver: zodResolver(courseTypeSchema),
-   defaultValues: {
-  duration: priceInfo?.duration || "",
-  discountPrice: priceInfo?.discounted_price?.amount || 0,
-  coursePrice: priceInfo?.original_price?.amount || 0,
-  time: convertTo24Hour(priceInfo?.time) || "13:00",
-  discountType: priceInfo?.discount_type || "None",
-  discountValue: priceInfo?.discount_value || 0,
-},
-
+    defaultValues: {
+      duration: priceInfo?.duration || "",
+      discountPrice: priceInfo?.discounted_price?.amount || 0,
+      coursePrice: priceInfo?.original_price?.amount || 0,
+      time: convertTo24Hour(priceInfo?.time) || "13:00",
+      discountType: priceInfo?.discount_type || "None",
+      discountValue: priceInfo?.discount_value || 0,
+    },
   });
 
   const coursePrice = form.watch("coursePrice");
@@ -170,9 +183,9 @@ const onSubmit = async (data) => {
     } else if (discountType === "Fiat") {
       discounted = price - val;
     } else {
-        discounted = price;
+      discounted = price;
     }
-    
+
     // Ensure not negative
     discounted = Math.max(0, discounted);
 
@@ -183,8 +196,8 @@ const onSubmit = async (data) => {
     <>
       <Form {...form}>
         <form action="" onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="mb-4 mt-5 grid grid-cols-12 gap-10 rounded border border-gray-300 p-10 md:mb-0">
-            <div className="col-span-5">
+          <div className="mb-4 mt-5 grid grid-cols-10 gap-10 rounded border border-gray-300 p-10 md:mb-0">
+            <div className="col-span-4">
               <h3 className="text-[20px] font-[500] text-[#344054] lg:text-[24px]">
                 Live session + Mentoring
               </h3>
@@ -194,89 +207,85 @@ const onSubmit = async (data) => {
               </p>
             </div>
 
-            <div className="col-span-7 space-y-4">
+            <div className="col-span-6 space-y-4">
               {/* Course Original Price and Discounted Price */}
               <div className="flex flex-col gap-4">
                 <div className="flex space-x-4">
-                    <FormInput
-                      label={"Course Original Price"}
-                      className="w-full rounded border border-gray-300 p-2"
-                      placeholder="£2,200"
-                      control={form.control}
-                      name="coursePrice"
-                      labelClass={"text-base font-medium"}
-                      id="coursePrice"
-                      type="number"
-                    />
+                  <FormInput
+                    label={"Course Original Price"}
+                    className="w-full rounded border border-gray-300 p-2"
+                    placeholder="£2,200"
+                    control={form.control}
+                    name="coursePrice"
+                    labelClass={"text-base font-medium"}
+                    id="coursePrice"
+                    type="number"
+                  />
 
-                    <div className="w-full">
-                        <FormField
-                          control={form.control}
-                          name="discountType"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className="text-base font-medium">Discount Type</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
-                                <FormControl>
-                                  <SelectTrigger className="w-full rounded border border-gray-300 p-2 h-10">
-                                    <SelectValue placeholder="Select type" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  <SelectItem value="None">None</SelectItem>
-                                  <SelectItem value="Percentage">Percentage</SelectItem>
-                                  <SelectItem value="Fiat">Fiat</SelectItem>
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                    </div>
+                  <div className="w-full">
+                    <FormField
+                      control={form.control}
+                      name="discountType"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-base font-medium">
+                            Discount Type
+                          </FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            value={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger className="h-10 w-full rounded border border-gray-300 p-2">
+                                <SelectValue placeholder="Select type" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="None">None</SelectItem>
+                              <SelectItem value="Percentage">
+                                Percentage
+                              </SelectItem>
+                              <SelectItem value="Fiat">Fiat</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
 
                 <div className="flex space-x-4">
-                    <FormInput
-                      label={"Discount Value"}
-                      className="w-full rounded border border-gray-300 p-2"
-                      placeholder="0"
-                      control={form.control}
-                      name="discountValue"
-                      labelClass={"text-base font-medium"}
-                      id="discountValue"
-                      type="number"
-                    />
+                  <FormInput
+                    label={"Discount Value"}
+                    className="w-full rounded border border-gray-300 p-2"
+                    placeholder="0"
+                    control={form.control}
+                    name="discountValue"
+                    labelClass={"text-base font-medium"}
+                    id="discountValue"
+                    type="number"
+                  />
 
-                    <FormInput
-                      label={"Discounted Price"}
-                      className="w-full rounded border border-gray-300 p-2 bg-gray-100"
-                      placeholder="£2,200"
-                      control={form.control}
-                      name="discountPrice"
-                      labelClass={"text-base font-medium"}
-                      id="discountPrice"
-                      type="number"
-                      disabled={true}
-                    />
+                  <FormInput
+                    label={"Discounted Price"}
+                    className="w-full rounded border border-gray-300 bg-gray-100 p-2"
+                    placeholder="£2,200"
+                    control={form.control}
+                    name="discountPrice"
+                    labelClass={"text-base font-medium"}
+                    id="discountPrice"
+                    type="number"
+                    disabled={true}
+                  />
                 </div>
               </div>
 
               {/* Duration and Time */}
               <div className="flex space-x-4">
                 <div>
-                  <FormInput
-                    label={"Duration"}
-                    className="w-full rounded border border-gray-300 p-2"
-                    placeholder="Mon-Fri"
-                    control={form.control}
-                    name="duration"
-                    labelClass={"text-base font-medium"}
-                    id="duration"
-                    type="text"
-                  />
-                  <p className="mb-1 mr-2 flex justify-end font-[500] text-[#667185]">
-                    {`${form.watch("duration") ? form.watch("duration").length : 0}/30`}
-                  </p>
+                  <WeekdaysSelector control={form.control} name="duration" />
                 </div>
                 {/* Time (7:00pm default) */}
                 <div className="flex-1">
@@ -333,7 +342,7 @@ const onSubmit = async (data) => {
 
           <div className="w-full pt-10">
             <CommonButton
-              className="ml-auto block min-w-32 rounded bg-primary-color-600"
+              className="min-w-32 ml-auto block rounded bg-primary-color-600"
               disabled={isPending}
             >
               {isPending ? (

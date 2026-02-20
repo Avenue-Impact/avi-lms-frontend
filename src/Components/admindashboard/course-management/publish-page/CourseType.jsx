@@ -7,7 +7,7 @@ import { HiOutlinePencil } from "react-icons/hi";
 import { ClipLoader } from "react-spinners";
 import EditModal from "../on-demand-section/EditModal";
 import EditCourseType from "../courses/edit-course-type/EditCourseType";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const writeDay = (dayString) => {
   if (!dayString || !dayString.includes("-")) {
@@ -44,8 +44,15 @@ const calcDiscountPercentage = (price, discount) => {
 function CourseType({ editButton = false, courseId }) {
   const { data, isLoading, isError } = useFetchCourseInfo(courseId);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activeCohorts, setActiveCohorts] = useState(null);
 
   const cohorts = data?.data?.data?.course?.cohorts ?? [];
+  useEffect(() => {
+    if (cohorts.length && !activeCohorts) {
+      setActiveCohorts(cohorts[0]);
+    }
+  }, [cohorts, activeCohorts]);
+
   if (isLoading)
     return (
       <div className="flex h-full w-full items-center justify-center">
@@ -84,23 +91,23 @@ function CourseType({ editButton = false, courseId }) {
         ) : (
           <section className="border-b border-[#F0F2F5] pb-10 lg:border-b-0 lg:border-r lg:pb-0 lg:pr-11">
             <h3 className="w-full max-w-[530px] text-xl font-light text-[#23314A]">
-              Live session + Mentoring ({cohorts.at(0)?.cohort ?? "no cohort"})
+              Live session + Mentoring ({activeCohorts?.cohort ?? "no cohort"})
             </h3>
 
             {/* PRICE */}
             <div className="mb-3 mt-[42px] flex gap-6">
               <span className="text-xl font-semibold text-[#23314A]">
-                Price {cohorts.at(0)?.discounted_price?.price_string}
+                Price {activeCohorts?.discounted_price?.price_string}
               </span>
 
               <span className="text-xl italic text-[#23314A] line-through">
-                {cohorts.at(0)?.original_price?.price_string}
+                {activeCohorts?.original_price?.price_string}
               </span>
 
               <span className="text-xl font-light text-[#667185]">
                 {calcDiscountPercentage(
-                  cohorts.at(0)?.original_price?.amount,
-                  cohorts.at(0)?.discounted_price?.amount,
+                  activeCohorts?.original_price?.amount,
+                  activeCohorts?.discounted_price?.amount,
                 )}
                 % off
               </span>
@@ -108,14 +115,12 @@ function CourseType({ editButton = false, courseId }) {
 
             {/* SCHEDULE */}
             <p className="text-xl font-light text-[#667185]">
-              Starts{" "}
+              {/* Starts{" "} */}
               <span className="uppercase">
-                {cohorts.at(0)?.start_date
-                  ? new Date(cohorts.at(0)?.start_date).toDateString()
-                  : "TBA"}
+                {activeCohorts?.class_days ? activeCohorts?.class_days : "TBA"}
               </span>
               {" • "}
-              <span className="uppercase">{cohorts.at(0)?.time ?? "TBA"}</span>
+              <span className="uppercase">{activeCohorts?.time ?? "TBA"}</span>
             </p>
 
             {/* COHORT SELECT */}
@@ -124,33 +129,41 @@ function CourseType({ editButton = false, courseId }) {
                 Select Cohort
               </h3>
 
-              <RadioGroup className="space-y-3">
+              <RadioGroup
+                value={activeCohorts?.id ? String(activeCohorts.id) : ""}
+                onValueChange={(val) => {
+                  const sel = cohorts.find((c) => String(c.id) === String(val));
+                  if (sel) setActiveCohorts(sel);
+                }}
+                className="space-y-3"
+              >
                 {cohorts.map((cohort) => (
                   <div
                     className="flex items-center space-x-2 rounded-md border border-[#E0E0E0] px-3 py-[18px]"
                     key={cohort.id}
                   >
                     <RadioGroupItem
-                      value={cohort.id} // 👈 IMPORTANT (use id, not name)
-                      id={cohort.id}
+                      value={String(cohort.id)} // use string values for consistency
+                      id={String(cohort.id)}
                       className="border-[#98A2B3]"
                     />
 
                     <Label
-                      htmlFor={cohort.id}
+                      htmlFor={String(cohort.id)}
                       className="font-normal capitalize text-[#23314A]"
                     >
-                      <div className="flex flex-col">
-                        <span>{cohort.cohort}</span>
+                      <div className="flex flex-col justify-between">
+                        <div>
+                          <span>{cohort.cohort} - </span>
+                          <span className="text-sm font-medium text-[#23314A]">
+                            {cohort.discounted_price?.price_string}
+                          </span>
+                        </div>
                         <span className="text-sm text-[#667185]">
                           {cohort.class_days
                             ? cohort.class_days
                             : "Start date TBA"}{" "}
                           • {cohort.time ?? "Time TBA"}
-                        </span>
-
-                        <span className="text-sm font-medium text-[#23314A]">
-                          {cohort.discounted_price?.price_string}
                         </span>
                       </div>
                     </Label>
@@ -166,7 +179,7 @@ function CourseType({ editButton = false, courseId }) {
             On Demand Course (Pre Recorded Session)
           </h3>
           <RadioGroup defaultValue="" className="space-y-3">
-            {data?.data?.data.course.pre_recorded_price.map((item) => {
+            {data?.data?.data.pricing.on_demand.map((item) => {
               return (
                 <div
                   className="flex items-center space-x-2 rounded-md border border-[#E0E0E0] px-3 py-[18px]"
@@ -182,7 +195,7 @@ function CourseType({ editButton = false, courseId }) {
                     className="font-normal capitalize text-[#8F8F8E]"
                   >
                     <span>{item.duration} - </span>
-                    <span>{item.price_string}</span>
+                    <span>{item.discounted_price?.price_string}</span>
                   </Label>
                 </div>
               );
