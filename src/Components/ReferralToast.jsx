@@ -10,7 +10,7 @@ const ReferralToast = ({ onTimeout }) => {
     // Set timer for 8 seconds
     const timer = setTimeout(() => {
       handleClose();
-    }, 8000);
+    }, 18000);
 
     return () => clearTimeout(timer);
   }, []);

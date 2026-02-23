@@ -15,6 +15,7 @@ import { useState } from "react";
 const StudentManagement = () => {
   const { courseId } = useParams();
   const [open, setOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [queryString] = useSearchParams();
 
@@ -36,6 +37,16 @@ const StudentManagement = () => {
       </div>
     );
 
+  const filteredData = data?.data?.data?.filter((student) => {
+    if (!searchQuery) return true;
+    const lowerQuery = searchQuery.toLowerCase();
+    return (
+      student.first_name?.toLowerCase().includes(lowerQuery) ||
+      student.last_name?.toLowerCase().includes(lowerQuery) ||
+      student.email?.toLowerCase().includes(lowerQuery)
+    );
+  });
+
   return (
     <div className="p-4">
       <div className="grid grid-cols-12 py-6">
@@ -50,6 +61,8 @@ const StudentManagement = () => {
                 type="text"
                 className="w-full rounded-md border bg-gray-50 px-1 py-2 pl-10 text-[14px] focus:outline-none"
                 placeholder="Search Course"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
               <div className="absolute left-3 top-1.5 text-gray-400">
                 <FontAwesomeIcon icon={faSearch} />
@@ -107,10 +120,10 @@ const StudentManagement = () => {
           </div>
         </div>
       </div>
-      {data?.data?.data?.length === 0 ? (
+      {!filteredData?.length ? (
         <NoStudentEnroll />
       ) : (
-        <OndemandStudentManagementTable />
+        <OndemandStudentManagementTable data={filteredData} />
       )}
     </div>
   );

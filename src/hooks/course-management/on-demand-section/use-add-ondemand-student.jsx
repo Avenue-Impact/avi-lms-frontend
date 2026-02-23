@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 
 const addStudentApi = async ({ data, courseId }) => {
   return await axios.post(
-    `${BASE_URL}/admins/courses/${courseId}/on-demand-section/enrolled-students`,
+    `${BASE_URL}/courses/${courseId}/on-demand-section/enrolled-students`,
     data,
     {
       headers: {
