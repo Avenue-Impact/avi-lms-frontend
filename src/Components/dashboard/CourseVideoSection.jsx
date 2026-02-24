@@ -26,18 +26,20 @@ function CourseVideoSection({ data }) {
   const [activeTab, setActiveTab] = useState("shared_documents");
 
   return (
-    <section>
-      <div className="overflow-hidden rounded-[10px] lg:h-[400px] lg:w-[700px]">
+    <section className="flex flex-col h-full">
+      <div className="mb-6 text-center md:text-left">
+        <p className="text-sm text-gray-500 mb-2">Business Analyst Recordings</p>
+        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-[#111827] leading-tight">
+          {sectionDetails.topic || "21 Jul 2025 Introduction to Business Analysis (Taster Session Recording Plus Success Stories)"}
+        </h1>
+      </div>
+      <div className="overflow-hidden rounded-[10px] w-full max-w-[800px] mb-8">
         <PreviewVideo
           videoId={videoId}
           section={sectionDetails.section}
           cohortId={data?.data?.data?.cohort_id}
         />
       </div>
-      <h1 className="*:block *:capitalize my-6 text-xl lg:text-2xl font-semibold leading-[28px] text-black">
-        <span>Section {sectionDetails.section}</span>
-        <span> {sectionDetails.topic} </span>
-      </h1>
 
       {/* Tabs Navigation */}
       <div className="flex border-b border-gray-200 mb-6">

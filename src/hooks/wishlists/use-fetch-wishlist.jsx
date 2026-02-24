@@ -24,6 +24,7 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { STUDENT_BASE_URL } from "@/constant";
 // import { demoCourses } from "@/pages/dashboard/DiscoverCourses";
 // import { DEMO_MODE } from "@/config";
 
@@ -39,12 +40,12 @@ const fetchWishlists = async () => {
   // }
 
   return await axios.get(
-    `https://avi-lms-5478f16284c6.herokuapp.com/api/v1/courses/wishlist`,
+    `${STUDENT_BASE_URL}/courses/wishlist`,
     {
       headers: {
         Authorization: `Bearer ${Cookies.get("token")}`,
       },
-    },
+    }
   );
 };
 
