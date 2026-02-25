@@ -3,9 +3,9 @@ import { Outlet } from "react-router-dom";
 
 const CourseViewLayout = () => {
   return (
-    <CourseSectionViewProvider>
+    <div className="lg:ml-24">
       <Outlet />
-    </CourseSectionViewProvider>
+    </div>
   );
 };
 

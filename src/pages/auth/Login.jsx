@@ -5,7 +5,7 @@ import { Form } from "@/Components/ui/form";
 import FormInput from "@/Components/ui/form-input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { z } from "zod";
 
 import { CommonButton } from "@/Components/ui/button";
@@ -31,6 +31,8 @@ const Login = () => {
   const [queryString] = useSearchParams();
   const courseId = queryString.get("id");
   const courseTitle = queryString.get("title");
+  const location = useLocation();
+  const from = location.state?.from?.pathname + (location.state?.from?.search || "") || "/dashboard";
 
   const { mutate, isPending } = useLoginUser();
 
@@ -64,7 +66,7 @@ const Login = () => {
             `/preview-video-course/${courseId}/enroll?title=${courseTitle}`,
           );
         } else {
-          navigate("/dashboard");
+          navigate(from);
         }
       },
       onError: (err) => {
@@ -164,6 +166,7 @@ const Login = () => {
             </span>
             <Link
               to={"/signup"}
+              state={{ from: location.state?.from }}
               className="text-sm font-semibold capitalize text-primary-color-600 hover:text-primary-color-700"
             >
               Sign up

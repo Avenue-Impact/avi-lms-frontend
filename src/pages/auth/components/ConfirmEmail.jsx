@@ -43,14 +43,9 @@ const ConfirmEmail = ({ setConfirm, setModal, setSuccess, user, form }) => {
           path: "/",
         });
 
-        const forwardUrl = sessionStorage.getItem("signup_forward_url");
-        if (forwardUrl) {
-          sessionStorage.removeItem("signup_forward_url");
-          window.location.href = forwardUrl;
-        } else {
-          // Reload the page after successful verification
-          window.location.reload();
-        }
+        // Close the confirmation modal and open the success modal
+        setConfirm(false);
+        setModal(true);
       }
     } catch (error) {
       setSuccess("fail");

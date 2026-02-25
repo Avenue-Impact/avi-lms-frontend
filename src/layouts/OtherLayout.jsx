@@ -6,28 +6,33 @@ import { CourseDataProvider } from "@/providers/CourseDataProvider";
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { QuestionsDrawer } from "@/Components/dashboard/QuestionsDrawer";
+import { CourseSectionViewProvider } from "@/providers/course-section-view-provider";
 
 const OtherLayout = () => {
   const [showModal, setShowModal] = useState(false);
   const [isQuestionDrawerOpen, setIsQuestionDrawerOpen] = useState(false);
 
   return (
-    <div className="bg-[#FDFDFD] min-h-screen">
+    <div className="min-h-screen bg-[#FDFDFD]">
       <OtherSideNav setIsQuestionDrawerOpen={setIsQuestionDrawerOpen} />
-      
+
       {/* Questions Drawer (toggled by the Question icon in SideNav) */}
-      <QuestionsDrawer 
-        isOpen={isQuestionDrawerOpen} 
-        onClose={() => setIsQuestionDrawerOpen(false)} 
+      <QuestionsDrawer
+        isOpen={isQuestionDrawerOpen}
+        onClose={() => setIsQuestionDrawerOpen(false)}
       />
 
       {/* Main Content Area - Pushed right on desktop to clear the 76px sidebar */}
-      <div className="lg:ml-[76px] flex flex-col min-h-screen">
+      <div className="flex min-h-screen flex-col lg:ml-[76px]">
         <CourseDataProvider>
-          <OtherTopNav setShowModal={setShowModal} />
-          <main className="flex-1 w-full px-4 py-8 md:px-8 lg:px-12 bg-[#FDFDFD] max-w-[1400px] mx-auto">
-            <Outlet />
-          </main>
+          <CourseSectionViewProvider>
+            <OtherTopNav setShowModal={setShowModal} setIsQuestionDrawerOpen={setIsQuestionDrawerOpen} />
+            <main
+              className={`mx-auto w-full flex-1 bg-[#FDFDFD] px-4 py-8 md:px-8 lg:px-12`}
+            >
+              <Outlet />
+            </main>
+          </CourseSectionViewProvider>
         </CourseDataProvider>
       </div>
 

@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams, useLocation } from "react-router-dom";
 import { z } from "zod";
 import AuthLayout from "./components/AuthLayout";
 import { CommonButton } from "@/Components/ui/button";
@@ -62,6 +62,9 @@ const SignUp = ({ isPage = true }) => {
   const [modal, setModal] = useState(false);
   const [user, setUser] = useState();
   const [queryString] = useSearchParams();
+  const location = useLocation();
+  const from = location.state?.from?.pathname + (location.state?.from?.search || "") || "";
+
   const [showReferralReminder, setShowReferralReminder] = useState(false);
   const [pendingSignupValues, setPendingSignupValues] = useState(null);
   const [skipReferralReminder, setSkipReferralReminder] = useState(false);
@@ -165,6 +168,8 @@ const SignUp = ({ isPage = true }) => {
         console.log("forward Url:", response.data.forward_url)
         if (response.data.forward_url) {
           sessionStorage.setItem("signup_forward_url", response.data.forward_url);
+        } else if (from) {
+          sessionStorage.setItem("signup_forward_url", from);
         }
         setSuccess("success");
         setUser({
@@ -441,6 +446,7 @@ const SignUp = ({ isPage = true }) => {
           </span>
           <Link
             to={route("/login", courseId, courseTitle)}
+            state={{ from: location.state?.from }}
             className="text-sm font-semibold capitalize text-primary-color-600"
           >
             sign in
@@ -457,7 +463,7 @@ const SignUp = ({ isPage = true }) => {
                 "You have successfully registered and can now start using your account. Enjoy your experience with us!"
               }
               setModal={setModal}
-              path={"/dashboard"}
+              path={from || "/dashboard"}
             />
           ) : (
             <RegisterFail setModal={setModal} />

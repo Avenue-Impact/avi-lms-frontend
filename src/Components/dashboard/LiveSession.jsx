@@ -1,15 +1,16 @@
 import { formatDate } from "@/lib/format-date";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { CommonButton } from "../ui/button";
-import { MobileSlideNav } from "./DashboardSliderNav";
 import { MobileContent } from "./MobileContent";
 import { useState, useEffect } from "react";
 import { IoIosArrowForward } from "react-icons/io";
+import { useViewCourseSections } from "@/hooks/students/use-course-secion-view";
 
 function LiveSession({ data }) {
   const [queryString] = useSearchParams();
   const { courseId } = useParams();
   const navigate = useNavigate();
+  const { setSession } = useViewCourseSections();
 
   const [isActive, setIsActive] = useState(false);
 
@@ -60,7 +61,7 @@ function LiveSession({ data }) {
           <div className="mt-8">
             {isActive ? (
               <CommonButton
-                className="rounded-md bg-primary-color-600 px-6 py-6 text-base font-medium text-white hover:bg-primary-color-700 w-full sm:w-auto"
+                className="rounded-md bg-[#111827] px-6 py-6 text-base font-medium text-white hover:bg-gray-800 w-full sm:w-auto"
                 onClick={() =>
                   navigate(
                     `/user/meeting/${courseId}?cohortId=${
@@ -83,24 +84,24 @@ function LiveSession({ data }) {
         </section>
       </div>
 
-      <div className="mt-16 md:mt-24 border-t border-gray-100 pt-8 flex items-end justify-end">
-        <div className="flex items-center gap-4 text-right">
+      <div className="mt-auto pt-16 md:pt-24 flex items-end justify-end">
+        <div className="flex items-center gap-3 text-right">
           <div>
-            <p className="text-xs text-[#6B7280]">Business Analyst Recordings</p>
-            <h4 className="text-sm md:text-base font-bold text-[#111827] mt-1 max-w-[400px]">
-              21 July 2025 Introduction to Business Analysis (Taster Session Recording)<br/>Plus Success Stories
+            <p className="text-[10px] md:text-xs text-[#6B7280]">Business Analyst Recordings</p>
+            <h4 className="text-xs md:text-sm font-bold text-[#111827] mt-1 max-w-[200px] md:max-w-[400px]">
+              21 July 2025 Introduction to Business Analysis (Taster Session Recording) <br className="hidden md:block"/>Plus Success Stories
             </h4>
           </div>
-          <button className="flex h-12 w-12 items-center justify-center rounded-full bg-primary-color-600 text-white hover:bg-primary-color-700 shrink-0">
+          <button 
+             onClick={() => setSession("recorded")}
+             className="flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full bg-[#E11D48] text-white hover:bg-rose-700 shrink-0">
             <IoIosArrowForward size={24} />
           </button>
         </div>
       </div>
 
-      <div className="lg:hidden mt-8">
-        <MobileSlideNav />
-      </div>
-      <div className="lg:hidden">
+      {/* Mobile nav removed to match Figma layout, which uses overlay grid menu */}
+      <div className="invisible h-0">
         <MobileContent data={data} />
       </div>
     </div>

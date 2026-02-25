@@ -24,6 +24,9 @@ import BusinessInterestForm from "./pages/businessInterest/index";
 // import Home from "./pages/Home";
 // import ThanksPage from "./pages/thanksPage";
 
+import PaymentSuccess from "./pages/payment/PaymentSuccess";
+import PaymentCancel from "./pages/payment/PaymentCancel";
+
 // import Feedback from "./pages/Feedback";
 
 // import PreviewCourse from "./pages/PreviewCourse";
@@ -162,6 +165,14 @@ function App() {
             {
               path: "/contact",
               element: <Contact />,
+            },
+            {
+              path: "/payment/success",
+              element: <PaymentSuccess />,
+            },
+            {
+              path: "/payment/cancel",
+              element: <PaymentCancel />,
             },
           ],
         },

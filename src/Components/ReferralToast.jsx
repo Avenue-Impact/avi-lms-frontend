@@ -46,7 +46,7 @@ const ReferralToast = ({ onTimeout }) => {
             </p>
 
             <button
-              onClick={() => navigate("/signup") && handleClose}
+              onClick={() => navigate("/dashboard/referral") && handleClose}
               className="whitespace-nowrap rounded-lg bg-[#D81B4B] px-4 py-4 text-sm font-semibold text-white transition-transform hover:scale-105 active:scale-95 sm:py-2"
             >
               Start Referring

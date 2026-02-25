@@ -35,7 +35,6 @@ const AdminStartLiveSession = () => {
   if (error) return <p>Error: {error.message}</p>;
   if (data) {
     // setMeetingDetails(data?.data?.data);
-    console.log(data);
     return (
       <div>
         <StartMeeting

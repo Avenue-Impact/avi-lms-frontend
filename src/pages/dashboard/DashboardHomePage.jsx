@@ -20,6 +20,8 @@ import RecordedSessionCourseCard from "@/Components/student/recorded-session/cou
 import { useFetchWishlist } from "@/hooks/wishlists/use-fetch-wishlist";
 import Courses from "@/Components/dashboard/Courses";
 import { useGetRegisteredCourses } from "@/hooks/students/use-get-registered-courses";
+import { useFetchPreviewlist } from "@/hooks/wishlists/use-fetch-previewlist";
+import { useNavigate } from "react-router-dom";
 // import Cookies from "js-cookie";
 // import { useProfile } from "@/services/queries";
 
@@ -58,6 +60,9 @@ const DashBoardHomePage = () => {
           </div>
         </div>
       </div>
+
+      {/* CONTINUE FROM WHERE YOU LEFT OFF (PREVIEW LIST) */}
+      <PreviewListCourses />
 
       {/* LIVE SESSION */}
       <div className="lg:border-white-300 my-6 rounded-lg border-2 bg-white p-6">
@@ -234,6 +239,57 @@ const WishlistedCourses = () => {
         </div>
       )}
     </>
+  );
+};
+
+const PreviewListCourses = () => {
+  const { data } = useFetchPreviewlist();
+  const navigate = useNavigate();
+
+  if (!data?.data?.data || data?.data?.data?.length < 1) {
+    return null;
+  }
+
+  return (
+    <div className="lg:border-white-300 my-6 rounded-lg border-2 bg-white p-6">
+      <div className="flex flex-row items-center justify-between rounded-lg bg-white pb-6 lg:p-2">
+        <div className="flex-1 md:mb-0 lg:mb-4">
+          <h3 className="text-l font-semibold text-gray-800">
+            Continue from where you left off
+          </h3>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-6 lg:grid-cols-4">
+        {data?.data?.data?.map((course) => {
+          return (
+            <div key={course.id} className="bg-white shadow-md rounded-lg overflow-hidden flex flex-col">
+              <div 
+                onClick={() => navigate(`/preview-course/${course.id}`)}
+                className="cursor-pointer"
+              >
+                <img
+                  src={course.cover_image}
+                  className="h-[180px] lg:h-[200px] w-full object-cover"
+                  alt={course.title}
+                />
+              </div>
+              <div className="px-[10px] py-3 flex-1 flex flex-col justify-between items-start">
+                <p className="text-xs text-tertiary-color-900 md:text-[14px] font-medium mb-3">
+                  {course.title.length > 40 ? `${course.title.slice(0, 40)}...` : course.title}
+                </p>
+                <button 
+                  onClick={() => navigate(`/preview-course/${course.id}`)}
+                  className="w-full bg-[#E11D48] text-white py-2 rounded-md font-medium text-sm hover:bg-rose-700 transition-colors"
+                >
+                  Continue to Course
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 };
 

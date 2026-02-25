@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DashButton from "../ButtonDash";
 import { useParams } from "react-router-dom";
 // import { usePreviewCourses } from "@/hooks/students/use-fetch-all-courses";
@@ -7,6 +7,8 @@ import { useAddPayment } from "@/hooks/students/use-add-payment";
 import BankTransferModal from "../../../Components/BankTransferModal";
 import PaymentMethodModal from "../../../Components/PaymentMethodModal";
 import toast from "react-hot-toast";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 
 const OnDemandPayment = ({ courseData }) => {
@@ -22,6 +24,11 @@ const OnDemandPayment = ({ courseData }) => {
   const [showMethodModal, setShowMethodModal] = useState(false);
   const [showBankModal, setShowBankModal] = useState(false);
   const [bankTransferData, setBankTransferData] = useState(null);
+
+  const [promoInput, setPromoInput] = useState("");
+  const [appliedPromo, setAppliedPromo] = useState(null);
+  const [isApplyingPromo, setIsApplyingPromo] = useState(false);
+  const [amountToPay, setAmountToPay] = useState(0);
 
   const userLocation = previewCourse?.data?.data?.userLocation;
   const gateways = userLocation?.GATEWAYS?.map(g => ({ id: g, label: g.replace('_', ' ') })) || [{ id: 'stripe', label: 'Stripe' }];
@@ -40,6 +47,40 @@ const OnDemandPayment = ({ courseData }) => {
     setShowMethodModal(true);
   };
 
+  const handleApplyPromo = async () => {
+    if (!promoInput) {
+        toast.error("Please enter a promo code");
+        return;
+    }
+    if (!selectedOption) {
+        toast.error("Please select a subscription plan first");
+        return;
+    }
+
+    setIsApplyingPromo(true);
+    try {
+        const baseUrl = import.meta.env.VITE_AUTH_URL.replace("/auth", "");
+        const res = await axios.post(`${baseUrl}/courses/apply-promo`, {
+            code: promoInput,
+            courseId,
+            duration: selectedOption,
+            type: "on_demand"
+        }, {
+            headers: { Authorization: `Bearer ${Cookies.get("token")}` }
+        });
+        
+        if (res.data?.status === "success") {
+            setAppliedPromo(res.data.data);
+            toast.success("Promo code applied successfully!");
+        }
+    } catch (error) {
+        toast.error(error.response?.data?.message || "Failed to apply promo code");
+        setAppliedPromo(null);
+    } finally {
+        setIsApplyingPromo(false);
+    }
+  };
+
   const handleProceedPayment = () => {
     if (!selectedGateway) {
         toast.error("Please select a payment method.");
@@ -52,7 +93,8 @@ const OnDemandPayment = ({ courseData }) => {
       data: {
         access_type: ["on demand"],
         subscription_limit: selectedOption,
-        gateway: gatewayToUse
+        gateway: gatewayToUse,
+        ...(appliedPromo && { promocode: appliedPromo.promo.code })
       },
       courseId,
     }, {
@@ -72,8 +114,24 @@ const OnDemandPayment = ({ courseData }) => {
   };
   
   // Find selected amount for display in modal
-  const selectedPlan = previewCourse?.data?.data.course.pre_recorded_price.find(p => p.duration === selectedOption);
-  const amountToPay = selectedPlan ? (selectedPlan.discounted_price?.amount || selectedPlan.amount) : 0;
+  useEffect(() => {
+    const selectedPlan = previewCourse?.data?.data?.pricing?.on_demand?.find((p) => p.duration === selectedOption);
+    let calculatedAmount = 0;
+    
+    if (selectedPlan) {
+      calculatedAmount = selectedPlan.discounted_price?.amount 
+                    ?? selectedPlan.amount 
+                    ?? selectedPlan.original_price?.amount 
+                    ?? 0;
+    }
+    
+    if (appliedPromo && appliedPromo.final_price !== undefined) {
+      calculatedAmount = appliedPromo.final_price;
+    }
+    
+    setAmountToPay(calculatedAmount);
+    console.log(selectedPlan)
+  }, [selectedOption, previewCourse, appliedPromo]);
 
   return (
     <div className="">
@@ -83,10 +141,10 @@ const OnDemandPayment = ({ courseData }) => {
 
       {/* Radio Button */}
       <div className="space-y-1 py-6">
-        {previewCourse?.data?.data.course.pre_recorded_price.map(
+        {previewCourse?.data?.data.pricing.on_demand.map(
           (item, index) => {
-            const originalAmount = item.original_price?.amount || item.amount;
-            const discountedAmount = item.discounted_price?.amount || item.amount;
+            const originalAmount = item.original_price?.amount ?? item.amount ?? 0;
+            const discountedAmount = item.discounted_price?.amount ?? item.amount ?? 0;
             const hasDiscount = discountedAmount < originalAmount;
             const currencySym = item.original_price?.currency_symbol || item.currency_symbol || '£';
 
@@ -128,11 +186,19 @@ const OnDemandPayment = ({ courseData }) => {
         <div className="flex">
           <input
             type="text"
-            className="w-full border border-gray-300 px-4 py-2 focus:outline-none"
+            className="w-full border border-gray-300 px-4 py-2 focus:outline-none disabled:bg-gray-100"
             placeholder="Promo code"
+            value={promoInput}
+            onChange={(e) => setPromoInput(e.target.value)}
+            disabled={isApplyingPromo || !selectedOption}
           />
-          <DashButton className="rounded-none rounded-r-sm px-4 py-2 text-white">
-            Apply
+          <DashButton 
+             type="button"
+             className="rounded-none outline-none focus:outline-none rounded-r-sm px-4 py-2 text-white bg-black hover:bg-black/90"
+             onClick={handleApplyPromo}
+             disabled={isApplyingPromo || !promoInput || !selectedOption}
+          >
+            {isApplyingPromo ? "..." : (appliedPromo ? "Applied" : "Apply")}
           </DashButton>
         </div>
       </div>

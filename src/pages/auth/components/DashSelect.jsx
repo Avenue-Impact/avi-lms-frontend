@@ -28,7 +28,7 @@ export function PreviewVideoSelect({ selectedCourseId, setSelectedCourseId }) {
       <SelectContent className="max-h-60 overflow-y-auto">
         <SelectGroup>
           {previewCourse?.data?.data.course.cohorts.map((cohortlist) => (
-            <SelectItem key={cohortlist.id} value={cohortlist.cohort}>
+            <SelectItem key={cohortlist.id} value={cohortlist.id}>
               {cohortlist.cohort}
             </SelectItem>
           ))}

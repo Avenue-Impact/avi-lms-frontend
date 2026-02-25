@@ -1,13 +1,15 @@
 import { useViewEnrolledCourse } from "@/hooks/students/use-view-enrolled-course";
 import { createContext } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams, useLocation } from "react-router-dom";
 
 export const CourseDataContext = createContext();
 
 export const CourseDataProvider = ({ children }) => {
   const { courseId } = useParams();
   const [searchParams] = useSearchParams();
-  const { data, isLoading, error } = useViewEnrolledCourse(courseId);
+  const location = useLocation();
+  const type = location.pathname.includes('/live') ? 'live class' : 'on demand';
+  const { data, isLoading, error } = useViewEnrolledCourse(courseId, type);
 
   if (isLoading) return <p className="p-4 text-gray-500">Loading...</p>;
 

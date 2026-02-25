@@ -15,7 +15,7 @@ import { CommonButton } from "../ui/button";
 function CourseSection({ editButton, data }) {
   const [active, setActive] = useState("1");
   const [videoActive, setvideoActive] = useState("");
-  const { setSession, setSectionDetails, setVideoId, setSectionActive } =
+  const { setSession, setSectionDetails, setVideoId, setSectionActive, setSections } =
     useViewCourseSections();
 
   return (
@@ -40,7 +40,10 @@ function CourseSection({ editButton, data }) {
             <span className="text-sm">Edit section</span>
           </CommonButton>
         ) : (
-          <button className="text-[#111827] hover:text-gray-600 transition-colors">
+          <button 
+            className="text-[#111827] hover:text-gray-600 transition-colors lg:hidden"
+            onClick={() => setSections(prev => ({ ...prev, mobile: "" }))}
+          >
             <IoCloseOutline size={24} />
           </button>
         )}
@@ -52,8 +55,8 @@ function CourseSection({ editButton, data }) {
             <AccordionItem value={"1"} className="border-b border-gray-200 py-1">
               <AccordionTrigger
                 className={cn(
-                  "flex items-center justify-between w-full py-3 px-3 md:px-4 text-left transition-colors cursor-pointer hover:bg-primary-color-100/30 rounded-md",
-                  active === "1" ? "bg-primary-color-100/30" : ""
+                  "flex items-center justify-between w-full py-3 px-3 md:px-4 text-left transition-colors cursor-pointer hover:bg-[#FDF2F5] rounded-md",
+                  active === "1" ? "bg-[#FDF2F5]" : ""
                 )}
                 onClick={() => {
                   setActive("1");
@@ -65,11 +68,11 @@ function CourseSection({ editButton, data }) {
                   <div className="flex w-full items-center justify-between">
                     <p className={cn(
                       "text-base font-normal tracking-wide",
-                      active === "1" ? "text-primary-color-600 font-medium" : "text-[#374151]"
+                      active === "1" ? "text-[#E11D48] font-medium" : "text-[#374151]"
                     )}>
                       Live Section
                     </p>
-                    <FiChevronDown className={cn("transition-transform duration-200", active === "1" ? "rotate-180 text-primary-color-600" : "text-[#6B7280]")} size={18} />
+                    <FiChevronDown className={cn("transition-transform duration-200", active === "1" ? "rotate-180 text-[#E11D48]" : "text-[#6B7280]")} size={18} />
                   </div>
                   <p
                     className={cn(
@@ -98,8 +101,8 @@ function CourseSection({ editButton, data }) {
                 <AccordionItem value={section._id} key={section._id} className="border-b border-gray-200 py-1">
                   <AccordionTrigger
                     className={cn(
-                      "flex items-center justify-between w-full py-3 px-3 md:px-4 text-left transition-colors cursor-pointer hover:bg-primary-color-100/30 rounded-md",
-                      isActiveSection ? "bg-primary-color-100/30" : ""
+                      "flex items-center justify-between w-full py-3 px-3 md:px-4 text-left transition-colors cursor-pointer hover:bg-[#FDF2F5] rounded-md",
+                      isActiveSection ? "bg-[#FDF2F5]" : ""
                     )}
                     onClick={() => {
                       setActive(section._id);
@@ -111,16 +114,16 @@ function CourseSection({ editButton, data }) {
                       <div className="flex w-full items-center justify-between">
                         <p className={cn(
                           "text-base font-normal tracking-wide",
-                          isActiveSection ? "text-primary-color-600 font-medium" : "text-[#374151]"
+                          isActiveSection ? "text-[#E11D48] font-medium" : "text-[#374151]"
                         )}>
                           Section {section.section}
                         </p>
-                        <FiChevronDown className={cn("transition-transform duration-200", isActiveSection ? "rotate-180 text-primary-color-600" : "text-[#6B7280]")} size={18} />
+                        <FiChevronDown className={cn("transition-transform duration-200", isActiveSection ? "rotate-180 text-[#E11D48]" : "text-[#6B7280]")} size={18} />
                       </div>
                       <p
                         className={cn(
                           "mt-1 text-sm font-medium",
-                          isActiveSection ? "text-primary-color-600" : "text-[#6B7280]"
+                          isActiveSection ? "text-[#E11D48]" : "text-[#6B7280]"
                         )}
                       >
                         {section.title}
@@ -134,8 +137,8 @@ function CourseSection({ editButton, data }) {
                       <AccordionContent
                         key={video._id}
                         className={cn(
-                          "cursor-pointer px-4 py-3 pb-4 transition-colors hover:bg-primary-color-100/20",
-                          isActiveVideo ? "bg-primary-color-100/30" : ""
+                          "cursor-pointer px-4 py-3 pb-4 transition-colors hover:bg-[#FDF2F5]",
+                          isActiveVideo ? "bg-[#FDF2F5]" : ""
                         )}
                         onClick={() => {
                           setSectionDetails((prev) => ({
@@ -153,7 +156,7 @@ function CourseSection({ editButton, data }) {
                           className={cn(
                             "flex items-start gap-3 text-sm font-normal",
                             isActiveVideo
-                              ? "text-primary-color-600"
+                              ? "text-[#E11D48]"
                               : "text-[#6B7280]"
                           )}
                         >
