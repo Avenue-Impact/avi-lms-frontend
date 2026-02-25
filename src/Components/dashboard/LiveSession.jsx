@@ -24,9 +24,7 @@ function LiveSession({ data }) {
   // Example logic to determine if session is active 
   // (In real scenario, compare current time with start/end_date)
   useEffect(() => {
-    // For now, if we have time, we can mimic active state based on data or keep it simple.
-    // If it's a test, you could set setIsActive based on time.
-    setIsActive(true); 
+    setIsActive(data?.data?.course_detail?.live_session?.cohort_id ? true : false); 
   }, []);
 
   return (
@@ -84,7 +82,7 @@ function LiveSession({ data }) {
         </section>
       </div>
 
-      <div className="mt-auto pt-16 md:pt-24 flex items-end justify-end">
+      {/* <div className="mt-auto pt-16 md:pt-24 flex items-end justify-end">
         <div className="flex items-center gap-3 text-right">
           <div>
             <p className="text-[10px] md:text-xs text-[#6B7280]">Business Analyst Recordings</p>
@@ -98,7 +96,7 @@ function LiveSession({ data }) {
             <IoIosArrowForward size={24} />
           </button>
         </div>
-      </div>
+      </div> */}
 
       {/* Mobile nav removed to match Figma layout, which uses overlay grid menu */}
       <div className="invisible h-0">
