@@ -31,8 +31,8 @@ const Login = () => {
   const [queryString] = useSearchParams();
   const courseId = queryString.get("id");
   const courseTitle = queryString.get("title");
-  const location = useLocation();
-  const from = location.state?.from?.pathname + (location.state?.from?.search || "") || "/dashboard";
+  const _r = queryString.get("_r");
+  const from = _r ? decodeURIComponent(_r) : "/dashboard";
 
   const { mutate, isPending } = useLoginUser();
 
@@ -165,8 +165,7 @@ const Login = () => {
               Don't have an account?
             </span>
             <Link
-              to={"/signup"}
-              state={{ from: location.state?.from }}
+              to={`/signup${_r ? `?_r=${encodeURIComponent(_r)}` : ""}`}
               className="text-sm font-semibold capitalize text-primary-color-600 hover:text-primary-color-700"
             >
               Sign up

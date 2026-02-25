@@ -62,8 +62,8 @@ const SignUp = ({ isPage = true }) => {
   const [modal, setModal] = useState(false);
   const [user, setUser] = useState();
   const [queryString] = useSearchParams();
-  const location = useLocation();
-  const from = location.state?.from?.pathname + (location.state?.from?.search || "") || "";
+  const _r = queryString.get("_r");
+  const from = _r ? decodeURIComponent(_r) : "";
 
   const [showReferralReminder, setShowReferralReminder] = useState(false);
   const [pendingSignupValues, setPendingSignupValues] = useState(null);
@@ -445,8 +445,7 @@ const SignUp = ({ isPage = true }) => {
             Already have an account?
           </span>
           <Link
-            to={route("/login", courseId, courseTitle)}
-            state={{ from: location.state?.from }}
+            to={route("/login", courseId, courseTitle) + (_r ? (courseId || courseTitle ? "&" : "?") + `_r=${encodeURIComponent(_r)}` : "")}
             className="text-sm font-semibold capitalize text-primary-color-600"
           >
             sign in
