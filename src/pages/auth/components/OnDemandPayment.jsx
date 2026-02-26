@@ -133,6 +133,10 @@ const OnDemandPayment = ({ courseData }) => {
     console.log(selectedPlan)
   }, [selectedOption, previewCourse, appliedPromo]);
 
+  if (!previewCourse?.data?.data?.pricing?.on_demand?.length) {
+    return null;
+  }
+
   return (
     <div className="">
       <h3 className="text-[20px] font-[400] text-gray-800 lg:text-[24px]">

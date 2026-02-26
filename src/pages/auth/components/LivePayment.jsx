@@ -156,6 +156,10 @@ const LivePayment = ({ courseData }) => {
     );
   };
 
+  if (!previewCourse?.data?.data?.pricing?.live?.length) {
+    return null;
+  }
+
   return (
     <div className="">
       <h3 className="text-[20px] font-[400] text-gray-800 lg:text-[24px]">
