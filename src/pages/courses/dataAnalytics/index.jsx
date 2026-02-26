@@ -30,8 +30,8 @@ export default function DataAnalytics() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isEarlyBird, setIsEarlyBird] = useState(false);
   
-  const programStartDate = new Date('2025-09-08T00:00:00');
-  const earlyBirdEndDate = new Date('2025-08-25T23:59:59');
+  const programStartDate = new Date('2026-09-08T00:00:00');
+  const earlyBirdEndDate = new Date('2026-08-25T23:59:59');
 
   useEffect(() => {
     // Check if early bird is still valid
@@ -196,7 +196,7 @@ export default function DataAnalytics() {
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-center gap-2 text-sm">
           <div className="flex items-center whitespace-nowrap max-w-[100vw] overflow-x-auto hideScrollBar">
             <Clock className="h-4 w-4 mr-2" />
-            <span>Next Data Analytics Training Starts September 8th - Secure Your Spot Now!</span>
+            <span>Next Data Analytics Training Starts March 16 - Secure Your Spot Now!</span>
           </div>
           <div className="hidden md:block">•</div>
           <div className="flex hidden md:block items-center">
@@ -309,7 +309,7 @@ export default function DataAnalytics() {
                   <Clock className="h-8 w-8 text-blue-400" />
                 </div>
                 <h3 className="font-semibold text-lg mb-2">Next Start Date</h3>
-                <p className="text-blue-400 font-bold">September 8th, 2025</p>
+                <p className="text-blue-400 font-bold">March 16, 2026</p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 shadow">
                 <div className="flex items-center justify-center mb-3">
@@ -399,8 +399,8 @@ export default function DataAnalytics() {
         <div className="absolute inset-0 bg-black/80 flex items-center justify-center">
           <div className="backdrop-blur-md bg-white/40 rounded-xl shadow-xl px-8 py-6 flex flex-col items-center">
             <h3 className="text-2xl md:text-3xl font-bold text-white mb-2 drop-shadow">Next Cohort Starts In</h3>
-            <CountdownTimer targetDate={new Date('2025-09-08T00:00:00')} />
-            <span className="mt-2 text-base text-white font-medium">September 8, 2025</span>
+            <CountdownTimer targetDate={new Date('2026-09-08T00:00:00')} />
+            <span className="mt-2 text-base text-white font-medium">March 16, 2026</span>
           </div>
         </div>
       </section>

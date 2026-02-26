@@ -23,7 +23,7 @@ export const RegistrationForm = () => {
         <div className="md:w-1/2 bg-gradient-to-br from-[#CC1747] to-[#1E2A3F] text-white p-8 md:p-12">
           <h2 className="text-2xl font-bold mb-6">Ready to Start Your Data Analytics Journey?</h2>
           <p className="mb-8 text-blue-100">
-            Fill out the form to register for our upcoming training program starting September 8th.
+            Fill out the form to register for our upcoming training program starting March 16th.
           </p>
 
           <div className="space-y-6">
