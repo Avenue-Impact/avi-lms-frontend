@@ -13,7 +13,7 @@ function LiveSessionView({ editButton = false }) {
     <div className="w-full gap-4 lg:grid lg:grid-cols-[2.8fr_1fr]">
       {/* {session === "" && <p>click to show content </p>} */}
 
-      {session === "live" && data?.data?.data?.live_session.time && (
+      {session === "live" && data?.data?.data?.live_session.start_time && (
         <LiveSession data={data} />
       )}
       {session === "recorded" && <CourseVideoSection data={data} />}
