@@ -55,15 +55,16 @@ const ReferralPage = () => {
       url: referralLink,
     };
 
-    if (navigator.share) {
-      try {
-        await navigator.share(shareData);
-      } catch (err) {
-        setError("Failed to share the referral code.");
-      }
-    } else {
-      setError("Sharing is not supported on this device.");
-    }
+    copyToClipboard(referralLink);
+    // if (navigator.share) {
+    //   try {
+    //     await navigator.share(shareData);
+    //   } catch (err) {
+    //     setError("Failed to share the referral code.");
+    //   }
+    // } else {
+    //   setError("Sharing is not supported on this device.");
+    // }
   };
 
   if (loading) return <p>Loading...</p>;
