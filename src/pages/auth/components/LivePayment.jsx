@@ -65,6 +65,10 @@ const LivePayment = ({ courseData }) => {
   };
 
   const handleSelectPlan = (plan) => {
+      if (plan === 'installment') {
+          toast.error("feature not available yet");
+          return;
+      }
       setSelectedPlan(plan);
       setShowPlanModal(false);
       setShowMethodModal(true);
