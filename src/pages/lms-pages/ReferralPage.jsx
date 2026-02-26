@@ -39,7 +39,6 @@ const ReferralPage = () => {
   };
 
   const referralCode = data?.data?.data?.referral_code;
-  console.log("This is second referral", referralCode);
 
   const handleShare = async () => {
     if (!referralCode) {
@@ -48,7 +47,7 @@ const ReferralPage = () => {
     }
 
     // const referralLink = `https://www.avenueimpact.com/dashboard/referral?code=${referralCode}`;
-    const referralLink = `http://localhost:5173/signup?code=${referralCode}`;
+    const referralLink = `${window.location.origin}/signup?code=${referralCode}`;
 
     const shareData = {
       title: "Referral Code",
