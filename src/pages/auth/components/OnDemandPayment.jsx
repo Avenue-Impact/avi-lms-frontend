@@ -134,7 +134,11 @@ const OnDemandPayment = ({ courseData }) => {
   }, [selectedOption, previewCourse, appliedPromo]);
 
   if (!previewCourse?.data?.data?.pricing?.on_demand?.length) {
-    return null;
+    return (
+      <div className="py-8 text-center bg-gray-50 rounded-lg border border-gray-200">
+        <p className="text-gray-500 font-medium">This course does not offer on-demand access at the moment.</p>
+      </div>
+    );
   }
 
   return (
