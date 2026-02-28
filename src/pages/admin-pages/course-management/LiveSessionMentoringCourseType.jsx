@@ -53,6 +53,7 @@ const LiveSessionMentoringCourseType = () => {
           : Number(data.discountPrice),
         duration: data.duration,
         time: data.time,
+        timezone: data.timezone,
         cohort,
         year: 2025,
         currency: "Pounds",
@@ -86,6 +87,7 @@ const LiveSessionMentoringCourseType = () => {
       discountPrice: savedForm?.discountPrice || "",
       coursePrice: savedForm?.coursePrice || "",
       time: savedForm?.time || "",
+      timezone: savedForm?.timezone || "UTC",
       discountType: savedForm?.discountType || "None",
       discountValue: savedForm?.discountValue || "0",
     },
@@ -220,6 +222,40 @@ const LiveSessionMentoringCourseType = () => {
                     name="time"
                     labelClass={"text-base font-medium"}
                     id="time"
+                  />
+                </div>
+
+                <div className="flex-1">
+                  <FormField
+                    control={form.control}
+                    name="timezone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-base font-[500] text-[#344054] block mb-2">Timezone</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="w-full rounded border border-gray-300 p-2 h-[42px]">
+                              <SelectValue placeholder="Select timezone" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent className="max-h-[300px]">
+                            <SelectItem value="UTC">UTC (GMT)</SelectItem>
+                            <SelectItem value="Europe/London">London (GMT/BST)</SelectItem>
+                            <SelectItem value="America/New_York">New York (EST/EDT)</SelectItem>
+                            <SelectItem value="America/Chicago">Chicago (CST/CDT)</SelectItem>
+                            <SelectItem value="America/Denver">Denver (MST/MDT)</SelectItem>
+                            <SelectItem value="America/Los_Angeles">Los Angeles (PST/PDT)</SelectItem>
+                            <SelectItem value="Asia/Dubai">Dubai (GST)</SelectItem>
+                            <SelectItem value="Africa/Lagos">Lagos (WAT)</SelectItem>
+                            <SelectItem value="Asia/Kolkata">India (IST)</SelectItem>
+                            <SelectItem value="Asia/Singapore">Singapore (SGT)</SelectItem>
+                            <SelectItem value="Australia/Sydney">Sydney (AEST/AEDT)</SelectItem>
+                            {/* Feel free to add more static commonly supported IANA timezones here */}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
                 </div>
               </div>

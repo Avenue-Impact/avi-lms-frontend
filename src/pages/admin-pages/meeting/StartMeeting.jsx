@@ -10,6 +10,7 @@ const StartMeeting = ({
   apiKey,
   password,
   zak,
+  obfToken,
   leaveUrl,
   userEmail,
 }) => {
@@ -36,7 +37,7 @@ const StartMeeting = ({
           signature,
           sdkKey: apiKey,
           passWord: password,
-          zak,
+          // zak: obfToken || zak, 
           success: () => {
             console.log("Joined meeting successfully");
           },
@@ -68,6 +69,7 @@ const StartMeeting = ({
     apiKey,
     password,
     zak,
+    obfToken,
     courseId,
     queryString,
   ]);

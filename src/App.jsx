@@ -145,7 +145,14 @@ function App() {
           path: "/preview-video-course/:courseId/enroll",
           element: <PreviewVideoCourse />,
         },
-
+        {
+          path: "/payment/success",
+          element: <PaymentSuccess />,
+        },
+        {
+          path: "/payment/cancel",
+          element: <PaymentCancel />,
+        },
         {
           path: "/",
           element: <AppLayout />,
@@ -165,14 +172,6 @@ function App() {
             {
               path: "/contact",
               element: <Contact />,
-            },
-            {
-              path: "/payment/success",
-              element: <PaymentSuccess />,
-            },
-            {
-              path: "/payment/cancel",
-              element: <PaymentCancel />,
             },
           ],
         },

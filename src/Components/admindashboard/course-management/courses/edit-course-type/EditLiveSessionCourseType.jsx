@@ -108,6 +108,7 @@ const EditLiveSessionCourseType = ({
         discounted_price: Number(data.discountPrice),
         duration: data.duration,
         time: convertTo12Hour(data.time), // Convert to "7:00pm" format
+        timezone: data.timezone,
         cohort,
         year: 2025,
         currency: "Pounds",
@@ -163,6 +164,7 @@ const EditLiveSessionCourseType = ({
       discountPrice: priceInfo?.discounted_price?.amount || 0,
       coursePrice: priceInfo?.original_price?.amount || 0,
       time: convertTo24Hour(priceInfo?.time) || "13:00",
+      timezone: priceInfo?.timezone || "UTC",
       discountType: priceInfo?.discount_type || "None",
       discountValue: priceInfo?.discount_value || 0,
     },
@@ -287,6 +289,8 @@ const EditLiveSessionCourseType = ({
                 <div>
                   <WeekdaysSelector control={form.control} name="duration" />
                 </div>
+              </div>
+              <div className="flex space-x-4">
                 {/* Time (7:00pm default) */}
                 <div className="flex-1">
                   <FormInput
@@ -297,6 +301,40 @@ const EditLiveSessionCourseType = ({
                     name="time"
                     labelClass={"text-base font-medium"}
                     id="time"
+                  />
+                </div>
+
+                <div className="flex-1">
+                  <FormField
+                    control={form.control}
+                    name="timezone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-base font-[500] text-[#344054] block mb-2">Timezone</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="w-full rounded border border-gray-300 p-2 h-[42px]">
+                              <SelectValue placeholder="Select timezone" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent className="max-h-[300px]">
+                            <SelectItem value="UTC">UTC (GMT)</SelectItem>
+                            <SelectItem value="Europe/London">London (GMT/BST)</SelectItem>
+                            <SelectItem value="America/New_York">New York (EST/EDT)</SelectItem>
+                            <SelectItem value="America/Chicago">Chicago (CST/CDT)</SelectItem>
+                            <SelectItem value="America/Denver">Denver (MST/MDT)</SelectItem>
+                            <SelectItem value="America/Los_Angeles">Los Angeles (PST/PDT)</SelectItem>
+                            <SelectItem value="Asia/Dubai">Dubai (GST)</SelectItem>
+                            <SelectItem value="Africa/Lagos">Lagos (WAT)</SelectItem>
+                            <SelectItem value="Asia/Kolkata">India (IST)</SelectItem>
+                            <SelectItem value="Asia/Singapore">Singapore (SGT)</SelectItem>
+                            <SelectItem value="Australia/Sydney">Sydney (AEST/AEDT)</SelectItem>
+                            {/* Feel free to add more static commonly supported IANA timezones here */}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
                 </div>
               </div>

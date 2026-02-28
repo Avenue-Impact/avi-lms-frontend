@@ -282,7 +282,7 @@ const PreviewListCourses = () => {
                   onClick={() => navigate(`/preview-course/${course.id}`)}
                   className="w-full bg-[#E11D48] text-white py-2 rounded-md font-medium text-sm hover:bg-rose-700 transition-colors"
                 >
-                  Continue to Course
+                  Watch Free Preview
                 </button>
               </div>
             </div>

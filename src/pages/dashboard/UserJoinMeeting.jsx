@@ -39,6 +39,7 @@ const UserJoinMeeting = () => {
           signature={data?.data?.data?.signature}
           apiKey={`${import.meta.env.VITE_ZOOM_API_KEY}`}
           password={data?.data?.data?.password}
+          obfToken={data?.data?.data?.obfToken} 
           leaveUrl={`${userBaseUrl}/dashboard/${courseId}/live?title=${queryString.get("title")}`}
           userEmail={
             userProfileDetails?.data?.data?.email ?? "tobiemma200@gmail.com"
