@@ -37,7 +37,7 @@ const StartMeeting = ({
           signature,
           sdkKey: apiKey,
           passWord: password,
-          // zak: obfToken || zak, 
+          zak: obfToken || zak, 
           success: () => {
             console.log("Joined meeting successfully");
           },
