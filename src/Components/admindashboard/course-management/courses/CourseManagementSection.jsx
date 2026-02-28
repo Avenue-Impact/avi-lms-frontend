@@ -87,7 +87,7 @@ function CourseManagementSection() {
 }
 
 const LiveContent = ({ data }) => {
-  console.log(data?.data?.data?.live_session);
+  console.log(data?.data?.sessions);
   const [meeting, setMeeting] = useState(false);
   const [queryString] = useSearchParams();
   const { courseId } = useParams();
@@ -96,13 +96,11 @@ const LiveContent = ({ data }) => {
 
   const {
     title,
-    end_date,
     live: isLive,
     password,
-    started_from,
+    start_time,
     subtitle,
-    time,
-  } = data?.data?.data?.live_session ?? {};
+  } = data?.data?.sessions[0] ?? {};
   return (
     <>
       {meeting ? (
@@ -129,9 +127,7 @@ const LiveContent = ({ data }) => {
                 Started from: {started_from && formatDate(started_from, false)}
               </p> */}
               <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
-                Meeting date: {started_from && formatDate(end_date, false)}{" "}
-                {time ?? ""}
-                {amOrPm(time ?? "")} UTC
+                Meeting date: {start_time}{" "}UTC
               </p>
               {/* <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
                 Add to: iCal Expor, Google Calendar
