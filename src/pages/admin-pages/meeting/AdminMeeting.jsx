@@ -44,7 +44,8 @@ const AdminStartLiveSession = () => {
           signature={data?.data?.data?.signature}
           apiKey={import.meta.env.VITE_ZOOM_API_KEY}
           password={data?.data?.data?.password}
-          zak={data?.data?.data?.accessToken}
+          // zak={data?.data?.data?.accessToken}
+          // obfToken={data?.data?.data?.obfToken}
           leaveUrl={`${baseUrl}/admin/course/management/info/${courseId}??title=${queryString.get("title")}&cohort=${queryString.get("cohort")}&cohortId=${queryString.get("cohortId")}`}
         />
       </div>
