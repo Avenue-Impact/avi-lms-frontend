@@ -1,4 +1,5 @@
 import Container from "@/Components/Container";
+import { useState } from "react";
 import { Skeleton } from "@/Components/ui/skeleton";
 import { usePreviewCourses } from "@/hooks/students/use-fetch-all-courses";
 import { useFetchVideo } from "@/hooks/students/use-fetch-taster-video";
@@ -20,7 +21,7 @@ const PreviewVideoCourse = () => {
   const navigate = useNavigate();
   let { courseId } = useParams();
   const { previewCourse } = usePreviewCourses(courseId);
-  console.log("Preview the video", previewCourse);
+
 
   return (
     <>
@@ -46,10 +47,15 @@ const PreviewVideoCourse = () => {
                     {previewCourse?.data?.data.course.title ?? ""}
                   </p>
 
-                  <PreviewVideo />
+                  <PreviewVideo
+                    videoUrl={
+                      previewCourse?.data?.data.course.preview_video?.url
+                    }
+                    coverImage={previewCourse?.data?.data.course.cover_image}
+                  />
 
                   {/* <video
-                    src={previewCourse?.data?.data.course.preview_video}
+                    src={previewCourse?.data?.data.course.preview_video?.url}
                     controls
                     className="h-auto w-full shadow-lg lg:rounded-3xl"
                   ></video> */}
@@ -68,7 +74,7 @@ const PreviewVideoCourse = () => {
             <div className="w-full grid-cols-12 gap-6 rounded-lg border-gray-100 bg-white pt-4 lg:grid lg:border-2 lg:p-8">
               {/* LIVE SESSION */}
               <div className="col-span-5 mb-4 md:mb-0">
-                <LivePayment />
+                <LivePayment courseData={previewCourse} />
               </div>
 
               <div className="mb-4 flex h-full items-center justify-center text-justify md:mb-0 lg:flex-col">
@@ -79,7 +85,7 @@ const PreviewVideoCourse = () => {
 
               {/* ON DEMAND SESSION */}
               <div className="col-span-5 mb-4 md:mb-0">
-                <OnDemandPayment />
+                <OnDemandPayment courseData={previewCourse} />
               </div>
             </div>
           </div>
@@ -112,29 +118,27 @@ const PreviewVideoCourse = () => {
   );
 };
 
-const PreviewVideo = () => {
-  const { courseId } = useParams();
-  const { data, isLoading } = useFetchVideo(courseId);
-
-  console.log("Playing video", data);
-
-  if (isLoading) {
-    return (
-      <div className="max-h-[690px] w-full text-white">
-        <Skeleton className="h-[690px] w-full" />
-      </div>
-    );
-  }
-
-  const videoUrl = data?.data?.data?.previewUrl;
+const PreviewVideo = ({ videoUrl, coverImage }) => {
+  const [videoLoaded, setVideoLoaded] = useState(false);
 
   return (
-    <video
-      src={videoUrl}
-      controls
-      autoPlay
-      className="max-h-[699px] w-full object-cover shadow-lg lg:rounded-3xl"
-    />
+    <div className="relative max-h-[699px] w-full overflow-hidden shadow-lg lg:rounded-3xl bg-black">
+      {!videoLoaded && coverImage && (
+        <img
+          src={coverImage}
+          alt="Course Preview"
+          className="absolute inset-0 h-full w-full object-cover z-10 pointer-events-none"
+        />
+      )}
+      <video
+        src={videoUrl}
+        poster={coverImage}
+        controls
+        autoPlay
+        onLoadedData={() => setVideoLoaded(true)}
+        className="max-h-[699px] w-full object-cover shadow-lg lg:rounded-3xl"
+      />
+    </div>
   );
 };
 

@@ -1,50 +1,76 @@
 import { useCreateLiveSession } from "@/hooks/course-management/use-create-live-session";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { useParams, useSearchParams } from "react-router-dom";
 
 import { Form } from "@/Components/ui/form";
 import FormInput from "@/Components/ui/form-input";
-import DashButton from "@/pages/auth/ButtonDash";
-
 import { CommonButton } from "@/Components/ui/button";
-import { liveSessionSchema } from "@/lib/form-schemas/forms-schema";
+import { editLiveSessionSchema } from "@/lib/form-schemas/forms-schema";
 import { ClipLoader } from "react-spinners";
 
 import LiveSessionContent from "@/Components/admindashboard/course-management/live-session/liveSessionContent";
 import { useGetSingleCohort } from "@/hooks/course-management/use-get-singleCohorts";
-import { useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
 
 const EditLiveSectionForm = () => {
   const { createLiveSession, isCreating } = useCreateLiveSession();
-  const [disabledButton, setDisabledButton] = useState(null);
+  const [disabledButton, setDisabledButton] = useState(false);
+
   const [queryString] = useSearchParams();
   const { courseId } = useParams();
   const cohortId = queryString.get("cohortId");
 
+  const { data } = useGetSingleCohort(courseId, cohortId);
+
   const form = useForm({
-    resolver: zodResolver(liveSessionSchema),
+    resolver: zodResolver(editLiveSessionSchema),
     defaultValues: {
       title: "",
-      subtitle: "",
-      time: "",
-      meetingDate: "",
-      startedFrom: "",
-      courseContent: "",
-      overview: "",
+      time: "19:00",
+      start_date: "",
     },
   });
 
-  const onSubmit = async (data) => {
-    createLiveSession(data, {
-      onSuccess: () => {
-        form.reset();
-        setDisabledButton(true);
+  /* 🔁 Hydrate form when cohort loads */
+  useEffect(() => {
+    if (data?.data?.data) {
+      const cohort = data?.data?.data;
+      console.log("Cohort Data:", cohort); // Debug log
+      const derivedCohortId = cohortId ?? cohort?.id ?? cohort?.cohort?.id;
+
+      form.reset({
+        title: "",
+        time: cohort?.time ?? cohort?.cohort?.time ?? "19:00",
+        start_date: "",
+      });
+    }
+  }, [data]);
+
+  const onSubmit = async (formData) => {
+    // Pass cohortId explicitly to the mutation
+    const derivedCohortId =
+      cohortId ?? data?.data?.data?.id ?? data?.data?.data?.cohort?.id;
+
+    createLiveSession(
+      { ...formData, cohortId: derivedCohortId, courseId: courseId },
+      {
+        onSuccess: () => {
+          form.reset({
+            title: "",
+            time: data?.data?.data?.time ?? "19:00",
+            start_date: "",
+          });
+          setDisabledButton(true);
+        },
       },
-    });
+    );
   };
 
-  const { data } = useGetSingleCohort(courseId, cohortId);
+  const cohortExists = !!data?.data?.data?.cohort;
+
+  console.log("Form Errors:", form.formState.errors); // Debug log
+
   return (
     <div>
       <div className="mb-4 mt-5 rounded border border-gray-300 p-10 md:mb-0">
@@ -65,17 +91,17 @@ const EditLiveSectionForm = () => {
                   label={"Session Title"}
                   labelClass={"mb-2 font-[500] text-[#475367] block text-base"}
                   className="h-[56px] w-full resize-none rounded border border-gray-300 p-2 outline-none"
-                  disabled={!data?.data?.data.cohort}
+                  disabled={!cohortExists}
                 />
 
                 <p className="text-right text-gray-500">
-                  {form.watch("title") ? `${form.watch("title").length}` : 0}
-                  /70
+                  {form.watch("title")?.length ?? 0}/70
                 </p>
               </div>
 
-              {/* Section Sub Title */}
-              <div className="mb-6">
+              {/* ================= RETAINED COMMENTED INPUTS ================= */}
+
+              {/* <div className="mb-6">
                 <FormInput
                   name="subtitle"
                   type="text"
@@ -85,18 +111,11 @@ const EditLiveSectionForm = () => {
                   label={"Session Subtitle"}
                   labelClass={"mb-2 font-[500] text-[#475367] block text-base"}
                   className="h-[56px] w-full resize-none rounded border border-gray-300 p-2 outline-none"
-                  disabled={!data?.data?.data.cohort}
+                  disabled={!cohortExists}
                 />
-                <p className="text-right text-gray-500">
-                  {form.watch("subtitle")
-                    ? `${form.watch("subtitle").length}`
-                    : 0}
-                  /450
-                </p>
-              </div>
+              </div> */}
 
-              {/* Selection Overview */}
-              <div>
+              {/* <div>
                 <FormInput
                   name="overview"
                   id="overview"
@@ -107,18 +126,11 @@ const EditLiveSectionForm = () => {
                   labelClass={"mb-2 font-[500] text-[#475367] block text-base"}
                   textarea={true}
                   className="h-[203px] w-full resize-none rounded border border-gray-300 p-2"
-                  disabled={!data?.data?.data.cohort}
+                  disabled={!cohortExists}
                 />
-                <p className="text-right text-gray-500">
-                  {form.watch("overview")
-                    ? `${form.watch("overview").length}`
-                    : 0}
-                  /450
-                </p>
-              </div>
+              </div> */}
 
-              {/* Course Content */}
-              <div className="mb-6">
+              {/* <div className="mb-6">
                 <FormInput
                   name="courseContent"
                   type="text"
@@ -128,12 +140,11 @@ const EditLiveSectionForm = () => {
                   label={"Course Content"}
                   labelClass={"mb-2 font-[500] text-[#475367] block text-base"}
                   className="h-[56px] w-full resize-none rounded border border-gray-300 p-2 outline-none"
-                  disabled={!data?.data?.data.cohort}
+                  disabled={!cohortExists}
                 />
-              </div>
+              </div> */}
 
-              {/* Starting Date and Time */}
-              <div className="flex space-x-4">
+              {/* <div className="flex space-x-4">
                 <div className="flex-1">
                   <FormInput
                     label={"Started from"}
@@ -141,36 +152,33 @@ const EditLiveSectionForm = () => {
                     type="date"
                     control={form.control}
                     name="startedFrom"
-                    labelClass={
-                      "text-base font-medium font-[500] text-[#475367]"
-                    }
+                    labelClass={"text-base font-medium font-[500] text-[#475367]"}
                     id="startedFrom"
-                    placeholder="19:00"
-                    disabled={!data?.data?.data.cohort}
+                    disabled={!cohortExists}
                   />
                 </div>
-              </div>
+              </div> */}
 
-              {/* Meeting Date and Time */}
+              {/* ================= ACTIVE FIELDS ================= */}
+
               <div className="flex w-full space-x-4 pt-6 text-[#475367]">
-                {/* Duration (Monday-Friday) */}
+                {/* Starting Date */}
                 <div className="w-full">
                   <FormInput
-                    label={"Meeting Date from"}
+                    label={"Starting Date from"}
                     className="w-full rounded border border-gray-300 p-2"
                     type="date"
                     control={form.control}
-                    name="meetingDate"
+                    name="start_date"
                     labelClass={
                       "text-base font-medium font-[500] text-[#475367]"
                     }
                     id="meetingDate"
-                    placeholder="19:00"
-                    disabled={!data?.data?.data.cohort}
+                    disabled={!cohortExists}
                   />
                 </div>
 
-                {/* Time (7:00pm default) */}
+                {/* Time */}
                 <div className="w-full">
                   <FormInput
                     label={"Time"}
@@ -180,8 +188,6 @@ const EditLiveSectionForm = () => {
                     name="time"
                     labelClass={"text-base font-medium"}
                     id="time"
-                    defaultValue="19:00"
-                    disabled={!data?.data?.data.cohort}
                   />
                 </div>
               </div>
@@ -190,16 +196,14 @@ const EditLiveSectionForm = () => {
                 <CommonButton
                   type="submit"
                   className="bg-primary-color-600"
-                  disabled={
-                    !data?.data?.data.cohort || isCreating || disabledButton
-                  }
+                  disabled={!cohortExists || isCreating}
                 >
                   {isCreating ? (
                     <span className="min-w-[89.3px]">
                       <ClipLoader size={20} color={"#fff"} />
                     </span>
                   ) : (
-                    <span>Add Content</span>
+                    <span>Create Live Session</span>
                   )}
                 </CommonButton>
               </div>

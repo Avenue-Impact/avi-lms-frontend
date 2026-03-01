@@ -1,36 +1,42 @@
 import Table from "@/Components/Table";
 import { CommonButton } from "@/Components/ui/button";
 import { Popover, PopoverTrigger } from "@/Components/ui/popover";
-import { courseManagement } from "@/lib/course_management";
 import { PopoverContent } from "@radix-ui/react-popover";
 import { IoSearch } from "react-icons/io5";
 
 import { LiveSessionIcon, OnDemandIcon } from "@/Components/Icon";
 import { GoArrowDownLeft, GoArrowUpRight } from "react-icons/go";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { useFetchCourseStats } from "@/hooks/data-management/use-fetch-course-stats";
 import _ from "lodash";
 
 export default function DataCourseManagement() {
-  const [course, setCourse] = useState(courseManagement);
-  const { isLoading, error, data } = useFetchCourseStats();
-  // console.log("The course Mangement", data);
-const [searchQuery, setSearchQuery] = useState("")
-    
-    const handleSearch = useCallback(
-        _.debounce((query) => {
-          setSearchQuery(query);
-        }, 500),
-        [],
-      );
-    
-      const handleChange = (event) => {
-        handleSearch(event.target.value);
-      };
-    
-      const filteredCourse = course.filter((course) =>
-        course.title.toLowerCase().includes(searchQuery.toLowerCase()),
-      );
+  const [courses, setCourses] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const { isLoading, error, data} = useFetchCourseStats();
+  
+  // Update courses when data is fetched
+  useEffect(() => {
+    if (data?.data?.data?.courses) {
+      setCourses(data.data.data.courses);
+    }
+  }, [data]);
+
+  const handleSearch = useCallback(
+    _.debounce((query) => {
+      setSearchQuery(query);
+    }, 500),
+    []
+  );
+
+  const handleChange = (event) => {
+    handleSearch(event.target.value);
+  };
+
+  const filteredCourse = courses.filter((course) =>
+    course.title?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
 
   if (isLoading) {
@@ -51,18 +57,46 @@ const [searchQuery, setSearchQuery] = useState("")
 
 
 
-  const filterDemand = (str) => {
-    const filteredCourse = courseManagement.filter(
-      (course) => course.type === str,
+  const filterDemand = (type) => {
+    if (!data?.data?.data?.courses) return;
+    
+    const filtered = data.data.data.courses.filter(
+      (course) => course.course_type?.toLowerCase() === type.toLowerCase()
     );
-
-    setCourse(filteredCourse);
+    setCourses(filtered);
+    setIsFilterOpen(false); // Close popover
   };
 
-  if (data?.data?.data?.courses?.length < 1) {
+  // Sort by enrollment count
+  const sortByEnrollment = (order) => {
+    if (!courses || courses.length === 0) return;
+    
+    const sorted = [...courses].sort((a, b) => {
+      const aCount = a.enrolled_students || 0;
+      const bCount = b.enrolled_students || 0;
+      
+      if (order === "highest") {
+        return bCount - aCount; // Descending order
+      } else {
+        return aCount - bCount; // Ascending order
+      }
+    });
+    
+    setCourses(sorted);
+    setIsFilterOpen(false); // Close popover
+  };
+
+  const resetFilter = () => {
+    if (data?.data?.data?.courses) {
+      setCourses(data.data.data.courses);
+    }
+    setIsFilterOpen(false); // Close popover
+  };
+
+  if (!courses || courses.length < 1) {
     return (
       <p className="text-lg capitalize italic text-slate-400">
-        no courses yet ...
+        No courses yet...
       </p>
     );
   }
@@ -87,7 +121,7 @@ const [searchQuery, setSearchQuery] = useState("")
 
             />
           </div>
-          <Popover>
+          <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
             <PopoverTrigger>
               <CommonButton
                 variant={"outline"}
@@ -101,7 +135,7 @@ const [searchQuery, setSearchQuery] = useState("")
                 <CommonButton
                   className="flex w-full items-center justify-start gap-4 px-3 py-[14px] capitalize"
                   variant="ghost"
-                  onClick={() => filterDemand("On Demand Courses")}
+                  onClick={() => filterDemand("on-demand")}
                 >
                   <span>
                     <OnDemandIcon />
@@ -111,7 +145,7 @@ const [searchQuery, setSearchQuery] = useState("")
                 <CommonButton
                   className="flex w-full items-center justify-start gap-4 px-3 py-[14px] text-start capitalize"
                   variant="ghost"
-                  onClick={() => filterDemand("live session")}
+                  onClick={() => filterDemand("live-session")}
                 >
                   <span>
                     <LiveSessionIcon />
@@ -121,6 +155,7 @@ const [searchQuery, setSearchQuery] = useState("")
                 <CommonButton
                   className="flex w-full items-center justify-start gap-4 px-3 py-[14px] capitalize"
                   variant="ghost"
+                  onClick={() => sortByEnrollment("highest")}
                 >
                   <span>
                     <GoArrowUpRight />
@@ -130,11 +165,19 @@ const [searchQuery, setSearchQuery] = useState("")
                 <CommonButton
                   className="flex w-full items-center justify-start gap-4 px-3 py-[14px] capitalize"
                   variant="ghost"
+                  onClick={() => sortByEnrollment("lowest")}
                 >
                   <span>
                     <GoArrowDownLeft />
                   </span>
                   <span>lowest registered</span>
+                </CommonButton>
+                <CommonButton
+                  className="flex w-full items-center justify-start gap-4 px-3 py-[14px] capitalize"
+                  variant="ghost"
+                  onClick={resetFilter}
+                >
+                  <span>All Courses</span>
                 </CommonButton>
               </div>
             </PopoverContent>
@@ -143,46 +186,58 @@ const [searchQuery, setSearchQuery] = useState("")
       </header>
 
       <div className="mt-10">
-        { filteredCourse.length === 0 ? (
+        {filteredCourse.length === 0 ? (
           <p className="col-span-3 text-center font-medium text-[#CC1747]">
-            User not found
+            No courses found
           </p>
         ) : (
+          <Table cols={"0.3fr 1.6fr 1.3fr 1.3fr 1fr 1.3fr "}>
+            <Table.Header className={"*:text-sm *:font-medium *:capitalize"}>
+              <h4>S/N</h4>
+              <h4>course title</h4>
+              <h4>course type</h4>
+              <h4>date created</h4>
+              <h4>level</h4>
+              <h4>No. of students registered</h4>
+            </Table.Header>
+            <div className="divide-y">
+              {filteredCourse.map((course, i) => {
+                const formatDate = (dateString) => {
+                  if (!dateString) return "N/A";
+                  const date = new Date(dateString);
+                  return date.toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  });
+                };
 
-        <Table cols={"0.3fr 1.6fr 1.3fr 1.3fr 1fr 1.3fr "}>
-          <Table.Header className={"*:text-sm *:font-medium *:capitalize"}>
-            <h4>S/N</h4>
-            <h4>course title</h4>
-            <h4>course type</h4>
-            <h4>date created</h4>
-            <h4>course duration</h4>
-            <h4>No. of student registered</h4>
-          </Table.Header>
-          <div className="divide-y">
-            {filteredCourse.map((course, i) => {
-              return (
-                <Table.Row key={course.id}>
-                  <p>{i + 1}</p>
-                  <p className="nor text-ellipsis text-sm text-[#344054]">
-                    {course.title}
-                  </p>
-                  <p className="text-left">
-                    <span className="w-min text-nowrap rounded-[12px] bg-[#FFECE5] px-3 py-[2px] text-xs font-medium text-[#AD3307]">
-                      {course.type}
-                    </span>
-                  </p>
-                  <p className="text-sm text-[#344054]">{course.createdAt}</p>
-                  <p className="text-sm text-[#344054]">{course.duration}</p>
-                  <p className="text-sm text-[#344054]">
-                    {course.noOfRegisterStudent}
-                  </p>
-                </Table.Row>
-              );
-            })}
-          </div>
-        </Table>
-        )
-      }
+                return (
+                  <Table.Row key={course._id}>
+                    <p>{i + 1}</p>
+                    <p className="text-ellipsis text-sm text-[#344054]">
+                      {course.title}
+                    </p>
+                    <p className="text-left">
+                      <span className="w-min text-nowrap rounded-[12px] bg-[#FFECE5] px-3 py-[2px] text-xs font-medium text-[#AD3307]">
+                        {course.course_type || "N/A"}
+                      </span>
+                    </p>
+                    <p className="text-sm text-[#344054]">
+                      {formatDate(course.created_at)}
+                    </p>
+                    <p className="text-sm text-[#344054]">
+                      {course.level || "N/A"}
+                    </p>
+                    <p className="text-sm text-[#344054]">
+                      {course.enrolled_students || 0}
+                    </p>
+                  </Table.Row>
+                );
+              })}
+            </div>
+          </Table>
+        )}
       </div>
     </div>
   );

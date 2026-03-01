@@ -8,7 +8,7 @@ const deleteStudentApi = async ({ data, courseId, cohortId }) => {
   const token = Cookies.get("adminToken");
 
   return await axios.delete(
-    `${BASE_URL}/courses/${courseId}/cohorts/${cohortId}/enrolled-students`,
+    `${BASE_URL}/admins/courses/${courseId}/cohorts/${cohortId}/enrolled-students`,
     {
       data,
       headers: {

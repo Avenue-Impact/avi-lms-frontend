@@ -75,6 +75,15 @@ export const liveSessionSchema = z.object({
   startedFrom: z.string({ message: "This field is required" }),
 });
 
+export const editLiveSessionSchema = z.object({
+  title: z
+    .string()
+    .min(5, { message: "Title must be at least 5 character long" })
+    .max(70, { message: "Title character must not exceed 70 " }),
+  time: z.string({ message: "This field is required" }),
+  start_date: z.string({ message: "This field is required" })
+});
+
 export const courseTypeSchema = z.object({
   coursePrice: z
     .string({ message: "This field is required" })
@@ -86,6 +95,9 @@ export const courseTypeSchema = z.object({
     .string({ message: "This field is required" })
     .min(1, { message: "this field is required" }),
   time: z.string({ message: "This field is required" }),
+  timezone: z.string({ message: "This field is required" }),
+  discountType: z.string({ message: "This field is required" }),
+  discountValue: z.string({ message: "This field is required" }),
 });
 
 export const courseInformationSchema = z.object({

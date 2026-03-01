@@ -3,6 +3,7 @@ import { useState } from "react";
 import CourseInformation from "@/Components/admindashboard/course-management/CourseInformation";
 import CourseCohortsPreview from "./CourseCohortsPreview";
 import OnDemand from "./OnDemand";
+import { HiArrowLeft } from "react-icons/hi2";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { CommonButton } from "@/Components/ui/button";
 import { useDeleteCourse } from "@/hooks/course-management/use-delete-course";
@@ -60,12 +61,19 @@ const EditCourse = () => {
 
   return (
     <div>
-      <div className="mb-8 mt-16 flex items-center justify-between">
-        <p className="font-[500] text-[#344054] lg:text-[18px] 2xl:text-[24px]">
-          {title.length > 44 ? `${title.substring(0, 45)}...` : title}
-        </p>
+      <div className="mb-8 mt-16 flex items-start justify-between">
+        <div className="flex items-center gap-2 text-[#667185]">
+          <button onClick={() => navigate(-1)} className="flex items-center gap-1 hover:text-[#CC1747]">
+                  <HiArrowLeft />
+                  <span>Go Back</span>
+              </button>
+          <p className="font-[500] text-[#344054] lg:text-[18px] 2xl:text-[24px]">
+            {title.length > 44 ? `${title.substring(0, 45)}...` : title}
+          </p>
 
-        <div>
+        </div>
+
+        <div className="mt-8">
           <button
             onClick={() => setActiveSection("courseInfo")}
             className={`px-4 py-2 text-sm font-medium ${activeSection === "courseInfo" ? "border-b-2 border-[#CC1747] text-[#CC1747]" : "text-[#344054] hover:text-gray-800"}`}

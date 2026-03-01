@@ -16,7 +16,7 @@ import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { z } from "zod";
 
-const Assignment = ({ data }) => {
+const Assignment = ({ data, assignmentDetails }) => {
   const inputRef = useRef(null);
   const [light, setLight] = useState(false);
   const [fileList, setFileList] = useState([]);
@@ -175,12 +175,50 @@ const Assignment = ({ data }) => {
       },
     );
   };
+  if (!assignmentDetails) {
+    return (
+      <div className="py-10 text-center text-gray-500">
+        <p>No assignments for this section.</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="mt-12 w-full max-w-[768px]">
+    <div className="mt-6 w-full max-w-[768px]">
+      <div className="mb-8 rounded-lg border border-gray-100 bg-gray-50 p-6">
+        <h3 className="mb-2 text-xl font-semibold text-[#101928]">
+          {assignmentDetails.title}
+        </h3>
+        <div
+          className="prose text-sm text-[#475367]"
+          dangerouslySetInnerHTML={{ __html: assignmentDetails.instructions }}
+        />
+        {assignmentDetails.resources &&
+          assignmentDetails.resources.length > 0 && (
+            <div className="mt-4">
+              <h4 className="mb-2 font-medium text-[#101928]">Resources:</h4>
+              <ul className="list-inside list-disc">
+                {assignmentDetails.resources.map((resource, idx) => (
+                  <li key={idx}>
+                    <a
+                      href={resource.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary-color-600 hover:underline"
+                    >
+                      {resource.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+      </div>
+
       <div className="flex items-start justify-between">
         <div>
           <h3 className="text-2xl font-medium capitalize text-[#344054]">
-            Assignments
+            Submit Assignment
           </h3>
         </div>
       </div>

@@ -35,10 +35,11 @@ const UserJoinMeeting = () => {
       <div>
         <StartMeeting
           meetingNumber={data?.data?.data?.meeting_id}
-          userName={userProfileDetails?.data?.data?.firstname ?? "User"}
+          userName={userProfileDetails?.data?.data?.username ?? "User"}
           signature={data?.data?.data?.signature}
           apiKey={`${import.meta.env.VITE_ZOOM_API_KEY}`}
           password={data?.data?.data?.password}
+          obfToken={data?.data?.data?.obfToken} 
           leaveUrl={`${userBaseUrl}/dashboard/${courseId}/live?title=${queryString.get("title")}`}
           userEmail={
             userProfileDetails?.data?.data?.email ?? "tobiemma200@gmail.com"

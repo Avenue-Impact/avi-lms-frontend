@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaTrash } from "react-icons/fa6";
 
 import { useCourseManagementInfo } from "@/hooks/useCourseManagementInfo";
@@ -51,10 +51,32 @@ const access = [
 const OnDemandSessionCourseType = () => {
   const [duration, setDuration] = useState("");
   const [amount, setAmount] = useState("");
+  const [discountType, setDiscountType] = useState("None");
+  const [discountValue, setDiscountValue] = useState("");
+  const [discountedAmount, setDiscountedAmount] = useState("");
+
   const [durationPrice, setDurationPrice] = useState([]);
   const [durationErr, setDurationErr] = useState("");
   const { setActiveTab } = useCourseManagementInfo();
   const { createCourseType, isCreating } = useCreateCourseType();
+
+  useEffect(() => {
+    if (!amount) {
+        setDiscountedAmount("");
+        return;
+    }
+    const price = parseFloat(amount);
+    let discounted = price;
+    const val = parseFloat(discountValue) || 0;
+
+    if (discountType === "Percentage") {
+      discounted = price - (price * val) / 100;
+    } else if (discountType === "Fiat") {
+      discounted = price - val;
+    }
+    
+    setDiscountedAmount(Math.max(0, discounted).toString());
+  }, [amount, discountType, discountValue]);
 
   const onSubmit = () => {
     if (durationPrice.length < 1) return setDurationErr("input duration ");
@@ -85,16 +107,28 @@ const OnDemandSessionCourseType = () => {
       return [
         ...prev,
         {
-          amount: Number(amount),
+          original_price: {
+            amount: Number(amount),
+            currency: "Pounds",
+            currency_symbol: "£",
+          },
+          discounted_price: {
+            amount: Number(discountedAmount),
+            currency: "Pounds",
+            currency_symbol: "£",
+          },
+          discount_type: discountType,
+          discount_value: Number(discountValue),
           duration,
-          currency: "Pounds",
-          currency_symbol: "£",
         },
       ];
     });
 
     setAmount("");
     setDuration("");
+    setDiscountType("None");
+    setDiscountValue("");
+    setDiscountedAmount("");
   };
 
   return (
@@ -117,18 +151,18 @@ const OnDemandSessionCourseType = () => {
 
           <div className="col-span-7 space-y-4">
             {/* Course Original Price and Discounted Price */}
-            <div className="grid grid-cols-[2fr_1.2fr_1fr] items-end space-x-4">
-              {/* Course Original Price */}
+            <div className="grid grid-cols-[1.5fr_1fr_1fr_1fr_1fr_0.5fr] gap-4 items-end">
+              {/* Duration */}
               <div>
                 <p className="font-[600] text-gray-600">Duration</p>
 
-                <Select onValueChange={setDuration}>
+                <Select onValueChange={setDuration} value={duration}>
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select a duration" />
+                    <SelectValue placeholder="Select" />
                   </SelectTrigger>
                   <SelectContent className="pb-8 capitalize">
                     <SelectGroup>
-                      <SelectLabel>select duration</SelectLabel>
+                      <SelectLabel>duration</SelectLabel>
                       {access.map((duration) => (
                         <SelectItem
                           key={duration.id}
@@ -144,21 +178,64 @@ const OnDemandSessionCourseType = () => {
               </div>
 
               <div>
-                <div>
-                  <label htmlFor="price" className="text-base font-medium">
-                    Price
-                  </label>
-                  <input
-                    type="number"
-                    name="price"
-                    id="price"
-                    className="w-full rounded border border-gray-300 p-2"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    placeholder="£39,200"
-                  />
-                </div>
+                <label htmlFor="price" className="text-base font-medium">
+                  Original Price
+                </label>
+                <input
+                  type="number"
+                  name="price"
+                  id="price"
+                  className="w-full rounded border border-gray-300 p-2"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  placeholder="£"
+                />
               </div>
+
+              <div>
+                  <p className="font-[600] text-gray-600">Type</p>
+                  <Select onValueChange={setDiscountType} value={discountType}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="None">None</SelectItem>
+                      <SelectItem value="Percentage">%</SelectItem>
+                      <SelectItem value="Fiat">Fiat</SelectItem>
+                    </SelectContent>
+                  </Select>
+              </div>
+
+              <div>
+                <label htmlFor="discountValue" className="text-base font-medium">
+                  Value
+                </label>
+                <input
+                  type="number"
+                  name="discountValue"
+                  id="discountValue"
+                  className="w-full rounded border border-gray-300 p-2"
+                  value={discountValue}
+                  onChange={(e) => setDiscountValue(e.target.value)}
+                  placeholder="0"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="discountedAmount" className="text-base font-medium">
+                  Final
+                </label>
+                <input
+                  type="number"
+                  name="discountedAmount"
+                  id="discountedAmount"
+                  className="w-full rounded border border-gray-300 p-2 bg-gray-100"
+                  value={discountedAmount}
+                  readOnly
+                  placeholder="£"
+                />
+              </div>
+
               <CommonButton
                 type="button"
                 className="block w-full rounded bg-primary-color-600 px-4 py-2"
@@ -176,7 +253,7 @@ const OnDemandSessionCourseType = () => {
                       key={index}
                       className="flex items-center justify-between border-b py-2"
                     >
-                      <span className="text-red-600">{`${item.duration} - £ ${formatCurrency(item.amount)}`}</span>
+                      <span className="text-red-600">{`${item.duration} - £${formatCurrency(item.discounted_price.amount)} (Org: £${formatCurrency(item.original_price.amount)})`}</span>
                       <CommonButton
                         className="h-8 rounded bg-white text-red-600 hover:bg-white"
                         type="button"

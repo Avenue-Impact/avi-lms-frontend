@@ -10,17 +10,36 @@ import { useParams } from "react-router-dom";
 
 import CohortSelection from "@/Components/admindashboard/course-management/courses/CohortSelection";
 import { CommonButton } from "@/Components/ui/button";
-import { Form } from "@/Components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/Components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/Components/ui/select";
+import { useEffect } from "react";
 import FormInput from "@/Components/ui/form-input";
-import { useCreateCourseType } from "@/hooks/course-management/use-create-course-type";
+import { useEditCourseType } from "@/hooks/course-management/use-edit-course-type";
 import { cohorts } from "@/lib/cohorts";
 import { courseTypeSchema } from "@/lib/form-schemas/forms-schema";
 import { cn } from "@/lib/utils";
 import { ClipLoader } from "react-spinners";
+import WeekdaysSelector from "@/Components/ui/weekday-selector";
 
 function convertTo24Hour(timeStr) {
   if (!timeStr) return null;
-  let [time, modifier] = timeStr.toLowerCase().split(/(am|pm)/).filter(Boolean);
+  let [time, modifier] = timeStr
+    .toLowerCase()
+    .split(/(am|pm)/)
+    .filter(Boolean);
   let [hours, minutes] = time.split(":").map(Number);
 
   if (modifier === "pm" && hours < 12) hours += 12;
@@ -29,14 +48,20 @@ function convertTo24Hour(timeStr) {
   return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
 }
 
-
-const EditLiveSessionCourseType = ({ priceInfo, cohorts }) => {
+const EditLiveSessionCourseType = ({
+  priceInfo,
+  cohorts: existingCohorts,
+  setModalOpen,
+}) => {
   const str = "dkj";
   str.endsWith;
-  const [cohort, setCohort] = useState(() => cohorts?.[0]?.cohort || "");
+  // Use existing cohort from course data if available, otherwise empty
+  const [cohort, setCohort] = useState(
+    () => existingCohorts?.[0]?.cohort || "",
+  );
 
-
-  console.log("Under EditLivession", cohorts.cohort)
+  console.log("Cohorts list for selection:", cohorts);
+  console.log("Existing course cohorts:", existingCohorts);
 
   const getTime = (timeStr) => {
     const t = timeStr;
@@ -60,31 +85,51 @@ const EditLiveSessionCourseType = ({ priceInfo, cohorts }) => {
   // console.log("Check the price priceInfo", priceInfo)
 
   const { courseId } = useParams();
-  
 
   const [cohortErr, setCohortErr] = useState("");
 
-  const { createCourseType, isCreating } = useCreateCourseType();
+  const { editCourseType, isPending } = useEditCourseType();
 
-const onSubmit = async (data) => {
-  if (!cohort) return setCohortErr("Input cohort");
+  const onSubmit = async (data) => {
+    if (!cohort) return setCohortErr("Input cohort");
 
-  const courseType = {
-    live_session: {
-      original_price: Number(data.coursePrice),
-      discounted_price: Number(data.discountPrice),
-      duration: data.duration,
-      time: data.time, // keep as "HH:MM"
-      cohort,
-      year: 2025,
-      currency: "Pounds",
-      currency_symbol: "£",
-    }
+    // Convert 24-hour time to 12-hour format with am/pm
+    const convertTo12Hour = (time24) => {
+      const [hours, minutes] = time24.split(":");
+      const hour = parseInt(hours);
+      const ampm = hour >= 12 ? "pm" : "am";
+      const hour12 = hour % 12 || 12;
+      return `${hour12}:${minutes}${ampm}`;
+    };
+
+    const courseType = {
+      live_session: {
+        original_price: Number(data.coursePrice),
+        discounted_price: Number(data.discountPrice),
+        duration: data.duration,
+        time: convertTo12Hour(data.time), // Convert to "7:00pm" format
+        timezone: data.timezone,
+        cohort,
+        year: 2025,
+        currency: "Pounds",
+        currency_symbol: "£",
+        discount_type: data.discountType,
+        discount_value: Number(data.discountValue),
+      },
+    };
+
+    editCourseType(
+      { data: courseType, courseId },
+      {
+        onSuccess: () => {
+          // Close the modal on successful submission
+          if (setModalOpen) {
+            setModalOpen(false);
+          }
+        },
+      },
+    );
   };
-
-  createCourseType({ data: courseType, courseId });
-};
-
 
   //   const handleAddPrice = () => {
   //     if (!amount || !duration) return;
@@ -105,30 +150,56 @@ const onSubmit = async (data) => {
   //     setDuration("");
   //   };
 
-
-
-
-  const time = priceInfo.time.slice(0, -2).split(":");
-  const checkFormat = priceInfo.time.endsWith("am");
+  // Only process time if it exists and has am/pm format
+  const time =
+    priceInfo?.time && priceInfo.time.match(/(am|pm)$/i)
+      ? priceInfo.time.slice(0, -2).split(":")
+      : null;
+  const checkFormat = priceInfo?.time ? priceInfo.time.endsWith("am") : false;
 
   const form = useForm({
     resolver: zodResolver(courseTypeSchema),
-   defaultValues: {
-  duration: priceInfo.duration,
-  discountPrice: priceInfo?.discounted_price?.amount,
-  coursePrice: priceInfo?.original_price?.amount,
-  time: convertTo24Hour(priceInfo.time) || "13:18",
- 
-},
-
+    defaultValues: {
+      duration: priceInfo?.duration || "",
+      discountPrice: priceInfo?.discounted_price?.amount || 0,
+      coursePrice: priceInfo?.original_price?.amount || 0,
+      time: convertTo24Hour(priceInfo?.time) || "13:00",
+      timezone: priceInfo?.timezone || "UTC",
+      discountType: priceInfo?.discount_type || "None",
+      discountValue: priceInfo?.discount_value || 0,
+    },
   });
+
+  const coursePrice = form.watch("coursePrice");
+  const discountType = form.watch("discountType");
+  const discountValue = form.watch("discountValue");
+
+  useEffect(() => {
+    if (!coursePrice) return;
+    const price = parseFloat(coursePrice);
+    let discounted = price;
+    const val = parseFloat(discountValue) || 0;
+
+    if (discountType === "Percentage") {
+      discounted = price - (price * val) / 100;
+    } else if (discountType === "Fiat") {
+      discounted = price - val;
+    } else {
+      discounted = price;
+    }
+
+    // Ensure not negative
+    discounted = Math.max(0, discounted);
+
+    form.setValue("discountPrice", discounted.toString());
+  }, [coursePrice, discountType, discountValue, form]);
 
   return (
     <>
       <Form {...form}>
         <form action="" onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="mb-4 mt-5 grid grid-cols-12 gap-10 rounded border border-gray-300 p-10 md:mb-0">
-            <div className="col-span-5">
+          <div className="mb-4 mt-5 grid grid-cols-10 gap-10 rounded border border-gray-300 p-10 md:mb-0">
+            <div className="col-span-4">
               <h3 className="text-[20px] font-[500] text-[#344054] lg:text-[24px]">
                 Live session + Mentoring
               </h3>
@@ -138,50 +209,88 @@ const onSubmit = async (data) => {
               </p>
             </div>
 
-            <div className="col-span-7 space-y-4">
+            <div className="col-span-6 space-y-4">
               {/* Course Original Price and Discounted Price */}
-              <div className="flex space-x-4">
-                <FormInput
-                  label={"Course Original Price"}
-                  className="w-full rounded border border-gray-300 p-2"
-                  placeholder="£2,200"
-                  control={form.control}
-                  name="coursePrice"
-                  labelClass={"text-base font-medium"}
-                  id="coursePrice"
-                  type="number"
-                />
+              <div className="flex flex-col gap-4">
+                <div className="flex space-x-4">
+                  <FormInput
+                    label={"Course Original Price"}
+                    className="w-full rounded border border-gray-300 p-2"
+                    placeholder="£2,200"
+                    control={form.control}
+                    name="coursePrice"
+                    labelClass={"text-base font-medium"}
+                    id="coursePrice"
+                    type="number"
+                  />
 
-                <p className="font-[500]"></p>
-                <FormInput
-                  label={"Discounted Price"}
-                  className="w-full rounded border border-gray-300 p-2"
-                  placeholder="£2,200"
-                  control={form.control}
-                  name="discountPrice"
-                  labelClass={"text-base font-medium"}
-                  id="discountPrice"
-                  type="number"
-                />
+                  <div className="w-full">
+                    <FormField
+                      control={form.control}
+                      name="discountType"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-base font-medium">
+                            Discount Type
+                          </FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            value={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger className="h-10 w-full rounded border border-gray-300 p-2">
+                                <SelectValue placeholder="Select type" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="None">None</SelectItem>
+                              <SelectItem value="Percentage">
+                                Percentage
+                              </SelectItem>
+                              <SelectItem value="Fiat">Fiat</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex space-x-4">
+                  <FormInput
+                    label={"Discount Value"}
+                    className="w-full rounded border border-gray-300 p-2"
+                    placeholder="0"
+                    control={form.control}
+                    name="discountValue"
+                    labelClass={"text-base font-medium"}
+                    id="discountValue"
+                    type="number"
+                  />
+
+                  <FormInput
+                    label={"Discounted Price"}
+                    className="w-full rounded border border-gray-300 bg-gray-100 p-2"
+                    placeholder="£2,200"
+                    control={form.control}
+                    name="discountPrice"
+                    labelClass={"text-base font-medium"}
+                    id="discountPrice"
+                    type="number"
+                    disabled={true}
+                  />
+                </div>
               </div>
 
               {/* Duration and Time */}
               <div className="flex space-x-4">
                 <div>
-                  <FormInput
-                    label={"Duration"}
-                    className="w-full rounded border border-gray-300 p-2"
-                    placeholder="Mon-Fri"
-                    control={form.control}
-                    name="duration"
-                    labelClass={"text-base font-medium"}
-                    id="duration"
-                    type="text"
-                  />
-                  <p className="mb-1 mr-2 flex justify-end font-[500] text-[#667185]">
-                    {`${form.watch("duration") ? form.watch("duration").length : 0}/30`}
-                  </p>
+                  <WeekdaysSelector control={form.control} name="duration" />
                 </div>
+              </div>
+              <div className="flex space-x-4">
                 {/* Time (7:00pm default) */}
                 <div className="flex-1">
                   <FormInput
@@ -192,6 +301,40 @@ const onSubmit = async (data) => {
                     name="time"
                     labelClass={"text-base font-medium"}
                     id="time"
+                  />
+                </div>
+
+                <div className="flex-1">
+                  <FormField
+                    control={form.control}
+                    name="timezone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-base font-[500] text-[#344054] block mb-2">Timezone</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="w-full rounded border border-gray-300 p-2 h-[42px]">
+                              <SelectValue placeholder="Select timezone" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent className="max-h-[300px]">
+                            <SelectItem value="UTC">UTC (GMT)</SelectItem>
+                            <SelectItem value="Europe/London">London (GMT/BST)</SelectItem>
+                            <SelectItem value="America/New_York">New York (EST/EDT)</SelectItem>
+                            <SelectItem value="America/Chicago">Chicago (CST/CDT)</SelectItem>
+                            <SelectItem value="America/Denver">Denver (MST/MDT)</SelectItem>
+                            <SelectItem value="America/Los_Angeles">Los Angeles (PST/PDT)</SelectItem>
+                            <SelectItem value="Asia/Dubai">Dubai (GST)</SelectItem>
+                            <SelectItem value="Africa/Lagos">Lagos (WAT)</SelectItem>
+                            <SelectItem value="Asia/Kolkata">India (IST)</SelectItem>
+                            <SelectItem value="Asia/Singapore">Singapore (SGT)</SelectItem>
+                            <SelectItem value="Australia/Sydney">Sydney (AEST/AEDT)</SelectItem>
+                            {/* Feel free to add more static commonly supported IANA timezones here */}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
                 </div>
               </div>
@@ -205,8 +348,8 @@ const onSubmit = async (data) => {
                 >
                   <option value="">Select cohort</option>
                   {cohorts?.map((c) => (
-                    <option key={c.id} value={c.cohort}>
-                      {c.cohort}
+                    <option key={c.id} value={`${c.month} ${c.year}`}>
+                      {c.month} {c.year}
                     </option>
                   ))}
                 </select>
@@ -237,10 +380,10 @@ const onSubmit = async (data) => {
 
           <div className="w-full pt-10">
             <CommonButton
-              className="ml-auto block min-w-32 rounded bg-primary-color-600"
-              disabled={isCreating}
+              className="min-w-32 ml-auto block rounded bg-primary-color-600"
+              disabled={isPending}
             >
-              {isCreating ? (
+              {isPending ? (
                 <ClipLoader size={20} color={"#fff"} />
               ) : (
                 "Save & Continue"

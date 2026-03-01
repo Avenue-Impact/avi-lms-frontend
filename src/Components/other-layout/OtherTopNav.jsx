@@ -3,6 +3,8 @@ import { cn } from "@/lib/utils";
 import { FaLongArrowAltLeft, FaRegHeart } from "react-icons/fa";
 import { LiaTrophySolid } from "react-icons/lia";
 import { TiGroupOutline } from "react-icons/ti";
+import { BsGrid } from "react-icons/bs";
+import { useViewCourseSections } from "@/hooks/students/use-course-secion-view";
 import {
   Link,
   useNavigate,
@@ -10,7 +12,7 @@ import {
   useSearchParams,
 } from "react-router-dom";
 
-const OtherTopNav = ({ setShowModal }) => {
+const OtherTopNav = ({ setShowModal, setIsQuestionDrawerOpen }) => {
   const [queryString] = useSearchParams();
   const { courseId } = useParams();
 
@@ -19,6 +21,7 @@ const OtherTopNav = ({ setShowModal }) => {
   const cohortId = data?.data?.data?.cohort_id ?? "";
 
   const handleModal = () => setShowModal((prev) => !prev);
+  const { setSections } = useViewCourseSections();
   // const location = useLocation();
   const navigate = useNavigate();
 
@@ -29,22 +32,38 @@ const OtherTopNav = ({ setShowModal }) => {
   return (
     <nav className="flex items-center justify-between gap-[97px] px-3 py-[25px] md:px-5">
       <div className="flex w-full items-center justify-between gap-1 md:gap-6 lg:w-max lg:justify-normal">
-        <button
-          onClick={handleBack}
-          type="button"
-          className="flex items-center gap-1"
-        >
-          <span className="flex items-center justify-center rounded-sm border-[#E4E7EC] text-base text-black md:h-6 md:w-6 md:border md:text-[10px]">
-            <FaLongArrowAltLeft />
-          </span>
-          <span className="hidden text-sm capitalize text-[#667185] md:block">
-            go back
-          </span>
-        </button>
-        <p className="text-sm font-medium text-black lg:text-lg 2xl:text-2xl">
-          {queryString.get("title") ??
-            "Project Consultant Training Programme (Bundle)"}
-        </p>
+        <div className="flex items-center gap-2 md:gap-6">
+          <button
+            onClick={handleBack}
+            type="button"
+            className="flex items-center gap-1"
+          >
+            <span className="flex items-center justify-center rounded-sm border-[#E4E7EC] text-base text-black md:h-6 md:w-6 md:border md:text-[10px]">
+              <FaLongArrowAltLeft />
+            </span>
+            <span className="hidden text-sm capitalize text-[#667185] md:block">
+              go back
+            </span>
+          </button>
+          <p className="text-sm font-medium text-black lg:text-lg 2xl:text-2xl max-w-[200px] md:max-w-none truncate md:text-wrap">
+            {queryString.get("title") ??
+              "Project Consultant Training Programme (Bundle)"}
+          </p>
+        </div>
+        <div className="flex items-center gap-3 lg:hidden">
+          <button
+            onClick={() => setSections(prev => ({ ...prev, mobile: "course sections" }))}
+            className="text-[#E11D48] hover:text-rose-700"
+          >
+            <BsGrid size={24} />
+          </button>
+          <button 
+            onClick={() => setIsQuestionDrawerOpen?.(true)}
+            className="flex h-[24px] w-[24px] items-center justify-center rounded-full bg-[#E11D48] text-xs font-bold text-white hover:bg-rose-700"
+          >
+            ?
+          </button>
+        </div>
       </div>
       <div className="hidden lg:block">
         <ul className="flex items-center gap-3 *:text-nowrap">
@@ -91,7 +110,7 @@ const OtherTopNav = ({ setShowModal }) => {
             <span className="text-[22px]">
               <FaRegHeart />
             </span>
-            <span className="text-sm">leave a rating</span>
+            <span className="text-sm">leave a review</span>
           </li>
         </ul>
       </div>

@@ -6,6 +6,24 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { z } from "zod";
+import { useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/Components/ui/select";
+
+const onDemandDurations = [
+  { label: "One Month Access", value: "one" },
+  { label: "3 Months Access", value: "three" },
+  { label: "6 Months Access", value: "six" },
+  { label: "Annual Subscription", value: "twelve" },
+  { label: "Lifetime Access", value: "life time" }
+];
 
 const addStudentSchema = z.object({
   email: z
@@ -14,8 +32,8 @@ const addStudentSchema = z.object({
     .email("This is not a valid email."),
 });
 const AddStudentOnDemandForm = ({ setOpen }) => {
-  // const [duration, setDuration] = useState("");
-  // const [durationErr, setDurationErr] = useState("");
+  const [duration, setDuration] = useState("");
+  const [durationErr, setDurationErr] = useState("");
 
   const { courseId } = useParams();
 
@@ -29,10 +47,10 @@ const AddStudentOnDemandForm = ({ setOpen }) => {
   });
 
   const onSubmit = (data) => {
-    // if (!duration) return setDurationErr("Input duration");
+    if (!duration) return setDurationErr("Input duration");
     addStudent(
       {
-        data,
+        data: { ...data, subscription_limit: duration },
         courseId,
       },
       {
@@ -55,38 +73,34 @@ const AddStudentOnDemandForm = ({ setOpen }) => {
           id="email"
         />
 
-        {/* {isLoading ? (
-          <Skeleton className={"mt-6 h-10 w-full"} />
-        ) : (
-          <div className="mt-6">
-            <p className="font-[600] text-gray-600">Course Duration</p>
+        <div className="mt-6">
+          <p className="font-[600] text-gray-600">Course Duration</p>
 
-            <Select onValueChange={setDuration}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select a duration" />
-              </SelectTrigger>
-              <SelectContent className="pb-8 capitalize">
-                <SelectGroup>
-                  <SelectLabel>select duration</SelectLabel>
-                  {data?.data?.data.course.pre_recorded_price.map(
-                    (duration) => (
-                      <SelectItem
-                        key={duration.duration}
-                        value={duration.duration}
-                        className="capitalize"
-                      >
-                        {`${duration.duration} `}
-                      </SelectItem>
-                    ),
-                  )}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            <p className="mt-3 text-primary-color-600">
-              {!duration ? durationErr : duration}
-            </p>
-          </div>
-        )} */}
+          <Select onValueChange={setDuration}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select a duration" />
+            </SelectTrigger>
+            <SelectContent className="pb-8 capitalize">
+              <SelectGroup>
+                <SelectLabel>select duration</SelectLabel>
+                {onDemandDurations.map(
+                  (duration) => (
+                    <SelectItem
+                      key={duration.value}
+                      value={duration.value}
+                      className="capitalize"
+                    >
+                      {`${duration.label} `}
+                    </SelectItem>
+                  ),
+                )}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <p className="mt-3 text-primary-color-600">
+            {!duration ? durationErr : ""}
+          </p>
+        </div>
 
         <CommonButton
           className="mt-6 w-full bg-primary-color-600"

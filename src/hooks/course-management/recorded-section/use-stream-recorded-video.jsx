@@ -9,7 +9,7 @@ const streamVideo = (courseId, cohortId, section, videoId) => {
   //avi-lms-backend.onrender.com/api/v1/admins/courses/:courseId/on-demand-section/:section/recordings?videoId=6733f24c4eea174af578734c
 
   return axios.get(
-    `${BASE_URL}/courses/${courseId}/cohorts/${cohortId}/sections/${section}/recordings?videoId=${videoId}`,
+    `${BASE_URL}/admins/courses/${courseId}/cohorts/${cohortId}/sections/${section}/recordings?videoId=${videoId}`,
     {
       headers: {
         Authorization: `Bearer ${Cookies.get("adminToken")}`,

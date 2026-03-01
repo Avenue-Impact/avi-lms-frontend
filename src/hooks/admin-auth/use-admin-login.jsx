@@ -7,23 +7,32 @@ import { useNavigate } from "react-router-dom";
 
 const url = import.meta.env.VITE_ADMIN_URL;
 
-const loginAdmin = (data) => axios.post(`${url}/login`, data);
+const loginAdmin = (data) =>
+  axios.post(`${url}/auth/login`, data, { withCredentials: true });
 
 export const useLoginAdmin = () => {
   const navigate = useNavigate();
 
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending, error } = useMutation({
     mutationFn: loginAdmin,
     onSuccess({ data }) {
-      console.log(data);
+      console.log("Login Response Data:", data);
+      const token = data.data?.token || data.token;
+      
+      // Strict check to prevent "undefined" string
+      if (token && token !== "undefined") {
+        Cookies.set('adminToken', token);
+      } else {
+        console.error("Token not found or is undefined");
+      }
       toast.success("admin logged in successfully");
-      Cookies.set("adminToken", data.data.token, {
-        expires: 1,
-        secure: true,
-      });
-      navigate("/admin/course/management");
+      // Cookies are now handled by the backend (HttpOnly)
+      navigate("/admin/data-management");
+    },
+    onError(error) {
+      toast.error(error.response?.data?.message || "Login failed. Please try again.");
     },
   });
 
-  return { mutate, isPending };
+  return { mutate, isPending, error };
 };

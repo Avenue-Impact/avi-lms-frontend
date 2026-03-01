@@ -1,14 +1,8 @@
-import { BASE_URL } from "@/constant";
+import { axiosAdmin } from "@/services/api";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import Cookies from "js-cookie";
 
 const fetchStudentEnrollmentStats = async (studentId) => {
-  return await axios.get(`${BASE_URL}/data/students/${studentId}`, {
-    headers: {
-      Authorization: `Bearer ${Cookies.get("adminToken")}`,
-    },
-  });
+  return await axiosAdmin.get(`/data/students/${studentId}`);
 };
 
 export const useFetchStudentEnrollmentStats = (studentId) => {

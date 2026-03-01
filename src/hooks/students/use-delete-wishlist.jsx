@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
+import { STUDENT_BASE_URL } from "@/constant";
 // import { DEMO_MODE } from "@/config";
 
 const deleteWishlist = async (courseId) => {
@@ -12,7 +13,7 @@ const deleteWishlist = async (courseId) => {
   //   return { data: { message: "Demo: Wishlist deleted successfully" } };
   // }
   return await axios.delete(
-    `https://avi-lms-5478f16284c6.herokuapp.com/api/v1/courses/wishlist/${courseId}`,
+    `${STUDENT_BASE_URL}/courses/wishlist/${courseId}`,
     {
       headers: {
         Authorization: `Bearer ${Cookies.get("token")}`,

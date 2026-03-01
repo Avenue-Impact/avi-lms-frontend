@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 const moveRecordedVideo = ({ section, data, courseId, cohortId }) => {
   const token = Cookies.get("adminToken");
 
-  const url = `${BASE_URL}/courses/${courseId}/cohorts/${cohortId}/sections/${section}/move-video`;
+  const url = `${BASE_URL}/admins/courses/${courseId}/cohorts/${cohortId}/sections/${section}/move-video`;
   return axios.put(url, data, {
     headers: {
       Authorization: `Bearer ${token}`,

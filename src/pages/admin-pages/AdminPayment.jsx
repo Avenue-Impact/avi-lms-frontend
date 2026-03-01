@@ -6,6 +6,8 @@ import { useFetchIncome } from "@/hooks/admin-payment/use-fetch-total-income";
 import { useGetPayment } from "@/hooks/admin-payment/use-get-all-payment";
 import AdminNav from "../../Components/admindashboard/AdminNav";
 import { Card, CardContent, CardHeader } from "../../Components/ui/card";
+import { Link } from "react-router-dom";
+import DashButton from "../auth/ButtonDash";
 
 function AdminPayment() {
   const timeFrame = [
@@ -21,7 +23,14 @@ function AdminPayment() {
     <div className="">
       <AdminNav />
       <main className="mt-3 px-6 py-7">
-        <h1 className="text-2xl font-medium text-[#344054]">Dashboard</h1>
+        <div className="mb-6 flex items-center justify-between">
+            <h1 className="text-2xl font-medium text-[#344054]">Dashboard</h1>
+            <Link to="/admin/bank-transfers">
+                <DashButton className="h-10 rounded-lg bg-[#CC1747] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#B3123F]">
+                    Bank Transfers
+                </DashButton>
+            </Link>
+        </div>
 
         <Card>
           <CardHeader>

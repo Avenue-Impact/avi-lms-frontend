@@ -14,13 +14,32 @@ const editStudentProfile = async (data) => {
   });
 };
 
+// export const useEditStudentProfile = () => {
+//   const queryClient = useQueryClient();
+
+//   const { mutate: editProfile, isPending: isEditing } = useMutation({
+//     mutationFn: editStudentProfile,
+//     onSuccess: () => {
+//       queryClient.invalidateQueries("fetch-user-Profile");
+//     },
+//     onError: (error) => {
+//       toast.error(error.message);
+//     },
+//   });
+//   return {
+//     editProfile,
+//     isEditing,
+//   };
+// };
+
+// In use-edit-student-profile.js
 export const useEditStudentProfile = () => {
   const queryClient = useQueryClient();
 
   const { mutate: editProfile, isPending: isEditing } = useMutation({
     mutationFn: editStudentProfile,
     onSuccess: () => {
-      queryClient.invalidateQueries("fetch-user-Profile");
+      queryClient.invalidateQueries("userProfile"); // Changed from "fetch-user-Profile" to "userProfile"
     },
     onError: (error) => {
       toast.error(error.message);

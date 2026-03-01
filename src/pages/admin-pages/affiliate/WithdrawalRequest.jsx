@@ -11,6 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import MarkRead from "../../../assets/images/mark_as_read.svg";
 import MarkPaid from "../../../assets/images/mark_paid.svg";
+import AffiliateData from '../../../assets/images/affiliate_data.svg';
 import Modal from "@/pages/auth/components/Modal";
 import BorderCard from "@/Components/BorderCard";
 import { CommonButton } from "@/Components/ui/button";
@@ -41,9 +42,9 @@ const WithdrawalRequest = () => {
         handleSearch(event.target.value);
       };
     
-      const filteredList = data?.data?.data?.requests.filter((request) =>
+      const filteredList = data?.data?.data?.requests ? data.data.data.requests.filter((request) =>
         (request.student_details.first_name + request.student_details.last_name).toLowerCase().includes(searchQuery.toLowerCase()),
-      );
+      ) : [];
     
 
  const handleMarkAsPaid = (requestId) => {
@@ -133,9 +134,22 @@ const WithdrawalRequest = () => {
         ) : isLoading ? (
           "Loading..."
         ) : filteredList.length === 0 ? (
-          <p className="col-span-3 text-center font-medium text-[#CC1747]">
-            User not found
-          </p>
+          <div className="flex flex-col items-center justify-center p-10">
+            <img
+              src={AffiliateData}
+              alt="No Data"
+              className="mb-4 h-32 w-32 rounded-full"
+            />
+            <h3 className="mb-2 text-2xl font-semibold text-gray-800">
+              No Withdrawal Requests
+            </h3>
+            <p className="mb-4 text-center text-sm text-gray-600">
+              There are currently no withdrawal requests to display. 
+              <span className="lg:block">
+               Requests will appear here once affiliates start requesting payouts.
+              </span>
+            </p>
+          </div>
         ) : (
           <table className="w-full border border-gray-300 bg-white text-[13px] text-[#344054]">
             <thead>

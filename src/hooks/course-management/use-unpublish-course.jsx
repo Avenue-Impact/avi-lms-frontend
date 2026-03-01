@@ -1,24 +1,11 @@
-import axios from "axios";
-import Cookies from "js-cookie";
+import { axiosAdmin } from "@/services/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { BASE_URL } from "@/constant";
 import { useNavigate } from "react-router-dom";
 
 // Function to unpublish a course
 const unPublishCourse = async ( {courseId} ) => {
-  
-  const token = Cookies.get("adminToken");
-
-  const response = await axios.patch(
-    `${BASE_URL}/courses/${courseId}/unpublish`,
-    {},
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  );
+  const response = await axiosAdmin.patch(`/courses/${courseId}/unpublish`, {});
   return response.data; // Returning only the response data for better usability
 };
 

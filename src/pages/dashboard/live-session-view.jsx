@@ -13,15 +13,15 @@ function LiveSessionView({ editButton = false }) {
     <div className="w-full gap-4 lg:grid lg:grid-cols-[2.8fr_1fr]">
       {/* {session === "" && <p>click to show content </p>} */}
 
-      {session === "live" && data?.data?.data?.live_session.time && (
+      {session === "live" && data?.data?.course_detail?.live_session.start_time && (
         <LiveSession data={data} />
       )}
       {session === "recorded" && <CourseVideoSection data={data} />}
-      <aside
-        className={`${sections.mobile === "course sections" ? "block" : "hidden"} rounded-[12px] border border-[#E4E7EC] bg-white px-4 py-6 lg:block`}
+      <div
+        className={`${sections.mobile === "course sections" ? "fixed inset-0 z-50 bg-white lg:relative lg:inset-auto lg:z-auto" : "hidden"} rounded-none lg:rounded-[12px] border-none lg:border lg:border-[#E4E7EC] bg-white px-4 py-6 lg:block w-full h-full lg:w-auto lg:h-auto overflow-y-auto`}
       >
         <CourseSection editButton={editButton} data={data} />
-      </aside>
+      </div>
     </div>
   );
 }

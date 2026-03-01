@@ -57,7 +57,7 @@ const Review = () => {
       </header>
 
       <div>
-        <main className="grid grid-cols-3 gap-[18px]">
+        <main className="grid grid-cols-4 gap-[18px]">
           {isLoading ? (
             "Loading..."
           ) : error ? (
@@ -86,7 +86,7 @@ const Review = () => {
                         </p>
 
                         <div className="flex flex-col justify-between">
-                          <div>
+                          <div className="flex gap-2 items-center">
                             <p className="text-[12px] font-[300] text-[#CC1747]">
                               Course Duration
                             </p>
@@ -95,7 +95,7 @@ const Review = () => {
                             </p>
                           </div>
 
-                          <div>
+                          <div className="flex gap-2 items-center">
                             <p className="text-[12px] font-[300] text-[#CC1747]">
                               End Date
                             </p>
@@ -106,7 +106,7 @@ const Review = () => {
                             </p>
                           </div>
 
-                          <div>
+                          <div className="flex gap-2 items-center">
                             <p className="text-[12px] font-[300] text-[#CC1747]">
                               Total Reviews
                             </p>

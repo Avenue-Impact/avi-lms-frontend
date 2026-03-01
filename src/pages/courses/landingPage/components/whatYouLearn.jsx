@@ -64,10 +64,27 @@ const processSteps = [
   },
 ]
 
-export function WhatYouLearnSection() {
+export function WhatYouLearnSection(
+  benefits
+) {
   const navigate = useNavigate();
+
+  const formattedBenefits = benefits?.benefits?.map((value, index) => {
+    if (typeof value !== "string") {
+      return { id: index, title: "", body: "" };
+    }
+  
+    const [title, ...rest] = value.split(":");
+    return {
+      id: index,
+      title: title.trim(),
+      body: rest.join(":").trim()
+    };
+  });
+  
+  console.log('formattedBenefits', formattedBenefits);
   return (
-    <section id="curriculum" className="py-20 bg-gray-100">
+    <section id="benefits" className="py-20 bg-gray-100">
       <div className="sm:w-[85%] w-[95%] mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16 max-w-4xl mx-auto">
@@ -79,7 +96,7 @@ export function WhatYouLearnSection() {
           </p>
         </div>
 
-        {/* Process Cards Slider */}
+        {/* Process Cards Slider... */}
         <div className="relative px-4">
           <Swiper
             slidesPerView={1.2}
@@ -113,13 +130,13 @@ export function WhatYouLearnSection() {
             modules={[Navigation, Pagination, Mousewheel, Keyboard]}
             className="w-full py-4"
           >
-            {processSteps.map((step, index) => (
+            {formattedBenefits?.map((step, index) => (
               <SwiperSlide key={index} className="h-auto min-w-[200px]">
                 <div onClick={() => navigate(step.link)} className="bg-white cursor-pointer border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow h-full">
                   {/* Card Image */}
                   <div className="relative sm:h-64 h-48 w-full">
                     <img
-                      src={step.image || "/placeholder.svg"}
+                      src={step.image || cardImg_4}
                       alt={step.alt}
                       className="object-cover h-full w-full rounded-xl"
                     />
@@ -128,7 +145,7 @@ export function WhatYouLearnSection() {
                   {/* Card Content */}
                   <div className="sm:py-6 py-4 px-4">
                     <h3 className="text-xl font-bold text-[#1a3a5c] mb-3">{step.title}</h3>
-                    <p className="text-gray-600 text-sm leading-relaxed ">{step.description}</p>
+                    <p className="text-gray-600 text-sm leading-relaxed ">{step.body}</p>
                   </div>
                 </div>
               </SwiperSlide>

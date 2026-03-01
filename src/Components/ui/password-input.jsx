@@ -20,6 +20,7 @@ const PasswordInput = ({
   placeholder,
   id,
   value,
+  absoluteError = false,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -30,7 +31,7 @@ const PasswordInput = ({
       render={({ field }) => {
         const disabled = value === "" || value === undefined;
         return (
-          <FormItem className="w-full">
+          <FormItem className={cn("w-full", absoluteError && "relative mb-2")}>
             {label && (
               <FormLabel
                 className={cn(
@@ -70,16 +71,16 @@ const PasswordInput = ({
 
                 {/* hides browsers password toggles */}
                 <style>{`
-					.hide-password-toggle::-ms-reveal,
-					.hide-password-toggle::-ms-clear {
-						visibility: hidden;
-						pointer-events: none;
-						display: none;
-					}
-				`}</style>
+                .hide-password-toggle::-ms-reveal,
+                .hide-password-toggle::-ms-clear {
+                  visibility: hidden;
+                  pointer-events: none;
+                  display: none;
+                }
+              `}</style>
               </div>
             </FormControl>
-            <FormMessage />
+            <FormMessage className={cn(absoluteError && "pt-2 text-xs")} />
           </FormItem>
         );
       }}

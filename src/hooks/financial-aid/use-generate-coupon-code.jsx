@@ -1,16 +1,9 @@
-import { BASE_URL } from "@/constant";
+import { axiosAdmin } from "@/services/api";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import Cookies from "js-cookie";
 
-const fetchGenerateCoupon = async () =>
-  //   https://avi-lms-backend.onrender.com/api/v1/admins/financial-aid/coupon-codes/generate
-
-  await axios.get(`${BASE_URL}/financial-aid/coupon-codes/generate`, {
-    headers: {
-      Authorization: `Bearer ${Cookies.get("adminToken")}`,
-    },
-  });
+const fetchGenerateCoupon = async () => {
+  return await axiosAdmin.get("/financial-aid/coupon-codes/generate");
+};
 
 export const useFetchGenerateCoupon = () => {
   return useQuery({

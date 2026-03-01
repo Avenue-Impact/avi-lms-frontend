@@ -1,19 +1,9 @@
+import { axiosAdmin } from "@/services/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 
 const editRole = async ({ data, adminId }) =>
-  await axios.patch(
-    `https://avi-lms-5478f16284c6.herokuapp.com/api/v1/admins/${adminId}`,
-    data,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${Cookies.get("adminToken")}`,
-      },
-    },
-  );
+  await axiosAdmin.patch(`/${adminId}`, data);
 
 export const useEditAdminRole = () => {
   const queryClient = useQueryClient();

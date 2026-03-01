@@ -1,15 +1,9 @@
-import { BASE_URL } from "@/constant";
+import { axiosAdmin } from "@/services/api";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
-import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 
 const editCourseTypeApi = async ({ data, courseId }) => {
-  return await axios.patch(`${BASE_URL}/courses/${courseId}/coursetype`, data, {
-    headers: {
-      Authorization: `Bearer ${Cookies.get("adminToken")}`,
-    },
-  });
+  return await axiosAdmin.patch(`/courses/${courseId}/coursetype`, data);
 };
 
 export const useEditCourseType = () => {

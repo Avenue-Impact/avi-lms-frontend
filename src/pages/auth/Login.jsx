@@ -1,11 +1,12 @@
-import BorderCard from "@/Components/BorderCard";
+
+import { useState } from "react";
+import AuthLayout from "./components/AuthLayout";
 import { Form } from "@/Components/ui/form";
 import FormInput from "@/Components/ui/form-input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { z } from "zod";
-import { Heading, Paragraph } from "./components/Text";
 
 import { CommonButton } from "@/Components/ui/button";
 import PasswordInput from "@/Components/ui/password-input";
@@ -15,9 +16,8 @@ import Cookies from "js-cookie";
 
 import { useLoginUser } from "@/hooks/students/use-login-user";
 import { ClipLoader } from "react-spinners";
-import { useState } from "react";
-import ConfirmEmail from "./components/ConfirmEmail";
 import Modal from "./components/Modal";
+import ConfirmEmail from "./components/ConfirmEmail";
 
 const loginSchema = z.object({
   username: z.string().min(1, { message: "name is required" }),
@@ -31,36 +31,29 @@ const Login = () => {
   const [queryString] = useSearchParams();
   const courseId = queryString.get("id");
   const courseTitle = queryString.get("title");
-
-  const [showModal, setShowModal] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
+  const _r = queryString.get("_r");
+  const from = _r ? decodeURIComponent(_r) : "/dashboard";
 
   const { mutate, isPending } = useLoginUser();
+
+  const [confirm, setConfirm] = useState(false);
+  const [user, setUser] = useState();
+  const [modal, setModal] = useState(false);
+  const [success, setSuccess] = useState("");
 
   const handleSubmit = async (values) => {
     const user = {
       userid: values.username,
       password: values.password,
     };
+    setUser(user);
 
     mutate(user, {
       onSuccess: ({ data }) => {
-        console.log("Login Success Data:", data); // DEBUG: Check full response
-        console.log("Token from backend:", data?.data?.token); // DEBUG: Check specific token path
-
-        // Handle Pending User (OTP Sent, No Token)
-        if (data?.data?.user?.user_status === 'pending') {
-             toast.success(data?.message || "Verification code sent to your email.");
-             setCurrentUser(data.data.user);
-             setShowModal(true);
-             return;
-        }
-
-        if (!data?.data?.token) {
-             toast.error("Login succeeded but no token received!");
-             return;
-        }
-
+      if (data.data.user.user_status !== "verified") {
+        setConfirm(true);
+        return;
+      }
         Cookies.set("token", data.data.token, {
           expires: 1,
           secure: false,
@@ -75,7 +68,7 @@ const Login = () => {
             `/preview-video-course/${courseId}/enroll?title=${courseTitle}`,
           );
         } else {
-          navigate("/dashboard");
+          navigate(from);
         }
       },
       onError: (err) => {
@@ -104,13 +97,24 @@ const Login = () => {
   });
 
   return (
-    <div className="flex min-h-[calc(100vh-100.547px)] w-full items-center justify-center px-4">
-      <div className="w-full max-w-[465px] py-10">
-        <BorderCard className="mx-auto">
-          <div className="mb-8 space-y-1">
-            <Heading>Welcome back!</Heading>
-            <Paragraph>Use your email to sign in to your dashboard</Paragraph>
-          </div>
+    <div>
+      {confirm && (
+        <Modal>
+          <ConfirmEmail
+            setConfirm={setConfirm}
+            setModal={setModal}
+            setSuccess={setSuccess}
+            user={user}
+            form={form}
+          />
+        </Modal>
+      )}
+
+      <AuthLayout 
+        title="Welcome back!" 
+        subtitle="Use your email to sign in to your dashboard"
+        isMobileStacked={true}
+      >
           <Form {...form}>
             <form
               action=""
@@ -163,30 +167,13 @@ const Login = () => {
               Don't have an account?
             </span>
             <Link
-              to={"/signup"}
+              to={`/signup${_r ? `?_r=${encodeURIComponent(_r)}` : ""}`}
               className="text-sm font-semibold capitalize text-primary-color-600 hover:text-primary-color-700"
             >
               Sign up
             </Link>
           </p>
-        </BorderCard>
-      </div>
-      {showModal && (
-        <Modal>
-            <ConfirmEmail
-                setConfirm={setShowModal}
-                setModal={setShowModal}
-                setSuccess={(status) => {
-                    if (status === 'success') {
-                         setShowModal(false);
-                         // Optionally fetch profile or redirect
-                    }
-                }}
-                user={currentUser}
-                form={{}}
-            />
-        </Modal>
-      )}
+      </AuthLayout>
     </div>
   );
 };

@@ -147,8 +147,8 @@ const FinancialRequestTable = () => {
       ) : isLoading ? (
         "Loading..."
       ) : filteredList.length === 0 ? (
-          <p className="col-span-3 text-center font-medium text-[#CC1747]">
-            User not found
+          <p className="col-span-12 text-center font-medium text-gray-500 py-10">
+            No Financial Aid Requests found
           </p>
         ) : (
         <table className="min-w-full border border-gray-300 bg-white text-[13px] text-[#344054]">

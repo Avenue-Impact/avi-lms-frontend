@@ -10,11 +10,10 @@ import { useCallback, useState } from "react";
 import _ from "lodash";
 
 const CreatedCourse = () => {
-  const { data, isLoading, error } = useFetchAllAdminCourses(1, 10, true);
+  const { data, isLoading, error } = useFetchAllAdminCourses(1, 40, true);
   const [searchQuery, setSearchQuery] = useState("");
 
-
-  console.log("These is all the coureses", data)
+  console.log("These is all the coureses", data);
   const handleSearch = useCallback(
     _.debounce((query) => {
       setSearchQuery(query);

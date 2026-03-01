@@ -14,7 +14,7 @@ import { Skeleton } from "../ui/skeleton";
 const AviNav = ({ showNav, setShowNav }) => {
   const navigate = useNavigate();
   return (
-    <nav className="z-50 flex items-center justify-between px-6 py-4 lg:px-20">
+    <nav className="z-50 flex flex-row-reverse items-center justify-between px-6 py-4 md:flex-row lg:px-20">
       <div>
         <Link to={"/"} className="cursor-pointer">
           <DarkLogo />
@@ -26,28 +26,35 @@ const AviNav = ({ showNav, setShowNav }) => {
       </button>
 
       <div
-        className={`fixed right-0 top-0 z-20 flex w-2/4 flex-col items-center gap-8 bg-white px-12 py-10 transition-transform duration-300 ease-linear md:relative md:h-fit md:w-max md:translate-x-0 md:flex-row md:gap-10 md:px-0 md:py-0 ${showNav ? "translate-x-full" : "translate-x-0"}`}
+        className={`fixed left-0 top-0 z-20 flex h-screen w-full flex-col items-start gap-8 bg-[#14345F] px-8 py-10 transition-transform duration-300 ease-linear sm:items-center sm:bg-transparent md:relative md:h-fit md:w-max md:translate-x-0 md:flex-row md:gap-10 md:px-0 md:py-0 ${showNav ? "translate-x-full" : "translate-x-0"}`}
       >
         <button
           type=" button"
-          className="w-min self-end md:hidden"
+          className="w-min self-start md:hidden"
           onClick={() => setShowNav((prev) => !prev)}
         >
-          <FontAwesomeIcon
-            icon={faClose}
-            className="text-xl text-tertiary-color-800"
-          />
+          <FontAwesomeIcon icon={faClose} className="text-2xl text-white" />
         </button>
-        <ul className="nav *:cursor-pointer *:capitalize *:text-[#23314A] flex flex-col items-center gap-6 md:flex-row md:gap-10">
-          {/* className="contents-[''] relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:bg-[#CC1747]" */}
+        <ul className="nav *:cursor-pointer *:capitalize *:text-[#23314A] flex flex-col items-center gap-6 px-4 text-white sm:text-inherit md:flex-row md:gap-10">
+          {/* className="contents-[''] relative after:absolute after:bottom-0 */}
+          {/* after:left-0 after:h-[2px] after:w-full after:bg-[#CC1747]" */}
           <li onClick={() => setShowNav((prev) => !prev)}>
-            <NavLink to={"/"}>home</NavLink>
+            <NavLink to={"/"}>Home</NavLink>
           </li>
           <li onClick={() => setShowNav((prev) => !prev)}>
-            <NavLink to={"/login"}>login</NavLink>
+            <NavLink to={"/login"}>Login</NavLink>
           </li>
         </ul>
         <button
+          onClick={() => {
+            navigate("/login");
+            setShowNav((prev) => !prev);
+          }}
+          className="rounded-full bg-[#CC1747] px-6 py-3 capitalize text-[#FFEBF0]"
+        >
+          Sign In to continue
+        </button>
+        {/* <button
           onClick={() => {
             navigate("/signup");
             setShowNav((prev) => !prev);
@@ -55,7 +62,7 @@ const AviNav = ({ showNav, setShowNav }) => {
           className="rounded-lg bg-[#CC1747] px-4 py-2 capitalize text-[#FFEBF0]"
         >
           register
-        </button>
+        </button> */}
       </div>
     </nav>
   );

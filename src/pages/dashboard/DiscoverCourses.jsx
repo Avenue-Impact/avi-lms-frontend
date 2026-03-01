@@ -64,9 +64,9 @@ const DiscoverCourses = () => {
           />
         </div>
         <div className="flex items-center gap-4">
-          <Link to="/discover-courses" className="hidden text-sm md:block">
-            View all Courses
-          </Link>
+          {/* <Link to="/discover-courses" className="hidden text-sm md:block">
+            View all Courses..
+          </Link> */}
           <FontAwesomeIcon
             icon={faSearch}
             className="text-gray-500 md:hidden"

@@ -40,13 +40,14 @@ export default function FormInput({
   disabled,
   textarea = false,
   labelClass,
+  absoluteError = false,
 }) {
   return (
     <FormField
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem className="w-full">
+        <FormItem className={cn("w-full", absoluteError && "relative mb-2")}>
           {label && (
             <FormLabel
               className={cn(
@@ -78,7 +79,7 @@ export default function FormInput({
               />
             )}
           </FormControl>
-          <FormMessage />
+          <FormMessage className={cn(absoluteError && "absolute -bottom-5 left-0 text-xs")} />
         </FormItem>
       )}
     />

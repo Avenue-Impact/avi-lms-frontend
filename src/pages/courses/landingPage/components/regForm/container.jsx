@@ -9,7 +9,7 @@ export default function RegistrationFormContainer() {
           <p className="text-xl text-gray-600">Fill out the form below to secure your spot in our next training batch</p>
         </div>
         
-        <div className="max-w-4xl mx-auto">
+        <div className="sm:w-[85%] w-[90%] mx-auto">
           <CoursesRegistrationForm />
         </div>
       </div>

@@ -1,18 +1,11 @@
-import { BASE_URL } from "@/constant";
+import { axiosAdmin } from "@/services/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 
 const updateWithdrawalRequest = async ({ data, requestId }) =>
-  await axios.patch(
-    `${BASE_URL}/affiliates/withdrawal-requests/${requestId}`,
-    data,
-    {
-      headers: {
-        Authorization: `Bearer ${Cookies.get("adminToken")}`,
-      },
-    },
+  await axiosAdmin.patch(
+    `/affiliates/withdrawal-requests/${requestId}`,
+    data
   );
 
 export const useUpdateWithdrawalRequest = () => {

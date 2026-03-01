@@ -24,6 +24,9 @@ import BusinessInterestForm from "./pages/businessInterest/index";
 // import Home from "./pages/Home";
 // import ThanksPage from "./pages/thanksPage";
 
+import PaymentSuccess from "./pages/payment/PaymentSuccess";
+import PaymentCancel from "./pages/payment/PaymentCancel";
+
 // import Feedback from "./pages/Feedback";
 
 // import PreviewCourse from "./pages/PreviewCourse";
@@ -41,6 +44,7 @@ import OtherLayout from "./layouts/OtherLayout";
 import CourseViewLayout from "./layouts/course-view-layout";
 import LiveSessionView from "./pages/dashboard/live-session-view";
 import RecordedSessionView from "./pages/dashboard/recorded-session-view";
+import SampleCourseDetailDashboard from "./Components/dashboard/sample/dashbaord";
 import Referral from "./pages/dashboard/Referral";
 import StudentSettings from "./pages/dashboard/StudentSettings";
 
@@ -68,6 +72,7 @@ import FinancialLayout from "./layouts/admin/FinancialLayout";
 import ProjectAreaLayout from "./layouts/admin/ProjectAreaLayout";
 import AdminLogin from "./pages/admin-pages/AdminLogin";
 import AdminPayment from "./pages/admin-pages/AdminPayment";
+import AdminBankTransfers from "./pages/admin-pages/AdminBankTransfers";
 import CreatedCourse from "./pages/admin-pages/course-management/CreatedCourse";
 import EditCourse from "./pages/admin-pages/course-management/EditCourse";
 import CourseManagement from "./pages/admin-pages/CourseManagement";
@@ -119,6 +124,8 @@ import ReviewDetails from "./pages/admin-pages/reviews/ReviewInfo";
 import ReviewMainPage from "./pages/admin-pages/reviews/ReviewMainPage";
 import { elements } from "chart.js";
 import Dashbaord from "./pages/dashbaord";
+import LoadingPage from "./Components/LoadingPage";
+
 
 const queryClient = new QueryClient();
 
@@ -138,7 +145,14 @@ function App() {
           path: "/preview-video-course/:courseId/enroll",
           element: <PreviewVideoCourse />,
         },
-
+        {
+          path: "/payment/success",
+          element: <PaymentSuccess />,
+        },
+        {
+          path: "/payment/cancel",
+          element: <PaymentCancel />,
+        },
         {
           path: "/",
           element: <AppLayout />,
@@ -197,7 +211,7 @@ function App() {
           element: <CourseLayout />,
           children: [
             {
-              path: "/courses/landing-page",
+              path: "/courses/landing-page/c/:courseId",
               element: <LandingPage />,
             },
             {
@@ -255,6 +269,12 @@ function App() {
               ],
             },
           ],
+        },
+
+
+        {
+          element: <SampleCourseDetailDashboard />,
+          path: "/dashboard-s/course-details",
         },
 
         {
@@ -495,6 +515,10 @@ function App() {
                   path: "/admin/payment",
                   element: <AdminPayment />,
                 },
+                {
+                  path: "/admin/bank-transfers",
+                  element: <AdminBankTransfers />,
+                },
 
                 {
                   element: <AffiliateLayout />,
@@ -609,7 +633,7 @@ function App() {
         <ReactQueryDevtools initialIsOpen={false} />
         <Toaster />
         {/* <AnniversarySpotlightBadge /> */}
-        <RouterProvider router={routes} />
+        <RouterProvider router={routes} fallbackElement={<LoadingPage />} />
       </QueryClientProvider>
     </>
   );

@@ -145,16 +145,44 @@ const PreviewCourse = () => {
                             )}
                         </ul>
                       </div>
+
+
+                      {/* Available Course Types Display */}
+                      {!isLoading && previewCourse?.data?.data?.course?.available_course_types && (
+                        <div className="text-white mt-4">
+                          <p className="py-2 text-2xl">Available Course Format:</p>
+                          <ul className="m-0 list-none p-0">
+                            {previewCourse.data.data.course.available_course_types.live_session && (
+                              <li className="mb-2">
+                                <FontAwesomeIcon icon={faCheckCircle} className="mr-2" />
+                                <span>Live Session</span>
+                              </li>
+                            )}
+                            {previewCourse.data.data.course.available_course_types.on_demand && (
+                              <li className="mb-2">
+                                <FontAwesomeIcon icon={faCheckCircle} className="mr-2" />
+                                <span>On-Demand</span>
+                              </li>
+                            )}
+                          </ul>
+                        </div>
+                      )}
                     </div>
 
                     <div className={styles.project_consult1}>
-                      <CourseCardPreview
-                        imgSrc={previewCourse?.data?.data.course.cover_image}
-                        previewButtonText={"Enroll now"}
-                        path={path}
-                        loading={isLoading}
-                        courseId={previewCourse?.data?.data.course.id}
-                      />
+                      {/* Show Enroll button only if at least one type is true */}
+                      {(!isLoading && previewCourse?.data?.data?.course?.available_course_types && (
+                        previewCourse.data.data.course.available_course_types.on_demand ||
+                        previewCourse.data.data.course.available_course_types.live_session
+                      )) && (
+                        <CourseCardPreview
+                          imgSrc={previewCourse?.data?.data.course.cover_image}
+                          previewButtonText={"Enroll now"}
+                          path={path}
+                          loading={isLoading}
+                          courseId={previewCourse?.data?.data.course.id}
+                        />
+                      )}
                     </div>
                   </div>
                 </div>

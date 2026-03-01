@@ -60,10 +60,31 @@ const EditProfileForm = () => {
     }
   };
   // Handle form submission
-  const handleSubmit = async (data) => {
-    if (avatar.file) return editProfile({ ...data, avatar: avatar.file });
-    editProfile(data);
-  };
+  // const handleSubmit = async (data) => {
+  //   console.log("data*****", data)
+  //   if (avatar.file) return editProfile({ ...data, avatar: avatar.file });
+  //   editProfile(data);
+  // };
+
+  // In EditProfileForm.jsx
+const handleSubmit = async (formData) => {
+  try {
+    const dataToUpdate = { ...formData };
+    
+    // Only include the avatar if it exists
+    if (avatar.file) {
+      dataToUpdate.avatar = avatar.file;
+    }
+
+    await editProfile(dataToUpdate);
+    
+    // Show success message or redirect
+    toast.success("Profile updated successfully");
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    toast.error(error.message || "Failed to update profile");
+  }
+};
 
   const { isSubmitting } = form.formState;
   if (isLoading) return <p>loading..</p>;

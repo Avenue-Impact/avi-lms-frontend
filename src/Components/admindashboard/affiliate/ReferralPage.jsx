@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 import ReceivedArrow from "../../../assets/images/received-arrow.svg";
 import BalanceSymbol from "../../../assets/images/total_balance_symbol.svg";
-// import AffiliateData from '../../../assets/images/affiliate_data.svg';
+import AffiliateData from '../../../assets/images/affiliate_data.svg';
 import { referralData } from "@/lib/referralData";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faSearch } from "@fortawesome/free-solid-svg-icons";
@@ -93,7 +93,7 @@ const ReferralPage = () => {
   };
 
   // Filter courses by title
-  const filteredList = fetchAffiliates?.data?.data?.filter((data) => {
+  const filteredList = fetchAffiliates?.data?.data ? fetchAffiliates.data.data.filter((data) => {
     const fullText = (
       data.referee_details.first_name +
       data.referee_details.last_name +
@@ -109,7 +109,7 @@ const ReferralPage = () => {
       data.course_details.access_type === selectedCourseType;
 
     return matchesSearch && matchesRole && matchesCourseType;
-  });
+  }) : [];
 
   if (isFecthing?.data?.data?.length < 1) {
     <p>No data.....</p>;
@@ -163,7 +163,6 @@ const ReferralPage = () => {
                   placeholder="10%"
                   name="set_percentage"
                   control={form.control}
-                  input="number"
                   id="set_percentage"
                   className="w-full rounded border border-gray-300 p-4"
                 />
@@ -260,9 +259,22 @@ const ReferralPage = () => {
         ) : error ? (
           <p>{error?.response?.data?.message ?? "Something went wrong"}</p>
         ) : filteredList.length === 0 ? (
-          <p className="col-span-3 text-center font-medium text-[#CC1747]">
-            User not found
-          </p>
+          <div className="flex flex-col items-center justify-center p-10">
+            <img
+              src={AffiliateData}
+              alt="No Data"
+              className="mb-4 h-32 w-32 rounded-full"
+            />
+            <h3 className="mb-2 text-2xl font-semibold text-gray-800">
+              No Affiliate Data Available
+            </h3>
+            <p className="mb-4 text-center text-sm text-gray-600">
+              There are currently no affiliate activities to display. Once students
+              <span className="lg:block">
+                start earning through referrals, their data will appear here.
+              </span>
+            </p>
+          </div>
         ) : (
           <table className="max-w-full border border-gray-300 bg-white text-[13px] text-[#344054]">
             <thead>

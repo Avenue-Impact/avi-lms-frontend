@@ -1,22 +1,11 @@
-import axios from "axios";
-import Cookies from "js-cookie";
-import { BASE_URL } from "@/constant";
+import { axiosAdmin } from "@/services/api";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 const publishCourse = async () => {
   const courseId = localStorage.getItem("courseId");
-  const token = Cookies.get("adminToken");
-
-  return await axios.patch(
-    `${BASE_URL}/courses/${courseId}/publish`,
-    {},
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  );
+  
+  return await axiosAdmin.patch(`/courses/${courseId}/publish`, {});
 };
 
 export const usePublishCourse = () => {

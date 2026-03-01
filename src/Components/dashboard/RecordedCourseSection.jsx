@@ -17,10 +17,10 @@ function RecordedCourseSection({ editButton, data }) {
     useViewCourseSections();
 
   useEffect(() => {
-    if (data?.data?.data?.recorded_sessions.length < 1) return;
+    if (data?.data?.data?.on_demand_sections.length < 1) return;
 
-    setVideoId(data?.data?.data?.recorded_sessions[0].videos[0]._id);
-  }, [data?.data?.data?.recorded_sessions, setVideoId]);
+    setVideoId(data?.data?.data?.on_demand_sections[0].lessons[0].video_url.link);
+  }, [data?.data?.on_demand_sections, setVideoId]);
 
   return (
     <div>
@@ -51,79 +51,76 @@ function RecordedCourseSection({ editButton, data }) {
         )}
       </div>
       {/* <CourseSections  active={active} /> */}
-      <>
-        {data?.data?.data?.recorded_sessions.length < 1 ? (
+      <div className="bg-white rounded-lg pt-8">
+        {data?.data?.data?.on_demand_sections.length < 1 ? (
           <p>No courses yet...</p>
         ) : (
-          <Accordion type="single" collapsible className="w-full">
-            {data?.data?.data?.recorded_sessions.map((section) => {
+          <Accordion type="single" collapsible className="w-full space-y-4">
+            {data?.data?.data?.on_demand_sections.map((section, index) => {
+              // Check if this section is currently active (contains the active video or is selected)
+              const isSectionActive = active === section._id;
+              
               return (
-                <AccordionItem value={section._id} key={section._id}>
-                  <AccordionTrigger
-                    className={cn(
-                      "group/section [&[data-state=open]]:bg-bg-primary-color-300/20 px-5 pb-[10px] hover:bg-primary-color-300/20",
-                      active === section._id && "bg-primary-color-300/20",
-                    )}
-                    onClick={() => {
-                      setActive(section._id);
-                      setSectionActive(section.section);
-                    }}
-                  >
-                    <div className="text-left">
-                      <p className="font-poppins text-lg font-light capitalize text-tertiary-color-900 lg:text-xl">
-                        Section {section.section}
-                      </p>
-                      <p
+                <AccordionItem value={section._id} key={section._id} className="border-none">
+                  <div className="mb-2">
+                     <p className="text-sm font-medium text-gray-500 mb-1">Section {section.section}</p>
+                     <AccordionTrigger
                         className={cn(
-                          "text-base font-light capitalize leading-6 text-tertiary-color-700 group-hover/section:font-semibold group-hover/section:text-primary-color-600",
-                          active === section._id &&
-                            "font-semibold text-primary-color-600",
-                        )}
-                      >
-                        {section.title}
-                      </p>
-                    </div>
-                  </AccordionTrigger>
-                  {section?.videos?.map((video, i) => {
-                    return (
-                      <AccordionContent
-                        key={video._id}
-                        className={cn(
-                          "group/topic cursor-pointer px-5 py-[10px] hover:bg-primary-color-300/20",
-                          videoActive === video._id &&
-                            "bg-primary-color-300/20",
+                          "hover:no-underline py-0 text-left items-start justify-between group",
+                          isSectionActive ? "text-primary-color-600" : "text-gray-900"
                         )}
                         onClick={() => {
-                          setSectionDetails((prev) => ({
-                            ...prev,
-                            topic: section.title,
-                            section: section.section,
-                            videoTitle: video.video_title,
-                          }));
-                          setSession("recorded");
-                          setVideoId(video._id);
-                          setvideoActive(video._id);
+                          setActive(section._id);
+                          setSectionActive(section.section);
                         }}
                       >
+                         <span className="text-base font-semibold group-hover:text-primary-color-600 transition-colors">
+                            {section.title}
+                         </span>
+                      </AccordionTrigger>
+                  </div>
+
+                  <AccordionContent className="pt-2 pb-0">
+                    <div className="flex flex-col space-y-4 pl-4 border-l-2 border-gray-100 ml-1">
+                    {section?.videos?.map((video, i) => {
+                       const isVideoActive = videoActive === video._id;
+                      return (
                         <div
+                          key={video._id}
                           className={cn(
-                            "flex items-start gap-3 text-sm group-hover/topic:text-primary-color-600 md:text-base",
-                            videoActive === video._id &&
-                              "text-primary-color-600",
+                            "group/topic cursor-pointer flex items-start gap-3 transition-colors",
+                            isVideoActive ? "text-primary-color-600" : "text-gray-500 hover:text-gray-800"
                           )}
+                          onClick={() => {
+                            setSectionDetails((prev) => ({
+                              ...prev,
+                              topic: section.title,
+                              section: section.section,
+                              videoTitle: video.video_title,
+                            }));
+                            setSession("recorded");
+                            setVideoId(video._id);
+                            setvideoActive(video._id);
+                          }}
                         >
-                          <span>0{i + 1}.</span>
-                          <p>{video.video_title}</p>
+                            <span className={cn(
+                               "text-xs font-medium min-w-[20px]", 
+                               isVideoActive ? "text-primary-color-600" : "text-gray-400"
+                            )}>
+                               {i + 1 < 10 ? `0${i + 1}.` : `${i + 1}.`}
+                            </span>
+                            <p className="text-sm font-medium leading-tight">{video.video_title}</p>
                         </div>
-                      </AccordionContent>
-                    );
-                  })}
+                      );
+                    })}
+                    </div>
+                  </AccordionContent>
                 </AccordionItem>
               );
             })}
           </Accordion>
         )}
-      </>
+      </div>
     </div>
   );
 }

@@ -10,6 +10,7 @@ const StartMeeting = ({
   apiKey,
   password,
   zak,
+  obfToken,
   leaveUrl,
   userEmail,
 }) => {
@@ -26,6 +27,7 @@ const StartMeeting = ({
     ZoomMtg.init({
       leaveUrl, // Redirect URL after leaving the meeting
       patchJsMedia: true,
+      isSupportAV: true,
       success: () => {
         console.log("Zoom Meeting Initialized");
         ZoomMtg.join({
@@ -35,7 +37,7 @@ const StartMeeting = ({
           signature,
           sdkKey: apiKey,
           passWord: password,
-          zak,
+          zak: obfToken || zak, 
           success: () => {
             console.log("Joined meeting successfully");
           },
@@ -67,6 +69,7 @@ const StartMeeting = ({
     apiKey,
     password,
     zak,
+    obfToken,
     courseId,
     queryString,
   ]);

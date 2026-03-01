@@ -32,10 +32,10 @@ export function TrendChart() {
       label: "This month",
       action: "month",
     },
-    // {
-    //   label: "This year",
-    //   action: "year",
-    // },
+    {
+      label: "This year",
+      action: "year",
+    },
   ];
 
   // const { refetch } = useFetchEnrollment(active);
@@ -76,31 +76,37 @@ const TheBarChart = ({ period }) => {
   const { isLoading, error, data, isFetching } = useFetchEnrollment(period);
 
   if (isLoading || isFetching)
-    return <Skeleton className={"min-h-[382px] w-full"} />;
+    return <Skeleton className={"min-h-[280px] w-full"} />;
   if (error)
     return (
       <p>Error: {error?.response?.data?.message ?? "Something went wrong"}</p>
     );
 
-  if (data?.data?.data.length < 1)
-    return (
-      <div className="flex min-h-[382px] w-full items-center justify-center">
-        <p className="text-xl italic text-slate-400">
-          No data available for the selected period. Please select a different
-          period.
-        </p>
-      </div>
-    );
-
-  const chartData = data?.data?.data?.map((enrollment) => {
-    return {
+  // Use dummy data if no real data is available
+  let chartData;
+  let isDummyData = false;
+  
+  if (!data?.data?.data || data.data.data.length < 1) {
+    isDummyData = true;
+    // Generate realistic dummy data
+    chartData = [
+      { month: "Jan 10", desktop: 45 },
+      { month: "Jan 11", desktop: 52 },
+      { month: "Jan 12", desktop: 38 },
+      { month: "Jan 13", desktop: 65 },
+      { month: "Jan 14", desktop: 58 },
+      { month: "Jan 15", desktop: 72 },
+      { month: "Jan 16", desktop: 68 },
+    ];
+  } else {
+    chartData = data.data.data.map((enrollment) => ({
       month: enrollment.date,
       desktop: enrollment.enrollmentCount,
-    };
-  });
+    }));
+  }
   return (
     <CardContent>
-      <ChartContainer config={chartConfig}>
+      <ChartContainer config={chartConfig} className="h-[280px] w-full">
         <LineChart
           accessibilityLayer
           data={chartData}
@@ -137,6 +143,11 @@ const TheBarChart = ({ period }) => {
           />
         </LineChart>
       </ChartContainer>
+      {isDummyData && (
+        <p className="mt-2 text-center text-xs italic text-slate-400">
+          Showing sample data - actual enrollment data will appear here
+        </p>
+      )}
     </CardContent>
   );
 };

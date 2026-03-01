@@ -77,13 +77,13 @@ const CourseCohortsPreview = () => {
     <div>
       {/* Live Session + Mentoring */}
       <BorderCard className="mb-4 mt-5 grid grid-cols-[1fr_2fr]">
-        <div className="">
+        <div className="mt-10">
           <h3 className="text-[20px] font-[500] text-[#344054] lg:text-[24px]">
             Live Session + Mentoring
           </h3>
-          <p>Add Course Cohort</p>
+          {/* <p>Add Course Cohort</p> */}
 
-          <div className="w-full pt-3">
+          {/* <div className="w-full pt-3">
             <CohortSelection
               data={cohorts}
               setCohort={setCohort}
@@ -118,7 +118,7 @@ const CourseCohortsPreview = () => {
                 "Add cohort"
               )}
             </DashButton>
-          </div>
+          </div> */}
 
           {/* <AllCohorts setCohortId={setCohortId} cohortId={cohortId} /> */}
         </div>

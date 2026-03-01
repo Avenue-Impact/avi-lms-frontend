@@ -1,17 +1,9 @@
-import { BASE_URL } from "@/constant";
+import { axiosAdmin } from "@/services/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 
 const createAffiliatePercentage = async ( data ) => {
-    
-  const url = `${BASE_URL}/affiliates/percentage`;
-  return axios.post(url, data, {
-    headers: {
-      Authorization: `Bearer ${Cookies.get("adminToken")}`,
-    },
-  });
+  return axiosAdmin.post("/affiliates/percentage", data);
 };
 
 export const useAffiliatePercentage = () => {

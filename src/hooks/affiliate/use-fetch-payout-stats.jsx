@@ -1,16 +1,10 @@
-import { BASE_URL } from "@/constant";
+import { axiosAdmin } from "@/services/api";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import Cookies from "js-cookie";
 
-const fetchPayoutStats = async () =>
-  // https://avi-lms-backend.onrender.com/api/v1/admins/affiliates/payout-stats
-
-  await axios.get(`${BASE_URL}/affiliates/payout-stats`, {
-    headers: {
-      Authorization: `Bearer ${Cookies.get("adminToken")}`,
-    },
-  });
+const fetchPayoutStats = async () => {
+  const response = await axiosAdmin.get("/affiliates/payout-stats");
+  return response.data;
+};
 
 export const useFetchPayoutStats = () => {
   return useQuery({

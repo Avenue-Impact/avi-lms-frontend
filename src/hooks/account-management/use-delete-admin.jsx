@@ -1,16 +1,9 @@
-import { BASE_URL } from "@/constant";
+import { axiosAdmin } from "@/services/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 
 const deleteAdmin = ({ adminId }) => {
-  const url = `${BASE_URL}/${adminId}`;
-  return axios.delete(url, {
-    headers: {
-      Authorization: `Bearer ${Cookies.get("adminToken")}`,
-    },
-  });
+  return axiosAdmin.delete(`/${adminId}`);
 };
 
 export const useDeleteAdmin = () => {

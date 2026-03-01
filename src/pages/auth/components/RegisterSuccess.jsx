@@ -1,4 +1,3 @@
-import BorderCard from "@/Components/BorderCard";
 import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Heading, Paragraph } from "./Text";
@@ -15,7 +14,7 @@ function RegisterSuccess({ title, text, setModal, path }) {
   };
 
   return (
-    <BorderCard className="relative w-full max-w-[731px] bg-white py-12">
+    <div className="relative w-full max-w-[731px] bg-white py-12 shadow-lg rounded-xl">
       <button
         type="button"
         className="absolute right-4 top-4 w-fit cursor-pointer"
@@ -52,7 +51,7 @@ function RegisterSuccess({ title, text, setModal, path }) {
           </CommonButton>
         )}
       </div>
-    </BorderCard>
+    </div>
   );
 }
 

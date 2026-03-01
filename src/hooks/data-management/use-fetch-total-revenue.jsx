@@ -1,13 +1,8 @@
-import { BASE_URL } from "@/constant";
+import { axiosAdmin } from "@/services/api";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import Cookies from "js-cookie";
+
 const fetchRevenue = async (period) =>
-  await axios.get(`${BASE_URL}/data/revenue-by-period?period=${period}`, {
-    headers: {
-      Authorization: `Bearer ${Cookies.get("adminToken")}`,
-    },
-  });
+  await axiosAdmin.get(`/data/revenue-by-period?period=${period}`);
 
 export const useFetchRevenue = (period) => {
   return useQuery({
