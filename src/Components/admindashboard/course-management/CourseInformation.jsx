@@ -8,6 +8,7 @@ import { CommonButton } from "@/Components/ui/button";
 import { HiArrowLeft } from "react-icons/hi2";
 import { useUnpublishCourse } from "@/hooks/course-management/use-unpublish-course";
 import { useDeleteCourse } from "@/hooks/course-management/use-delete-course";
+import VideoPlayer from "../../../VideoPlayer";
 
 function CourseInformation() {
   const { courseId } = useParams();
@@ -27,31 +28,29 @@ function CourseInformation() {
 
   const previewUrl = data?.data?.data?.course?.preview_video?.url;
   const courseTitle = data?.data?.data?.course?.title;
+  const coverImage = data?.data?.data?.course?.cover_image;
 
   const handleDelete = () => {
     if (confirm("Are you sure you want to delete this course?")) {
-        deleted({ courseId });
-        navigate("/admin/course/management"); // Redirect after delete?
+      deleted({ courseId });
+      navigate("/admin/course/management"); // Redirect after delete?
     }
   };
 
   const handleUnpublish = () => {
     if (confirm("Are you sure you want to unpublish this course?")) {
-        unPublish({ courseId });
+      unPublish({ courseId });
     }
   };
 
   return (
     <section className="space-y-6">
-
-      <div className="bg-[#23314A] p-7 rounded-xl overflow-hidden relative group">
-        <video
-          src={previewUrl}
-          controls
-          autoPlay
-          preload="auto"
-          className="h-auto max-h-[551px] w-full mx-auto rounded-xl shadow-lg"
-        ></video>
+      <div className="group relative overflow-hidden rounded-xl p-7">
+        <VideoPlayer
+          videoUrl={previewUrl}
+          coverImage={coverImage}
+          className="mx-auto max-h-[551px] w-full"
+        />
       </div>
 
       <CourseInfo editButton={true} courseId={courseId} />

@@ -4,16 +4,17 @@ import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 import { BASE_URL } from "@/constant";
 
-const fetchPendingTransfers = async () => {
+const fetchBankTransfers = async (status) => {
   const token = Cookies.get("adminToken");
-  const response = await axios.get(
-    `${BASE_URL}/payments/bank-transfers/pending`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const url = status 
+    ? `${BASE_URL}/payments/bank-transfers?status=${status}` 
+    : `${BASE_URL}/payments/bank-transfers`;
+    
+  const response = await axios.get(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   return response;
 };
 
@@ -45,10 +46,10 @@ const declineTransfer = async (id) => {
   return response;
 };
 
-export const useGetPendingBankTransfers = () => {
+export const useGetBankTransfers = (status = "pending") => {
     const { data, isLoading, error } = useQuery({
-        queryKey: ["pending-bank-transfers"],
-        queryFn: fetchPendingTransfers,
+        queryKey: ["bank-transfers", status],
+        queryFn: () => fetchBankTransfers(status),
     });
     return { data, isLoading, error };
 };
@@ -59,7 +60,7 @@ export const useApproveBankTransfer = () => {
         mutationFn: approveTransfer,
         onSuccess: () => {
             toast.success("Transfer approved successfully");
-            queryClient.invalidateQueries(["pending-bank-transfers"]);
+            queryClient.invalidateQueries(["bank-transfers"]);
         },
         onError: (error) => {
             toast.error(error.response?.data?.message || "Failed to approve transfer");
@@ -75,7 +76,7 @@ export const useDeclineBankTransfer = () => {
         mutationFn: declineTransfer,
         onSuccess: () => {
             toast.success("Transfer declined successfully");
-            queryClient.invalidateQueries(["pending-bank-transfers"]);
+            queryClient.invalidateQueries(["bank-transfers"]);
         },
         onError: (error) => {
             toast.error(error.response?.data?.message || "Failed to decline transfer");
