@@ -7,10 +7,12 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { QuestionsDrawer } from "@/Components/dashboard/QuestionsDrawer";
 import { CourseSectionViewProvider } from "@/providers/course-section-view-provider";
+import { useUnreadNotificationsPrompt } from "@/hooks/students/use-unread-notifications-prompt";
 
 const OtherLayout = () => {
   const [showModal, setShowModal] = useState(false);
   const [isQuestionDrawerOpen, setIsQuestionDrawerOpen] = useState(false);
+  useUnreadNotificationsPrompt();
 
   return (
     <div className="min-h-screen bg-[#FDFDFD]">
@@ -26,7 +28,10 @@ const OtherLayout = () => {
       <div className="flex min-h-screen flex-col lg:ml-[76px]">
         <CourseDataProvider>
           <CourseSectionViewProvider>
-            <OtherTopNav setShowModal={setShowModal} setIsQuestionDrawerOpen={setIsQuestionDrawerOpen} />
+            <OtherTopNav
+              setShowModal={setShowModal}
+              setIsQuestionDrawerOpen={setIsQuestionDrawerOpen}
+            />
             <main
               className={`mx-auto w-full flex-1 bg-[#FDFDFD] px-4 py-8 md:px-8 lg:px-12`}
             >
