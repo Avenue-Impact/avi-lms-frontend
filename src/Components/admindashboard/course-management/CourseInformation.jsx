@@ -8,7 +8,7 @@ import { CommonButton } from "@/Components/ui/button";
 import { HiArrowLeft } from "react-icons/hi2";
 import { useUnpublishCourse } from "@/hooks/course-management/use-unpublish-course";
 import { useDeleteCourse } from "@/hooks/course-management/use-delete-course";
-import VideoPlayer from "../../../VideoPlayer";
+import VideoPlayer from "@/Components/VideoPlayer";
 
 function CourseInformation() {
   const { courseId } = useParams();
