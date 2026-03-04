@@ -2,22 +2,18 @@ import React, { useRef, useState } from "react";
 import { FaPlay } from "react-icons/fa";
 
 const VideoPlayer = ({ videoUrl, coverImage, className }) => {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
   const videoRef = useRef(null);
 
   const handlePlayClick = () => {
     if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
+      videoRef.current.play();
+      setHasStarted(true);
     }
   };
 
   const handleVideoEnded = () => {
-    setIsPlaying(false);
+    setHasStarted(false);
   };
 
   const handleContextMenu = (e) => {
@@ -28,19 +24,19 @@ const VideoPlayer = ({ videoUrl, coverImage, className }) => {
     <div
       className={`relative w-full overflow-hidden bg-black shadow-lg lg:rounded-3xl ${className || ""}`}
     >
-      {!isPlaying && coverImage && (
+      {!hasStarted && coverImage && (
         <img
           src={coverImage}
           alt="Video Thumbnail"
           className="absolute inset-0 z-10 h-full w-full object-cover"
         />
       )}
-      {!isPlaying && !coverImage && (
+      {!hasStarted && !coverImage && (
         <div className="absolute inset-0 z-10 flex h-full w-full items-center justify-center bg-gray-800">
           <span className="text-sm text-gray-400">No Preview Image</span>
         </div>
       )}
-      {!isPlaying && (
+      {!hasStarted && (
         <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/30">
           <button
             onClick={handlePlayClick}
@@ -55,12 +51,11 @@ const VideoPlayer = ({ videoUrl, coverImage, className }) => {
         ref={videoRef}
         src={videoUrl}
         poster={coverImage}
-        controls={isPlaying}
+        controls={hasStarted}
         controlsList="nodownload"
         onContextMenu={handleContextMenu}
         onEnded={handleVideoEnded}
-        onPause={() => setIsPlaying(false)}
-        onPlay={() => setIsPlaying(true)}
+        onPlay={() => setHasStarted(true)}
         className="max-h-[699px] w-full object-cover lg:rounded-3xl"
         style={{ minHeight: "300px" }}
       >
