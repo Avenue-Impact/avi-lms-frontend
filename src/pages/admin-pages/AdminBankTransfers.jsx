@@ -30,19 +30,33 @@ const AdminBankTransfers = () => {
           <h1 className="text-2xl font-medium text-[#344054]">
             Bank Transfers
           </h1>
-
-          {/* Status Filter */}
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700 shadow-sm focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
-          >
-            <option value="pending">Pending</option>
-            <option value="success">Approved</option>
-          </select>
         </div>
       </AdminNav>
       <main className="mt-3 px-6 py-7">
+        <div className="mb-4 flex justify-end">
+          <div className="flex items-center space-x-2 rounded-lg bg-gray-100 p-1">
+            <button
+              onClick={() => setStatusFilter("pending")}
+              className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+                statusFilter === "pending"
+                  ? "bg-white text-[#CC1747] shadow-sm"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              Pending
+            </button>
+            <button
+              onClick={() => setStatusFilter("success")}
+              className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+                statusFilter === "success"
+                  ? "bg-white text-[#CC1747] shadow-sm"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              Approved
+            </button>
+          </div>
+        </div>
         <div className="overflow-x-auto rounded-lg border border-gray-200">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
@@ -114,7 +128,7 @@ const AdminBankTransfers = () => {
                       {transfer.course_id?.title}
                     </td>
                     <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800">
-                      £{transfer.amount}
+                      {transfer.amount} {transfer.currency}
                     </td>
                     <td className="whitespace-nowrap px-6 py-4 text-sm text-blue-600">
                       <button
