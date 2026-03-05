@@ -48,7 +48,7 @@ axiosAdmin.interceptors.response.use(
         // Attempt Silent Refresh
         // We use a separate instance or raw axios to avoid infinite loop with interceptors
         await axios.post(
-            `${BASE_URL}/admins/auth/refresh`,
+            `${BASE_URL}/auth/refresh`,
             {},
             { withCredentials: true } // Ensure cookies are sent
         );
@@ -152,4 +152,35 @@ export const getSingleCohort = async (courseId, cohortId) => {
   return await axiosAdmin.get(
     `/courses/${courseId}/cohorts/${cohortId}`,
   );
+};
+
+export const addRecordedSessionEmpty = async ({ data, courseId, cohortId }) => {
+  return await axiosAdmin.post(
+    `/courses/${courseId}/cohorts/${cohortId}/recorded-sessions`,
+    data
+  );
+};
+
+export const addVideosToRecordedSession = async ({ data, courseId, cohortId, sectionId }) => {
+  return await axiosAdmin.post(
+    `/courses/${courseId}/cohorts/${cohortId}/recorded-sessions/${sectionId}/videos`,
+    data
+  );
+};
+
+export const editRecordingSection = async ({ data, courseId, cohortId, section }) => {
+  return await axiosAdmin.patch(
+    `/courses/${courseId}/cohorts/${cohortId}/sections/${section}`,
+    data
+  );
+};
+
+export const deleteRecordedSessionVideo = async ({ courseId, cohortId, section, recordingId }) => {
+  return await axiosAdmin.delete(
+    `/courses/${courseId}/cohorts/${cohortId}/sections/${section}/recorded-session/${recordingId}`
+  );
+};
+
+export const getAllVideos = async () => {
+  return await axiosAdmin.get(`/courses/videos`);
 };

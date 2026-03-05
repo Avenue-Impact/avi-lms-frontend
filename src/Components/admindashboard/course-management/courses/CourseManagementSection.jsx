@@ -109,7 +109,7 @@ const LiveContent = ({ data }) => {
         <div>
           <div className="border-b border-b-[#E4E7EC] pb-4">
             <p className="mb-10 font-poppins text-lg font-medium capitalize text-tertiary-color-900 lg:text-xl">
-              Section 1
+              Live Session
             </p>
             <p className="text-sm font-medium text-[#344054]">
               Join Live Session
@@ -127,7 +127,7 @@ const LiveContent = ({ data }) => {
                 Started from: {started_from && formatDate(started_from, false)}
               </p> */}
               <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
-                Meeting date: {start_time}{" "}UTC
+                Meeting date: {start_time} UTC
               </p>
               {/* <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
                 Add to: iCal Expor, Google Calendar
