@@ -22,26 +22,33 @@ const VideoPlayer = ({ videoUrl, coverImage, className }) => {
   const videoRef = useRef(null);
   const containerRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
   const [showControls, setShowControls] = useState(true);
 
-  // Timer for fading out controls
-  useEffect(() => {
-    let timeout;
-    const resetControlsTimeout = () => {
-      setShowControls(true);
-      clearTimeout(timeout);
-      if (isPlaying) {
-        timeout = setTimeout(() => setShowControls(false), 2500);
-      }
-    };
+  const timeoutRef = useRef(null);
 
+  const resetControlsTimeout = () => {
+    setShowControls(true);
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+    if (isPlaying) {
+      timeoutRef.current = setTimeout(() => {
+        setShowControls(false);
+      }, 2500);
+    }
+  };
+
+  // Timer for fading out controls based on play state changes
+  useEffect(() => {
     resetControlsTimeout();
-    return () => clearTimeout(timeout);
-  }, [isPlaying, progress]);
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, [isPlaying]);
 
   const togglePlay = (e) => {
     e.stopPropagation();
@@ -49,6 +56,7 @@ const VideoPlayer = ({ videoUrl, coverImage, className }) => {
       if (videoRef.current.paused) {
         videoRef.current.play();
         setIsPlaying(true);
+        if (!hasStarted) setHasStarted(true);
       } else {
         videoRef.current.pause();
         setIsPlaying(false);
@@ -101,7 +109,7 @@ const VideoPlayer = ({ videoUrl, coverImage, className }) => {
     <div
       ref={containerRef}
       className={`group relative w-full overflow-hidden bg-black shadow-lg lg:rounded-3xl ${className || ""}`}
-      onMouseMove={() => setShowControls(true)}
+      onMouseMove={resetControlsTimeout}
       onMouseLeave={() => {
         if (isPlaying) setShowControls(false);
       }}
@@ -134,57 +142,65 @@ const VideoPlayer = ({ videoUrl, coverImage, className }) => {
       )}
 
       {/* Bottom Custom Controls Bar */}
-      <div
-        className={`absolute bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4 transition-opacity duration-300 ${
-          showControls || !isPlaying
-            ? "opacity-100"
-            : "pointer-events-none opacity-0"
-        }`}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Seek Bar */}
-        <div className="mb-2 flex w-full items-center gap-2">
-          <span className="text-xs text-white">{formatTime(currentTime)}</span>
-          <input
-            type="range"
-            min="0"
-            max="100"
-            value={progress || 0}
-            onChange={handleProgressChange}
-            className="h-1 flex-1 cursor-pointer appearance-none rounded-lg bg-gray-500/50 accent-[#CC1747]"
-          />
-          <span className="text-xs text-white">{formatTime(duration)}</span>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            {/* Play/Pause (Left Side) */}
-            <button
-              onClick={togglePlay}
-              className="text-white transition-colors hover:text-[#CC1747] focus:outline-none"
-            >
-              {isPlaying ? <FaPause size={18} /> : <FaPlay size={18} />}
-            </button>
-
-            {/* Volume */}
-            <button
-              onClick={toggleMute}
-              className="text-white transition-colors hover:text-[#CC1747] focus:outline-none"
-            >
-              {isMuted ? <FaVolumeMute size={20} /> : <FaVolumeUp size={20} />}
-            </button>
+      {hasStarted && (
+        <div
+          className={`absolute bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4 transition-opacity duration-300 ${
+            showControls || !isPlaying
+              ? "opacity-100"
+              : "pointer-events-none opacity-0"
+          }`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Seek Bar */}
+          <div className="mb-2 flex w-full items-center gap-2">
+            <span className="text-xs text-white">
+              {formatTime(currentTime)}
+            </span>
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={progress || 0}
+              onChange={handleProgressChange}
+              className="h-1 flex-1 cursor-pointer appearance-none rounded-lg bg-gray-500/50 accent-[#CC1747]"
+            />
+            <span className="text-xs text-white">{formatTime(duration)}</span>
           </div>
 
-          {/* Fullscreen */}
-          <button
-            onClick={toggleFullScreen}
-            className="text-white transition-colors hover:text-[#CC1747] focus:outline-none"
-          >
-            <FaExpand size={18} />
-          </button>
+          {/* Action Buttons */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-6">
+              {/* Play/Pause (Left Side) */}
+              <button
+                onClick={togglePlay}
+                className="text-white transition-colors hover:text-[#CC1747] focus:outline-none"
+              >
+                {isPlaying ? <FaPause size={18} /> : <FaPlay size={18} />}
+              </button>
+
+              {/* Volume */}
+              <button
+                onClick={toggleMute}
+                className="text-white transition-colors hover:text-[#CC1747] focus:outline-none"
+              >
+                {isMuted ? (
+                  <FaVolumeMute size={20} />
+                ) : (
+                  <FaVolumeUp size={20} />
+                )}
+              </button>
+            </div>
+
+            {/* Fullscreen */}
+            <button
+              onClick={toggleFullScreen}
+              className="text-white transition-colors hover:text-[#CC1747] focus:outline-none"
+            >
+              <FaExpand size={18} />
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
