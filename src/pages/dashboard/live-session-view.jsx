@@ -16,7 +16,7 @@ function LiveSessionView({ editButton = false }) {
         {/* {session === "" && <p>click to show content </p>} */}
 
         {session === "live" &&
-          (data?.data?.course_detail?.live_session?.start_time ? (
+          (data?.data?.course_detail?.live_session ? (
             <LiveSession data={data} />
           ) : (
             <div className="flex h-full min-h-[60vh] w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50/50 p-8 text-center text-gray-500">
