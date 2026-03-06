@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 
 
 const fetchIssuedCert = async (id) =>
-  // https://avi-lms-backend.onrender.com/api/v1/admins/courses/:id/certificates
+  // https://avi-lms-backend.onrender.com/api/v1/courses/:id/certificates
   await axios.get(`${BASE_URL}/courses/${id}/certificates`, {
     headers: {
       Authorization: `Bearer ${Cookies.get("adminToken")}`,

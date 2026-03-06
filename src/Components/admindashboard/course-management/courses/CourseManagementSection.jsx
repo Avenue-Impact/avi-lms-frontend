@@ -7,7 +7,6 @@ import { useState } from "react";
 import liveSession from "../../../../assets/images/dashboard/live-session.png";
 import EditLiveSessionForm from "../live-session/EditLiveSession";
 import EditLiveSession from "../live-session/EditLiveSession";
-import { useStreamRecordedVideo } from "@/hooks/course-management/recorded-section/use-stream-recorded-video";
 import { Skeleton } from "@/Components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
@@ -41,7 +40,7 @@ function CourseManagementSection() {
     topic: "",
     videoTitle: "",
   });
-  const [videoId, setVideoId] = useState("");
+  const [videoUrl, setVideoUrl] = useState("");
   const [isEdit, setIsEdit] = useState(false);
   const [queryString] = useSearchParams();
 
@@ -59,7 +58,9 @@ function CourseManagementSection() {
   if (isLoading) return <p>loading...</p>;
 
   if (error)
-    return <p>{error.response.data.message ?? "Something went wrong"}</p>;
+    return <p>{error.response?.data?.message ?? "Something went wrong"}</p>;
+
+  if (!data?.data?.data) return <p>No course cohort data found.</p>;
 
   return (
     <div>
@@ -69,7 +70,10 @@ function CourseManagementSection() {
         <div className="mt-6 grid grid-cols-[3fr_1.7fr]">
           {showLive === "live" && <LiveContent data={data} />}
           {showLive === "contents" && (
-            <VideoContents sectionDetails={sectionDetails} videoId={videoId} />
+            <VideoContents
+              sectionDetails={sectionDetails}
+              videoUrl={videoUrl}
+            />
           )}
           {/* {showLive === "" && <>click to show content</>} */}
 
@@ -78,7 +82,7 @@ function CourseManagementSection() {
             setShowLive={setShowLive}
             setSectionDetails={setSectionDetails}
             setIsEdit={setIsEdit}
-            setVideoId={setVideoId}
+            setVideoUrl={setVideoUrl}
           />
         </div>
       )}
@@ -162,7 +166,7 @@ const LiveContent = ({ data }) => {
   );
 };
 
-const VideoContents = ({ sectionDetails, videoId }) => {
+const VideoContents = ({ sectionDetails, videoUrl }) => {
   return (
     <main>
       <div>
@@ -177,7 +181,7 @@ const VideoContents = ({ sectionDetails, videoId }) => {
         <div className="w-full max-w-[600px] overflow-hidden rounded-lg">
           <PreviewVideoCourse
             section={sectionDetails.section}
-            videoId={videoId}
+            videoUrl={videoUrl}
           />
           <p className="mt-6 capitalize">{sectionDetails.videoTitle}</p>
         </div>
@@ -186,28 +190,16 @@ const VideoContents = ({ sectionDetails, videoId }) => {
   );
 };
 
-const PreviewVideoCourse = ({ videoId, section }) => {
-  const { courseId } = useParams();
-  const [queryString] = useSearchParams();
+const PreviewVideoCourse = ({ videoUrl, section }) => {
   const [waiting, setWaiting] = useState(false);
-  const cohortId = queryString.get("cohortId");
-  const { data, isLoading, error } = useStreamRecordedVideo(
-    courseId,
-    cohortId,
-    section,
-    videoId,
-  );
 
-  if (isLoading)
+  if (!videoUrl)
     return (
-      <div className="max-h-[690px] w-full text-white">
-        <Skeleton className={"h-[400px] w-full"} />
-      </div>
+      <p className="text-primary-color-500">
+        {" "}
+        Please select a video to preview{" "}
+      </p>
     );
-
-  if (error) return <p className="text-primary-color-500"> video not found </p>;
-
-  console.log(data?.data?.data?.videoUrl);
 
   return (
     <>
@@ -227,7 +219,7 @@ const PreviewVideoCourse = ({ videoId, section }) => {
         >
           <ReactPlayer
             slot="media"
-            src={data?.data?.data?.videoUrl}
+            src={videoUrl}
             controls={false}
             onSeeking={() => {
               setWaiting(true);

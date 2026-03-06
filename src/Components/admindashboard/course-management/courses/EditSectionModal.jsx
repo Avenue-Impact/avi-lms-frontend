@@ -54,7 +54,7 @@ export function EditSectionModal({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[850px]">
         <DialogHeader>
           <DialogTitle>Edit Section {sectionData?.section}</DialogTitle>
         </DialogHeader>
@@ -82,20 +82,20 @@ export function EditSectionModal({
               onChange={(e) => setOverview(e.target.value)}
             />
           </div>
-          <DialogFooter>
-            <CommonButton
-              type="button"
-              variant="outline"
-              onClick={() => setOpen(false)}
-            >
-              Cancel
-            </CommonButton>
+          <DialogFooter className={`mt-12`}>
             <CommonButton
               type="submit"
               className="bg-[#cc1747] text-white hover:bg-[#a6133a]"
               disabled={isEditing}
             >
               Update Section
+            </CommonButton>
+            <CommonButton
+              type="button"
+              variant="outline"
+              onClick={() => setOpen(false)}
+            >
+              Cancel
             </CommonButton>
           </DialogFooter>
         </form>

@@ -39,7 +39,7 @@ export function AddSectionModal({ children, courseId, cohortId }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[850px]">
         <DialogHeader>
           <DialogTitle>Add a new section</DialogTitle>
         </DialogHeader>
@@ -70,18 +70,18 @@ export function AddSectionModal({ children, courseId, cohortId }) {
           </div>
           <DialogFooter>
             <CommonButton
-              type="button"
-              variant="outline"
-              onClick={() => setOpen(false)}
-            >
-              Cancel
-            </CommonButton>
-            <CommonButton
               type="submit"
               className="bg-[#cc1747] text-white hover:bg-[#a6133a]"
               disabled={isCreating}
             >
               Add Section
+            </CommonButton>
+            <CommonButton
+              type="button"
+              variant="outline"
+              onClick={() => setOpen(false)}
+            >
+              Cancel
             </CommonButton>
           </DialogFooter>
         </form>

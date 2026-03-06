@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 const editVideo = async ({ data, section, id, courseId, cohortId }) => {
   const token = Cookies.get("adminToken");
 
-  const url = `${BASE_URL}/admins/courses/${courseId}/cohorts/${cohortId}/sections/${section}/recorded-session/${id}`;
+  const url = `${BASE_URL}/courses/${courseId}/cohorts/${cohortId}/sections/${section}/recorded-session/${id}`;
 
   return axios.patch(url, data, {
     headers: {

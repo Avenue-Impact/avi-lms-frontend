@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 const mutateSection = async ({ section, courseId }) => {
   const token = Cookies.get("adminToken");
 
-  const url = `${BASE_URL}/admins/courses/${courseId}/on-demand-section/${section}`;
+  const url = `${BASE_URL}/courses/${courseId}/on-demand-section/${section}`;
   return axios.delete(url, {
     headers: {
       Authorization: `Bearer ${token}`,

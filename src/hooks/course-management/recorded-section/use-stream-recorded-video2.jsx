@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 
 const streamVideo = (courseId, section, videoId) => {
   return axiosAdmin.get(
-    `/courses/${courseId}/on-demand-section/${section}/recordings?videoId=${videoId}`
+    `/courses/${courseId}/on-demand-section/${section}/recordings?videoId=${videoId}`,
   );
 };
 

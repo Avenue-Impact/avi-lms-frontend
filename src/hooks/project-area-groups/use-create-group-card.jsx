@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 
 const createCard = async ({ data, courseId, cohortId, groupId }) => {
-  // https://avi-lms-backend.onrender.com/api/v1/admins/courses/:courseId/cohorts/:cohortId/projects/groups/:groupId/cards
+  // https://avi-lms-backend.onrender.com/api/v1/courses/:courseId/cohorts/:cohortId/projects/groups/:groupId/cards
   const url = `${BASE_URL}/courses/${courseId}/cohorts/${cohortId}/projects/groups/${groupId}/cards`;
   return axios.post(url, data, {
     headers: {

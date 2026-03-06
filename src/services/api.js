@@ -181,6 +181,12 @@ export const deleteRecordedSessionVideo = async ({ courseId, cohortId, section, 
   );
 };
 
-export const getAllVideos = async () => {
-  return await axiosAdmin.get(`/courses/videos`);
+export const getAllVideos = async (page = 1, limit = 20) => {
+  return await axiosAdmin.get(`/courses/videos?page=${page}&limit=${limit}`);
+};
+
+export const getSectionVideos = async (courseId, cohortId, sectionId) => {
+  return await axiosAdmin.get(
+    `/courses/${courseId}/cohorts/${cohortId}/recorded-sessions/${sectionId}/videos`
+  );
 };

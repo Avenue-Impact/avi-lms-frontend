@@ -8,7 +8,7 @@ const editDemandSection = async ({ data, section, courseId }) => {
   const token = Cookies.get("adminToken");
 
   return await axios.patch(
-    `${BASE_URL}/admins/courses/${courseId}/on-demand-section/${section}`,
+    `${BASE_URL}/courses/${courseId}/on-demand-section/${section}`,
     data,
     {
       headers: {

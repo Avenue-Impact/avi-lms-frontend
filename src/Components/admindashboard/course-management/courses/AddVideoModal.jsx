@@ -19,14 +19,16 @@ export function AddVideoModal({ children, sectionId, courseId, cohortId }) {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedVideos, setSelectedVideos] = useState([]);
+  const [page, setPage] = useState(1);
 
   const { mutate: addVideos, isAdding } = useAddVideosToRecordedSession(
     courseId,
     cohortId,
   );
-  const { data: videosData, isLoading } = useGetAllVideos();
+  const { data: videosData, isLoading } = useGetAllVideos(page, 20, open);
 
   const allVideos = videosData?.data?.data || [];
+  const meta = videosData?.data?.meta || {};
 
   const filteredVideos = useMemo(() => {
     if (!searchQuery) return allVideos;
@@ -53,6 +55,7 @@ export function AddVideoModal({ children, sectionId, courseId, cohortId }) {
           setOpen(false);
           setSelectedVideos([]);
           setSearchQuery("");
+          setPage(1);
         },
       },
     );
@@ -63,6 +66,7 @@ export function AddVideoModal({ children, sectionId, courseId, cohortId }) {
     if (!newOpen) {
       setSelectedVideos([]);
       setSearchQuery("");
+      setPage(1);
     }
   };
 
@@ -128,6 +132,28 @@ export function AddVideoModal({ children, sectionId, courseId, cohortId }) {
                 );
               })
             )}
+          </div>
+
+          <div className="flex items-center justify-between text-sm">
+            <button
+              type="button"
+              className="rounded bg-gray-100 px-2 py-1 font-medium text-gray-700 hover:bg-gray-200 disabled:opacity-50"
+              disabled={page <= 1}
+              onClick={() => setPage((prev) => prev - 1)}
+            >
+              Previous
+            </button>
+            <span className="font-medium text-muted-foreground">
+              Page {page} of {meta.totalPages || 1}
+            </span>
+            <button
+              type="button"
+              className="rounded bg-gray-100 px-2 py-1 font-medium text-gray-700 hover:bg-gray-200 disabled:opacity-50"
+              disabled={page >= (meta.totalPages || 1)}
+              onClick={() => setPage((prev) => prev + 1)}
+            >
+              Next
+            </button>
           </div>
 
           <div className="mt-2 flex items-center justify-between">

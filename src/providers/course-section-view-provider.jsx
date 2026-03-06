@@ -11,7 +11,7 @@ export const CourseSectionViewProvider = ({ children }) => {
 
   const [sectionActive, setSectionActive] = useState(2);
 
-  const [videoId, setVideoId] = useState("");
+  const [videoUrl, setVideoUrl] = useState("");
 
   const [sections, setSections] = useState({
     mobile: "course sections",
@@ -27,8 +27,8 @@ export const CourseSectionViewProvider = ({ children }) => {
         setSectionDetails,
         sections,
         setSections,
-        videoId,
-        setVideoId,
+        videoUrl,
+        setVideoUrl,
         sectionActive,
         setSectionActive,
       }}

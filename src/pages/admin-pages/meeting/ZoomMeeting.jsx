@@ -97,7 +97,7 @@ const ZoomMeeting = () => {
     setloading(true);
     try {
       const res = await axios.get(
-        `https://avi-lms-5478f16284c6.herokuapp.com/api/v1/admins/courses/6725c38cf96fa51479095277/cohorts/6725c3aff96fa5147909527f/live-session/start`,
+        `https://avi-lms-5478f16284c6.herokuapp.com/api/v1/courses/6725c38cf96fa51479095277/cohorts/6725c3aff96fa5147909527f/live-session/start`,
         {
           headers: {
             Authorization: `Bearer ${Cookies.get("adminToken")} `,

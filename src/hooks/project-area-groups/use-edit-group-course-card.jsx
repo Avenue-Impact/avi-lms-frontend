@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 
 const editProjectCard = async ({ data, courseId, cohortId, groupId, cardId }) =>
-  // https://avi-lms-backend.onrender.com/api/v1/admins/courses/:courseId/cohorts/:cohortId/projects/groups/:groupId/cards/:cardId
+  // https://avi-lms-backend.onrender.com/api/v1/courses/:courseId/cohorts/:cohortId/projects/groups/:groupId/cards/:cardId
   await axios.patch(
     `${BASE_URL}/courses/${courseId}/cohorts/${cohortId}/projects/groups/${groupId}/cards/${cardId}`,
     data,

@@ -6,7 +6,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 import { useRef, useState } from "react";
 import EditOndemandCourseSectionForm from "@/Components/admindashboard/course-management/on-demand-section/EditOndemandCourseSectionForm";
-import { useStreamVideo } from "@/hooks/course-management/on-demand-section/use-stream-ondemand-video";
+
 import { Skeleton } from "@/Components/ui/skeleton";
 import ReactPlayer from "react-player";
 import {
@@ -23,12 +23,10 @@ import {
   MediaVolumeRange,
 } from "media-chrome/react";
 import { Loader2 } from "lucide-react";
-import { useStreamRecordedVideo } from "@/hooks/course-management/recorded-section/use-stream-recorded-video";
-import { useStreamRecordedVideo2 } from "@/hooks/course-management/recorded-section/use-stream-recorded-video2";
 
 function OndemandSection() {
   const [edit, setEdit] = useState(false);
-  const [videoId, setVideoId] = useState();
+  const [videoUrl, setVideoUrl] = useState();
   const { courseId } = useParams();
   const [sectionDetails, setSectionDetails] = useState({
     section: "",
@@ -71,7 +69,7 @@ function OndemandSection() {
                 <div className="w-full max-w-[600px] overflow-hidden rounded-lg">
                   <PreviewVideoCourse
                     section={sectionDetails.section}
-                    videoId={videoId}
+                    videoUrl={videoUrl}
                   />
                   <p className="mt-6 capitalize">{sectionDetails.videoTitle}</p>
                 </div>
@@ -85,7 +83,7 @@ function OndemandSection() {
               data={data}
               setSectionDetails={setSectionDetails}
               setEdit={setEdit}
-              setVideoId={setVideoId}
+              setVideoUrl={setVideoUrl}
             />
           </aside>
         </div>
@@ -96,52 +94,16 @@ function OndemandSection() {
 
 export default OndemandSection;
 
-const PreviewVideo = ({ videoId, section }) => {
-  const { courseId } = useParams();
-  const { data, isLoading, error } = useStreamVideo(courseId, section, videoId);
-
-  if (isLoading)
-    return (
-      <div className="max-h-[690px] w-full text-white">
-        <Skeleton className={"h-[400px] w-full"} />
-      </div>
-    );
-
-  if (error) return <p className="text-primary-color-500"> video not found </p>;
-
-  const blob = data && URL.createObjectURL(data?.data);
-
-  console.log({ data, blob });
-
-  return (
-    <video
-      src={blob}
-      controls
-      className="max-h-[699px] w-full object-cover shadow-lg lg:rounded-3xl"
-    ></video>
-  );
-};
-
-const PreviewVideoCourse = ({ videoId, section }) => {
-  console.log("section", section);
-  const { courseId } = useParams();
+const PreviewVideoCourse = ({ videoUrl, section }) => {
   const [waiting, setWaiting] = useState(false);
-  const { data, isLoading, error } = useStreamRecordedVideo2(
-    courseId,
-    section,
-    videoId,
-  );
 
-  if (isLoading)
+  if (!videoUrl)
     return (
-      <div className="max-h-[690px] w-full text-white">
-        <Skeleton className={"h-[400px] w-full"} />
-      </div>
+      <p className="text-primary-color-500">
+        {" "}
+        Please select a video to preview{" "}
+      </p>
     );
-
-  if (error) return <p className="text-primary-color-500"> video not found </p>;
-
-  console.log(data?.data?.data?.videoUrl);
 
   return (
     <>
@@ -161,7 +123,7 @@ const PreviewVideoCourse = ({ videoId, section }) => {
         >
           <ReactPlayer
             slot="media"
-            src={data?.data?.data?.videoUrl}
+            src={videoUrl}
             controls={false}
             onSeeking={() => {
               setWaiting(true);

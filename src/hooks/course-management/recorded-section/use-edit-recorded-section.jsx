@@ -10,7 +10,7 @@ const editRecordedSectionApi = async ({ data, section }) => {
   const cohortId = localStorage.getItem("cohortId");
 
   return await axios.patch(
-    `${BASE_URL}/admins/courses/${courseId}/cohorts/${cohortId}/sections/${section}`,
+    `${BASE_URL}/courses/${courseId}/cohorts/${cohortId}/sections/${section}`,
     data,
     {
       headers: {

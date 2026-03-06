@@ -15,7 +15,7 @@ const AdminStartLiveSession = () => {
   //   try {
   //     const response = await axios({
   //       method: "GET",
-  //       url: `https://avi-lms-backend.onrender.com/api/v1/admins/courses/672f600db2f3905e23f914e6/cohorts/6732f2f47a0ce8a492cc36e1/live-session/start`,
+  //       url: `https://avi-lms-backend.onrender.com/api/v1/courses/672f600db2f3905e23f914e6/cohorts/6732f2f47a0ce8a492cc36e1/live-session/start`,
   //       headers: {
   //         "Content-Type": "application/json",
   //         Authorization: `Bearer ${Cookies.get("adminToken")}`,
