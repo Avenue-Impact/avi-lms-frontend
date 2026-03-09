@@ -117,7 +117,7 @@ function RecordedSectionItem({
                     videoTitle: video.title,
                   }));
                   setShowLive("contents");
-                  setVideoUrl(video.video_url);
+                  setVideoUrl(video?.video_url || video.video_url);
                   setvideoActive(video.id);
                 }}
               >

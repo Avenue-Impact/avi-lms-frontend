@@ -109,7 +109,9 @@ function EnrolledSectionItem({
                   videoTitle: video.title || video.video_title,
                 }));
                 setSession("recorded");
-                setVideoUrl(video.video_url || video.videoUrl);
+                setVideoUrl(
+                  video.video_url?.link || video.video_url || video.videoUrl,
+                );
                 setvideoActive(video._id);
               }}
             >
