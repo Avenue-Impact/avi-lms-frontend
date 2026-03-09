@@ -91,7 +91,7 @@ function CourseManagementSection() {
 }
 
 const LiveContent = ({ data }) => {
-  console.log(data?.data?.sessions);
+  console.log(data?.data?.session);
   const [meeting, setMeeting] = useState(false);
   const [queryString] = useSearchParams();
   const { courseId } = useParams();
@@ -102,9 +102,10 @@ const LiveContent = ({ data }) => {
     title,
     live: isLive,
     password,
+    class_day,
     start_time,
     subtitle,
-  } = data?.data?.sessions[0] ?? {};
+  } = data?.data?.session ?? {};
   return (
     <>
       {meeting ? (
@@ -126,19 +127,19 @@ const LiveContent = ({ data }) => {
             <p className="my-5 text-lg font-[275] leading-[38.4px] text-tertiary-color-700 md:text-[2rem] lg:my-8">
               {subtitle ?? ""}
             </p>
-            <div className="space-y-3">
+            <div className="mb-4 space-y-2">
               {/* <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
                 Started from: {started_from && formatDate(started_from, false)}
               </p> */}
+              <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
+                Class day: {class_day ?? ""}
+              </p>
               <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
                 Meeting date: {start_time} UTC
               </p>
               {/* <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
                 Add to: iCal Expor, Google Calendar
-              </p>
-              <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
-                Password: {password ?? ""}
-              </p> */}
+              </p>*/}
             </div>
             {/* <button
               className={cn(

@@ -13,8 +13,9 @@ const UserJoinMeeting = () => {
   const { courseId } = useParams();
 
   const cohortId = queryString.get("cohortId");
+  const sessionId = queryString.get("sessionId");
 
-  const { isLoading, data, error } = useJoinSession(courseId, cohortId);
+  const { isLoading, data, error } = useJoinSession(courseId, cohortId, sessionId);
 
 
   

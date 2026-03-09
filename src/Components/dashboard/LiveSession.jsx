@@ -14,7 +14,7 @@ function LiveSession({ data }) {
 
   const [isActive, setIsActive] = useState(false);
 
-  const { title, description, password, start_time } =
+  const { title, description, password, class_date, class_day, id } =
     data?.data?.course_detail?.live_session ?? {};
 
   // Example logic to determine if session is active
@@ -43,12 +43,12 @@ function LiveSession({ data }) {
           </p>
           <div className="mt-8 space-y-4">
             <p className="text-sm text-[#374151] md:text-base">
-              <span className="font-bold text-[#111827]">Started From:</span>{" "}
-              {"November 12, 2025"}
+              <span className="font-bold text-[#111827]">Class day:</span>{" "}
+              {class_day}
             </p>
             <p className="text-sm text-[#374151] md:text-base">
-              <span className="font-bold text-[#111827]">Meeting Date:</span>{" "}
-              {"January 15, 2026"}
+              <span className="font-bold text-[#111827]">Class Date:</span>{" "}
+              {formatDate(class_date, true)}
             </p>
             <p className="text-sm text-[#374151] md:text-base">
               <span className="font-bold text-[#111827]">Add to:</span>{" "}
@@ -70,7 +70,7 @@ function LiveSession({ data }) {
                   navigate(
                     `/user/meeting/${courseId}?cohortId=${
                       courseId
-                    }&title=${queryString.get("title")}`,
+                    }&title=${queryString.get("title")}&sessionId=${id}`,
                   )
                 }
               >

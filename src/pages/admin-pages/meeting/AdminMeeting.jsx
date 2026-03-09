@@ -9,7 +9,8 @@ const AdminStartLiveSession = () => {
   const { courseId } = useParams();
   const [queryString] = useSearchParams();
   const cohortId = queryString.get("cohortId");
-  const { data, isLoading, error } = useStartLiveSession(courseId, cohortId);
+  const sessionId = queryString.get("sessionId");
+  const { data, isLoading, error } = useStartLiveSession(courseId, cohortId, sessionId);
 
   // const handleStartSession = async () => {
   //   try {
