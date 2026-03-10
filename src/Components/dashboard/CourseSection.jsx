@@ -28,28 +28,25 @@ function EnrolledSectionItem({
   cohortId,
   courseId,
 }) {
-  const isActiveSection = active === section._id;
+  const isActiveSection = active === section.id;
   const { data: videosData, isLoading } = useGetEnrolledSectionVideos(
     courseId,
     cohortId,
-    section._id,
+    section.id,
     isActiveSection,
   );
 
   const videos = videosData?.data?.data || [];
 
   return (
-    <AccordionItem
-      value={section._id}
-      className="border-b border-gray-200 py-1"
-    >
+    <AccordionItem value={section.id} className="border-b border-gray-200 py-1">
       <AccordionTrigger
         className={cn(
           "flex w-full cursor-pointer items-center justify-between rounded-md px-3 py-3 text-left transition-colors hover:bg-[#FDF2F5] md:px-4",
           isActiveSection ? "bg-[#FDF2F5]" : "",
         )}
         onClick={() => {
-          setActive(section._id);
+          setActive(section.id);
           setSectionActive(section.section);
         }}
         showChevron={false}
@@ -93,7 +90,7 @@ function EnrolledSectionItem({
         </div>
       ) : (
         videos.map((video, i) => {
-          const isActiveVideo = videoActive === video._id;
+          const isActiveVideo = videoActive === video.id;
           return (
             <AccordionContent
               key={video._id}
@@ -106,12 +103,11 @@ function EnrolledSectionItem({
                   ...prev,
                   topic: section.title,
                   section: section.section,
+                  overview: section.overview,
                   videoTitle: video.title || video.video_title,
                 }));
                 setSession("recorded");
-                setVideoUrl(
-                  video.video_url?.link || video.video_url || video.videoUrl,
-                );
+                setVideoUrl(video.video_url);
                 setvideoActive(video._id);
               }}
             >
@@ -181,37 +177,35 @@ function CourseSection({ editButton, data }) {
       </div>
 
       <div className="flex-1 overflow-y-auto pr-1">
-        <Accordion type="single" collapsible className="w-full">
-          <AccordionItem value={"1"} className="border-b border-gray-200 py-1">
-            <AccordionTrigger
-              className={cn(
-                "group/section [&[data-state=open]]:bg-bg-primary-color-300/20 px-5 pb-[10px] hover:bg-primary-color-300/20",
-                active === "1" && "bg-primary-color-300/20",
-              )}
-              onClick={() => {
-                setActive("1");
-                setSession("live");
-              }}
-            >
-              <div className="w-full text-left">
-                <p className="font-poppins text-lg font-light capitalize text-tertiary-color-900 lg:text-xl">
-                  Live Section
-                </p>
-                <p
-                  className={cn(
-                    "text-base font-light capitalize leading-6 text-tertiary-color-700 group-hover/section:font-semibold group-hover/section:text-primary-color-600",
-                    active === "1" && "font-semibold text-primary-color-600",
-                  )}
-                >
-                  Join Live Sessions
-                </p>
-              </div>
-            </AccordionTrigger>
-          </AccordionItem>
-        </Accordion>
+        <div className={cn("cursor-pointer border-b border-gray-300 py-1")}>
+          <div
+            className={cn(
+              "group/section px-5 pb-[10px] pt-3 hover:bg-primary-color-300/20",
+              active === "1" && "bg-primary-color-300/20",
+            )}
+            onClick={() => {
+              setActive("1");
+              setSession("live");
+            }}
+          >
+            <div className="w-full text-left">
+              <p className="font-poppins text-lg font-light capitalize text-tertiary-color-900 lg:text-xl">
+                Live Section
+              </p>
 
-        {data?.data?.course_detail?.recorded_session?.length < 1 &&
-        !data?.data?.course_detail?.recorded_session?.length ? (
+              <p
+                className={cn(
+                  "text-base font-light capitalize leading-6 text-tertiary-color-700 group-hover/section:font-semibold group-hover/section:text-primary-color-600",
+                  active === "1" && "font-semibold text-primary-color-600",
+                )}
+              >
+                Join Live Sessions
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {!data?.data?.course_detail?.recorded_session?.length ? (
           <div className="py-8 text-center text-gray-500">
             <p>No sections yet...</p>
           </div>
@@ -219,7 +213,7 @@ function CourseSection({ editButton, data }) {
           <Accordion type="single" collapsible className="w-full">
             {data?.data?.course_detail?.recorded_session?.map((section) => (
               <EnrolledSectionItem
-                key={section._id}
+                key={section.id}
                 section={section}
                 active={active}
                 setActive={setActive}
