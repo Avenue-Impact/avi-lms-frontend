@@ -28,6 +28,12 @@ function DataManagementPage() {
           >
             all students
           </LinkList>
+          <LinkList
+            onClick={() => navigate("videos")}
+            active={pathname.endsWith("videos")}
+          >
+            videos
+          </LinkList>
         </ul>
       </AdminNav>
       <section>
