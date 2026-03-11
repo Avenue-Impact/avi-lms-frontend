@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 const deleteRecordedVideo = async ({ section, id, courseId, cohortId }) => {
   const token = Cookies.get("adminToken");
 
-  const url = `${BASE_URL}/admins/courses/${courseId}/cohorts/${cohortId}/sections/${section}/recorded-session/${id}`;
+  const url = `${BASE_URL}/courses/${courseId}/cohorts/${cohortId}/sections/${section}/recorded-session/${id}`;
   return axios.delete(url, {
     headers: {
       Authorization: `Bearer ${token}`,

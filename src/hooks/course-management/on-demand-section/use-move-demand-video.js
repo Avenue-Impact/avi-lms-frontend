@@ -8,7 +8,7 @@ const moveVideo = async ({ data, section, courseId }) => {
   const token = Cookies.get('adminToken')
 
 
-  const url = `${BASE_URL}/admins/courses/${courseId}/on-demand/sections/${section}/move-video`
+  const url = `${BASE_URL}/courses/${courseId}/on-demand/sections/${section}/move-video`
 
 
   return await axios.put(

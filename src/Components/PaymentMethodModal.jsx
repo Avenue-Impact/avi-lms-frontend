@@ -1,5 +1,5 @@
-
 import React from 'react';
+import toast from 'react-hot-toast';
 
 const PaymentMethodModal = ({ isOpen, onClose, methods, selectedMethod, onSelectMethod, onProceed, amount, currency, currencySymbol }) => {
     if (!isOpen) return null;
@@ -23,7 +23,13 @@ const PaymentMethodModal = ({ isOpen, onClose, methods, selectedMethod, onSelect
                     {methods.map((method) => (
                         <div 
                             key={method.id}
-                            onClick={() => onSelectMethod(method.id)}
+                            onClick={() => {
+                                if (method.id === 'paystack') {
+                                    toast.error("Feature isn't available yet, try other");
+                                } else {
+                                    onSelectMethod(method.id);
+                                }
+                            }}
                             className={`flex cursor-pointer items-center rounded-lg border p-4 transition ${
                                 selectedMethod === method.id 
                                 ? 'border-[#CC1747] ring-1 ring-[#CC1747]' 

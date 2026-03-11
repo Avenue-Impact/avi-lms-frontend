@@ -3,7 +3,14 @@ import Logo from "@/assets/logo/logo.svg";
 import AuthLayoutImage from "@/assets/images/auth_layout_img.jpg";
 import { ChevronLeft } from "lucide-react";
 
-const AuthLayout = ({ children, title, subtitle, imageSrc, isPage = true }) => {
+const AuthLayout = ({
+  children,
+  title,
+  subtitle,
+  imageSrc,
+  isPage = true,
+  alignTop = false,
+}) => {
   const navigate = useNavigate();
 
   return (
@@ -25,9 +32,17 @@ const AuthLayout = ({ children, title, subtitle, imageSrc, isPage = true }) => {
       )}
 
       <main
-        className={`flex ${isPage ? "min-h-[calc(100vh-80px)]" : ""} w-full items-center justify-center p-4 md:p-10 md:pt-0`}
+        className={`flex ${
+          isPage
+            ? alignTop
+              ? "min-h-[calc(100vh-80px)] items-start pt-6 md:pt-10 lg:pt-16"
+              : "min-h-[calc(100vh-80px)] items-center pt-0"
+            : "items-center pt-0"
+        } w-full justify-center p-4 md:p-10`}
       >
-        <div className="flex w-full max-w-[1480px] flex-col items-center justify-center lg:flex-row lg:gap-16">
+        <div
+          className={`flex w-full max-w-[1480px] flex-col items-center justify-center lg:flex-row ${alignTop ? "lg:items-start" : "lg:items-center"} lg:gap-16`}
+        >
           {isPage && (
             <div className="w-full lg:w-1/2">
               <div className="overflow-hidden rounded-3xl shadow-sm">

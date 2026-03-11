@@ -21,6 +21,8 @@ const PasswordInput = ({
   id,
   value,
   absoluteError = false,
+  onFocus,
+  onBlur,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -50,6 +52,14 @@ const PasswordInput = ({
                   id={id}
                   value={value}
                   {...field}
+                  onFocus={(e) => {
+                    if (field.onFocus) field.onFocus(e);
+                    if (onFocus) onFocus(e);
+                  }}
+                  onBlur={(e) => {
+                    field.onBlur(e);
+                    if (onBlur) onBlur(e);
+                  }}
                 />
                 <Button
                   type="button"
@@ -99,4 +109,6 @@ PasswordInput.propTypes = {
   className: PropType.string,
   value: PropType.string,
   disabled: PropType.bool,
+  onFocus: PropType.func,
+  onBlur: PropType.func,
 };

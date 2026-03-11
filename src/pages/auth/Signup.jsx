@@ -14,6 +14,7 @@ import PasswordInput from "@/Components/ui/password-input";
 import axios from "axios";
 import RegisterFail from "./components/RegisterFail";
 import toast from "react-hot-toast";
+import { CheckCircle2, Circle } from "lucide-react";
 import { passwordRegex } from "@/lib/utils";
 import { route } from "@/lib/route-checker";
 
@@ -68,6 +69,7 @@ const SignUp = ({ isPage = true }) => {
   const [showReferralReminder, setShowReferralReminder] = useState(false);
   const [pendingSignupValues, setPendingSignupValues] = useState(null);
   const [skipReferralReminder, setSkipReferralReminder] = useState(false);
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const formRef = useRef(null);
 
   const courseId = queryString.get("id");
@@ -89,6 +91,18 @@ const SignUp = ({ isPage = true }) => {
   });
 
   const { isSubmitting } = form.formState;
+  const currentPassword = form.watch("password") || "";
+
+  const passwordRequirements = [
+    { label: "At least 8 characters", valid: currentPassword.length >= 8 },
+    { label: "One uppercase letter", valid: /[A-Z]/.test(currentPassword) },
+    { label: "One lowercase letter", valid: /[a-z]/.test(currentPassword) },
+    { label: "One number", valid: /[0-9]/.test(currentPassword) },
+    {
+      label: "One special character",
+      valid: /[#?!@$%^&*-]/.test(currentPassword),
+    },
+  ];
 
   const url = import.meta.env.VITE_AUTH_URL;
 
@@ -165,9 +179,12 @@ const SignUp = ({ isPage = true }) => {
       console.log("Signup Response:", response.data);
 
       if (response.data.status === "success") {
-        console.log("forward Url:", response.data.forward_url)
+        console.log("forward Url:", response.data.forward_url);
         if (response.data.forward_url) {
-          sessionStorage.setItem("signup_forward_url", response.data.forward_url);
+          sessionStorage.setItem(
+            "signup_forward_url",
+            response.data.forward_url,
+          );
         } else if (from) {
           sessionStorage.setItem("signup_forward_url", from);
         }
@@ -303,6 +320,7 @@ const SignUp = ({ isPage = true }) => {
         subtitle="Use your email to sign up"
         isMobileStacked={true}
         isPage={isPage}
+        alignTop={true}
       >
         <Form {...form}>
           <form ref={formRef} onSubmit={form.handleSubmit(handleSubmit)}>
@@ -377,7 +395,13 @@ const SignUp = ({ isPage = true }) => {
                   name="password"
                   control={form.control}
                   placeholder=""
-                  onFocus={handleInputFocus}
+                  onFocus={(e) => {
+                    handleInputFocus(e);
+                    setIsPasswordFocused(true);
+                  }}
+                  onBlur={() => {
+                    setIsPasswordFocused(false);
+                  }}
                   absoluteError
                 />
                 <PasswordInput
@@ -387,10 +411,47 @@ const SignUp = ({ isPage = true }) => {
                   name="confirmPassword"
                   control={form.control}
                   placeholder=""
-                  onFocus={handleInputFocus}
+                  onFocus={(e) => {
+                    handleInputFocus(e);
+                    setIsPasswordFocused(true);
+                  }}
+                  onBlur={() => {
+                    setIsPasswordFocused(false);
+                  }}
                   absoluteError
                 />
               </div>
+
+              <div
+                className={`grid transition-all duration-300 ease-in-out ${
+                  isPasswordFocused
+                    ? "mb-4 mt-2 grid-rows-[1fr] opacity-100"
+                    : "mb-0 mt-0 grid-rows-[0fr] opacity-0"
+                }`}
+              >
+                <div className="overflow-hidden">
+                  <div className="flex flex-col gap-2 rounded-md border border-gray-100 bg-gray-50 p-4">
+                    <p className="mb-1 text-xs font-semibold text-gray-700">
+                      Password must contain:
+                    </p>
+                    {passwordRequirements.map((req, idx) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        {req.valid ? (
+                          <CheckCircle2 className="h-4 w-4 text-green-600 transition-colors duration-300" />
+                        ) : (
+                          <Circle className="h-4 w-4 text-gray-300 transition-colors duration-300" />
+                        )}
+                        <span
+                          className={`text-xs transition-colors duration-300 ${req.valid ? "text-green-700" : "text-gray-500"}`}
+                        >
+                          {req.label}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
               <FormInput
                 label="Referral Code (Optional)"
                 name="referralCode"
@@ -445,7 +506,13 @@ const SignUp = ({ isPage = true }) => {
             Already have an account?
           </span>
           <Link
-            to={route("/login", courseId, courseTitle) + (_r ? (courseId || courseTitle ? "&" : "?") + `_r=${encodeURIComponent(_r)}` : "")}
+            to={
+              route("/login", courseId, courseTitle) +
+              (_r
+                ? (courseId || courseTitle ? "&" : "?") +
+                  `_r=${encodeURIComponent(_r)}`
+                : "")
+            }
             className="text-sm font-semibold capitalize text-primary-color-600"
           >
             sign in

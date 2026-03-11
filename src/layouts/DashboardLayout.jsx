@@ -2,11 +2,13 @@ import DashboardNav from "@/Components/dashboard/DashboardNav";
 import DashboardSideNav from "@/Components/dashboard/DashboardSideNav";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { useUnreadNotificationsPrompt } from "@/hooks/students/use-unread-notifications-prompt";
 
 import { Outlet, ScrollRestoration } from "react-router-dom";
 
 const DashboardLayout = ({ userInfo }) => {
   const [toggleNav, setToggleNav] = useState(true);
+  useUnreadNotificationsPrompt();
 
   return (
     <div className="relative">

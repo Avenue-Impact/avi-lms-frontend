@@ -1,6 +1,7 @@
 
 
 export const formatDate = (date, showTime = true) => {
+  if (!date) return "TBA";
   const createdAt = new Date(date);
   const locale = navigator.language;
 

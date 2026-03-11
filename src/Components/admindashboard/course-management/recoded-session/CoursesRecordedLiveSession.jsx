@@ -137,9 +137,11 @@ const CoursesRecordedLiveSession = () => {
                                 <p className="text-sm font-light text-[#98A2B3]">
                                   {formatDate(item.created_at)}{" "}
                                   <span>
-                                    {Number.parseFloat(
-                                      item.video_url.size,
-                                    ).toFixed(2)}
+                                    {item.video_url?.size
+                                      ? Number.parseFloat(
+                                          item.video_url.size,
+                                        ).toFixed(2)
+                                      : "0.00"}
                                     MB
                                   </span>
                                 </p>

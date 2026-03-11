@@ -10,7 +10,7 @@ export const getProjectGroups = async (courseId, cohortId) => {
   //      localStorage.getItem("fetch-all-admin-courses") || "{}",
   //     );
   
-  // https://avi-lms-backend.onrender.com/api/v1/admins/courses/:courseId/cohorts/:cohortId/projects/groups
+  // https://avi-lms-backend.onrender.com/api/v1/courses/:courseId/cohorts/:cohortId/projects/groups
   const response = await axios.get(
     `${BASE_URL}/courses/${courseId}/cohorts/${cohortId}/projects/groups/`,
     {

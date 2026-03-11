@@ -1,18 +1,11 @@
 import { BASE_URL } from "@/constant";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-import Cookies from "js-cookie";
-import toast from "react-hot-toast";
+import { axiosAdmin } from "@/services/api";
 
 const addStudentApi = async ({ data, courseId, cohortId }) => {
-  return await axios.post(
-    `${BASE_URL}/courses/${courseId}/cohorts/${cohortId}/enrolled-students`,
+  return await axiosAdmin.post(
+    `/courses/${courseId}/cohorts/${cohortId}/enrolled-students`,
     data,
-    {
-      headers: {
-        Authorization: `Bearer ${Cookies.get("adminToken")}`,
-      },
-    },
   );
 };
 

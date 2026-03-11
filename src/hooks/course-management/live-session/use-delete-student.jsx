@@ -1,19 +1,12 @@
 import { BASE_URL } from "@/constant";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-import Cookies from "js-cookie";
-import toast from "react-hot-toast";
+import { axiosAdmin } from "@/services/api";
 
 const deleteStudentApi = async ({ data, courseId, cohortId }) => {
-  const token = Cookies.get("adminToken");
-
-  return await axios.delete(
-    `${BASE_URL}/admins/courses/${courseId}/cohorts/${cohortId}/enrolled-students`,
+  return await axiosAdmin.delete(
+    `/courses/${courseId}/cohorts/${cohortId}/enrolled-students`,
     {
       data,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     },
   );
 };

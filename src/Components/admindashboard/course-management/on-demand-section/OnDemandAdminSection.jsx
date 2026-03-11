@@ -13,7 +13,7 @@ function OnDemandAdminSection({
   data,
   setSectionDetails,
   setEdit,
-  setVideoId,
+  setVideoUrl,
 }) {
   const [active, setActive] = useState("1");
   const [videoActive, setVideoActive] = useState("");
@@ -79,7 +79,7 @@ function OnDemandAdminSection({
                           section: section.section,
                           videoTitle: video.video_title,
                         }));
-                        setVideoId(video.id);
+                        setVideoUrl(video.video_url);
                         setVideoActive(video.id);
                       }}
                     >

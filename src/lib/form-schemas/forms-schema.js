@@ -72,7 +72,6 @@ export const liveSessionSchema = z.object({
 
   time: z.string({ message: "This field is required" }),
   meetingDate: z.string({ message: "This field is required" }),
-  startedFrom: z.string({ message: "This field is required" }),
 });
 
 export const editLiveSessionSchema = z.object({
@@ -96,6 +95,7 @@ export const courseTypeSchema = z.object({
     .min(1, { message: "this field is required" }),
   time: z.string({ message: "This field is required" }),
   timezone: z.string({ message: "This field is required" }),
+  startDate: z.string({ message: "This field is required" }),
   discountType: z.string({ message: "This field is required" }),
   discountValue: z.string({ message: "This field is required" }),
 });

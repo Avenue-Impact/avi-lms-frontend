@@ -1,4 +1,3 @@
-import { useStreamVideo } from "@/hooks/course-management/on-demand-section/use-stream-ondemand-video";
 import { useViewCourseSections } from "@/hooks/students/use-course-secion-view";
 import { Loader2, FileText, Download } from "lucide-react";
 import {
@@ -22,132 +21,33 @@ import { cn } from "@/lib/utils";
 import Assignment from "../../pages/dashboard/Assignment";
 
 function CourseVideoSection({ data }) {
-  const { sectionDetails, videoId } = useViewCourseSections();
-  const [activeTab, setActiveTab] = useState("shared_documents");
+  const { sectionDetails, videoUrl } = useViewCourseSections();
+  const [activeTab, setActiveTab] = useState("assignment");
 
   return (
-    <section className="flex flex-col h-full">
+    <section className="flex h-full flex-col">
       <div className="mb-6 text-center md:text-left">
-        <p className="text-sm text-gray-500 mb-2">Business Analyst Recordings</p>
-        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-[#111827] leading-tight">
-          {sectionDetails.topic || "21 Jul 2025 Introduction to Business Analysis (Taster Session Recording Plus Success Stories)"}
+        <p className="mb-2 text-lg text-gray-500">
+          Section {sectionDetails.section} {sectionDetails.topic}
+        </p>
+        <h1 className="text-2xl font-bold leading-tight text-[#111827] md:text-3xl lg:text-4xl">
+          {sectionDetails.videoTitle ||
+            "21 Jul 2025 Introduction to Business Analysis (Taster Session Recording Plus Success Stories)"}
         </h1>
       </div>
-      <div className="overflow-hidden rounded-[10px] w-full max-w-[800px] mb-8">
+      <div className="mb-8 w-full max-w-[1020px] overflow-hidden rounded-[10px]">
         <PreviewVideo
-          videoId={videoId}
+          videoUrl={videoUrl}
           section={sectionDetails.section}
           cohortId={data?.data?.data?.cohort_id}
         />
       </div>
-
-      {/* Tabs Navigation */}
-      <div className="flex border-b border-gray-200 mb-6">
-        {["Shared documents", "Assignment", "Overview"].map((tab) => {
-          const tabKey = tab.toLowerCase().replace(" ", "_");
-          return (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tabKey)}
-              className={cn(
-                "pb-3 px-1 mr-8 text-sm font-medium transition-colors relative",
-                activeTab === tabKey
-                  ? "text-primary-color-600"
-                  : "text-gray-500 hover:text-gray-700"
-              )}
-            >
-              {tab}
-              {activeTab === tabKey && (
-                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary-color-600 rounded-t-full" />
-              )}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Tabs Content */}
-      <div className="min-h-[200px]">
-        {activeTab === "shared_documents" && (
-          <div className="">
-            <h3 className="text-lg font-semibold mb-4">Shared Documents</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {/* Mock Documents - In real app, map from data */}
-              {[1, 2, 3, 4, 5, 6].map((item) => (
-                <div key={item} className="flex flex-col gap-2">
-                   {/* Document Card */}
-                   <div className="relative group rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow h-40 bg-gray-50 flex items-center justify-center border border-gray-100">
-                      {/* Document Icon Placeholder */}
-                      <div className={`w-16 h-20 rounded shadow-sm flex items-center justify-center ${item % 2 === 0 ? 'bg-blue-100 text-blue-600' : 'bg-red-100 text-red-600'}`}>
-                         <FileText size={32} />
-                         {item % 2 === 0 ? <span className="absolute font-bold text-[10px] mt-1">DOCX</span> : <span className="absolute font-bold text-[10px] mt-1">PDF</span>}
-                      </div>
-
-                      {/* Download Button Overlay */}
-                      <a href="#" className="absolute bottom-2 right-2 p-2 bg-white rounded-full shadow-sm hover:bg-gray-50 text-gray-600">
-                        <Download size={16} />
-                      </a>
-                   </div>
-                   <p className="text-xs text-gray-600 line-clamp-2">Materials for Project Consultant Training Programme</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {activeTab === "assignment" && (
-          <div className="py-6">
-            <Assignment
-              data={data?.data?.data}
-              assignmentDetails={sectionDetails.assignment}
-            />
-          </div>
-        )}
-
-        {activeTab === "overview" && (
-          <div className="text-gray-600 space-y-4">
-             <p className="leading-relaxed">
-               {data?.data?.data?.overview || 
-               "In this section, we dive deep into the core concepts of Project Consulting. You will learn about the roles and responsibilities, key skills required for success, and the latest industry trends. This foundational knowledge is crucial for your journey as a successful Project Consultant."}
-             </p>
-          </div>
-        )}
-      </div>
-
     </section>
   );
 }
 
-const PreviewVideo = ({ videoId, section, cohortId }) => {
-  const { courseId } = useParams();
-
-  const [currentRange, setCurrentRange] = useState("bytes=0-1048575"); // Initial range
+const PreviewVideo = ({ videoUrl }) => {
   const [waiting, setWaiting] = useState(false);
-
-  const { data, isLoading, error } = useStreamVideo(
-    courseId,
-    section,
-    videoId,
-    currentRange,
-    cohortId,
-  );
-
-  if (isLoading) {
-    return (
-      <div className="max-h-[690px] w-full text-white">
-        <Skeleton className="h-[400px] w-full" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex h-[400px] items-center justify-center">
-        <p className="text-lg font-semibold text-primary-color-500">
-          Unable to load video. Please check your connection or try again later.
-        </p>
-      </div>
-    );
-  }
 
   return (
     <div className="relative">
@@ -166,7 +66,7 @@ const PreviewVideo = ({ videoId, section, cohortId }) => {
       >
         <ReactPlayer
           slot="media"
-          src={data?.data?.data?.videoUrl}
+          src={videoUrl}
           controls={false}
           onSeeking={() => {
             setWaiting(true);

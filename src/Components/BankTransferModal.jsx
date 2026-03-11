@@ -76,21 +76,21 @@ const BankTransferModal = ({ isOpen, onClose, transactionId, enrollmentId, bankD
                 <div className="mb-6 rounded-lg border border-gray-100 p-4 shadow-sm">
                     <div className="grid grid-cols-2 gap-y-4">
                          <div>
-                            <p className="text-xs text-gray-400">Account number</p>
+                             <p className="text-xs text-gray-400">Account number</p>
                             <div className="flex items-center gap-1">
-                                <span className="font-bold text-gray-800">{bankDetails?.accountNumber || '0028811110'}</span>
-                                <svg className="h-4 w-4 text-gray-400 cursor-pointer hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" onClick={() => {navigator.clipboard.writeText(bankDetails?.accountNumber); toast.success('Copied!');}}>
+                                <span className="font-bold text-gray-800">{bankDetails?.accountNumber || '1000204205'}</span>
+                                <svg className="h-4 w-4 text-gray-400 cursor-pointer hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" onClick={() => {navigator.clipboard.writeText(bankDetails?.accountNumber || '1000204205'); toast.success('Copied!');}}>
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                 </svg>
                             </div>
                         </div>
                         <div className="text-right">
                              <p className="text-xs text-gray-400">Bank name</p>
-                             <p className="font-bold text-gray-800">{bankDetails?.bankName || 'GT Bank'}</p>
+                             <p className="font-bold text-gray-800">{bankDetails?.bankName || 'Globus Bank'}</p>
                         </div>
                         <div>
                              <p className="text-xs text-gray-400">Account name</p>
-                             <p className="font-bold text-gray-800">{bankDetails?.accountName || 'Avenue Impact'}</p>
+                             <p className="font-bold text-gray-800">{bankDetails?.accountName || 'AVENUE IMPACT CONSULTING NIGERIA LIMITED'}</p>
                         </div>
                          <div className="col-span-2 mt-2">
                              <input 
@@ -118,6 +118,7 @@ const BankTransferModal = ({ isOpen, onClose, transactionId, enrollmentId, bankD
                         id="confirm-transfer" 
                         checked={confirmed}
                         onChange={(e) => setConfirmed(e.target.checked)}
+                        required={true}
                         className="h-4 w-4 rounded border-gray-300 text-[#CC1747] focus:ring-[#CC1747]"
                     />
                     <label htmlFor="confirm-transfer" className="text-xs text-gray-500 select-none cursor-pointer">

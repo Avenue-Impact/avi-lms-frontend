@@ -22,7 +22,6 @@ const PreviewVideoCourse = () => {
   let { courseId } = useParams();
   const { previewCourse } = usePreviewCourses(courseId);
 
-
   return (
     <>
       <ScrollRestoration />
@@ -43,7 +42,7 @@ const PreviewVideoCourse = () => {
                 </div>
 
                 <div className="mx-auto flex flex-col items-center justify-center lg:text-center">
-                  <p className="pb-6 text-[24px] font-[300] text-[white] lg:text-[40px] truncate">
+                  <p className="truncate pb-6 text-[24px] font-[300] text-[white] lg:text-[40px]">
                     {previewCourse?.data?.data.course.title ?? ""}
                   </p>
 
@@ -118,30 +117,16 @@ const PreviewVideoCourse = () => {
   );
 };
 
-const PreviewVideo = ({ videoUrl, coverImage }) => {
-  const [videoLoaded, setVideoLoaded] = useState(false);
+import VideoPlayer from "@/Components/VideoPlayer";
 
+const PreviewVideo = ({ videoUrl, coverImage }) => {
   return (
-    <div className="relative max-h-[699px] w-full overflow-hidden shadow-lg lg:rounded-3xl bg-black">
-      {!videoLoaded && coverImage && (
-        <img
-          src={coverImage}
-          alt="Course Preview"
-          className="absolute inset-0 h-full w-full object-cover z-10 pointer-events-none"
-        />
-      )}
-      <video
-        src={videoUrl}
-        poster={coverImage}
-        controls
-        autoPlay
-        onLoadedData={() => setVideoLoaded(true)}
-        className="max-h-[699px] w-full object-cover shadow-lg lg:rounded-3xl"
-      />
-    </div>
+    <VideoPlayer
+      videoUrl={videoUrl}
+      coverImage={coverImage}
+      className="max-h-[699px] shadow-lg lg:rounded-3xl"
+    />
   );
 };
-
-
 
 export default PreviewVideoCourse;

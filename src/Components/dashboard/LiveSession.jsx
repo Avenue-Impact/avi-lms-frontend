@@ -14,57 +14,63 @@ function LiveSession({ data }) {
 
   const [isActive, setIsActive] = useState(false);
 
-  const {
-    title,
-    description,
-    password,
-    start_time,
-  } = data?.data?.course_detail?.live_session ?? {};
+  const { title, description, password, class_date, class_day, id } =
+    data?.data?.course_detail?.live_session ?? {};
 
-  // Example logic to determine if session is active 
+  // Example logic to determine if session is active
   // (In real scenario, compare current time with start/end_date)
   useEffect(() => {
-    setIsActive(data?.data?.course_detail?.live_session?.cohort_id ? true : false); 
+    setIsActive(
+      data?.data?.course_detail?.live_session?.cohort_id ? true : false,
+    );
   }, []);
 
   return (
-    <div className="mb-6 flex flex-col justify-between h-full min-h-[75vh]">
+    <div className="mb-6 flex h-full min-h-[75vh] flex-col justify-between">
       <div>
         <div className="pb-4">
-          <p className="text-sm md:text-base font-normal text-tertiary-color-700">
+          <p className="text-sm font-normal text-tertiary-color-700 md:text-base">
             Join Live Sessions
           </p>
         </div>
         <section className="mt-2 md:mt-4">
-          <h2 className="text-3xl md:text-[40px] font-bold capitalize text-[#111827] leading-tight md:leading-[1.2]">
+          <h2 className="text-3xl font-bold capitalize leading-tight text-[#111827] md:text-[40px] md:leading-[1.2]">
             {title || "Business AnalysisLive Session"}
           </h2>
-          <p className="mt-4 md:mt-6 text-base md:text-[18px] font-normal text-[#374151]">
-            {description || "Become a Business Analyst/Agile Consultant (Live Session)"}
+          <p className="mt-4 text-base font-normal text-[#374151] md:mt-6 md:text-[18px]">
+            {description ||
+              "Become a Business Analyst/Agile Consultant (Live Session)"}
           </p>
           <div className="mt-8 space-y-4">
-            <p className="text-sm md:text-base text-[#374151]">
-              <span className="font-bold text-[#111827]">Started From:</span> {start_time ? formatDate(start_time, true) : "November 12, 2025"}
+            <p className="text-sm text-[#374151] md:text-base">
+              <span className="font-bold text-[#111827]">Class day:</span>{" "}
+              {class_day}
             </p>
-            <p className="text-sm md:text-base text-[#374151]">
-              <span className="font-bold text-[#111827]">Meeting Date:</span> {start_time ? formatDate(start_time, true) : "January 15, 2026"}
+            <p className="text-sm text-[#374151] md:text-base">
+              <span className="font-bold text-[#111827]">Class Date:</span>{" "}
+              {formatDate(class_date, true)}
             </p>
-            <p className="text-sm md:text-base text-[#374151]">
+            <p className="text-sm text-[#374151] md:text-base">
               <span className="font-bold text-[#111827]">Add to:</span>{" "}
-              <a href="#" className="text-primary-color-600 hover:underline">Google Calendar</a>,{" "}
-              <a href="#" className="text-primary-color-600 hover:underline">iCal Export</a>
+              <a href="#" className="text-primary-color-600 hover:underline">
+                Google Calendar
+              </a>
+              ,{" "}
+              <a href="#" className="text-primary-color-600 hover:underline">
+                iCal Export
+              </a>
             </p>
           </div>
 
           <div className="mt-8">
             {isActive ? (
               <CommonButton
-                className="rounded-md bg-[#111827] px-6 py-6 text-base font-medium text-white hover:bg-gray-800 w-full sm:w-auto"
+                className="w-full rounded-md bg-[#111827] px-6 py-6 text-base font-medium text-white hover:bg-gray-800 sm:w-auto"
                 onClick={() =>
                   navigate(
                     `/user/meeting/${courseId}?cohortId=${
-                      data?.data?.course_detail?.live_session?.cohort_id
-                    }&title=${queryString.get("title")}`,
+                      courseId
+                    }&title=${queryString.get("title")}&sessionId=${id}`,
                   )
                 }
               >
@@ -73,7 +79,7 @@ function LiveSession({ data }) {
             ) : (
               <button
                 disabled
-                className="rounded-md bg-[#DFDDDF] px-6 py-4 text-base font-bold text-[#111827] w-full sm:w-auto"
+                className="w-full rounded-md bg-[#DFDDDF] px-6 py-4 text-base font-bold text-[#111827] sm:w-auto"
               >
                 Meeting hasn’t Started Yet
               </button>

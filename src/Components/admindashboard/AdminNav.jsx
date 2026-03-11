@@ -11,14 +11,14 @@ function AdminNav({ children }) {
     <nav className="flex items-center justify-between border-b border-b-[#E4E7EC] py-3">
       <div>{children}</div>
       <div className="flex items-center gap-4">
-        <span>
-          <NavLink to="/admin/notification">
-            <BellIcon size={15} />
-          </NavLink>
-          {/* <p className="absolute right-60 top-5 rounded-full bg-red-800 px-2 text-[12px] text-white">
-            {data?.data?.data?.length}
-          </p> */}
-        </span>
+        <NavLink to="/admin/notification" className="relative mt-1">
+          <BellIcon size={20} />
+          {data?.data?.data?.length > 0 && (
+            <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white">
+              {data.data.data.length}
+            </span>
+          )}
+        </NavLink>
         <Avatar>
           <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
           <AvatarFallback>ms</AvatarFallback>

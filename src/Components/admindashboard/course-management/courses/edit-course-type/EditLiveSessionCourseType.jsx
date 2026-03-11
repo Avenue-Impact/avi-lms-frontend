@@ -110,6 +110,7 @@ const EditLiveSessionCourseType = ({
         time: convertTo12Hour(data.time), // Convert to "7:00pm" format
         timezone: data.timezone,
         cohort,
+        start_date: data.startDate,
         year: 2025,
         currency: "Pounds",
         currency_symbol: "£",
@@ -157,6 +158,10 @@ const EditLiveSessionCourseType = ({
       : null;
   const checkFormat = priceInfo?.time ? priceInfo.time.endsWith("am") : false;
 
+  const existingStartDate = existingCohorts?.[0]?.start_date
+    ? new Date(existingCohorts[0].start_date).toISOString().split("T")[0]
+    : "";
+
   const form = useForm({
     resolver: zodResolver(courseTypeSchema),
     defaultValues: {
@@ -165,6 +170,7 @@ const EditLiveSessionCourseType = ({
       coursePrice: priceInfo?.original_price?.amount || 0,
       time: convertTo24Hour(priceInfo?.time) || "13:00",
       timezone: priceInfo?.timezone || "UTC",
+      startDate: existingStartDate,
       discountType: priceInfo?.discount_type || "None",
       discountValue: priceInfo?.discount_value || 0,
     },
@@ -310,25 +316,51 @@ const EditLiveSessionCourseType = ({
                     name="timezone"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-base font-[500] text-[#344054] block mb-2">Timezone</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                        <FormLabel className="mb-2 block text-base font-[500] text-[#344054]">
+                          Timezone
+                        </FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          value={field.value}
+                        >
                           <FormControl>
-                            <SelectTrigger className="w-full rounded border border-gray-300 p-2 h-[42px]">
+                            <SelectTrigger className="h-[42px] w-full rounded border border-gray-300 p-2">
                               <SelectValue placeholder="Select timezone" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent className="max-h-[300px]">
                             <SelectItem value="UTC">UTC (GMT)</SelectItem>
-                            <SelectItem value="Europe/London">London (GMT/BST)</SelectItem>
-                            <SelectItem value="America/New_York">New York (EST/EDT)</SelectItem>
-                            <SelectItem value="America/Chicago">Chicago (CST/CDT)</SelectItem>
-                            <SelectItem value="America/Denver">Denver (MST/MDT)</SelectItem>
-                            <SelectItem value="America/Los_Angeles">Los Angeles (PST/PDT)</SelectItem>
-                            <SelectItem value="Asia/Dubai">Dubai (GST)</SelectItem>
-                            <SelectItem value="Africa/Lagos">Lagos (WAT)</SelectItem>
-                            <SelectItem value="Asia/Kolkata">India (IST)</SelectItem>
-                            <SelectItem value="Asia/Singapore">Singapore (SGT)</SelectItem>
-                            <SelectItem value="Australia/Sydney">Sydney (AEST/AEDT)</SelectItem>
+                            <SelectItem value="Europe/London">
+                              London (GMT/BST)
+                            </SelectItem>
+                            <SelectItem value="America/New_York">
+                              New York (EST/EDT)
+                            </SelectItem>
+                            <SelectItem value="America/Chicago">
+                              Chicago (CST/CDT)
+                            </SelectItem>
+                            <SelectItem value="America/Denver">
+                              Denver (MST/MDT)
+                            </SelectItem>
+                            <SelectItem value="America/Los_Angeles">
+                              Los Angeles (PST/PDT)
+                            </SelectItem>
+                            <SelectItem value="Asia/Dubai">
+                              Dubai (GST)
+                            </SelectItem>
+                            <SelectItem value="Africa/Lagos">
+                              Lagos (WAT)
+                            </SelectItem>
+                            <SelectItem value="Asia/Kolkata">
+                              India (IST)
+                            </SelectItem>
+                            <SelectItem value="Asia/Singapore">
+                              Singapore (SGT)
+                            </SelectItem>
+                            <SelectItem value="Australia/Sydney">
+                              Sydney (AEST/AEDT)
+                            </SelectItem>
                             {/* Feel free to add more static commonly supported IANA timezones here */}
                           </SelectContent>
                         </Select>
@@ -337,6 +369,19 @@ const EditLiveSessionCourseType = ({
                     )}
                   />
                 </div>
+              </div>
+
+              {/* Start Date */}
+              <div className="flex-1">
+                <FormInput
+                  label={"Start Date"}
+                  className="w-full rounded border border-gray-300 p-2"
+                  type="date"
+                  control={form.control}
+                  name="startDate"
+                  labelClass={"text-base font-medium"}
+                  id="startDate"
+                />
               </div>
 
               <div className="w-full pt-9">

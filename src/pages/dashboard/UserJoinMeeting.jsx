@@ -13,8 +13,9 @@ const UserJoinMeeting = () => {
   const { courseId } = useParams();
 
   const cohortId = queryString.get("cohortId");
+  const sessionId = queryString.get("sessionId");
 
-  const { isLoading, data, error } = useJoinSession(courseId, cohortId);
+  const { isLoading, data, error } = useJoinSession(courseId, cohortId, sessionId);
 
 
   
@@ -39,6 +40,7 @@ const UserJoinMeeting = () => {
           signature={data?.data?.data?.signature}
           apiKey={`${import.meta.env.VITE_ZOOM_API_KEY}`}
           password={data?.data?.data?.password}
+          zak={data?.data?.data?.accessToken}
           obfToken={data?.data?.data?.obfToken} 
           leaveUrl={`${userBaseUrl}/dashboard/${courseId}/live?title=${queryString.get("title")}`}
           userEmail={

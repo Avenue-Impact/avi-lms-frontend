@@ -85,7 +85,7 @@
 //       //   }),
 //       // });
 //       const req = await axios.get(
-//         `https://avi-lms-backend.onrender.com/api/v1/admins/courses/6725c38cf96fa51479095277/cohorts/6725c3aff96fa5147909527f/live-session/start`,
+//         `https://avi-lms-backend.onrender.com/api/v1/courses/6725c38cf96fa51479095277/cohorts/6725c3aff96fa5147909527f/live-session/start`,
 //         {
 //           headers: {
 //             Authorization:

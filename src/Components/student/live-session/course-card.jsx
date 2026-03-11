@@ -13,8 +13,10 @@ const LiveSessionCourseCard = ({
 }) => {
   return (
     <div className="overflow-hidden rounded-t-lg bg-[rgb(252,252,252)]">
-      <Link to={`/dashboard/${courseId}/live?title=${title}`}>
-       {/* <Link to={`/dashboard-s/course-details`}> */}
+      <Link
+        to={`/dashboard/${courseId}/live?title=${title}&cohortId=${cohortId}`}
+      >
+        {/* <Link to={`/dashboard-s/course-details`}> */}
         <div className="rounded-lg bg-[rgb(252,252,252)] shadow-md">
           <div className="h-[90px] w-full overflow-hidden rounded-t-lg md:h-[120px] lg:h-[190px] xl:h-[206px]">
             <img
@@ -43,7 +45,7 @@ const LiveSessionCourseCard = ({
           <div className="flex items-center justify-between px-[7px] pb-2">
             <p className="text-[10px]">{courseProgress}</p>
           </div>
-          <button className="w-full bg-[#E11D48] text-white py-2 rounded-md font-medium text-sm hover:bg-rose-700 transition-colors">
+          <button className="w-full rounded-md bg-[#E11D48] py-2 text-sm font-medium text-white transition-colors hover:bg-rose-700">
             Get Started
           </button>
         </div>
