@@ -111,6 +111,7 @@ import AdminMeeting from "./pages/admin-pages/meeting/AdminMeeting";
 import UserJoinMeeting from "./pages/dashboard/UserJoinMeeting";
 import PreviewCourse from "./pages/previewCourse";
 import PreviewVideoCourse from "./pages/previewVideoCourse";
+import VideoManagement from "./pages/admin-pages/data-management/VideoManagement";
 
 import AdminErrorPage from "./admin-error-page";
 import DashboardErrorPage from "./dashboard-error-page";
@@ -564,6 +565,10 @@ function App() {
                     {
                       path: "all-student",
                       element: <AllStudent />,
+                    },
+                    {
+                      path: "videos",
+                      element: <VideoManagement />,
                     },
                     // {
                     //   path: "student-details/:studentId",

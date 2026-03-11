@@ -193,3 +193,16 @@ export const getSectionVideos = async (courseId, cohortId, sectionId) => {
     `/courses/${courseId}/cohorts/${cohortId}/recorded-sessions/${sectionId}/videos`
   );
 };
+
+// Video Management API calls
+export const createVideo = async (data) => {
+  return await axiosAdmin.post("/video/uploads", data);
+};
+
+export const updateVideo = async ({ id, data }) => {
+  return await axiosAdmin.patch(`/video/${id}`, data);
+};
+
+export const deleteVideo = async (id) => {
+  return await axiosAdmin.delete(`/video/${id}`);
+};
