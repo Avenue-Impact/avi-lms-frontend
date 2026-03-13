@@ -203,3 +203,10 @@ export const updateVideo = async ({ id, data }) => {
 export const deleteVideo = async (id) => {
   return await axiosAdmin.delete(`/video/${id}`);
 };
+
+export const toggleCohortLive = async ({ courseId, cohortId, is_live }) => {
+  return await axiosAdmin.patch(
+    `/courses/${courseId}/cohorts/${cohortId}`,
+    { is_live }
+  );
+};
