@@ -1,5 +1,11 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckCircle, faArrowLeft, faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheckCircle,
+  faArrowLeft,
+  faChevronDown,
+  faChevronUp,
+  faSearch,
+} from "@fortawesome/free-solid-svg-icons";
 import styles from "./pages.module.css";
 // import joinTeam from "../assets/video/homeBG.mp4";
 import CourseCard from "../Components/CourseCard";
@@ -57,6 +63,22 @@ const PreviewCourse = () => {
     ? `/signup?id=${courseId}&title=${previewCourse?.data?.data.course.title}`
     : `/preview-video-course/${courseId}/enroll?title=${previewCourse?.data?.data.course.title}`;
 
+  const [searchInput, setSearchInput] = useState("");
+
+  const handleSearchNavigation = () => {
+    if (searchInput.trim()) {
+      navigate(
+        `/discover-courses?search=${encodeURIComponent(searchInput.trim())}`,
+      );
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSearchNavigation();
+    }
+  };
+
   return (
     <>
       <ScrollRestoration />
@@ -72,8 +94,8 @@ const PreviewCourse = () => {
         <div className={cn(styles.checkout_courses, "")}>
           <div className="">
             {user && (
-              <div className="hidden sml:block w-full pb-3 pt-3">
-                <section className="w-[90%] mx-auto flex items-center justify-between">
+              <div className="hidden w-full pb-3 pt-3 sml:block">
+                <section className="mx-auto flex w-[90%] items-center justify-between">
                   <div>
                     <Link to="/dashboard" className="cursor-pointer">
                       <DarkLogo />
@@ -81,30 +103,48 @@ const PreviewCourse = () => {
                   </div>
 
                   <div className="flex items-center gap-4">
-                    <div className={`${styles.checkoutCourses1} hidden md:block`}>
+                    <div
+                      className={`${styles.checkoutCourses1} hidden md:block`}
+                    >
                       <p className="font-normal text-[#23314A]">
                         Search for more courses
                       </p>
                     </div>
-                    <div className={styles.checkoutCourses2}>
+                    <div
+                      className={cn(
+                        styles.checkoutCourses2,
+                        "relative flex items-center",
+                      )}
+                    >
                       <input
                         type="text"
-                        className={styles.inputField}
+                        className={cn(styles.inputField, "pr-10")}
                         placeholder="Search courses..."
+                        value={searchInput}
+                        onChange={(e) => setSearchInput(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                      />
+                      <FontAwesomeIcon
+                        icon={faSearch}
+                        className="absolute right-3 cursor-pointer text-gray-500 hover:text-primary-color-600"
+                        onClick={handleSearchNavigation}
                       />
                     </div>
                   </div>
                 </section>
                 {/* Border Line */}
-                <div className="hidden h-[1px] w-full bg-[#C7D7F4] lg:block mt-2 mb-0" />
+                <div className="mb-0 mt-2 hidden h-[1px] w-full bg-[#C7D7F4] lg:block" />
               </div>
             )}
 
             <div className="bg-[#23314A] pb-1">
               {/* Back Button for Mobile View */}
-              <div className="pt-4 pb-8 px-5">
+              <div className="px-5 pb-8 pt-4">
                 <div className="mb-4 flex items-center">
-                  <button onClick={() => navigate(-1)} className="text-white hover:text-[#bebcbc]">
+                  <button
+                    onClick={() => navigate(-1)}
+                    className="text-white hover:text-[#bebcbc]"
+                  >
                     <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
                   </button>
                 </div>
@@ -116,7 +156,7 @@ const PreviewCourse = () => {
                   >
                     <div className={`${styles.project_consult1} lg:w-3/4`}>
                       <p className="text-[24px] font-normal lg:text-[40px]">
-                        Project Consultant Training Programme (Bundle)
+                        {previewCourse?.data?.data.course.title}
                       </p>
 
                       <div className="flex items-center py-2 text-lg">
@@ -124,7 +164,7 @@ const PreviewCourse = () => {
                         <div>
                           <RenderStars />
                         </div>
-                        <p>43,55</p>
+                        <p>43.55</p>
                       </div>
 
                       <div className="text-white">
@@ -133,56 +173,72 @@ const PreviewCourse = () => {
                           {isLoading
                             ? "loading"
                             : previewCourse?.data?.data.course.course_includes.map(
-                              (feature, index) => (
-                                <li key={index} className="mb-2">
+                                (feature, index) => (
+                                  <li key={index} className="mb-2">
+                                    <FontAwesomeIcon
+                                      icon={faCheckCircle}
+                                      className="mr-2"
+                                    />
+                                    <span>{feature}</span>
+                                  </li>
+                                ),
+                              )}
+                        </ul>
+                      </div>
+
+                      {/* Available Course Types Display */}
+                      {!isLoading &&
+                        previewCourse?.data?.data?.course
+                          ?.available_course_types && (
+                          <div className="mt-4 text-white">
+                            <p className="py-2 text-2xl">
+                              Available Course Format:
+                            </p>
+                            <ul className="m-0 list-none p-0">
+                              {previewCourse.data.data.course
+                                .available_course_types.live_session && (
+                                <li className="mb-2">
                                   <FontAwesomeIcon
                                     icon={faCheckCircle}
                                     className="mr-2"
                                   />
-                                  <span>{feature}</span>
+                                  <span>Live Session</span>
                                 </li>
-                              ),
-                            )}
-                        </ul>
-                      </div>
-
-
-                      {/* Available Course Types Display */}
-                      {!isLoading && previewCourse?.data?.data?.course?.available_course_types && (
-                        <div className="text-white mt-4">
-                          <p className="py-2 text-2xl">Available Course Format:</p>
-                          <ul className="m-0 list-none p-0">
-                            {previewCourse.data.data.course.available_course_types.live_session && (
-                              <li className="mb-2">
-                                <FontAwesomeIcon icon={faCheckCircle} className="mr-2" />
-                                <span>Live Session</span>
-                              </li>
-                            )}
-                            {previewCourse.data.data.course.available_course_types.on_demand && (
-                              <li className="mb-2">
-                                <FontAwesomeIcon icon={faCheckCircle} className="mr-2" />
-                                <span>On-Demand</span>
-                              </li>
-                            )}
-                          </ul>
-                        </div>
-                      )}
+                              )}
+                              {previewCourse.data.data.course
+                                .available_course_types.on_demand && (
+                                <li className="mb-2">
+                                  <FontAwesomeIcon
+                                    icon={faCheckCircle}
+                                    className="mr-2"
+                                  />
+                                  <span>On-Demand</span>
+                                </li>
+                              )}
+                            </ul>
+                          </div>
+                        )}
                     </div>
 
                     <div className={styles.project_consult1}>
                       {/* Show Enroll button only if at least one type is true */}
-                      {(!isLoading && previewCourse?.data?.data?.course?.available_course_types && (
-                        previewCourse.data.data.course.available_course_types.on_demand ||
-                        previewCourse.data.data.course.available_course_types.live_session
-                      )) && (
-                        <CourseCardPreview
-                          imgSrc={previewCourse?.data?.data.course.cover_image}
-                          previewButtonText={"Enroll now"}
-                          path={path}
-                          loading={isLoading}
-                          courseId={previewCourse?.data?.data.course.id}
-                        />
-                      )}
+                      {!isLoading &&
+                        previewCourse?.data?.data?.course
+                          ?.available_course_types &&
+                        (previewCourse.data.data.course.available_course_types
+                          .on_demand ||
+                          previewCourse.data.data.course.available_course_types
+                            .live_session) && (
+                          <CourseCardPreview
+                            imgSrc={
+                              previewCourse?.data?.data.course.cover_image
+                            }
+                            previewButtonText={"Enroll now"}
+                            path={path}
+                            loading={isLoading}
+                            courseId={previewCourse?.data?.data.course.id}
+                          />
+                        )}
                     </div>
                   </div>
                 </div>
@@ -262,7 +318,8 @@ const PreviewCourse = () => {
               <div className="grid grid-cols-2 gap-5 md:gap-5 lg:grid-cols-4 lg:gap-[18.34px]">
                 {isFetching ? (
                   <p>Loading...</p>
-                ) : Array.isArray(data?.data?.data?.courses) && data.data.data.courses.length > 0 ? (
+                ) : Array.isArray(data?.data?.data?.courses) &&
+                  data.data.data.courses.length > 0 ? (
                   data.data.data.courses.map((course) => (
                     <CourseCard
                       key={course.id}
@@ -451,17 +508,19 @@ const Overview = ({ overview, loading }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div className={`${styles.overviewCourses1} text-justify text-[#667185] mb-6`}>
-      <div 
-        className="flex items-center justify-between cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors"
+    <div
+      className={`${styles.overviewCourses1} mb-6 text-justify text-[#667185]`}
+    >
+      <div
+        className="flex cursor-pointer items-center justify-between rounded p-2 transition-colors hover:bg-gray-50"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <p className="text-[24px] font-[300] capitalize lg:text-[40px]">
           Overview
         </p>
-        <FontAwesomeIcon 
-          icon={isExpanded ? faChevronUp : faChevronDown} 
-          className="text-[#667185] text-lg"
+        <FontAwesomeIcon
+          icon={isExpanded ? faChevronUp : faChevronDown}
+          className="text-lg text-[#667185]"
         />
       </div>
       <div className="mt-2 hidden h-[1px] w-full bg-[#C7D7F4] lg:block" />
@@ -469,10 +528,10 @@ const Overview = ({ overview, loading }) => {
       {loading ? (
         <Skeleton className={"mt-2 h-[209px] w-full"} />
       ) : (
-        <div className={`pt-3 lg:pt-9 transition-all duration-300 ${isExpanded ? 'block' : 'hidden'}`}>
-          <p className="text-[16px] font-[300] lg:text-[18px]">
-            {overview}
-          </p>
+        <div
+          className={`pt-3 transition-all duration-300 lg:pt-9 ${isExpanded ? "block" : "hidden"}`}
+        >
+          <p className="text-[16px] font-[300] lg:text-[18px]">{overview}</p>
         </div>
       )}
     </div>
@@ -483,24 +542,26 @@ const ProgramHighlights = ({ programHighlights, loading }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div className={`${styles.overviewCourses1} text-[#667185] mb-6`}>
-      <div 
-        className="flex items-center justify-between cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors"
+    <div className={`${styles.overviewCourses1} mb-6 text-[#667185]`}>
+      <div
+        className="flex cursor-pointer items-center justify-between rounded p-2 transition-colors hover:bg-gray-50"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <p className="text-[24px] font-[300] capitalize lg:text-[40px]">
           Programme Highlights:
         </p>
-        <FontAwesomeIcon 
-          icon={isExpanded ? faChevronUp : faChevronDown} 
-          className="text-[#667185] text-lg"
+        <FontAwesomeIcon
+          icon={isExpanded ? faChevronUp : faChevronDown}
+          className="text-lg text-[#667185]"
         />
       </div>
       <div className="mt-2 hidden h-[1px] w-full bg-[#C7D7F4] lg:block" />
       {loading ? (
         <Skeleton className={"mt-2 h-[209px] w-full"} />
       ) : (
-        <div className={`pt-3 lg:pt-9 transition-all duration-300 ${isExpanded ? 'block' : 'hidden'}`}>
+        <div
+          className={`pt-3 transition-all duration-300 lg:pt-9 ${isExpanded ? "block" : "hidden"}`}
+        >
           {programHighlights.map((program_highlight, index) => (
             <div
               key={index}
@@ -513,7 +574,9 @@ const ProgramHighlights = ({ programHighlights, loading }) => {
                 imgClass={"self-start mt-[6px]"}
               >
                 <ul>
-                  <li className="list-none normal-case">{program_highlight}</li>{" "}
+                  <li className="list-none normal-case">
+                    {program_highlight}
+                  </li>{" "}
                 </ul>
               </AvenueList>
             </div>
@@ -528,17 +591,19 @@ const Benefit = ({ benefits, loading }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div className={`${styles.overviewCourses1} text-justify text-[#667185] mb-6`}>
-      <div 
-        className="flex items-center justify-between cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors"
+    <div
+      className={`${styles.overviewCourses1} mb-6 text-justify text-[#667185]`}
+    >
+      <div
+        className="flex cursor-pointer items-center justify-between rounded p-2 transition-colors hover:bg-gray-50"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <p className="text-[24px] font-[300] capitalize lg:text-[40px]">
           Benefit
         </p>
-        <FontAwesomeIcon 
-          icon={isExpanded ? faChevronUp : faChevronDown} 
-          className="text-[#667185] text-lg"
+        <FontAwesomeIcon
+          icon={isExpanded ? faChevronUp : faChevronDown}
+          className="text-lg text-[#667185]"
         />
       </div>
 
@@ -546,7 +611,9 @@ const Benefit = ({ benefits, loading }) => {
       {loading ? (
         <Skeleton className={"mt-2 h-[209px] w-full"} />
       ) : (
-        <div className={`pt-3 lg:pt-9 transition-all duration-300 ${isExpanded ? 'block' : 'hidden'}`}>
+        <div
+          className={`pt-3 transition-all duration-300 lg:pt-9 ${isExpanded ? "block" : "hidden"}`}
+        >
           {benefits.map((benefit, index) => (
             <div
               key={index}
@@ -574,17 +641,17 @@ const Tools = ({ tech, loading }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div className={`${styles.overviewCourses1} text-[#667185] mb-6`}>
-      <div 
-        className="flex items-center justify-between cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors"
+    <div className={`${styles.overviewCourses1} mb-6 text-[#667185]`}>
+      <div
+        className="flex cursor-pointer items-center justify-between rounded p-2 transition-colors hover:bg-gray-50"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <p className="text-[24px] font-[300] lg:text-[40px]">
           Tools and Technologies:
         </p>
-        <FontAwesomeIcon 
-          icon={isExpanded ? faChevronUp : faChevronDown} 
-          className="text-[#667185] text-lg"
+        <FontAwesomeIcon
+          icon={isExpanded ? faChevronUp : faChevronDown}
+          className="text-lg text-[#667185]"
         />
       </div>
 
@@ -592,7 +659,9 @@ const Tools = ({ tech, loading }) => {
       {loading ? (
         <Skeleton className={"mt-2 h-[209px] w-full"} />
       ) : (
-        <div className={`pt-3 lg:pt-9 transition-all duration-300 ${isExpanded ? 'block' : 'hidden'}`}>
+        <div
+          className={`pt-3 transition-all duration-300 lg:pt-9 ${isExpanded ? "block" : "hidden"}`}
+        >
           {tech.map((tool_and_technology, index) => (
             <div
               key={index}
