@@ -11,6 +11,7 @@ import { useRemoveFromWishlist } from "@/hooks/students/use-remove-from-wishlist
 import BankTransferModal from "../../../Components/BankTransferModal";
 import PaymentPlanModal from "../../../Components/PaymentPlanModal";
 import PaymentMethodModal from "../../../Components/PaymentMethodModal";
+import InstallmentModal from "../../../Components/InstallmentModal";
 import toast from "react-hot-toast";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -19,11 +20,13 @@ import Cookies from "js-cookie";
 
 const LivePayment = ({ courseData }) => {
   const [showPlanModal, setShowPlanModal] = useState(false);
+  const [showInstallmentModal, setShowInstallmentModal] = useState(false);
   const [showMethodModal, setShowMethodModal] = useState(false);
   const [showBankModal, setShowBankModal] = useState(false);
   
   const [selectedCourseId, setSelectedCourseId] = useState("");
   const [selectedPlan, setSelectedPlan] = useState('full'); // 'full' or 'installment'
+  const [installmentData, setInstallmentData] = useState(null);
   const [selectedGateway, setSelectedGateway] = useState("");
   const [bankTransferData, setBankTransferData] = useState(null);
   
@@ -65,12 +68,18 @@ const LivePayment = ({ courseData }) => {
   };
 
   const handleSelectPlan = (plan) => {
-      if (plan === 'installment') {
-          toast.error("feature not available yet");
-          return;
-      }
       setSelectedPlan(plan);
       setShowPlanModal(false);
+      if (plan === 'installment') {
+          setShowInstallmentModal(true);
+      } else {
+          setShowMethodModal(true);
+      }
+  };
+
+  const handleInstallmentProceed = (data) => {
+      setInstallmentData(data);
+      setShowInstallmentModal(false);
       setShowMethodModal(true);
   };
 
@@ -122,6 +131,12 @@ const LivePayment = ({ courseData }) => {
                 access_type: ["live class"],
                 live_class_cohort: selectedCohort?.cohort,
                 gateway: gatewayToUse,
+                payment_plan: selectedPlan,
+                ...(selectedPlan === 'installment' && installmentData ? {
+                    installment_duration: installmentData.duration,
+                    auto_deduct: installmentData.autoDeduct,
+                    first_payment_date: installmentData.startDate
+                } : {}),
                 ...(appliedPromo && { promocode: appliedPromo.promo.code })
             },
             courseId,
@@ -267,6 +282,14 @@ const LivePayment = ({ courseData }) => {
           currencySymbol={currencySymbol}
           price={Math.round(discounted_price)}
           installmentPrice={installmentPrice}
+      />
+
+      <InstallmentModal
+          isOpen={showInstallmentModal}
+          onClose={() => setShowInstallmentModal(false)}
+          onProceed={handleInstallmentProceed}
+          currencySymbol={currencySymbol}
+          price={Math.round(discounted_price)}
       />
 
       <PaymentMethodModal 

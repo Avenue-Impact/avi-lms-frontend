@@ -16,7 +16,7 @@
 // export default RootLayout; 
 
 
-import { Outlet } from "react-router-dom";
+import { Outlet, ScrollRestoration } from "react-router-dom";
 import ReferralBonusModal from "../Components/ReferralBonusModal";
 import Cookies from "js-cookie";
 
@@ -25,6 +25,7 @@ const RootLayout = () => {
   const user = Boolean(token);
   return (
     <>
+      <ScrollRestoration />
       <Outlet />
       {user && <ReferralBonusModal />}
     </>

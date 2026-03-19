@@ -5,6 +5,7 @@ import { useViewCourseSections } from "@/hooks/students/use-course-secion-view";
 import { useCourseData } from "@/hooks/use-course-data";
 import { CourseSectionViewProvider } from "@/providers/course-section-view-provider";
 import { VideoOff } from "lucide-react";
+import CourseNavigation from "@/Components/dashboard/CourseNavigation";
 
 function LiveSessionView({ editButton = false }) {
   const { data } = useCourseData();
@@ -34,6 +35,10 @@ function LiveSessionView({ editButton = false }) {
             </div>
           ))}
         {session === "recorded" && <CourseVideoSection data={data} />}
+        
+        <div className="col-span-full">
+          <CourseNavigation cohortId={data?.data?.data?.cohort_id} />
+        </div>
       </main>
 
       <aside

@@ -66,7 +66,7 @@ const Login = () => {
             `/preview-video-course/${courseId}/enroll?title=${courseTitle}`,
           );
         } else {
-          navigate(from);
+          navigate(data.forward_url || from);
         }
       },
       onError: (err) => {

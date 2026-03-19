@@ -84,6 +84,7 @@ import ProjectArea from "./pages/admin-pages/project-area/ProjectArea";
 
 import ViewDetails from "./Components/admindashboard/financial-aid/ViewDetails";
 
+import AdminMeeting from "./pages/admin-pages/meeting/AdminMeeting";
 import CourseInfomation from "./pages/admin-pages/course-management/CourseInfomation";
 
 import AdminCertificateLayout from "./layouts/admin/AdminCertificateLayout";
@@ -107,7 +108,11 @@ import DataManagementPage from "./pages/admin-pages/data-management/DataManageme
 import EditGroupPage from "./Components/admindashboard/project-area/EditGroupPage";
 import GroupDetails from "./Components/admindashboard/project-area/GroupDetails";
 import AdminConfirmationRole from "./pages/admin-pages/account-managemnet/AdminConfirmationRole";
-import AdminMeeting from "./pages/admin-pages/meeting/AdminMeeting";
+import InstructorDashboard from "./pages/instructor/InstructorDashboard";
+import InstructorLayout from "./layouts/InstructorLayout";
+import CohortManagement from "./pages/instructor/CohortManagement";
+import AssignmentManagement from "./pages/instructor/AssignmentManagement";
+import InstructorErrorPage from "./instructor-error-page";
 import UserJoinMeeting from "./pages/dashboard/UserJoinMeeting";
 import PreviewCourse from "./pages/previewCourse";
 import PreviewVideoCourse from "./pages/previewVideoCourse";
@@ -126,7 +131,6 @@ import ReviewMainPage from "./pages/admin-pages/reviews/ReviewMainPage";
 import { elements } from "chart.js";
 import Dashbaord from "./pages/dashbaord";
 import LoadingPage from "./Components/LoadingPage";
-
 
 const queryClient = new QueryClient();
 
@@ -271,7 +275,6 @@ function App() {
             },
           ],
         },
-
 
         {
           element: <SampleCourseDetailDashboard />,
@@ -623,6 +626,33 @@ function App() {
                 {
                   path: "*",
                   element: <AdminErrorPage />,
+                },
+              ],
+            },
+          ],
+        },
+        // instructor routes
+        {
+          element: (
+            <ProtectedRoute tokin={"adminToken"} path={"/admin/login"} />
+          ),
+          errorElement: <InstructorErrorPage />,
+          children: [
+            {
+              element: <InstructorLayout />,
+              path: "/instructor",
+              children: [
+                {
+                  index: true,
+                  element: <InstructorDashboard />,
+                },
+                {
+                  path: "cohort/:cohortId",
+                  element: <CohortManagement />,
+                },
+                {
+                  path: "cohort/:cohortId/assignments",
+                  element: <AssignmentManagement />,
                 },
               ],
             },

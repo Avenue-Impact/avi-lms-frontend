@@ -19,11 +19,11 @@ function EnrolledSectionItem({
   section,
   active,
   setActive,
-  videoActive,
-  setvideoActive,
+  videoId,
   setSectionDetails,
   setSession,
   setVideoUrl,
+  setVideoId,
   setSectionActive,
   cohortId,
   courseId,
@@ -90,7 +90,7 @@ function EnrolledSectionItem({
         </div>
       ) : (
         videos.map((video, i) => {
-          const isActiveVideo = videoActive === video.id;
+          const isActiveVideo = videoId === video.id;
           return (
             <AccordionContent
               key={video._id}
@@ -108,7 +108,7 @@ function EnrolledSectionItem({
                 }));
                 setSession("recorded");
                 setVideoUrl(video.video_url);
-                setvideoActive(video._id);
+                setVideoId(video._id);
               }}
             >
               <div
@@ -133,12 +133,14 @@ function EnrolledSectionItem({
 }
 
 function CourseSection({ editButton, data }) {
-  const [active, setActive] = useState("1");
-  const [videoActive, setvideoActive] = useState("");
   const {
     setSession,
     setSectionDetails,
     setVideoUrl,
+    videoId,
+    setVideoId,
+    active,
+    setActive,
     setSectionActive,
     setSections,
   } = useViewCourseSections();
@@ -210,18 +212,18 @@ function CourseSection({ editButton, data }) {
             <p>No sections yet...</p>
           </div>
         ) : (
-          <Accordion type="single" collapsible className="w-full">
+          <Accordion type="single" collapsible value={active} onValueChange={setActive} className="w-full">
             {data?.data?.course_detail?.recorded_session?.map((section) => (
               <EnrolledSectionItem
                 key={section.id}
                 section={section}
                 active={active}
                 setActive={setActive}
-                videoActive={videoActive}
-                setvideoActive={setvideoActive}
+                videoId={videoId}
                 setSectionDetails={setSectionDetails}
                 setSession={setSession}
                 setVideoUrl={setVideoUrl}
+                setVideoId={setVideoId}
                 setSectionActive={setSectionActive}
                 cohortId={cohortId}
                 courseId={courseId}

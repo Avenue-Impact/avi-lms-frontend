@@ -2,7 +2,7 @@ import { useStartLiveSession } from "@/hooks/course-management/live-session/use-
 import { useParams, useSearchParams } from "react-router-dom";
 import StartMeeting from "./StartMeeting";
 
-const AdminStartLiveSession = () => {
+const AdminMeeting = () => {
   // const [meetingDetails, setMeetingDetails] = useState(null);
   // const [courseId, setCourseId] = useState("672f600db2f3905e23f914e6");
   // const [cohortId, setCohortId] = useState("6732f2f47a0ce8a492cc36e1");
@@ -10,7 +10,11 @@ const AdminStartLiveSession = () => {
   const [queryString] = useSearchParams();
   const cohortId = queryString.get("cohortId");
   const sessionId = queryString.get("sessionId");
-  const { data, isLoading, error } = useStartLiveSession(courseId, cohortId, sessionId);
+  const { data, isLoading, error } = useStartLiveSession(
+    courseId,
+    cohortId,
+    sessionId,
+  );
 
   // const handleStartSession = async () => {
   //   try {
@@ -54,4 +58,4 @@ const AdminStartLiveSession = () => {
   }
 };
 
-export default AdminStartLiveSession;
+export default AdminMeeting;

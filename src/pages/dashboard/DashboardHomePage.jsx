@@ -30,6 +30,16 @@ import { useNavigate } from "react-router-dom";
 const DashBoardHomePage = () => {
   const [modal, setShowModal] = useState(false);
 
+  const { data: liveData } = useQuery(liveSessionDetailQuery());
+  const { data: onDemandData } = useQuery(recordedSessionDetailQuery());
+  
+  const liveCourses = liveData?.data?.data?.courses || [];
+  const onDemandCourses = onDemandData?.data?.data?.courses || [];
+  const allCourses = [...liveCourses, ...onDemandCourses];
+
+  const completedCount = allCourses.filter((c) => c.progress >= 99).length;
+  const inProgressCount = allCourses.filter((c) => (c.progress > 0 || c.last_watched_video_id) && c.progress < 99).length;
+
   return (
     <div>
       <div className="flex">
@@ -51,11 +61,11 @@ const DashBoardHomePage = () => {
           <div className="flex w-full justify-around gap-2 md:w-3/5">
             <div className="flex-1 rounded-lg border-2 border-gray-300 bg-white p-4 lg:mx-2">
               <p className="text-[14px] text-gray-600">Completed Courses</p>
-              <h1 className="pt-4 text-6xl font-[500]">0</h1>
+              <h1 className="pt-4 text-6xl font-[500]">{completedCount}</h1>
             </div>
             <div className="flex-1 rounded-lg border-2 border-gray-300 bg-white p-4 lg:mx-2">
               <p className="text-[14px] text-gray-600">In Progress Courses</p>
-              <h1 className="pt-4 text-6xl font-[500]">0</h1>
+              <h1 className="pt-4 text-6xl font-[500]">{inProgressCount}</h1>
             </div>
           </div>
         </div>
@@ -164,6 +174,8 @@ const OnDemandSessionCourses = () => {
                 progress={course.progress}
                 review={"200"}
                 courseId={course.id}
+                is_access_revoked={course.is_access_revoked}
+                last_watched_video_id={course.last_watched_video_id}
               />
             );
           })}
@@ -201,9 +213,12 @@ const LiveSessionCourses = () => {
               title={course?.title}
               rating={Number(course?.average_rating || 0).toFixed(1)}
               numRatings="45,345"
-              courseProgress="0% in progress"
+              courseProgress={course.progress > 0 ? `${Math.round(course.progress)}% Completed` : "Not Started"}
+              progress={course.progress}
               review={course?.total_reviews || 0}
               courseId={course?.id || course?.courseId}
+              is_access_revoked={course?.is_access_revoked}
+              last_watched_video_id={course?.last_watched_video_id}
             />
           );
         })}
