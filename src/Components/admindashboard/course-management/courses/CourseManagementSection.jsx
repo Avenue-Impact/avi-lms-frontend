@@ -4,12 +4,13 @@ import { useGetSingleCohort } from "@/hooks/course-management/use-get-singleCoho
 import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/format-date";
 import { useState } from "react";
+import { useToggleCohortLive } from "@/hooks/course-management/use-toggle-cohort-live";
+import { Loader2, AlertTriangle } from "lucide-react";
 import liveSession from "../../../../assets/images/dashboard/live-session.png";
 import EditLiveSessionForm from "../live-session/EditLiveSession";
 import EditLiveSession from "../live-session/EditLiveSession";
 import { Skeleton } from "@/Components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
-import { Loader2 } from "lucide-react";
 import ReactPlayer from "react-player";
 import {
   MediaControlBar,
@@ -98,6 +99,8 @@ const LiveContent = ({ data }) => {
   const navigate = useNavigate();
   const cohortId = queryString.get("cohortId");
 
+  const { toggleLive, isToggling } = useToggleCohortLive(courseId, cohortId);
+
   const {
     title,
     live: isLive,
@@ -160,6 +163,54 @@ const LiveContent = ({ data }) => {
             >
               Join Meeting
             </CommonButton>
+
+            {/* Toggle Live Session */}
+            <div className="mt-10 rounded-lg border border-yellow-200 bg-yellow-50 p-6">
+              <div className="mb-4 flex items-center justify-between">
+                <div>
+                  <h3 className="flex items-center gap-2 text-lg font-semibold text-yellow-800">
+                    <AlertTriangle className="h-5 w-5" />
+                    Toggle Live Session Status
+                  </h3>
+                  <p className="mt-1 text-sm text-yellow-700">
+                    If toggled off, automatic Zoom meeting creation and
+                    reminders will be ended for this cohort.
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span
+                    className={cn(
+                      "text-sm font-medium",
+                      data?.data?.data?.is_live
+                        ? "text-green-600"
+                        : "text-red-600",
+                    )}
+                  >
+                    {data?.data?.data?.is_live ? "Live ON" : "Live OFF"}
+                  </span>
+                  <button
+                    onClick={() => toggleLive(!data?.data?.data?.is_live)}
+                    disabled={isToggling}
+                    className={cn(
+                      "relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none",
+                      data?.data?.data?.is_live
+                        ? "bg-primary-color-600"
+                        : "bg-gray-300",
+                      isToggling && "cursor-not-allowed opacity-50",
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "inline-block h-4 w-4 transform rounded-full bg-white transition-transform",
+                        data?.data?.data?.is_live
+                          ? "translate-x-6"
+                          : "translate-x-1",
+                      )}
+                    />
+                  </button>
+                </div>
+              </div>
+            </div>
           </section>
         </div>
       )}

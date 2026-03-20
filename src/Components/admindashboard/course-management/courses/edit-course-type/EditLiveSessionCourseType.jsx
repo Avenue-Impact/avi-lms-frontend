@@ -66,8 +66,6 @@ const EditLiveSessionCourseType = ({
   const getTime = (timeStr) => {
     const t = timeStr;
     const time = t.slice(0, -2).split(":");
-    console.log({ time });
-    console.log("time string", timeStr);
 
     if (timeStr.includes("am") && timeStr < 10) {
       return `0${time[0]}:${time[1]} for am`;
@@ -78,11 +76,6 @@ const EditLiveSessionCourseType = ({
       return `${Number(time[0]) + 12}:${time[1]} for pm`;
     }
   };
-
-  // console.log(getTime("3:00pm"));
-  // console.log(getTime("3:00am"));
-
-  // console.log("Check the price priceInfo", priceInfo)
 
   const { courseId } = useParams();
 
@@ -131,25 +124,6 @@ const EditLiveSessionCourseType = ({
       },
     );
   };
-
-  //   const handleAddPrice = () => {
-  //     if (!amount || !duration) return;
-
-  //     setDurationPrice((prev) => {
-  //       return [
-  //         ...prev,
-  //         {
-  //           amount: Number(amount),
-  //           duration,
-  //           currency: "Pounds",
-  //           currency_symbol: "£",
-  //         },
-  //       ];
-  //     });
-
-  //     setAmount("");
-  //     setDuration("");
-  //   };
 
   // Only process time if it exists and has am/pm format
   const time =

@@ -9,14 +9,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
 import { FaRegBell } from "react-icons/fa6";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
-import PopUp from "@/Components/dashboard/PopUp";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserProfile } from "@/services/api";
 import { Skeleton } from "@/Components/ui/skeleton";
 import { useFetchAllCourses } from "@/hooks/students/use-fetch-all-courses";
 import joinTeam from "../../assets/images/accordion-img2.png";
 import _ from "lodash";
+import { useSearchParams, Link } from "react-router-dom";
+import PopUp from "@/Components/dashboard/PopUp";
 
 const DiscoverCourses = () => {
   // const [useDemo, setUseDemo] = useState(true); // default to demo mode
@@ -27,7 +27,12 @@ const DiscoverCourses = () => {
     queryKey: ["userProfile"],
     queryFn: fetchUserProfile,
   });
-  const [searchQuery, setSearchQuery] = useState("");
+
+  const [searchParams] = useSearchParams();
+  const initialSearch = searchParams.get("search") || "";
+
+  const [searchQuery, setSearchQuery] = useState(initialSearch);
+  const [inputValue, setInputValue] = useState(initialSearch);
 
   const handleSearch = useCallback(
     _.debounce((query) => {
@@ -37,7 +42,13 @@ const DiscoverCourses = () => {
   );
 
   const handleChange = (event) => {
-    handleSearch(event.target.value);
+    const value = event.target.value;
+    setInputValue(value);
+    handleSearch(value);
+  };
+
+  const handleIconClick = () => {
+    setSearchQuery(inputValue);
   };
 
   // Filter courses by title
@@ -56,17 +67,25 @@ const DiscoverCourses = () => {
           <DarkLogo />
         </Link>
         <div className="hidden w-full max-w-lg items-center rounded-lg bg-white px-4 py-2 lg:flex">
-          <FontAwesomeIcon icon={faSearch} className="text-gray-500" />
+          <FontAwesomeIcon
+            onClick={handleIconClick}
+            icon={faSearch}
+            className="cursor-pointer pr-3 text-gray-500"
+          />
           <input
             placeholder="What do you want to learn?"
             className="flex-grow border-none bg-transparent"
+            value={inputValue}
             onChange={handleChange}
           />
         </div>
         <div className="flex items-center gap-4">
-          {/* <Link to="/discover-courses" className="hidden text-sm md:block">
-            View all Courses..
-          </Link> */}
+          <Link
+            to="/dashboard"
+            className="rounded bg-[#CC1747] px-4 py-2 text-sm text-white"
+          >
+            Dashboard
+          </Link>
           <FontAwesomeIcon
             icon={faSearch}
             className="text-gray-500 md:hidden"

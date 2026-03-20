@@ -82,19 +82,23 @@ const OnDemandSessionCourseType = () => {
     if (durationPrice.length < 1) return setDurationErr("input duration ");
 
     const courseType = {
-      on_demand_session: [...durationPrice],
+      on_demand_session: durationPrice.map(item => ({
+        duration: item.duration,
+        original_price: item.original_price,
+        discounted_price: item.discounted_price,
+        discount_type: item.discount_type,
+        discount_value: item.discount_value,
+      })),
     };
 
     createCourseType(
       {
         data: courseType,
-        courseId:
-          localStorage.getItem("courseId") && localStorage.getItem("courseId"),
+        courseId: localStorage.getItem("courseId"),
       },
       {
         onSuccess: () => {
           setActiveTab((prev) => prev + 1);
-          //   localStorage.setItem("cohorts", cohort);
         },
       },
     );

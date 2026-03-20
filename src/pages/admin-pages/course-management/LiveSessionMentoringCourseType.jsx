@@ -25,6 +25,16 @@ import { cohorts } from "@/lib/cohorts";
 import { cn } from "@/lib/utils";
 import { useCreateCourseType } from "@/hooks/course-management/use-create-course-type";
 import { courseTypeSchema } from "@/lib/form-schemas/forms-schema";
+import WeekdaysSelector from "@/Components/ui/weekday-selector";
+
+const convertTo12Hour = (time24) => {
+  if (!time24) return "";
+  const [hours, minutes] = time24.split(":");
+  const hour = parseInt(hours);
+  const ampm = hour >= 12 ? "pm" : "am";
+  const hour12 = hour % 12 || 12;
+  return `${hour12}:${minutes}${ampm}`;
+};
 
 const LiveSessionMentoringCourseType = () => {
   const savedForm = JSON.parse(localStorage.getItem("liveSessionForm"));
@@ -52,8 +62,9 @@ const LiveSessionMentoringCourseType = () => {
           ? 0
           : Number(data.discountPrice),
         duration: data.duration,
-        time: data.time,
+        time: convertTo12Hour(data.time),
         timezone: data.timezone,
+        start_date: data.startDate,
         cohort,
         year: 2025,
         currency: "Pounds",
@@ -88,6 +99,7 @@ const LiveSessionMentoringCourseType = () => {
       coursePrice: savedForm?.coursePrice || "",
       time: savedForm?.time || "",
       timezone: savedForm?.timezone || "UTC",
+      startDate: savedForm?.startDate || "",
       discountType: savedForm?.discountType || "None",
       discountValue: savedForm?.discountValue || "0",
     },
@@ -198,20 +210,11 @@ const LiveSessionMentoringCourseType = () => {
               {/* Duration and Time */}
               <div className="flex space-x-4">
                 <div>
-                  <FormInput
-                    label={"Duration"}
-                    className="w-full rounded border border-gray-300 p-2"
-                    placeholder="Mon-Fri"
-                    control={form.control}
-                    name="duration"
-                    labelClass={"text-base font-medium"}
-                    id="duration"
-                    type="text"
-                  />
-                  <p className="mb-1 mr-2 flex justify-end font-[500] text-[#667185]">
-                    {`${form.watch("duration") ? form.watch("duration").length : 0}/30`}
-                  </p>
+                  <WeekdaysSelector control={form.control} name="duration" />
                 </div>
+              </div>
+
+              <div className="flex space-x-4">
                 {/* Time (7:00pm default) */}
                 <div className="flex-1">
                   <FormInput
@@ -258,6 +261,19 @@ const LiveSessionMentoringCourseType = () => {
                     )}
                   />
                 </div>
+              </div>
+
+              {/* Start Date */}
+              <div className="flex-1">
+                <FormInput
+                  label={"Start Date"}
+                  className="w-full rounded border border-gray-300 p-2"
+                  type="date"
+                  control={form.control}
+                  name="startDate"
+                  labelClass={"text-base font-medium"}
+                  id="startDate"
+                />
               </div>
 
               <div className="w-full pt-9">
