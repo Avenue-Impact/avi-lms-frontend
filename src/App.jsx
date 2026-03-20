@@ -35,6 +35,7 @@ import DashboardLayout from "./layouts/DashboardLayout";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import Login from "./pages/auth/Login";
 import SignUp from "./pages/auth/Signup";
+import InstructorSignUp from "./pages/auth/InstructorSignUp";
 import DashBoardHomePage from "./pages/dashboard/DashboardHomePage";
 import UserNotification from "./pages/dashboard/UserNotification";
 import Wishlist from "./pages/dashboard/Wishlist";
@@ -112,6 +113,7 @@ import InstructorDashboard from "./pages/instructor/InstructorDashboard";
 import InstructorLayout from "./layouts/InstructorLayout";
 import CohortManagement from "./pages/instructor/CohortManagement";
 import AssignmentManagement from "./pages/instructor/AssignmentManagement";
+import SubmissionReview from "./pages/instructor/SubmissionReview";
 import InstructorErrorPage from "./instructor-error-page";
 import UserJoinMeeting from "./pages/dashboard/UserJoinMeeting";
 import PreviewCourse from "./pages/previewCourse";
@@ -262,6 +264,10 @@ function App() {
                 {
                   path: "/signup",
                   element: <SignUp />,
+                },
+                {
+                  path: "/instructor/signup",
+                  element: <InstructorSignUp />,
                 },
                 {
                   path: "/new-password",
@@ -634,13 +640,13 @@ function App() {
         // instructor routes
         {
           element: (
-            <ProtectedRoute tokin={"adminToken"} path={"/admin/login"} />
+            <ProtectedRoute tokin={"token"} path={"/login"} />
           ),
           errorElement: <InstructorErrorPage />,
           children: [
             {
               element: <InstructorLayout />,
-              path: "/instructor",
+              path: "/instructor/dashboard",
               children: [
                 {
                   index: true,
@@ -653,6 +659,10 @@ function App() {
                 {
                   path: "cohort/:cohortId/assignments",
                   element: <AssignmentManagement />,
+                },
+                {
+                  path: "assignments/:taskId/submissions",
+                  element: <SubmissionReview />,
                 },
               ],
             },

@@ -69,6 +69,45 @@ axiosAdmin.interceptors.response.use(
   },
 );
 
+// Instructor API instance - uses student token, different base URL
+export const axiosInstructor = axios.create({
+  baseURL: `${BASE_URL}`.replace("/admins", "/instructor"),
+  withCredentials: true,
+});
+
+axiosInstructor.interceptors.request.use(
+  (config) => {
+    const token = Cookies.get("token");
+    if (token && token !== "undefined") {
+      config.headers.Authorization = `Bearer ${token}`;
+    } else if (token === "undefined") {
+      Cookies.remove("token");
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+axiosInstructor.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    if (
+      error.response &&
+      (error.response.status === 401 || error.response.status === 403) &&
+      !originalRequest._retry
+    ) {
+      originalRequest._retry = true;
+      Cookies.remove("token");
+      if (!window.location.pathname.includes("/login")) {
+        window.location.href = "/login";
+      }
+      return Promise.reject(error);
+    }
+    return Promise.reject(error);
+  }
+);
+
 export const fetchUserProfile = async () => {
   const token = Cookies.get("token");
 

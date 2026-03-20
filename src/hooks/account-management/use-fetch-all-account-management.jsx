@@ -1,16 +1,9 @@
 import { BASE_URL } from "@/constant";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import Cookies from "js-cookie";
+import { axiosAdmin } from "@/services/api";
 
 const fetchAccountManagement = async () => {
-  const token = Cookies.get("adminToken");
-
-  return await axios.get(BASE_URL, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  return await axiosAdmin.get(BASE_URL);
 };
 
 export const useFetchAccountManagement = () =>

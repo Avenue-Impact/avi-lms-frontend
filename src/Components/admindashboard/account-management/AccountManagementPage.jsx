@@ -71,7 +71,7 @@ function formapateString(dateString) {
   return formattedDate;
 }
 
-const AccountManagementPage = () => {
+const AccountManagementPage = ({ data }) => {
   const [modalDeleteAcc, setModalDeleteAcc] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [adminToEdit, setAdminToEdit] = useState({});
@@ -174,8 +174,8 @@ const AccountManagementPage = () => {
               </div>
             </div>
 
-            <div className="border-grey-300 flex items-center rounded border-2 px-2 ">
-               <span>
+            <div className="border-grey-300 flex items-center rounded border-2 px-2">
+              <span>
                 <svg
                   width="14"
                   height="11"
@@ -284,8 +284,8 @@ const AccountManagementPage = () => {
                       </Select>
                     </div>
                     <p>
-                      {account.joined_date
-                        ? formapateString(account.joined_date)
+                      {account.createdAt
+                        ? formapateString(account.createdAt)
                         : "N/A"}
                     </p>
 

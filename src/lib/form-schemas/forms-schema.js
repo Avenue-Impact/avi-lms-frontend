@@ -127,3 +127,32 @@ export const courseInformationSchema = z.object({
     .max(405, { message: "Highlight  character must not exceed 405 " }),
   url: z.union([z.literal(""), z.string().trim().url()]),
 });
+
+export const instructorInvitationSchema = z.object({
+  first_name: z.string().min(1, { message: "First name is required" }),
+  last_name: z.string().min(1, { message: "Last name is required" }),
+  email: z.string().email({ message: "Invalid email address" }),
+  role: z.literal("Instructor"),
+});
+
+export const instructorRegistrationSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters long" })
+      .regex(/[A-Z]/, {
+        message: "Password must contain at least one uppercase letter",
+      })
+      .regex(/[a-z]/, {
+        message: "Password must contain at least one lowercase letter",
+      })
+      .regex(/[0-9]/, { message: "Password must contain at least one number" })
+      .regex(/[^A-Za-z0-9]/, {
+        message: "Password must contain at least one special character",
+      }),
+    password_confirm: z.string(),
+  })
+  .refine((data) => data.password === data.password_confirm, {
+    message: "Passwords don't match",
+    path: ["password_confirm"],
+  });

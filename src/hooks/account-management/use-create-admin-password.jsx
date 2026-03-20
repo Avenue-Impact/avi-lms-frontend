@@ -5,9 +5,9 @@ import toast from "react-hot-toast";
 
 // const BASE_URL = `https://avi-lms-backend.onrender.com/api/v1/admins`;
 
-const createAdminPassword = async ({ data, code }) =>
+const createAdminPassword = async ({ data, token }) =>
   await axiosAdmin.post(
-    `/auth/create-password?confirm_code=${code}`,
+    `/auth/create-password?token=${token}`,
     data
   );
 
