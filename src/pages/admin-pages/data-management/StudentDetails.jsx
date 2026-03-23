@@ -47,8 +47,6 @@ function formapateString(dateString) {
 
 const StudentDetails = ({ studentId, onBack }) => {
   const { data, isLoading, error } = useFetchStudentEnrollmentStats(studentId);
-  console.log("The student data", data);
-
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error loading student details</p>;
 

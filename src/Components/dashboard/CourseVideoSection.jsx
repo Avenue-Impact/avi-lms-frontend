@@ -19,14 +19,19 @@ import { useParams } from "react-router-dom";
 import { Skeleton } from "../ui/skeleton";
 import { cn } from "@/lib/utils";
 import Assignment from "../../pages/dashboard/Assignment";
+import CourseNavigation from "@/Components/dashboard/CourseNavigation";
+import { useAddVideoProgress } from "@/hooks/students/use-add-video-progress";
+import { useFetchVideoProgress } from "@/hooks/students/use-fetch-video-progress";
+import { useRef, useEffect } from "react";
 
 function CourseVideoSection({ data }) {
-  const { sectionDetails, videoUrl } = useViewCourseSections();
+  const { sectionDetails, videoUrl, videoId } = useViewCourseSections();
+  const { courseId } = useParams();
   const [activeTab, setActiveTab] = useState("assignment");
 
   return (
-    <section className="flex h-full flex-col">
-      <div className="mb-6 text-center md:text-left">
+    <section className="relative flex h-auto flex-col">
+      <div className="mb-3 text-center md:text-left">
         <p className="mb-2 text-lg text-gray-500">
           Section {sectionDetails.section} {sectionDetails.topic}
         </p>
@@ -37,17 +42,91 @@ function CourseVideoSection({ data }) {
       </div>
       <div className="mb-8 w-full max-w-[1020px] overflow-hidden rounded-[10px]">
         <PreviewVideo
+          key={videoId}
+          videoId={videoId}
+          courseId={courseId}
           videoUrl={videoUrl}
           section={sectionDetails.section}
           cohortId={data?.data?.data?.cohort_id}
         />
       </div>
+      {/* <CourseNavigation /> */}
     </section>
   );
 }
 
-const PreviewVideo = ({ videoUrl }) => {
+const PreviewVideo = ({ videoId, videoUrl, courseId }) => {
   const [waiting, setWaiting] = useState(false);
+  const { data: progressData } = useFetchVideoProgress(courseId, videoId);
+  const { mutate: addProgress } = useAddVideoProgress();
+  const lastSavedTime = useRef(0);
+  const playerRef = useRef(null);
+  const hasSeeked = useRef(false);
+
+  // Sync on mount - seek to last watched position
+  useEffect(() => {
+    if (progressData?.data?.current_time && playerRef.current && !hasSeeked.current) {
+      playerRef.current.seekTo(progressData.data.current_time, "seconds");
+      lastSavedTime.current = progressData.data.current_time;
+      hasSeeked.current = true;
+    }
+  }, [progressData, videoId]);
+
+  // Fail-safe sync on tab close / visibility change
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden" && playerRef.current) {
+        handlePause();
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, [videoId, courseId]);
+
+  const handleProgress = (progress) => {
+    if (!videoId || !courseId) return;
+
+    const currentTime = progress.playedSeconds;
+    // Debounce updates so we only blast the backend every 10 seconds sequentially 
+    // or if the user scrubs heavily backwards
+    if (Math.abs(currentTime - lastSavedTime.current) > 10) {
+      lastSavedTime.current = currentTime;
+      addProgress({
+        courseId,
+        video_id: videoId,
+        current_time: currentTime,
+        progress_percentage: Math.floor(progress.played * 100),
+        is_completed: progress.played > 0.95,
+      });
+    }
+  };
+
+  const handlePause = () => {
+    if (!videoId || !courseId || !playerRef.current) return;
+    const currentTime = playerRef.current.getCurrentTime();
+    const duration = playerRef.current.getDuration();
+    const played = currentTime / duration;
+
+    lastSavedTime.current = currentTime;
+    addProgress({
+      courseId,
+      video_id: videoId,
+      current_time: currentTime,
+      progress_percentage: Math.floor(played * 100),
+      is_completed: played > 0.95,
+    });
+  };
+
+  const handleEnded = () => {
+    if (!videoId || !courseId) return;
+    addProgress({
+      courseId,
+      video_id: videoId,
+      current_time: 0,
+      progress_percentage: 100,
+      is_completed: true,
+    });
+  };
 
   return (
     <div className="relative">
@@ -65,6 +144,7 @@ const PreviewVideo = ({ videoUrl }) => {
         }}
       >
         <ReactPlayer
+          ref={playerRef}
           slot="media"
           src={videoUrl}
           controls={false}
@@ -80,6 +160,9 @@ const PreviewVideo = ({ videoUrl }) => {
           onPlaying={() => {
             setWaiting(false);
           }}
+          onPause={handlePause}
+          onProgress={handleProgress}
+          onEnded={handleEnded}
           style={{
             width: "100%",
             height: "100%",

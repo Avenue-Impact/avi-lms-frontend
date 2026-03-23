@@ -88,10 +88,16 @@ const BankTransferModal = ({ isOpen, onClose, transactionId, enrollmentId, bankD
                              <p className="text-xs text-gray-400">Bank name</p>
                              <p className="font-bold text-gray-800">{bankDetails?.bankName || 'Globus Bank'}</p>
                         </div>
-                        <div>
+                        <div className="col-span-2 sm:col-span-1">
                              <p className="text-xs text-gray-400">Account name</p>
                              <p className="font-bold text-gray-800">{bankDetails?.accountName || 'AVENUE IMPACT CONSULTING NIGERIA LIMITED'}</p>
                         </div>
+                        {bankDetails?.sortCode && (
+                        <div className="col-span-2 sm:col-span-1 text-right">
+                             <p className="text-xs text-gray-400">Sort code</p>
+                             <p className="font-bold text-gray-800">{bankDetails.sortCode}</p>
+                        </div>
+                        )}
                          <div className="col-span-2 mt-2">
                              <input 
                                 id="receipt-upload"

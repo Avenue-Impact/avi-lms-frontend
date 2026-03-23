@@ -1,8 +1,8 @@
 import AdminNav from "@/Components/admindashboard/AdminNav";
 import { useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
-// import { cn } from "@/lib/utils";
+import { Outlet } from "react-router-dom";
 import CreateAdminRole from "@/Components/admindashboard/account-management/CreateAdminRole";
+import InviteInstructor from "@/Components/admindashboard/account-management/InviteInstructor";
 import BorderCard from "@/Components/BorderCard";
 import DashButton from "@/pages/auth/ButtonDash";
 import Modal from "@/pages/auth/components/Modal";
@@ -11,11 +11,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const AccountManagLayout = () => {
   const [adminModal, setAdminModal] = useState(false);
+  const [instructorModal, setInstructorModal] = useState(false);
 
   return (
     <div>
       <AdminNav>
-        <div className="flex items-center gap-8">
+        <div className="flex items-center gap-8 pt-2">
           <p className="text-[20px] font-[500] text-[#344054]">
             List All Admins
           </p>
@@ -25,22 +26,41 @@ const AccountManagLayout = () => {
           >
             <FontAwesomeIcon icon={faPlus} className="mr-2" /> Add New Admin
           </DashButton>
+
+          {/* <DashButton
+            onClick={() => setInstructorModal(true)}
+            className="text-[14px] text-[white]"
+          >
+            <FontAwesomeIcon icon={faPlus} className="mr-2" /> Invite New Instructor
+          </DashButton> */}
         </div>
       </AdminNav>
       <Outlet />
 
       {adminModal && (
         <Modal>
-          <BorderCard className="max-h-[90vh] w-2/5 overflow-y-scroll rounded-lg bg-white p-6 shadow-lg">
+          <BorderCard className="max-h-[90vh] w-[90%] md:w-2/5 overflow-y-scroll rounded-lg bg-white p-6 shadow-lg">
             <button
               className="ml-auto block w-min text-gray-500 hover:text-gray-700 focus:outline-none"
               onClick={() => setAdminModal(false)}
             >
               <FontAwesomeIcon icon={faTimes} />
             </button>
-            <CreateAdminRole setModal={setAdminModal} />
+            <CreateAdminRole setAdminModal={setAdminModal} />
+          </BorderCard>
+        </Modal>
+      )}
 
-            {/* <CreateAdminRole setModal={setAdminModal} /> */}
+      {instructorModal && (
+        <Modal>
+          <BorderCard className="max-h-[90vh] w-[90%] md:w-2/5 overflow-y-scroll rounded-lg bg-white p-6 shadow-lg">
+            <button
+              className="ml-auto block w-min text-gray-500 hover:text-gray-700 focus:outline-none"
+              onClick={() => setInstructorModal(false)}
+            >
+              <FontAwesomeIcon icon={faTimes} />
+            </button>
+            <InviteInstructor setModal={setInstructorModal} />
           </BorderCard>
         </Modal>
       )}

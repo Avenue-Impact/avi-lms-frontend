@@ -11,9 +11,7 @@ import {
 import { CommonButton } from "../ui/button";
 
 function RecordedCourseSection({ editButton, data }) {
-  const [active, setActive] = useState("1");
-  const [videoActive, setvideoActive] = useState("");
-  const { setSession, setSectionDetails, setVideoUrl, setSectionActive } =
+  const { setSession, setSectionDetails, setVideoUrl, setVideoId, videoId, active, setActive, setSectionActive } =
     useViewCourseSections();
 
   useEffect(() => {
@@ -58,7 +56,7 @@ function RecordedCourseSection({ editButton, data }) {
         {data?.data?.data?.on_demand_sections.length < 1 ? (
           <p>No courses yet...</p>
         ) : (
-          <Accordion type="single" collapsible className="w-full space-y-4">
+          <Accordion type="single" collapsible value={active} onValueChange={setActive} className="w-full space-y-4">
             {data?.data?.data?.on_demand_sections.map((section, index) => {
               // Check if this section is currently active (contains the active video or is selected)
               const isSectionActive = active === section._id;
@@ -94,7 +92,7 @@ function RecordedCourseSection({ editButton, data }) {
                   <AccordionContent className="pb-0 pt-2">
                     <div className="ml-1 flex flex-col space-y-4 border-l-2 border-gray-100 pl-4">
                       {section?.videos?.map((video, i) => {
-                        const isVideoActive = videoActive === video._id;
+                        const isVideoActive = videoId === video._id;
                         return (
                           <div
                             key={video._id}
@@ -115,7 +113,7 @@ function RecordedCourseSection({ editButton, data }) {
                               setVideoUrl(
                                 video.video_url?.link || video.video_url,
                               );
-                              setvideoActive(video._id);
+                              setVideoId(video._id);
                             }}
                           >
                             <span

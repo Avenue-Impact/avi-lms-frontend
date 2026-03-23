@@ -35,6 +35,7 @@ import DashboardLayout from "./layouts/DashboardLayout";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import Login from "./pages/auth/Login";
 import SignUp from "./pages/auth/Signup";
+import InstructorSignUp from "./pages/auth/InstructorSignUp";
 import DashBoardHomePage from "./pages/dashboard/DashboardHomePage";
 import UserNotification from "./pages/dashboard/UserNotification";
 import Wishlist from "./pages/dashboard/Wishlist";
@@ -84,6 +85,7 @@ import ProjectArea from "./pages/admin-pages/project-area/ProjectArea";
 
 import ViewDetails from "./Components/admindashboard/financial-aid/ViewDetails";
 
+import AdminMeeting from "./pages/admin-pages/meeting/AdminMeeting";
 import CourseInfomation from "./pages/admin-pages/course-management/CourseInfomation";
 
 import AdminCertificateLayout from "./layouts/admin/AdminCertificateLayout";
@@ -100,6 +102,7 @@ import CourseWorkAreaLayout from "./layouts/admin/CourseWorkAreaLayout";
 import CourseWorkArea from "./pages/admin-pages/course-work-area/CourseWorkArea";
 import CourseWorkAreaDocument from "./pages/admin-pages/course-work-area/CourseWorkAreaDocument";
 import AllStudent from "./pages/admin-pages/data-management/AllStudent";
+import EnrolledStudent from "./pages/admin-pages/data-management/EnrolledStudent";
 import DashboardAnalytics from "./pages/admin-pages/data-management/DashboardAnalytics";
 import DataCourseManagement from "./pages/admin-pages/data-management/DataCourseManagement";
 import DataManagementPage from "./pages/admin-pages/data-management/DataManagementPage";
@@ -107,7 +110,12 @@ import DataManagementPage from "./pages/admin-pages/data-management/DataManageme
 import EditGroupPage from "./Components/admindashboard/project-area/EditGroupPage";
 import GroupDetails from "./Components/admindashboard/project-area/GroupDetails";
 import AdminConfirmationRole from "./pages/admin-pages/account-managemnet/AdminConfirmationRole";
-import AdminMeeting from "./pages/admin-pages/meeting/AdminMeeting";
+import InstructorDashboard from "./pages/instructor/InstructorDashboard";
+import InstructorLayout from "./layouts/InstructorLayout";
+import CohortManagement from "./pages/instructor/CohortManagement";
+import AssignmentManagement from "./pages/instructor/AssignmentManagement";
+import SubmissionReview from "./pages/instructor/SubmissionReview";
+import InstructorErrorPage from "./instructor-error-page";
 import UserJoinMeeting from "./pages/dashboard/UserJoinMeeting";
 import PreviewCourse from "./pages/previewCourse";
 import PreviewVideoCourse from "./pages/previewVideoCourse";
@@ -126,7 +134,6 @@ import ReviewMainPage from "./pages/admin-pages/reviews/ReviewMainPage";
 import { elements } from "chart.js";
 import Dashbaord from "./pages/dashbaord";
 import LoadingPage from "./Components/LoadingPage";
-
 
 const queryClient = new QueryClient();
 
@@ -260,6 +267,10 @@ function App() {
                   element: <SignUp />,
                 },
                 {
+                  path: "/instructor/signup",
+                  element: <InstructorSignUp />,
+                },
+                {
                   path: "/new-password",
                   element: <NewPassword />,
                 },
@@ -271,7 +282,6 @@ function App() {
             },
           ],
         },
-
 
         {
           element: <SampleCourseDetailDashboard />,
@@ -567,6 +577,10 @@ function App() {
                       element: <AllStudent />,
                     },
                     {
+                      path: "enrolled-student",
+                      element: <EnrolledStudent />,
+                    },
+                    {
                       path: "videos",
                       element: <VideoManagement />,
                     },
@@ -623,6 +637,35 @@ function App() {
                 {
                   path: "*",
                   element: <AdminErrorPage />,
+                },
+              ],
+            },
+          ],
+        },
+        // instructor routes
+        {
+          element: <ProtectedRoute tokin={"token"} path={"/login"} />,
+          errorElement: <InstructorErrorPage />,
+          children: [
+            {
+              element: <InstructorLayout />,
+              path: "/instructor/dashboard",
+              children: [
+                {
+                  index: true,
+                  element: <InstructorDashboard />,
+                },
+                {
+                  path: "cohort/:cohortId",
+                  element: <CohortManagement />,
+                },
+                {
+                  path: "cohort/:cohortId/assignments",
+                  element: <AssignmentManagement />,
+                },
+                {
+                  path: "assignments/:taskId/submissions",
+                  element: <SubmissionReview />,
                 },
               ],
             },
