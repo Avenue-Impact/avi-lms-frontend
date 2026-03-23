@@ -27,12 +27,12 @@ const AccountManagLayout = () => {
             <FontAwesomeIcon icon={faPlus} className="mr-2" /> Add New Admin
           </DashButton>
 
-          <DashButton
+          {/* <DashButton
             onClick={() => setInstructorModal(true)}
             className="text-[14px] text-[white]"
           >
             <FontAwesomeIcon icon={faPlus} className="mr-2" /> Invite New Instructor
-          </DashButton>
+          </DashButton> */}
         </div>
       </AdminNav>
       <Outlet />

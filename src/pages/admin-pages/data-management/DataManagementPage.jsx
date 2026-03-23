@@ -26,7 +26,13 @@ function DataManagementPage() {
             onClick={() => navigate("all-student")}
             active={pathname.endsWith("all-student")}
           >
-            all students
+            All students
+          </LinkList>
+          <LinkList
+            onClick={() => navigate("enrolled-student")}
+            active={pathname.endsWith("enrolled-student")}
+          >
+            Enrolled students
           </LinkList>
           <LinkList
             onClick={() => navigate("videos")}

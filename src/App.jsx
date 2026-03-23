@@ -102,6 +102,7 @@ import CourseWorkAreaLayout from "./layouts/admin/CourseWorkAreaLayout";
 import CourseWorkArea from "./pages/admin-pages/course-work-area/CourseWorkArea";
 import CourseWorkAreaDocument from "./pages/admin-pages/course-work-area/CourseWorkAreaDocument";
 import AllStudent from "./pages/admin-pages/data-management/AllStudent";
+import EnrolledStudent from "./pages/admin-pages/data-management/EnrolledStudent";
 import DashboardAnalytics from "./pages/admin-pages/data-management/DashboardAnalytics";
 import DataCourseManagement from "./pages/admin-pages/data-management/DataCourseManagement";
 import DataManagementPage from "./pages/admin-pages/data-management/DataManagementPage";
@@ -576,6 +577,10 @@ function App() {
                       element: <AllStudent />,
                     },
                     {
+                      path: "enrolled-student",
+                      element: <EnrolledStudent />,
+                    },
+                    {
                       path: "videos",
                       element: <VideoManagement />,
                     },
@@ -639,9 +644,7 @@ function App() {
         },
         // instructor routes
         {
-          element: (
-            <ProtectedRoute tokin={"token"} path={"/login"} />
-          ),
+          element: <ProtectedRoute tokin={"token"} path={"/login"} />,
           errorElement: <InstructorErrorPage />,
           children: [
             {
