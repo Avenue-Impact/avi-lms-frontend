@@ -21,14 +21,14 @@ axiosAdmin.interceptors.request.use(
     if (token && token !== "undefined") {
       config.headers.Authorization = `Bearer ${token}`;
     } else if (token === "undefined") {
-       // Cleanup bad cookie
-       Cookies.remove("adminToken");
+      // Cleanup bad cookie
+      Cookies.remove("adminToken");
     }
     return config;
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // Response Interceptor: Handle 401/403 with Silent Refresh
@@ -48,9 +48,9 @@ axiosAdmin.interceptors.response.use(
         // Attempt Silent Refresh
         // We use a separate instance or raw axios to avoid infinite loop with interceptors
         await axios.post(
-            `${BASE_URL}/auth/refresh`,
-            {},
-            { withCredentials: true } // Ensure cookies are sent
+          `${BASE_URL}/auth/refresh`,
+          {},
+          { withCredentials: true }, // Ensure cookies are sent
         );
 
         // If successful, retry original request
@@ -85,7 +85,7 @@ axiosInstructor.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 axiosInstructor.interceptors.response.use(
@@ -105,7 +105,7 @@ axiosInstructor.interceptors.response.use(
       return Promise.reject(error);
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export const fetchUserProfile = async () => {
@@ -135,10 +135,7 @@ export const addCourseInformation = async (data) => {
 };
 
 export const editCourseInformationApi = async ({ data, courseId }) => {
-  return axiosAdmin.patch(
-    `/courses/${courseId}/course-informations`,
-    data
-  );
+  return axiosAdmin.patch(`/courses/${courseId}/course-informations`, data);
 };
 
 export const addCourseType = async ({ data, courseId }) => {
@@ -150,7 +147,7 @@ export const addLiveSession = async ({ courseId, cohortId, ...data }) => {
 
   return await axiosAdmin.post(
     `/courses/${courseId}/live-session/${cohortId}`,
-    data
+    data,
   );
 };
 
@@ -172,9 +169,7 @@ export const fetchDemandCourse = async (courseId) => {
 
 // Fetch course information
 export const fetchCourseInformation = async (courseId) => {
-  return await axiosAdmin.get(
-    `/courses/${courseId}/course-informations`,
-  );
+  return await axiosAdmin.get(`/courses/${courseId}/course-informations`);
 };
 
 // Fetch cohorts
@@ -188,35 +183,48 @@ export const addSingleCohort = async ({ data, courseId }) => {
 };
 
 export const getSingleCohort = async (courseId, cohortId) => {
-  return await axiosAdmin.get(
-    `/courses/${courseId}/cohorts/${cohortId}`,
-  );
+  return await axiosAdmin.get(`/courses/${courseId}/cohorts/${cohortId}`);
 };
 
 export const addRecordedSessionEmpty = async ({ data, courseId, cohortId }) => {
   return await axiosAdmin.post(
     `/courses/${courseId}/cohorts/${cohortId}/recorded-sessions`,
-    data
+    data,
   );
 };
 
-export const addVideosToRecordedSession = async ({ data, courseId, cohortId, sectionId }) => {
+export const addVideosToRecordedSession = async ({
+  data,
+  courseId,
+  cohortId,
+  sectionId,
+}) => {
   return await axiosAdmin.post(
     `/courses/${courseId}/cohorts/${cohortId}/recorded-sessions/${sectionId}/videos`,
-    data
+    data,
   );
 };
 
-export const editRecordingSection = async ({ data, courseId, cohortId, section }) => {
+export const editRecordingSection = async ({
+  data,
+  courseId,
+  cohortId,
+  section,
+}) => {
   return await axiosAdmin.patch(
     `/courses/${courseId}/cohorts/${cohortId}/sections/${section}`,
-    data
+    data,
   );
 };
 
-export const deleteRecordedSessionVideo = async ({ courseId, cohortId, section, recordingId }) => {
+export const deleteRecordedSessionVideo = async ({
+  courseId,
+  cohortId,
+  section,
+  recordingId,
+}) => {
   return await axiosAdmin.delete(
-    `/courses/${courseId}/cohorts/${cohortId}/sections/${section}/recorded-session/${recordingId}`
+    `/courses/${courseId}/cohorts/${cohortId}/sections/${section}/recorded-session/${recordingId}`,
   );
 };
 
@@ -226,7 +234,7 @@ export const getAllVideos = async (page = 1, limit = 20) => {
 
 export const getSectionVideos = async (courseId, cohortId, sectionId) => {
   return await axiosAdmin.get(
-    `/courses/${courseId}/cohorts/${cohortId}/recorded-sessions/${sectionId}/videos`
+    `/courses/${courseId}/cohorts/${cohortId}/recorded-sessions/${sectionId}/videos`,
   );
 };
 
@@ -244,8 +252,33 @@ export const deleteVideo = async (id) => {
 };
 
 export const toggleCohortLive = async ({ courseId, cohortId, is_live }) => {
+  return await axiosAdmin.patch(`/courses/${courseId}/cohorts/${cohortId}`, {
+    is_live,
+  });
+};
+
+export const fetchAdmins = async (page = 1, perPage = 100) => {
+  return await axiosAdmin.get(`?page=${page}&perPage=${perPage}`);
+};
+
+export const assignInstructor = async ({
+  courseId,
+  cohortId,
+  instructor_id,
+}) => {
   return await axiosAdmin.patch(
-    `/courses/${courseId}/cohorts/${cohortId}`,
-    { is_live }
+    `/courses/${courseId}/cohorts/${cohortId}/assign-instructor`,
+    { instructor_id },
+  );
+};
+
+export const updateLiveSessionDetails = async ({
+  cohortId,
+  title,
+  description,
+}) => {
+  return await axiosInstructor.patch(
+    `/cohorts/${cohortId}/live-session/details`,
+    { title, description },
   );
 };

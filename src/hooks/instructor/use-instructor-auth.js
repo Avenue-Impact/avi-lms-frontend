@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { axiosAdmin } from "@/services/api";
+import { axiosInstructor } from "@/services/api";
 
 const fetchMe = async () => {
-  const { data } = await axiosAdmin.get("/me");
+  const { data } = await axiosInstructor.get("/me");
   return data?.data;
 };
 

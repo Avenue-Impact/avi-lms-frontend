@@ -649,18 +649,18 @@ function App() {
           children: [
             {
               element: <InstructorLayout />,
-              path: "/instructor/dashboard",
+              path: "/instructor/",
               children: [
                 {
-                  index: true,
+                  path: "dashboard",
                   element: <InstructorDashboard />,
                 },
                 {
-                  path: "cohort/:cohortId",
+                  path: "cohorts",
                   element: <CohortManagement />,
                 },
                 {
-                  path: "cohort/:cohortId/assignments",
+                  path: "cohorts/:cohortId/assignments",
                   element: <AssignmentManagement />,
                 },
                 {

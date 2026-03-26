@@ -21,3 +21,4 @@ export const useDeleteAdmin = () => {
   });
   return { delAdmin, isPending };
 };
+

@@ -25,27 +25,27 @@ const navItems = [
   {
     text: "Cohorts",
     icon: <Users size={20} />,
-    path: "/instructor/dashboard/cohorts",
+    path: "/instructor/cohorts",
   },
   {
     text: "Submissions",
     icon: <FileCheck size={20} />,
-    path: "/instructor/dashboard/submissions",
+    path: "/instructor/submissions",
   },
   {
     text: "Live Sessions",
     icon: <Video size={20} />,
-    path: "/instructor/dashboard/live-sessions",
+    path: "/instructor/live-sessions",
   },
   {
     text: "Messages",
     icon: <MessageSquare size={20} />,
-    path: "/instructor/dashboard/messages",
+    path: "/instructor/messages",
   },
   {
     text: "Feedbacks",
     icon: <Star size={20} />,
-    path: "/instructor/dashboard/feedbacks",
+    path: "/instructor/feedbacks",
   },
 ];
 
@@ -68,10 +68,7 @@ const InstructorSideNav = () => {
         </p>
       </div>
 
-      <nav className="mt-2 flex-grow overflow-y-auto px-4">
-        <p className="mb-3 px-4 text-[10px] font-semibold uppercase tracking-wider text-gray-400">
-          Main Menu
-        </p>
+      <nav className="mt-2 flex h-full flex-col justify-between overflow-y-auto px-4">
         <ul className="space-y-1">
           {navItems.map((item) => (
             <SidebarItem key={item.path} {...item} />
@@ -79,9 +76,6 @@ const InstructorSideNav = () => {
         </ul>
 
         <div className="mt-6 border-t border-gray-100 pt-6">
-          <p className="mb-3 px-4 text-[10px] font-semibold uppercase tracking-wider text-gray-400">
-            Account
-          </p>
           <ul className="space-y-1">
             <SidebarItem
               text="Account Settings"
@@ -93,7 +87,7 @@ const InstructorSideNav = () => {
       </nav>
 
       {/* User profile + sign out */}
-      <div className="border-t border-gray-100 p-4">
+      <div className="flex w-full items-center justify-between border-t border-gray-100 p-4">
         <div className="mb-2 flex items-center gap-3 px-3 py-2">
           <div className="text-primary-color-700 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-primary-color-100 text-xs font-bold">
             {instructor?.firstname?.[0] || ""}
@@ -114,7 +108,6 @@ const InstructorSideNav = () => {
           className="flex w-full items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium text-red-500 transition-colors hover:bg-red-50"
         >
           <LogOut size={18} />
-          Sign Out
         </button>
       </div>
     </aside>
@@ -131,18 +124,18 @@ const SidebarItem = ({ icon, text, path }) => {
       <NavLink
         to={path}
         className={cn(
-          "flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-all",
+          "flex items-center gap-3 px-4 py-3 text-base transition-all",
           isActive
-            ? "bg-primary-color-600 text-white shadow-sm"
-            : "text-gray-600 hover:bg-gray-50 hover:text-primary-color-600",
+            ? "border-l-4 border-primary-color-600 bg-primary-color-100 text-black"
+            : "text-gray-600 hover:border-l-2 hover:border-primary-color-600 hover:bg-primary-color-100 hover:text-black",
         )}
       >
         <span
           className={cn(
             "transition-colors",
             isActive
-              ? "text-white"
-              : "text-gray-400 group-hover:text-primary-color-600",
+              ? "text-primary-color-600"
+              : "text-gray-400 hover:text-primary-color-600",
           )}
         >
           {icon}
