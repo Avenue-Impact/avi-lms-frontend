@@ -116,6 +116,8 @@ import CohortManagement from "./pages/instructor/CohortManagement";
 import AssignmentManagement from "./pages/instructor/AssignmentManagement";
 import SubmissionReview from "./pages/instructor/SubmissionReview";
 import InstructorErrorPage from "./instructor-error-page";
+import SubmissionsPage from "./pages/instructor/SubmissionsPage";
+import MessagesPage, { FeedbackPage } from "./pages/instructor/MessagesAndFeedback";
 import UserJoinMeeting from "./pages/dashboard/UserJoinMeeting";
 import PreviewCourse from "./pages/previewCourse";
 import PreviewVideoCourse from "./pages/previewVideoCourse";
@@ -666,6 +668,18 @@ function App() {
                 {
                   path: "assignments/:taskId/submissions",
                   element: <SubmissionReview />,
+                },
+                {
+                  path: "submissions",
+                  element: <SubmissionsPage />,
+                },
+                {
+                  path: "messages",
+                  element: <MessagesPage />,
+                },
+                {
+                  path: "feedbacks",
+                  element: <FeedbackPage />,
                 },
               ],
             },

@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { useFetchCohortStudents } from "@/hooks/instructor/use-fetch-cohort-students";
 import { useFetchInstructorCohorts } from "@/hooks/instructor/use-fetch-instructor-cohorts";
+import { transferStudent } from "@/hooks/students/use-enrolled-courses";
 import {
   Users,
   FileText,
@@ -11,6 +12,8 @@ import {
   Search,
   ChevronRight,
   ListFilter,
+  ArrowLeftRight,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -602,6 +605,9 @@ const StudentProfile = ({ student, cohort, onBack }) => {
         </div>
       </div>
 
+      {/* TRANSFER STUDENT ACTION */}
+      <TransferStudentModal student={student} cohort={cohort} />
+
       <div>
         <h3 className="mb-4 text-xl font-black text-[#1A1A2E]">
           Assignment Submissions
@@ -652,3 +658,156 @@ const StudentProfile = ({ student, cohort, onBack }) => {
 };
 
 export default CohortManagement;
+
+// ─────────────────────────────────────────────────────────────
+// TRANSFER STUDENT MODAL
+// Admin-only UI for moving a student from one cohort to another.
+// POSTs to /admin/cohort-transfers which bypasses the course lock.
+// ─────────────────────────────────────────────────────────────
+const TransferStudentModal = ({ student, cohort }) => {
+  const [open, setOpen] = useState(false);
+  const [selectedCohortId, setSelectedCohortId] = useState("");
+  const [reason, setReason] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [feedback, setFeedback] = useState(null); // { type: 'success' | 'error', message }
+
+  // Fetch all cohorts of the same course to build the dropdown
+  const { data: allCohortsData } = useFetchInstructorCohorts();
+  const allCohorts = allCohortsData?.data?.cohorts || [];
+  const courseId = cohort?.course_id?._id || cohort?.course_id;
+  const otherCohorts = allCohorts.filter(
+    (c) =>
+      (c.course_id?._id || c.course_id) === courseId &&
+      (c.id || c._id) !== (cohort.id || cohort._id),
+  );
+
+  const handleTransfer = async () => {
+    if (!selectedCohortId) return;
+    setLoading(true);
+    setFeedback(null);
+    try {
+      const res = await transferStudent({
+        userId: student._id || student.id,
+        newCohortId: selectedCohortId,
+        reason,
+      });
+      setFeedback({
+        type: "success",
+        message: res.data?.data?.warning
+          ? `✓ Transfer complete. Note: ${res.data.data.warning}`
+          : "✓ Student successfully transferred.",
+      });
+      setTimeout(() => setOpen(false), 2000);
+    } catch (err) {
+      setFeedback({
+        type: "error",
+        message:
+          err?.response?.data?.message || "Transfer failed. Please try again.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <>
+      {/* Trigger Button */}
+      <button
+        onClick={() => setOpen(true)}
+        className="mb-6 flex items-center gap-2 rounded-lg border border-[#E5E5E5] bg-white px-4 py-2 text-sm font-bold text-[#1A1A2E] transition-colors hover:border-[#C8102E] hover:text-[#C8102E]"
+      >
+        <ArrowLeftRight size={15} />
+        Transfer to Another Cohort
+      </button>
+
+      {/* Modal Overlay */}
+      {open && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+            {/* Header */}
+            <div className="mb-5 flex items-start justify-between">
+              <div>
+                <h3 className="text-xl font-black text-[#1A1A2E]">Transfer Student</h3>
+                <p className="mt-1 text-sm text-[#888]">
+                  Moving{" "}
+                  <span className="font-bold text-[#1A1A2E]">
+                    {student.firstname} {student.lastname}
+                  </span>{" "}
+                  from{" "}
+                  <span className="font-bold text-[#C8102E]">{cohort.cohort}</span>
+                </p>
+              </div>
+              <button onClick={() => setOpen(false)} className="text-[#888] hover:text-[#1A1A2E]">
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Cohort Dropdown */}
+            <label className="mb-4 block">
+              <span className="mb-1 block text-sm font-bold text-[#1A1A2E]">Transfer to *</span>
+              <select
+                value={selectedCohortId}
+                onChange={(e) => setSelectedCohortId(e.target.value)}
+                className="w-full rounded-lg border border-[#E5E5E5] bg-[#F9F9F9] px-4 py-2.5 text-sm text-[#1A1A2E] focus:border-[#C8102E] focus:outline-none"
+              >
+                <option value="">-- Select a cohort --</option>
+                {otherCohorts.map((c) => (
+                  <option key={c.id || c._id} value={c.id || c._id}>
+                    {c.cohort}
+                  </option>
+                ))}
+              </select>
+              {otherCohorts.length === 0 && (
+                <p className="mt-1 text-xs text-[#888]">
+                  No other cohorts available for this course.
+                </p>
+              )}
+            </label>
+
+            {/* Reason Field */}
+            <label className="mb-5 block">
+              <span className="mb-1 block text-sm font-bold text-[#1A1A2E]">Reason (optional)</span>
+              <textarea
+                rows={2}
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+                placeholder="e.g. Student requested reschedule"
+                className="w-full rounded-lg border border-[#E5E5E5] bg-[#F9F9F9] px-4 py-2.5 text-sm text-[#1A1A2E] focus:border-[#C8102E] focus:outline-none"
+              />
+            </label>
+
+            {/* Feedback */}
+            {feedback && (
+              <p
+                className={`mb-4 rounded-lg px-4 py-2.5 text-sm font-medium ${
+                  feedback.type === "success"
+                    ? "bg-green-50 text-green-700"
+                    : "bg-red-50 text-[#C8102E]"
+                }`}
+              >
+                {feedback.message}
+              </p>
+            )}
+
+            {/* Actions */}
+            <div className="flex items-center justify-end gap-3">
+              <button
+                onClick={() => setOpen(false)}
+                className="rounded-lg border border-[#E5E5E5] px-5 py-2 text-sm font-bold text-[#888] hover:text-[#1A1A2E]"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleTransfer}
+                disabled={!selectedCohortId || loading}
+                className="rounded-lg bg-[#C8102E] px-5 py-2 text-sm font-bold text-white disabled:opacity-50 hover:bg-[#b5193d]"
+              >
+                {loading ? "Transferring..." : "Confirm Transfer"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};

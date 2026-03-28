@@ -1,5 +1,3 @@
-//
-
 import { useCallback, useState } from "react";
 import Container from "@/Components/Container";
 import CourseCard from "@/Components/CourseCard";
@@ -14,19 +12,20 @@ import { fetchUserProfile } from "@/services/api";
 import { Skeleton } from "@/Components/ui/skeleton";
 import { useFetchAllCourses } from "@/hooks/students/use-fetch-all-courses";
 import joinTeam from "../../assets/images/accordion-img2.png";
+import fallbackCourseImage from "../../assets/images/join_team.png";
 import _ from "lodash";
 import { useSearchParams, Link } from "react-router-dom";
 import PopUp from "@/Components/dashboard/PopUp";
+import { useEnrolledCourses } from "@/hooks/students/use-enrolled-courses";
 
 const DiscoverCourses = () => {
-  // const [useDemo, setUseDemo] = useState(true); // default to demo mode
   const { data: allCourses, isLoading: isFetchingAllCourses } =
     useFetchAllCourses();
-  // const { userDetails } = useAuth();
   const { data, isLoading } = useQuery({
     queryKey: ["userProfile"],
     queryFn: fetchUserProfile,
   });
+  const { cohortCourseIds, onDemandCourseIds } = useEnrolledCourses();
 
   const [searchParams] = useSearchParams();
   const initialSearch = searchParams.get("search") || "";
@@ -51,13 +50,20 @@ const DiscoverCourses = () => {
     setSearchQuery(inputValue);
   };
 
-  // Filter courses by title
-  const displayedCourses =
-    allCourses?.data?.data?.courses?.filter((course) =>
-      course.title.toLowerCase().includes(searchQuery.toLowerCase()),
-    ) || [];
+  // Enrollment Lock Filter: silently exclude courses the user is already enrolled in (any access_type)
+  const allEnrolledIds = new Set([...cohortCourseIds, ...onDemandCourseIds]);
 
-  // const displayedCourses = allCourses?.data?.data?.courses || [];
+  const displayedCourses =
+    allCourses?.data?.data?.courses
+      ?.filter((course) => !allEnrolledIds.has(course.id))
+      ?.filter((course) =>
+        course.title.toLowerCase().includes(searchQuery.toLowerCase()),
+      ) || [];
+
+  const totalAvailable = allCourses?.data?.data?.courses?.length ?? 0;
+  const allEnrolled = totalAvailable > 0 && displayedCourses.length === 0 && allEnrolledIds.size >= totalAvailable;
+
+
 
   return (
     <>
@@ -131,6 +137,17 @@ const DiscoverCourses = () => {
         <div className="grid min-h-[200px] grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
           {isFetchingAllCourses ? (
             <p>Loading Courses...</p>
+          ) : allEnrolled ? (
+            <div className="col-span-full flex min-h-[300px] w-full flex-col items-center justify-center gap-4 text-center">
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#FFF0F0]">
+                <span className="text-4xl">🎓</span>
+              </div>
+              <h3 className="text-xl font-bold text-[#23314A]">You're enrolled in all available courses!</h3>
+              <p className="max-w-sm text-[#667185]">Check your dashboard to continue learning your enrolled courses.</p>
+              <Link to="/dashboard" className="rounded-lg bg-[#CC1747] px-6 py-2.5 text-white font-medium hover:bg-[#b5193d] transition-colors">
+                Go to Dashboard
+              </Link>
+            </div>
           ) : displayedCourses.length === 0 ? (
             <div className="col-span-full flex min-h-[200px] w-full flex-col items-center justify-center">
               <button
@@ -145,7 +162,7 @@ const DiscoverCourses = () => {
             displayedCourses.map((course) => (
               <CourseCard
                 key={course.id}
-                imgSrc={course.cover_image}
+                imgSrc={course.cover_image || fallbackCourseImage}
                 altText={course.title}
                 title={course.title}
                 rating={course.average_rating}
@@ -155,6 +172,7 @@ const DiscoverCourses = () => {
             ))
           )}
         </div>
+
 
         {/* Pagination */}
         {displayedCourses.length > 0 && (

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useFetchDashboardStats } from "@/hooks/instructor/use-fetch-dashboard-stats";
 import { useFetchRecentSubmissions } from "@/hooks/instructor/use-fetch-recent-submissions";
+import { useNavigate } from "react-router-dom";
 import {
   BookOpen,
   Users,
@@ -11,6 +12,7 @@ import {
 } from "lucide-react";
 import AssignmentReviewModal from "@/Components/instructor/AssignmentReviewModal";
 import { useInstructorAuth } from "@/hooks/instructor/use-instructor-auth";
+import fallbackCourseImage from "@/assets/images/join_team.png";
 
 const StatCard = ({ icon: Icon, label, value, color }) => (
   <div className="flex-1 rounded-lg border-2 border-[#CC1747] bg-[#CC1747]/5 p-4 lg:mx-2">
@@ -20,6 +22,7 @@ const StatCard = ({ icon: Icon, label, value, color }) => (
 );
 
 const InstructorDashboard = () => {
+  const navigate = useNavigate();
   const { data: statsData, isLoading: statsLoading } = useFetchDashboardStats();
   const { data: subsData, isLoading: subsLoading } =
     useFetchRecentSubmissions();
@@ -28,6 +31,16 @@ const InstructorDashboard = () => {
 
   const stats = statsData?.data || {};
   const submissions = subsData?.data?.submissions || [];
+
+  // 3. Navigation Helper
+  const handleJoin = (courseId, title, cohort, cohortId) => {
+    const params = new URLSearchParams({
+      title: title || "",
+      cohort: cohort,
+      cohortId: cohortId || "",
+    });
+    navigate(`/meeting/${courseId}?${params.toString()}`);
+  };
 
   if (statsLoading) {
     return (
@@ -78,42 +91,66 @@ const InstructorDashboard = () => {
       </div>
 
       {/* Upcoming Class */}
-      <div className="mb-8">
-        <h2 className="mb-4 text-lg font-semibold text-gray-900">
-          Upcoming Class
-        </h2>
-        {stats.nextClass ? (
-          <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
-            <div className="flex items-start gap-4">
-              <div className="bg-primary-color-50 flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl">
-                <Video size={24} className="text-primary-color-600" />
-              </div>
-              <div>
-                <h3 className="font-bold text-gray-900">
-                  {stats.nextClass.courseTitle} –{" "}
-                  <span className="text-primary-color-600">
-                    {stats.nextClass.cohort}
-                  </span>
+      <div className="space-y-4">
+        <h2 className="text-lg font-semibold text-gray-900">Upcoming Class</h2>
+
+        {stats.nextClass && stats.nextClass.length > 0 ? (
+          stats.nextClass.map((session, index) => (
+            <div
+              key={session.cohortId || index}
+              className="relative flex flex-col gap-6 overflow-hidden rounded-xl border border-gray-100 bg-white p-6 shadow-sm sm:flex-row sm:items-start sm:justify-between"
+            >
+              <div className="flex flex-1 flex-col gap-1">
+                {/* Time Label */}
+                <span className="text-xs font-medium text-gray-400">
+                  {session.classDays} at {session.time}
+                </span>
+
+                {/* Main Title */}
+                <h3 className="text-xl font-bold text-gray-900">
+                  {session.courseTitle} – {session.cohort}
                 </h3>
-                <div className="mt-1.5 flex items-center gap-3 text-sm text-gray-500">
-                  <span className="flex items-center gap-1">
-                    <Calendar size={14} />
-                    {stats.nextClass.classDays}
-                  </span>
-                  <span>@ {stats.nextClass.time}</span>
+
+                {/* Subtitle/Overview (Introduction to...) */}
+                <p className="text-sm text-gray-400">
+                  {session.liveSessionTitle || "Introduction to Analytics"}
+                </p>
+              </div>
+
+              {/* Course Image - matches the right side placement in your image */}
+              <div className="flex flex-col items-end">
+                <div className="h-48 w-full flex-shrink-0 overflow-hidden rounded-lg sm:h-48 sm:w-72">
+                  <img
+                    src={session.courseImage || fallbackCourseImage}
+                    alt={session.courseTitle}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                {/* Join Button - positioned at bottom for mobile, or beside text for desktop */}
+                <div className="mt-4">
+                  <button
+                    onClick={() =>
+                      handleJoin(
+                        session.courseId,
+                        session.courseTitle,
+                        session.cohort,
+                        session.cohortId,
+                      )
+                    }
+                    className="flex items-center justify-center gap-2 rounded-md bg-[#D91E49] px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-[#b5193d]"
+                  >
+                    Join Live Session
+                  </button>
                 </div>
               </div>
             </div>
-            <button className="hover:bg-primary-color-700 flex items-center gap-2 rounded-lg bg-primary-color-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors">
-              Join Live Session
-              <ArrowRight size={16} />
-            </button>
-          </div>
+          ))
         ) : (
+          /* Empty State */
           <div className="rounded-xl border border-dashed border-gray-200 bg-white p-12 text-center">
             <div className="mb-4 flex justify-center">
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gray-50">
-                <Video size={32} className="text-gray-300" />
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gray-50 text-gray-300">
+                <Video size={32} />
               </div>
             </div>
             <h3 className="text-lg font-semibold text-gray-800">

@@ -7,7 +7,6 @@ import {
   faSearch,
 } from "@fortawesome/free-solid-svg-icons";
 import styles from "./pages.module.css";
-// import joinTeam from "../assets/video/homeBG.mp4";
 import CourseCard from "../Components/CourseCard";
 import ImageOverlay from "../Components/ImageOverlay";
 import iconDark from "../assets/icons/icon-dark.png";
@@ -37,20 +36,16 @@ import { Skeleton } from "@/Components/ui/skeleton";
 import Cookies from "js-cookie";
 import { StarRating } from "@/Components/star-rating";
 import { useFetchStudentsReviews } from "@/hooks/students/use-fetch-sstudent-reviews";
-// import { demoCourses } from "./dashboard/DiscoverCourses";
 import { DarkLogo } from "../Components/Logo";
 import { useState } from "react";
+import { useEnrolledCourses } from "@/hooks/students/use-enrolled-courses";
+import fallbackCourseImage from "../assets/images/join_team.png";
 
 const PreviewCourse = () => {
   const navigate = useNavigate();
   const { data, isLoading: isFetching } = useFetchAllCourses();
 
   const { courseId } = useParams();
-  // const {
-  //   data: fetchData,
-  //   isLoading: isLoadingData,
-  //   error,
-  // } = useFetchStudentsReviews(courseId);
 
   const token = Cookies.get("token");
 
@@ -58,6 +53,10 @@ const PreviewCourse = () => {
 
   // Use real API if not demo, else use demo data
   const { previewCourse, isLoading, error } = usePreviewCourses(courseId);
+
+  // Enrollment guard — check if user is already enrolled in this course
+  const { isEnrolled } = useEnrolledCourses();
+  const alreadyEnrolled = user && isEnrolled(courseId);
 
   const path = !user
     ? `/signup?id=${courseId}&title=${previewCourse?.data?.data.course.title}`
@@ -221,8 +220,11 @@ const PreviewCourse = () => {
                     </div>
 
                     <div className={styles.project_consult1}>
-                      {/* Show Enroll button only if at least one type is true */}
-                      {!isLoading &&
+                      {/* ENROLLMENT GUARD: Show banner if already enrolled, otherwise show CTA */}
+                      {alreadyEnrolled ? (
+                        <AlreadyEnrolledBanner />
+                      ) : (
+                        !isLoading &&
                         previewCourse?.data?.data?.course
                           ?.available_course_types &&
                         (previewCourse.data.data.course.available_course_types
@@ -238,7 +240,8 @@ const PreviewCourse = () => {
                             loading={isLoading}
                             courseId={previewCourse?.data?.data.course.id}
                           />
-                        )}
+                        )
+                      )}
                     </div>
                   </div>
                 </div>
@@ -686,5 +689,28 @@ const Tools = ({ tech, loading }) => {
     </div>
   );
 };
+
+/**
+ * AlreadyEnrolledBanner
+ * Replaces the Enroll CTA when the user has an existing enrollment
+ * for this course (enforcing the course-level enrollment lock).
+ */
+const AlreadyEnrolledBanner = () => (
+  <div className="flex flex-col gap-4 rounded-xl border border-[#F4C2CC] bg-[#FFF0F3] p-5 text-[#23314A]">
+    <div className="flex items-center gap-2">
+      <span className="text-2xl">🔒</span>
+      <p className="text-lg font-bold">You're already enrolled in this course</p>
+    </div>
+    <p className="text-sm text-[#667185]">
+      You have an active enrollment for this course. Head to your dashboard to pick up where you left off.
+    </p>
+    <Link
+      to="/dashboard"
+      className="inline-flex items-center justify-center rounded-lg bg-[#CC1747] px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#b5193d]"
+    >
+      Go to My Dashboard →
+    </Link>
+  </div>
+);
 
 export default PreviewCourse;
