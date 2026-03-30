@@ -136,6 +136,7 @@ import ReviewMainPage from "./pages/admin-pages/reviews/ReviewMainPage";
 import { elements } from "chart.js";
 import Dashbaord from "./pages/dashbaord";
 import LoadingPage from "./Components/LoadingPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 const queryClient = new QueryClient();
 
@@ -686,6 +687,10 @@ function App() {
           ],
         },
       ],
+    },
+    {
+      path: "*",
+      element: <NotFoundPage />,
     },
   ]);
 

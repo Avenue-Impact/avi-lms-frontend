@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { faCalendar, faCheckCircle, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const InstallmentModal = ({ isOpen, onClose, onProceed, currencySymbol, price }) => {
-    const [duration, setDuration] = useState(5);
+const InstallmentModal = ({ isOpen, onClose, onProceed, currencySymbol, price, maxInstallments = 5, isWeekly = false }) => {
+    const [duration, setDuration] = useState(maxInstallments);
     const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
     const [autoDeduct, setAutoDeduct] = useState(true);
+
+    useEffect(() => {
+        setDuration(maxInstallments);
+    }, [maxInstallments]);
 
     if (!isOpen) return null;
 
@@ -13,14 +17,22 @@ const InstallmentModal = ({ isOpen, onClose, onProceed, currencySymbol, price })
     
     const schedule = Array.from({ length: duration }).map((_, i) => {
         const d = new Date(startDate);
-        d.setMonth(d.getMonth() + i);
+        if (isWeekly) {
+            d.setDate(d.getDate() + 7 * i);
+        } else {
+            d.setMonth(d.getMonth() + i);
+        }
+        
         return {
             date: d.toLocaleDateString(),
             amount: monthlyAmount,
             status: i === 0 ? "current" : "upcoming",
-            label: i === 0 ? "First Payment" : `Due in ${i} month${i > 1 ? 's' : ''}`
+            label: i === 0 ? "First Payment" : `Due in ${i} ${isWeekly ? 'week' : 'month'}${i > 1 ? 's' : ''}`
         };
     });
+
+    // Generate options dynamically up to maxInstallments
+    const options = Array.from({ length: maxInstallments - 1 }, (_, i) => i + 2);
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 font-sans">
@@ -34,13 +46,13 @@ const InstallmentModal = ({ isOpen, onClose, onProceed, currencySymbol, price })
                 <h2 className="mb-6 text-xl font-semibold text-gray-800">Installment Plan Breakdown</h2>
                 
                 <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">Duration (Months)</label>
+                    <label className="block text-sm font-medium text-gray-700">Number of Installments</label>
                     <select 
                         value={duration} 
                         onChange={e => setDuration(Number(e.target.value))} 
                         className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-[#CC1747] focus:outline-none focus:ring-[#CC1747]"
                     >
-                        {[2,3,4,5].map(m => <option key={m} value={m}>{m} Months</option>)}
+                        {options.map(m => <option key={m} value={m}>{m} Installments ({isWeekly ? 'Weekly' : 'Monthly'})</option>)}
                     </select>
                 </div>
 
@@ -91,7 +103,7 @@ const InstallmentModal = ({ isOpen, onClose, onProceed, currencySymbol, price })
                     </div>
                     <div className="ml-3 text-sm">
                         <label htmlFor="autoDeduct" className="font-medium text-gray-700 cursor-pointer">
-                            Enable automatic monthly deductions
+                            Enable automatic {isWeekly ? 'weekly' : 'monthly'} deductions
                         </label>
                         <p className="text-gray-500 text-xs mt-1">
                             If unchecked, you will need to manually pay each installment from your dashboard.

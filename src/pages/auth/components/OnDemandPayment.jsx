@@ -6,6 +6,8 @@ import { useAddPayment } from "@/hooks/students/use-add-payment";
 
 import BankTransferModal from "../../../Components/BankTransferModal";
 import PaymentMethodModal from "../../../Components/PaymentMethodModal";
+import PaymentPlanModal from "../../../Components/PaymentPlanModal";
+import InstallmentModal from "../../../Components/InstallmentModal";
 import toast from "react-hot-toast";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -23,6 +25,11 @@ const OnDemandPayment = ({ courseData }) => {
   // Modal States
   const [showMethodModal, setShowMethodModal] = useState(false);
   const [showBankModal, setShowBankModal] = useState(false);
+  const [showPaymentPlanModal, setShowPaymentPlanModal] = useState(false);
+  const [showInstallmentModal, setShowInstallmentModal] = useState(false);
+  
+  const [selectedPlan, setSelectedPlan] = useState('full');
+  const [installmentData, setInstallmentData] = useState(null);
   const [bankTransferData, setBankTransferData] = useState(null);
 
   const [promoInput, setPromoInput] = useState("");
@@ -44,6 +51,12 @@ const OnDemandPayment = ({ courseData }) => {
       toast.error("Please select a subscription plan.");
       return;
     }
+    setShowPaymentPlanModal(true);
+  };
+
+  const handleInstallmentProceed = (data) => {
+    setInstallmentData(data);
+    setShowInstallmentModal(false);
     setShowMethodModal(true);
   };
 
@@ -94,6 +107,12 @@ const OnDemandPayment = ({ courseData }) => {
         access_type: ["on demand"],
         subscription_limit: selectedOption,
         gateway: gatewayToUse,
+        payment_plan: selectedPlan === 'installment' ? 'installment' : 'full',
+        ...(selectedPlan === 'installment' && installmentData ? {
+            installment_duration: installmentData.duration,
+            auto_deduct: installmentData.autoDeduct,
+            first_payment_date: installmentData.startDate
+        } : {}),
         ...(appliedPromo && { promocode: appliedPromo.promo.code })
       },
       courseId,
@@ -130,8 +149,19 @@ const OnDemandPayment = ({ courseData }) => {
     }
     
     setAmountToPay(calculatedAmount);
-    console.log(selectedPlan)
   }, [selectedOption, previewCourse, appliedPromo]);
+
+  let maxInstallments = 5;
+  let isWeekly = false;
+
+  if (selectedOption === "One Month Access") {
+    maxInstallments = 4;
+    isWeekly = true;
+  } else if (selectedOption === "3 Months Access") {
+    maxInstallments = 3;
+  }
+
+  const installmentPrice = amountToPay ? Math.round(amountToPay / maxInstallments) : 0;
 
   if (!previewCourse?.data?.data?.pricing?.on_demand?.length) {
     return (
@@ -224,6 +254,35 @@ const OnDemandPayment = ({ courseData }) => {
       </div>
 
        {/* Modals */}
+       <PaymentPlanModal 
+          isOpen={showPaymentPlanModal}
+          onClose={() => setShowPaymentPlanModal(false)}
+          onSelectPlan={(plan) => {
+              setSelectedPlan(plan);
+              setShowPaymentPlanModal(false);
+              if (plan === 'installment') {
+                  setShowInstallmentModal(true);
+              } else {
+                  setShowMethodModal(true);
+              }
+          }}
+          currencySymbol={currencySymbol}
+          price={amountToPay}
+          installmentPrice={installmentPrice}
+          maxInstallments={maxInstallments}
+          isWeekly={isWeekly}
+      />
+
+      <InstallmentModal
+          isOpen={showInstallmentModal}
+          onClose={() => setShowInstallmentModal(false)}
+          onProceed={handleInstallmentProceed}
+          currencySymbol={currencySymbol}
+          price={amountToPay}
+          maxInstallments={maxInstallments}
+          isWeekly={isWeekly}
+      />
+
        <PaymentMethodModal 
           isOpen={showMethodModal}
           onClose={() => setShowMethodModal(false)}

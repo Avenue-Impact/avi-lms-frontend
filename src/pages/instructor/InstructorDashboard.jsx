@@ -38,6 +38,7 @@ const InstructorDashboard = () => {
       title: title || "",
       cohort: cohort,
       cohortId: cohortId || "",
+      isInstructor: "true",
     });
     navigate(`/meeting/${courseId}?${params.toString()}`);
   };
@@ -164,7 +165,7 @@ const InstructorDashboard = () => {
       </div>
 
       {/* Recent Submissions Table */}
-      <div>
+      <div className="mt-8">
         <h2 className="mb-4 text-lg font-semibold text-gray-900">
           Recent Submissions
         </h2>

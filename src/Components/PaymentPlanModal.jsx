@@ -1,7 +1,7 @@
 
 import React from 'react';
 
-const PaymentPlanModal = ({ isOpen, onClose, onSelectPlan, currencySymbol, price, installmentPrice }) => {
+const PaymentPlanModal = ({ isOpen, onClose, onSelectPlan, currencySymbol, price, installmentPrice, maxInstallments = 5, isWeekly = false }) => {
     if (!isOpen) return null;
 
     return (
@@ -42,11 +42,11 @@ const PaymentPlanModal = ({ isOpen, onClose, onSelectPlan, currencySymbol, price
                          <h3 className="mb-4 text-lg font-medium text-gray-700">Pay In Installments</h3>
                          <div className="mb-2 flex items-baseline justify-center text-4xl font-bold text-[#CC1747]">
                             {currencySymbol}{installmentPrice?.toLocaleString()}
-                            <span className="ml-1 text-base font-normal text-gray-500">/month</span>
+                            <span className="ml-1 text-base font-normal text-gray-500">/{isWeekly ? 'week' : 'month'}</span>
                         </div>
-                        <p className="mb-4 text-sm font-medium text-gray-700">x 5 months</p>
+                        <p className="mb-4 text-sm font-medium text-gray-700">x {maxInstallments} {isWeekly ? 'weeks' : 'months'}</p>
                         <hr className="my-4 border-gray-100" />
-                        <p className="mb-4 text-sm text-gray-400">Spread Payments over 5 months</p>
+                        <p className="mb-4 text-sm text-gray-400">Spread Payments over {maxInstallments} {isWeekly ? 'weeks' : 'months'}</p>
                         
                         <div className="mb-6 flex items-start justify-center gap-2 text-xs text-gray-500">
                              <span className="mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-[#CC1747] text-[10px] text-white">!</span>
