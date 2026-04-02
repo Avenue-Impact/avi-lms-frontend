@@ -91,7 +91,7 @@ const AssignmentManagement = () => {
                         <div key={assignment.id} className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex justify-between items-center hover:shadow-md transition-shadow">
                             <div className="flex items-start gap-4">
                                 <div className="flex-grow">
-                                    <Link to={`/instructor/assignments/${assignment.id}/submissions`} className="group inline-block mb-1">
+                                    <Link to={`/instructor/submissions?taskId=${assignment.id}`} className="group inline-block mb-1">
                                         <h3 className="font-bold text-gray-900 text-lg group-hover:text-primary-color-600 transition-colors">
                                             {assignment.title}
                                         </h3>

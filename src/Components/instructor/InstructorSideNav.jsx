@@ -124,15 +124,15 @@ const SidebarItem = ({ icon, text, path }) => {
       <NavLink
         to={path}
         className={cn(
-          "flex items-center gap-3 px-4 py-3 text-base transition-all",
+          "group relative my-1 flex cursor-pointer items-center border-4 border-transparent px-1 py-2 text-gray-600 transition-colors",
           isActive
-            ? "border-l-4 border-primary-color-600 bg-primary-color-100 text-black"
-            : "text-gray-600 hover:border-l-2 hover:border-primary-color-600 hover:bg-primary-color-100 hover:text-black",
+            ? "border-l-4 border-l-primary-color-600 bg-primary-color-100/30 font-medium text-primary-color-600"
+            : "text-gray-600 hover:border-l-primary-color-600 hover:bg-primary-color-100/30 hover:text-primary-color-600",
         )}
       >
         <span
           className={cn(
-            "transition-colors",
+            "pr-2 transition-colors",
             isActive
               ? "text-primary-color-600"
               : "text-gray-400 hover:text-primary-color-600",
@@ -140,7 +140,7 @@ const SidebarItem = ({ icon, text, path }) => {
         >
           {icon}
         </span>
-        <span>{text}</span>
+        <span className="overflow-hidden transition-all lg:block">{text}</span>
       </NavLink>
     </li>
   );

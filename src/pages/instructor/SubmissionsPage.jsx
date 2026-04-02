@@ -1,12 +1,26 @@
-import React, { useState, useMemo } from "react";
-import { FileCheck, Download, Search } from "lucide-react";
-import { useFetchRecentSubmissions } from "@/hooks/instructor/use-fetch-recent-submissions";
+import React, { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import { FileCheck, Download, Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { useFetchAssignmentSubmissions } from "@/hooks/instructor/use-assignment-submissions";
 
 const SubmissionsPage = () => {
-  const { data: subsData, isLoading } = useFetchRecentSubmissions();
+  const [searchParams] = useSearchParams();
+  const urlTaskId = searchParams.get("taskId") || "all";
+  
+  const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const itemsPerPage = 40;
+
+  const { data: subsData, isLoading } = useFetchAssignmentSubmissions(urlTaskId, page, itemsPerPage);
   
   const submissions = subsData?.data?.submissions || [];
+  const pagination = subsData?.data?.pagination || {};
+  const totalPages = pagination.totalPages || 1;
+
+  // Reset page when taskId or searchQuery changes
+  useEffect(() => {
+    setPage(1);
+  }, [urlTaskId, searchQuery]);
 
   const filtered = useMemo(() => {
     if (!searchQuery) return submissions;
@@ -38,12 +52,14 @@ const SubmissionsPage = () => {
   return (
     <div className="w-full">
       {/* Header */}
-      <div className="mb-6">
+      <div className="mb-6 text-left">
         <h1 className="text-[32px] font-bold text-[#1A1A2E] leading-tight mb-1">
           Submissions
         </h1>
         <p className="text-[#888] text-[15px]">
-          {submissions.length > 0
+          {urlTaskId !== "all" && submissions.length > 0
+            ? `${submissions[0]?.assignment_task_id?.title || "Task"} Submissions`
+            : submissions.length > 0
             ? `${submissions[0]?.cohort_id?.cohort || "Cohort"} Submissions`
             : "All Cohort Submissions"}
         </p>
@@ -91,7 +107,7 @@ const SubmissionsPage = () => {
                   return (
                     <tr key={sub._id} className="hover:bg-[#F9F9F9] transition-colors">
                       <td className="px-6 py-4 text-[#888]">
-                        {(idx + 1).toString().padStart(2, "0")}
+                        {((page - 1) * itemsPerPage + idx + 1).toString().padStart(2, "0")}
                       </td>
                       <td className="px-6 py-4 font-medium">
                         {sub.student_id?.firstname} {sub.student_id?.lastname}
@@ -116,6 +132,68 @@ const SubmissionsPage = () => {
           </div>
         )}
       </div>
+
+      {/* Pagination Controls */}
+      {!isLoading && submissions.length > 0 && (
+        <div className="mt-8 flex items-center justify-between">
+          <p className="text-sm font-medium text-[#888888]">
+            Showing {(page - 1) * itemsPerPage + 1} to{" "}
+            {Math.min(page * itemsPerPage, pagination.total)} of{" "}
+            {pagination.total} entries
+          </p>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1}
+              className="flex h-10 w-10 items-center justify-center rounded-lg border border-[#E5E5E5] bg-white text-[#1A1A2E] transition-all hover:bg-gray-50 disabled:opacity-50"
+            >
+              <ChevronLeft size={18} />
+            </button>
+
+            <div className="hidden items-center gap-1 sm:flex">
+              {[...Array(totalPages)].map((_, i) => {
+                const p = i + 1;
+                // Show first, last, and pages around current
+                if (
+                  p === 1 ||
+                  p === totalPages ||
+                  (p >= page - 1 && p <= page + 1)
+                ) {
+                  return (
+                    <button
+                      key={p}
+                      onClick={() => setPage(p)}
+                      className={`flex h-10 w-10 items-center justify-center rounded-lg border text-sm font-bold transition-all ${
+                        page === p
+                          ? "border-primary-color-600 bg-primary-color-600 text-white"
+                          : "border-[#E5E5E5] bg-white text-[#1A1A2E] hover:bg-gray-50"
+                      }`}
+                    >
+                      {p}
+                    </button>
+                  );
+                } else if (p === page - 2 || p === page + 2) {
+                  return (
+                    <span key={p} className="px-1 text-gray-400">
+                      ...
+                    </span>
+                  );
+                }
+                return null;
+              })}
+            </div>
+
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+              className="flex h-10 w-10 items-center justify-center rounded-lg border border-[#E5E5E5] bg-white text-[#1A1A2E] transition-all hover:bg-gray-50 disabled:opacity-50"
+            >
+              <ChevronRight size={18} />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

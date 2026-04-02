@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import "./App.css";
 
 import AppLayout from "./layouts/AppLayout";
@@ -137,6 +137,7 @@ import { elements } from "chart.js";
 import Dashbaord from "./pages/dashbaord";
 import LoadingPage from "./Components/LoadingPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import InstructorLiveSessions from "./pages/instructor/InstructorLiveSessions";
 
 const queryClient = new QueryClient();
 
@@ -655,6 +656,10 @@ function App() {
               path: "/instructor/",
               children: [
                 {
+                  path: "login",
+                  element: <Navigate to="/login?_r=/instructor/dashboard" replace />,
+                },
+                {
                   path: "dashboard",
                   element: <InstructorDashboard />,
                 },
@@ -673,6 +678,10 @@ function App() {
                 {
                   path: "submissions",
                   element: <SubmissionsPage />,
+                },
+                {
+                  path: "live-sessions",
+                  element: <InstructorLiveSessions />,
                 },
                 {
                   path: "messages",

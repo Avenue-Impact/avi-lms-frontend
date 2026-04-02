@@ -6,6 +6,7 @@ import { Search, Plus, Bell } from "lucide-react";
 
 const InstructorLayout = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   return (
     <div className="flex min-h-screen bg-[#F8F9FB]">
@@ -23,7 +24,9 @@ const InstructorLayout = () => {
               />
               <input
                 type="text"
-                placeholder="Search courses, students..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search by session name or date..."
                 className="focus:ring-primary-color-200 focus:border-primary-color-400 w-full rounded-lg border border-gray-200 bg-gray-50 py-2 pl-10 pr-4 text-sm transition-all focus:outline-none focus:ring-2"
               />
             </div>
@@ -38,7 +41,7 @@ const InstructorLayout = () => {
               {/* Create Assignment CTA */}
               <button
                 onClick={() => setShowCreateModal(true)}
-                className="hover:bg-primary-color-700 flex items-center gap-2 rounded-lg bg-primary-color-600 px-5 py-2 text-sm font-semibold text-white shadow-sm transition-colors"
+                className="hover:bg-primary-color-700 flex items-center gap-2 rounded-md bg-primary-color-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition-colors"
               >
                 <Plus size={18} />
                 Create Assignment
@@ -49,7 +52,7 @@ const InstructorLayout = () => {
 
         <main className="flex-grow p-8">
           <div className="mx-auto max-w-full">
-            <Outlet context={{ setShowCreateModal }} />
+            <Outlet context={{ setShowCreateModal, searchTerm }} />
           </div>
         </main>
       </div>

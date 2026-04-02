@@ -1,6 +1,9 @@
 import React, { useState, useMemo } from "react";
 import { useFetchCohortStudents } from "@/hooks/instructor/use-fetch-cohort-students";
 import { useFetchInstructorCohorts } from "@/hooks/instructor/use-fetch-instructor-cohorts";
+import { useFetchAssignmentTasks } from "@/hooks/instructor/use-assignment-management";
+import AssignmentCard from "@/Components/instructor/AssignmentCard";
+import { useNavigate } from "react-router-dom";
 import { transferStudent } from "@/hooks/students/use-enrolled-courses";
 import {
   Users,
@@ -298,11 +301,16 @@ const getCohortStatus = (cohort) => {
 const CohortDetailPage = ({ cohort, onBack }) => {
   const [activeTab, setActiveTab] = useState("Overview");
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const navigate = useNavigate();
 
   const cohortId = cohort.id || cohort._id;
   const { data: studentsData, isLoading: isLoadingStudents } =
     useFetchCohortStudents(cohortId);
   const students = studentsData?.data?.students || [];
+
+  const { data: assignmentsData, isLoading: isLoadingAssignments } =
+    useFetchAssignmentTasks(cohortId);
+  const assignments = assignmentsData?.data?.tasks || [];
 
   return (
     <div className="mx-auto w-full">
@@ -328,7 +336,7 @@ const CohortDetailPage = ({ cohort, onBack }) => {
       </div>
 
       {/* Tabs */}
-      <div className="mb-8 flex gap-8 border-b border-[#E5E5E5]">
+      <div className="mb-8 flex gap-x-20 border-b border-[#E5E5E5]">
         {["Overview", "Students", "Assignments"].map((tab) => (
           <button
             key={tab}
@@ -337,7 +345,7 @@ const CohortDetailPage = ({ cohort, onBack }) => {
               setSelectedStudent(null);
             }}
             className={cn(
-              "relative px-2 pb-4 text-[15px] font-medium transition-colors",
+              "relative px-8 pb-4 text-[15px] font-medium transition-colors",
               activeTab === tab
                 ? "font-bold text-[#1A1A2E]"
                 : "text-[#888] hover:text-[#1A1A2E]",
@@ -366,11 +374,49 @@ const CohortDetailPage = ({ cohort, onBack }) => {
         />
       )}
       {activeTab === "Assignments" && (
-        <div className="rounded-xl border border-dashed border-[#E5E5E5] bg-white py-20 text-center">
-          <FileText className="mx-auto mb-4 text-gray-300" size={48} />
-          <h3 className="text-lg font-semibold text-[#1A1A2E]">
-            Assignments View Placeholder
-          </h3>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2">
+          {isLoadingAssignments ? (
+            <div className="col-span-full py-20 text-center">
+              <div className="mx-auto h-8 w-8 animate-spin rounded-full border-b-2 border-primary-color-600"></div>
+            </div>
+          ) : assignments.length > 0 ? (
+            assignments.map((assignment) => (
+              <AssignmentCard
+                key={assignment._id}
+                title={assignment.title}
+                cohort={
+                  cohort.course_id?.title + " - " + cohort.cohort || "Cohort"
+                }
+                dueDate={new Date(assignment.due_date).toLocaleDateString(
+                  "en-US",
+                  {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  },
+                )}
+                submissionStats={{
+                  submitted: assignment.submissions_count || 0,
+                  total: students.length,
+                }}
+                onClick={() =>
+                  navigate(
+                    `/instructor/submissions?taskId=${assignment._id}`,
+                  )
+                }
+              />
+            ))
+          ) : (
+            <div className="col-span-full rounded-xl border border-dashed border-[#E5E5E5] bg-white py-20 text-center">
+              <FileText className="mx-auto mb-4 text-gray-300" size={48} />
+              <h3 className="text-lg font-semibold text-[#1A1A2E]">
+                No assignments found
+              </h3>
+              <p className="text-sm text-gray-400">
+                You haven't created any assignments for this cohort yet.
+              </p>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -727,24 +773,33 @@ const TransferStudentModal = ({ student, cohort }) => {
             {/* Header */}
             <div className="mb-5 flex items-start justify-between">
               <div>
-                <h3 className="text-xl font-black text-[#1A1A2E]">Transfer Student</h3>
+                <h3 className="text-xl font-black text-[#1A1A2E]">
+                  Transfer Student
+                </h3>
                 <p className="mt-1 text-sm text-[#888]">
                   Moving{" "}
                   <span className="font-bold text-[#1A1A2E]">
                     {student.firstname} {student.lastname}
                   </span>{" "}
                   from{" "}
-                  <span className="font-bold text-[#C8102E]">{cohort.cohort}</span>
+                  <span className="font-bold text-[#C8102E]">
+                    {cohort.cohort}
+                  </span>
                 </p>
               </div>
-              <button onClick={() => setOpen(false)} className="text-[#888] hover:text-[#1A1A2E]">
+              <button
+                onClick={() => setOpen(false)}
+                className="text-[#888] hover:text-[#1A1A2E]"
+              >
                 <X size={20} />
               </button>
             </div>
 
             {/* Cohort Dropdown */}
             <label className="mb-4 block">
-              <span className="mb-1 block text-sm font-bold text-[#1A1A2E]">Transfer to *</span>
+              <span className="mb-1 block text-sm font-bold text-[#1A1A2E]">
+                Transfer to *
+              </span>
               <select
                 value={selectedCohortId}
                 onChange={(e) => setSelectedCohortId(e.target.value)}
@@ -766,7 +821,9 @@ const TransferStudentModal = ({ student, cohort }) => {
 
             {/* Reason Field */}
             <label className="mb-5 block">
-              <span className="mb-1 block text-sm font-bold text-[#1A1A2E]">Reason (optional)</span>
+              <span className="mb-1 block text-sm font-bold text-[#1A1A2E]">
+                Reason (optional)
+              </span>
               <textarea
                 rows={2}
                 value={reason}
@@ -800,7 +857,7 @@ const TransferStudentModal = ({ student, cohort }) => {
               <button
                 onClick={handleTransfer}
                 disabled={!selectedCohortId || loading}
-                className="rounded-lg bg-[#C8102E] px-5 py-2 text-sm font-bold text-white disabled:opacity-50 hover:bg-[#b5193d]"
+                className="rounded-lg bg-[#C8102E] px-5 py-2 text-sm font-bold text-white hover:bg-[#b5193d] disabled:opacity-50"
               >
                 {loading ? "Transferring..." : "Confirm Transfer"}
               </button>
