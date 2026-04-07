@@ -12,10 +12,11 @@ export default function VideoTable({ videos, onEdit, onDelete, onView }) {
   }
 
   return (
-    <Table cols={"0.5fr 2fr 1fr 1fr 1fr 1fr 1.5fr"}>
+    <Table cols={"0.5fr 2fr 1.5fr 1fr 1fr 1fr 1fr 1.5fr"}>
       <Table.Header className={"*:text-sm *:font-medium"}>
         <h4>S/N</h4>
         <h4>Title</h4>
+        <h4>Tags</h4>
         <h4>Size (MB)</h4>
         <h4>Extension</h4>
         <h4>Issue Date</h4>
@@ -32,6 +33,17 @@ export default function VideoTable({ videos, onEdit, onDelete, onView }) {
             >
               {video.videoTitle || video.title}
             </p>
+            <div className="flex flex-wrap gap-1 pr-2 items-center">
+               {video.tags && video.tags.length > 0 ? (
+                 video.tags.map(tag => (
+                   <span key={tag} className="bg-primary-color-50 text-primary-color-600 text-[10px] px-2 py-0.5 rounded-full border border-primary-color-200 truncate max-w-[80px]" title={tag}>
+                     {tag}
+                   </span>
+                 ))
+               ) : (
+                 <span className="text-xs text-gray-400">None</span>
+               )}
+            </div>
             <p className="text-sm text-[#344054]">{video.size || "N/A"}</p>
             <p className="text-sm uppercase text-[#344054]">
               {video.fileExtension || video.extension || "N/A"}

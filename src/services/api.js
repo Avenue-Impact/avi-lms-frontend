@@ -126,6 +126,10 @@ export const addDemandSection = async ({ data, courseId }) => {
   });
 };
 
+export const addDemandSectionEmpty = async ({ data, courseId }) => {
+  return axiosAdmin.post(`/courses/${courseId}/on-demand-section/empty`, data);
+};
+
 export const addCourseInformation = async (data) => {
   return axiosAdmin.post(`/courses/course-informations`, data, {
     headers: {

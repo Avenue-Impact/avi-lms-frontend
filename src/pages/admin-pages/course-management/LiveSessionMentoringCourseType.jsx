@@ -21,7 +21,7 @@ import FormInput from "@/Components/ui/form-input";
 import CohortSelection from "@/Components/admindashboard/course-management/courses/CohortSelection";
 import { CommonButton } from "@/Components/ui/button";
 import { ClipLoader } from "react-spinners";
-import { cohorts } from "@/lib/cohorts";
+import { useFetchGlobalCohorts } from "@/hooks/admin-global/use-fetch-global-cohorts";
 import { cn } from "@/lib/utils";
 import { useCreateCourseType } from "@/hooks/course-management/use-create-course-type";
 import { courseTypeSchema } from "@/lib/form-schemas/forms-schema";
@@ -45,6 +45,7 @@ const LiveSessionMentoringCourseType = () => {
 
   const { createCourseType, isCreating } = useCreateCourseType();
   const { setActiveTab, setSubTab } = useCourseManagementInfo();
+  const { data: globalCohorts } = useFetchGlobalCohorts();
 
   const onSubmit = async (data) => {
     // const time = data.time.split(":");
@@ -280,7 +281,7 @@ const LiveSessionMentoringCourseType = () => {
                 <p className="font-[600] text-gray-600">Cohort</p>
 
                 <CohortSelection
-                  data={cohorts}
+                  data={globalCohorts}
                   setCohort={setCohort}
                   text={"Select cohort"}
                 />

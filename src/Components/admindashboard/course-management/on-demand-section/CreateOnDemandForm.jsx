@@ -3,7 +3,11 @@ import { CommonButton } from "@/Components/ui/button";
 import { Form } from "@/Components/ui/form";
 import FormInput from "@/Components/ui/form-input";
 import { useFetchondemandCourse } from "@/hooks/course-management/on-demand-section/use-fetch-ondemand-course";
-import { useCreateOnDemandCourse } from "@/hooks/course-management/use-create-demand-course";
+import {
+  useCreateOnDemandCourse,
+  useCreateEmptyOnDemandCourse,
+} from "@/hooks/course-management/use-create-demand-course";
+import { useGetAllVideos } from "@/hooks/course-management/use-get-all-videos";
 import { onDemandSessionSchema } from "@/lib/form-schemas/forms-schema";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,133 +15,139 @@ import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
-const CreateOndemandForm = ({ courseId }) => {
+const CreateOndemandForm = ({ courseId, initialSection }) => {
+  const [videoSourceType, setVideoSourceType] = useState("upload"); // "upload" | "existing"
   const [video, setVideo] = useState({ file: null, preview: null });
   const [document, setDocument] = useState({ file: null, name: null });
   const [errorMessage, setErrorMessage] = useState("");
   const [documentError, setDocumentError] = useState("");
-  const [disabled, setDisabled] = useState(false);
-  const [disableInput, setDisableInput] = useState(false);
-  const { data } = useFetchondemandCourse(courseId);
+  const [isSectionCreated, setIsSectionCreated] = useState(
+    initialSection ? true : false,
+  );
+  const [sectionNumber, setSectionNumber] = useState(
+    initialSection ? initialSection.section : null,
+  );
 
+  const { data } = useFetchondemandCourse(courseId);
+  const { data: videosData } = useGetAllVideos(1, 100);
   const videoRef = useRef();
   const documentRef = useRef();
-  const { createOnDemandCourse, isCreating } = useCreateOnDemandCourse();
 
-  const handleCreateNewSection = () => {
-    let section = localStorage.getItem("demandSectionNumber")
-      ? localStorage.getItem("demandSectionNumber")
-      : 1;
-    section = Number(section) + 1;
-    localStorage.setItem("demandSectionNumber", +section);
-    toast.success(`section ${section} is created`);
-    setDisabled(true);
-    setDisableInput(false);
-    form.setValue("title", "");
-    form.setValue("overview", "");
-  };
+  const { createOnDemandCourse, isCreating } = useCreateOnDemandCourse();
+  const { createEmptyOnDemandCourse, isCreatingEmpty } =
+    useCreateEmptyOnDemandCourse();
 
   const form = useForm({
     resolver: zodResolver(onDemandSessionSchema),
     defaultValues: {
-      title: "",
+      title: initialSection?.title || "",
       video_title: "",
-      overview: "",
+      overview: initialSection?.overview || "",
+      description: "",
       video_from_url: "",
+      video_id: "",
     },
   });
 
   const handleVideoUpload = (e) => {
     const file = e.target.files[0];
-
     if (!file) return;
-
     if (file.size > 200 * 1024 * 1024) {
       return setErrorMessage("file has exceed 200MB");
     }
-
     const reader = new FileReader();
-
     reader.onloadend = () => {
       setVideo((prev) => {
         return { ...prev, file: file, preview: reader.result };
       });
       setErrorMessage("");
     };
-
     reader.readAsDataURL(file);
   };
 
   const handleDocumentUpload = (e) => {
     const file = e.target.files[0];
-
     if (!file) return;
-
-    // Validate file size (50MB limit for documents)
     if (file.size > 50 * 1024 * 1024) {
       return setDocumentError("Document size exceeds 50MB");
     }
-
-    // Validate file type
     const allowedTypes = [
-      'application/pdf',
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      'application/vnd.ms-excel',
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'application/vnd.ms-powerpoint',
-      'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "application/vnd.ms-excel",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "application/vnd.ms-powerpoint",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation",
     ];
-
     if (!allowedTypes.includes(file.type)) {
-      return setDocumentError("Invalid file type. Only PDF, Word, Excel, and PowerPoint files are allowed.");
+      return setDocumentError(
+        "Invalid file type. Only PDF, Word, Excel, and PowerPoint files are allowed.",
+      );
     }
-
     setDocument({ file, name: file.name });
     setDocumentError("");
   };
 
-  const handleCreateSection = async (data) => {
-    const { title, video_title, overview } = data;
-    const section = localStorage.getItem("demandSectionNumber");
+  const handleDeclareSection = async () => {
+    const title = form.getValues("title");
+    const overview = form.getValues("overview");
 
-    if (!video.file && form.watch("video_from_url").length < 1)
-      return toast.error("Please insert a video or video url");
+    if (!title || !overview) {
+      toast.error("Please provide Section Title and Overview");
+      return;
+    }
 
-    let recorded;
+    createEmptyOnDemandCourse(
+      { data: { title, overview }, courseId },
+      {
+        onSuccess: ({ data }) => {
+          setSectionNumber(data.data.section);
+          setIsSectionCreated(true);
+        },
+      },
+    );
+  };
 
-    if (video.file) {
-      recorded = {
-        title,
-        video_title,
-        overview,
-        section,
-        video: video.file,
-        document: document.file, // Add document if uploaded
-      };
+  const handleAddLesson = async (data) => {
+    if (!sectionNumber) {
+      return toast.error("Please declare a section first.");
+    }
+
+    let recorded = {
+      section: sectionNumber,
+      title: form.getValues("title"),
+      overview: form.getValues("overview"),
+      video_title: data.video_title,
+      description: data.description,
+      document: document.file,
+    };
+
+    if (videoSourceType === "existing") {
+      if (!data.video_id)
+        return toast.error("Please select an existing video!");
+      recorded.video_id = data.video_id;
     } else {
-      recorded = {
-        ...data,
-        section,
-        document: document.file, // Add document if uploaded
-      };
+      if (!video.file && form.watch("video_from_url").length < 1) {
+        return toast.error("Please insert a video or video url");
+      }
+      if (video.file) {
+        recorded.video = video.file;
+      } else {
+        recorded.video_from_url = data.video_from_url;
+      }
     }
 
     createOnDemandCourse(
       { data: recorded, courseId },
       {
-        onSuccess: ({ data }) => {
-          form.reset();
-          console.log("fininsh data", data);
-
-          form.setValue("title", data.data.title);
-          form.setValue("overview", data.data.overview);
-          setDisableInput((prev) => !prev);
-
-          setDisabled(false);
-          setVideo((prev) => {
-            return { ...prev, file: null, preview: null };
-          });
+        onSuccess: () => {
+          toast.success("Lesson added securely.");
+          form.setValue("video_title", "");
+          form.setValue("description", "");
+          form.setValue("video_id", "");
+          form.setValue("video_from_url", "");
+          setVideo({ file: null, preview: null });
           setDocument({ file: null, name: null });
         },
       },
@@ -146,194 +156,254 @@ const CreateOndemandForm = ({ courseId }) => {
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(handleCreateSection)}
-        className="w-full"
-      >
+      <form className="w-full">
+        {/* Step 1: Section Metadata */}
         <div>
+          <h2 className="mb-4 border-b pb-2 text-xl font-semibold">
+            1. Section Information
+          </h2>
           <FormInput
             name="title"
             type="text"
             id="title"
             label="Section Title"
             control={form.control}
-            placeholder="Business Analysis Agile Project Management Software Testing "
-            disabled={disableInput}
+            placeholder="E.g. Agile Project Management"
+            disabled={isSectionCreated}
           />
-          <p className="mb-1 mt-2 text-right text-sm text-[#667185]">
-            {form.watch("title") ? `${form.watch("title").length}` : 0}
-            /70
+          <p className="mb-4 mt-2 text-right text-sm text-[#667185]">
+            {form.watch("title") ? `${form.watch("title").length}` : 0}/70
           </p>
-        </div>
-        <div>
+
           <FormInput
             name="overview"
             id="overview"
             type="text"
-            label="Section overview"
+            label="Section Overview"
             control={form.control}
-            placeholder="Enter text here "
+            placeholder="Enter objective and description of the section"
             textarea={true}
-            disabled={disableInput}
+            disabled={isSectionCreated}
           />
-          <p className="mb-1 mt-2 text-right text-sm text-[#667185]">
+          <p className="mb-4 mt-2 text-right text-sm text-[#667185]">
             {form.watch("overview") ? `${form.watch("overview").length}` : 0}
             /450
           </p>
+
+          {!isSectionCreated && (
+            <CommonButton
+              className="mt-2 w-full bg-primary-color-600"
+              type="button"
+              disabled={isCreatingEmpty}
+              onClick={handleDeclareSection}
+            >
+              Declare Section
+            </CommonButton>
+          )}
+
+          {isSectionCreated && (
+            <div className="mt-2 flex w-full items-center justify-end">
+              <CommonButton
+                variant="outline"
+                type="button"
+                onClick={() => {
+                  setIsSectionCreated(false);
+                  setSectionNumber(null);
+                  form.reset();
+                }}
+              >
+                Create Another New Section
+              </CommonButton>
+            </div>
+          )}
         </div>
-        {
-          <div>
+
+        {/* Step 2: Lesson Appendage */}
+        {isSectionCreated && (
+          <div className="mt-8 rounded-xl border border-t border-slate-200 bg-slate-50 p-4 pt-6">
+            <h2 className="mb-4 text-xl font-semibold text-primary-color-600">
+              2. Add Lesson to Section {sectionNumber}
+            </h2>
+
             <FormInput
               name="video_title"
               type="text"
               id="video_title"
-              label="Video Title"
+              label="Lesson Title"
               control={form.control}
-              placeholder="Enter Video Title"
+              placeholder="Enter Lesson Title"
             />
-            <p className="mb-1 mt-2 text-right text-sm text-[#667185]">
+            <p className="mb-4 mt-2 text-right text-sm text-[#667185]">
               {form.watch("video_title")
                 ? `${form.watch("video_title").length}`
                 : 0}
               /70
             </p>
-          </div>
-        }
 
-        {
-          <div className="space-y-2">
-            <p className="text-sm font-medium capitalize text-[#101928]">
-              upload video
-            </p>
-            <div
-              className={cn(
-                "flex min-h-52 w-full items-center justify-center rounded-lg border-2 border-dashed border-[#23314A]",
-                form.watch("video_from_url").length >= 1 &&
-                  "cursor-not-allowed opacity-45",
-              )}
-              onClick={() => {
-                videoRef.current.click();
-              }}
-            >
-              {video.preview ? (
-                <video
-                  src={video.preview}
-                  alt="Cover Video"
-                  className="h-[200px] w-full rounded-md object-cover"
-                  controls
-                />
-              ) : (
-                <button className="flex gap-2 text-[#98A2B3]">
-                  <ImgUploadIcon />
-                  <span>upload</span>
-                </button>
-              )}
-              <input
-                type="file"
-                name=""
-                id=""
-                hidden
-                ref={videoRef}
-                onChange={handleVideoUpload}
-                disabled={form.watch("video_from_url").length >= 1}
-              />
-            </div>
-            {errorMessage && (
-              <p className="text-primary-color-600">{errorMessage}</p>
-            )}
-
-            <p className="mb-1 mt-2 text-sm text-[#667185]">
-              Max 200MB files are allowed
-            </p>
-          </div>
-        }
-        {
-          <div className="mt-4 flex items-center gap-2">
-            <div className="h-px w-full bg-[#E7E7E7]" />
-
-            <span className="text-[#6D6D6D]">OR</span>
-            <div className="h-px w-full bg-[#E7E7E7]" />
-          </div>
-        }
-
-        {
-          <div className="flex flex-col gap-y-4">
             <FormInput
-              name="video_from_url"
+              name="description"
               type="text"
-              id="video_from_url"
-              label="Video from URL"
+              id="description"
+              label="Lesson Description"
               control={form.control}
-              placeholder="Input file URL "
-              disabled={video.file ? true : false}
+              placeholder="Enter details about this specific lesson/video"
+              textarea={true}
             />
-          </div>
-        }
 
-        {
-          <div className="space-y-2">
-            <p className="text-sm font-medium capitalize text-[#101928]">
-              Upload Document (Optional)
-            </p>
-            <div
-              className="flex min-h-32 w-full items-center justify-center rounded-lg border-2 border-dashed border-[#23314A] cursor-pointer hover:border-primary-color-600 transition-colors"
-              onClick={() => {
-                documentRef.current.click();
-              }}
-            >
-              {document.file ? (
-                <div className="flex flex-col items-center gap-2 p-4">
-                  <svg className="w-12 h-12 text-primary-color-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  <p className="text-sm text-[#101928] font-medium">{document.name}</p>
-                  <p className="text-xs text-[#667185]">{(document.file.size / (1024 * 1024)).toFixed(2)} MB</p>
-                </div>
-              ) : (
-                <button type="button" className="flex gap-2 text-[#98A2B3]">
-                  <ImgUploadIcon />
-                  <span>Upload Document</span>
-                </button>
-              )}
-              <input
-                type="file"
-                hidden
-                ref={documentRef}
-                onChange={handleDocumentUpload}
-                accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
-              />
+            <div className="mb-4 mt-4 flex gap-4">
+              <label className="flex cursor-pointer items-center gap-2 rounded-md p-2 hover:bg-slate-100">
+                <input
+                  type="radio"
+                  name="video_source"
+                  checked={videoSourceType === "existing"}
+                  onChange={() => setVideoSourceType("existing")}
+                  className="accent-primary-color-600"
+                />{" "}
+                Select Existing Global Video
+              </label>
+              <label className="flex cursor-pointer items-center gap-2 rounded-md p-2 hover:bg-slate-100">
+                <input
+                  type="radio"
+                  name="video_source"
+                  checked={videoSourceType === "upload"}
+                  onChange={() => setVideoSourceType("upload")}
+                  className="accent-primary-color-600"
+                />{" "}
+                Upload New Video / URL
+              </label>
             </div>
-            {documentError && (
-              <p className="text-primary-color-600 text-sm">{documentError}</p>
-            )}
-            <p className="mb-1 mt-2 text-sm text-[#667185]">
-              Max 50MB. Accepted: PDF, Word, Excel, PowerPoint
-            </p>
-          </div>
-        }
 
-        <div>
-          <div className="ml-auto mt-6 w-max">
-            {
-              <CommonButton
-                variant="outline"
-                type="button"
-                disabled={disabled || data?.data?.data.length < 1}
-                className="disabled:cursor-not-allowed"
-                onClick={handleCreateNewSection}
+            {videoSourceType === "existing" ? (
+              <div className="mb-4">
+                <label className="mb-2 block text-sm font-medium text-[#101928]">
+                  Select Existing Video
+                </label>
+                <select
+                  {...form.register("video_id")}
+                  className="w-full rounded-md border border-slate-300 p-2 focus:outline-primary-color-600"
+                >
+                  <option value="">-- Choose a video --</option>
+                  {videosData?.data?.data?.map((vid) => (
+                    <option key={vid.id} value={vid.id}>
+                      {vid.title} {vid.size ? `(${vid.size})` : ""}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ) : (
+              <>
+                <div className="mb-4 space-y-4">
+                  <p className="text-sm font-medium capitalize text-[#101928]">
+                    Upload Video
+                  </p>
+                  <div
+                    className={cn(
+                      "min-h-52 flex w-full cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-[#23314A]",
+                      form.watch("video_from_url")?.length >= 1 &&
+                        "opacity-45 cursor-not-allowed",
+                    )}
+                    onClick={() => {
+                      if (form.watch("video_from_url")?.length >= 1) return;
+                      videoRef.current.click();
+                    }}
+                  >
+                    {video.preview ? (
+                      <video
+                        src={video.preview}
+                        className="h-[200px] w-full rounded-md object-cover"
+                        controls
+                      />
+                    ) : (
+                      <button
+                        type="button"
+                        className="flex gap-2 text-[#98A2B3]"
+                      >
+                        <ImgUploadIcon />
+                        <span>Upload Video</span>
+                      </button>
+                    )}
+                    <input
+                      type="file"
+                      hidden
+                      ref={videoRef}
+                      onChange={handleVideoUpload}
+                      disabled={form.watch("video_from_url")?.length >= 1}
+                    />
+                  </div>
+                  {errorMessage && (
+                    <p className="text-primary-color-600">{errorMessage}</p>
+                  )}
+                  <p className="text-sm text-[#667185]">
+                    Max 200MB files are allowed
+                  </p>
+                </div>
+
+                <div className="mb-4 mt-4 flex items-center gap-2">
+                  <div className="h-px w-full bg-[#E7E7E7]" />
+                  <span className="text-[#6D6D6D]">OR</span>
+                  <div className="h-px w-full bg-[#E7E7E7]" />
+                </div>
+
+                <FormInput
+                  name="video_from_url"
+                  type="text"
+                  id="video_from_url"
+                  label="Video from URL"
+                  control={form.control}
+                  placeholder="Input file URL"
+                  disabled={video.file ? true : false}
+                />
+              </>
+            )}
+
+            <div className="mt-6 space-y-2">
+              <p className="text-sm font-medium capitalize text-[#101928]">
+                Upload Document (Optional)
+              </p>
+              <div
+                className="min-h-32 flex w-full cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-[#23314A] transition-colors hover:border-primary-color-600"
+                onClick={() => documentRef.current.click()}
               >
-                Create New Section
-              </CommonButton>
-            }
+                {document.file ? (
+                  <div className="flex flex-col items-center gap-2 p-4">
+                    <p className="text-sm font-medium text-[#101928]">
+                      {document.name}
+                    </p>
+                    <p className="text-xs text-[#667185]">
+                      {(document.file.size / (1024 * 1024)).toFixed(2)} MB
+                    </p>
+                  </div>
+                ) : (
+                  <button type="button" className="flex gap-2 text-[#98A2B3]">
+                    <ImgUploadIcon />
+                    <span>Upload Document</span>
+                  </button>
+                )}
+                <input
+                  type="file"
+                  hidden
+                  ref={documentRef}
+                  onChange={handleDocumentUpload}
+                  accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+                />
+              </div>
+              {documentError && (
+                <p className="text-sm text-primary-color-600">
+                  {documentError}
+                </p>
+              )}
+            </div>
+
             <CommonButton
-              className="ml-6 bg-primary-color-600"
-              type="submit"
+              className="mt-6 w-full bg-primary-color-600"
+              type="button"
               disabled={isCreating}
+              onClick={form.handleSubmit(handleAddLesson)}
             >
-              Add Content
+              Add Lesson to Section {sectionNumber}
             </CommonButton>
           </div>
-        </div>
+        )}
       </form>
     </Form>
   );

@@ -17,18 +17,11 @@ export const RecordedSessionSchema = z.object({
 });
 
 export const onDemandSessionSchema = z.object({
-  title: z
-    .string()
-    .min(1, { message: "This field is required" })
-    .max(70, { message: "you've reach the max character length" }),
-  video_title: z
-    .string()
-    .min(1, { message: "This field is required" })
-    .max(70, { message: "you've reach the max character length" }),
-  overview: z
-    .string()
-    .min(1, { message: "This field is required" })
-    .max(450, { message: "you've reach the max character length" }),
+  title: z.string().optional(),
+  video_title: z.string().optional(),
+  overview: z.string().optional(),
+  description: z.string().optional(),
+  video_id: z.string().optional(),
   video_from_url: z.union([z.literal(""), z.string().trim().url()]),
 });
 export const editOnDemandVideoSchema = z.object({

@@ -3,6 +3,7 @@ import { PieChartComponent } from "@/Components/admindashboard/data-management/P
 import { RadarChartDot } from "@/Components/admindashboard/data-management/RadarChart";
 import TopStudents from "@/Components/admindashboard/data-management/TopStudents";
 import { TrendChart } from "@/Components/admindashboard/data-management/TrendChart";
+import GlobalCohortManager from "@/Components/admindashboard/data-management/GlobalCohortManager";
 import {
   EnrollmentIcon,
   PaymentIcon,
@@ -26,23 +27,25 @@ export default function DashboardAnalytics() {
         <div className="h-full min-h-[102px] w-px bg-[#E6EDFF]" />
         <RevenueAndPurchase />
       </div>
-      <div className="grid grid-cols-3 gap-8 w-full items-start">
-        <div className="col-span-2 shadow-md rounded-[20px] border border-[#F0F2F5]">
-        <TrendChart />
+      <div className="grid w-full grid-cols-3 items-start gap-8">
+        <div className="col-span-2 rounded-[20px] border border-[#F0F2F5] shadow-md">
+          <TrendChart />
         </div>
-        <div className="col-span-1 shadow-md rounded-[20px] border border-[#F0F2F5]">
+        <div className="col-span-1 rounded-[20px] border border-[#F0F2F5] shadow-md">
           <RadarChartDot />
         </div>
       </div>
       <div className="mt-7 grid grid-cols-3 gap-6">
         <TopStudents />
-        <div className="col-span-2 h-min rounded-[20px] shadow-md border border-[#F0F2F5] p-6">
+        <div className="col-span-2 h-min rounded-[20px] border border-[#F0F2F5] p-6 shadow-md">
           <p className="mb-5 font-bold text-[#1D2739]">
             Top-performing courses
           </p>
           <PieChartComponent />
         </div>
       </div>
+
+      <GlobalCohortManager />
     </section>
   );
 }
