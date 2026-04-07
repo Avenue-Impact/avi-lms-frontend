@@ -14,9 +14,12 @@ import _ from "lodash";
 import VideoTable from "./VideoTable";
 import VideoForm from "./VideoForm";
 import VideoPlayer from "@/Components/VideoPlayer";
+import GlobalPagination from "@/Components/ui/GlobalPagination";
 import joinTeamImage from "@/assets/images/join_team.png";
 
 export default function VideoManagement() {
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -25,8 +28,8 @@ export default function VideoManagement() {
   const [viewingVideo, setViewingVideo] = useState(null);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["get-all-videos", { page: 1, limit: 100 }],
-    queryFn: () => getAllVideos(1, 100),
+    queryKey: ["get-all-videos", { page, limit: perPage }],
+    queryFn: () => getAllVideos(page, perPage),
   });
 
   const createMutation = useMutation({
@@ -148,6 +151,16 @@ export default function VideoManagement() {
             onView={handleView}
             onEdit={handleEdit}
             onDelete={handleDelete}
+          />
+        )}
+        {!isLoading && !error && data?.data?.pagination && (
+          <GlobalPagination
+            pagination={data.data.pagination}
+            onPageChange={setPage}
+            onLimitChange={(limit) => {
+              setPerPage(limit);
+              setPage(1);
+            }}
           />
         )}
       </div>

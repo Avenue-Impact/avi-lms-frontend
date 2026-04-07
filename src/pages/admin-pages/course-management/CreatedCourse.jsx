@@ -5,12 +5,15 @@ import { formatDate } from "@/lib/utils";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import UnplishedCreatedCourse from "./UnplishedCreatedCourse";
+import GlobalPagination from "@/Components/ui/GlobalPagination";
 import { Link } from "react-router-dom";
 import { useCallback, useState } from "react";
 import _ from "lodash";
 
 const CreatedCourse = () => {
-  const { data, isLoading, error } = useFetchAllAdminCourses(1, 40, true);
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
+  const { data, isLoading, error } = useFetchAllAdminCourses(page, perPage, true);
   const [searchQuery, setSearchQuery] = useState("");
 
   console.log("These is all the coureses", data);
@@ -26,7 +29,7 @@ const CreatedCourse = () => {
   };
 
   // Filter courses by title
-  const filteredCourses = data?.data?.data?.courses.filter((course) =>
+  const filteredCourses = (data?.data?.data?.courses || []).filter((course) =>
     course.title.toLowerCase().includes(searchQuery.toLowerCase()),
   );
   return (
@@ -81,6 +84,17 @@ const CreatedCourse = () => {
             );
           })}
         </div>
+      )}
+
+      {!isLoading && !error && data?.data?.pagination && (
+        <GlobalPagination
+          pagination={data.data.pagination}
+          onPageChange={setPage}
+          onLimitChange={(limit) => {
+            setPerPage(limit);
+            setPage(1);
+          }}
+        />
       )}
 
       <UnplishedCreatedCourse />

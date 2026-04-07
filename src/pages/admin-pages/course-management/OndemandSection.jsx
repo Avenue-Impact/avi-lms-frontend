@@ -39,7 +39,10 @@ function OndemandSection() {
   return (
     <div>
       {edit ? (
-        <EditOndemandCourseSectionForm setEdit={setEdit} initialSection={editSectionData} />
+        <EditOndemandCourseSectionForm
+          setEdit={setEdit}
+          initialSection={editSectionData}
+        />
       ) : (
         <div className="grid grid-cols-[3fr_1.7fr]">
           {sectionDetails.topic ? (
@@ -58,7 +61,9 @@ function OndemandSection() {
                     section={sectionDetails.section}
                     videoUrl={videoUrl}
                   />
-                  <p className="mt-6 capitalize">{sectionDetails.videoTitle}</p>
+                  <h2 className="mt-6 text-lg font-medium capitalize">
+                    {sectionDetails.videoTitle}
+                  </h2>
                 </div>
               </div>
             </main>
