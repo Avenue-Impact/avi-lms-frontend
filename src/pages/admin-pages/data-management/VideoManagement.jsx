@@ -108,6 +108,7 @@ export default function VideoManagement() {
         data: {
           videoTitle: formData.videoTitle,
           issue_date: formData.issue_date,
+          tags: formData.tags,
         },
       });
     } else {
