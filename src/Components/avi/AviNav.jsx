@@ -47,12 +47,12 @@ const AviNav = ({ showNav, setShowNav }) => {
         </ul>
         <button
           onClick={() => {
-            navigate("/login");
+            navigate("/signup");
             setShowNav((prev) => !prev);
           }}
           className="rounded-full bg-[#CC1747] px-6 py-3 capitalize text-[#FFEBF0]"
         >
-          Sign In to continue
+          Sign Up
         </button>
         {/* <button
           onClick={() => {
