@@ -295,3 +295,9 @@ export const regenerateMeeting = async ({ courseId, cohortId }) => {
   );
 };
 
+export const regenerateMeetingInstructor = async ({ courseId, cohortId }) => {
+  return await axiosInstructor.post(
+    `/courses/${courseId}/cohorts/${cohortId}/regenerate-meeting`,
+    {},
+  );
+};

@@ -8,11 +8,14 @@ import {
   FileCheck,
   Video,
   Calendar,
-  ArrowRight,
+  RotateCcw,
 } from "lucide-react";
 import AssignmentReviewModal from "@/Components/instructor/AssignmentReviewModal";
 import { useInstructorAuth } from "@/hooks/instructor/use-instructor-auth";
 import fallbackCourseImage from "@/assets/images/join_team.png";
+import { regenerateMeetingInstructor } from "@/services/api";
+import { toast } from "react-hot-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 const StatCard = ({ icon: Icon, label, value, color }) => (
   <div className="flex-1 rounded-lg border-2 border-[#CC1747] bg-[#CC1747]/5 p-4 lg:mx-2">
@@ -23,6 +26,7 @@ const StatCard = ({ icon: Icon, label, value, color }) => (
 
 const InstructorDashboard = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { data: statsData, isLoading: statsLoading } = useFetchDashboardStats();
   const { data: subsData, isLoading: subsLoading } =
     useFetchRecentSubmissions();
@@ -41,6 +45,23 @@ const InstructorDashboard = () => {
       isInstructor: "true",
     });
     navigate(`/meeting/${courseId}?${params.toString()}`);
+  };
+
+  // 4. Generate new meeting link
+  const [generatingId, setGeneratingId] = useState(null);
+  const handleGenerateLink = async (courseId, cohortId) => {
+    setGeneratingId(cohortId);
+    try {
+      await regenerateMeetingInstructor({ courseId, cohortId });
+      toast.success("Meeting link regenerated successfully");
+      queryClient.invalidateQueries(["get-single-cohort", courseId, cohortId]);
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Failed to regenerate meeting link",
+      );
+    } finally {
+      setGeneratingId(null);
+    }
   };
 
   if (statsLoading) {
@@ -128,7 +149,18 @@ const InstructorDashboard = () => {
                   />
                 </div>
                 {/* Join Button - positioned at bottom for mobile, or beside text for desktop */}
-                <div className="mt-4">
+                <div className="mt-4 flex items-center justify-end gap-4">
+                  <button
+                    onClick={() => handleGenerateLink(session.courseId, session.cohortId)}
+                    disabled={generatingId === session.cohortId}
+                    className="hover:text-primary-color-800 flex items-center gap-2 text-sm font-medium text-primary-color-600 transition-colors disabled:opacity-50"
+                    title="Generate new meeting link"
+                  >
+                    Generate new link
+                    <RotateCcw
+                      className={`h-4 w-4 ${generatingId === session.cohortId ? "animate-spin" : ""}`}
+                    />
+                  </button>
                   <button
                     onClick={() =>
                       handleJoin(

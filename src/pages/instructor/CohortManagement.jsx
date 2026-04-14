@@ -220,7 +220,6 @@ const CohortCard = ({ cohort, onManage }) => {
             {cohort.course_id?.title || "Course Name"}
           </h3>
         </div>
-        <StatusBadge status={status} />
       </div>
 
       <div className="mb-6 flex border-y border-[#F5F5F5] py-4">
@@ -400,9 +399,7 @@ const CohortDetailPage = ({ cohort, onBack }) => {
                   total: students.length,
                 }}
                 onClick={() =>
-                  navigate(
-                    `/instructor/submissions?taskId=${assignment._id}`,
-                  )
+                  navigate(`/instructor/submissions?taskId=${assignment._id}`)
                 }
               />
             ))
