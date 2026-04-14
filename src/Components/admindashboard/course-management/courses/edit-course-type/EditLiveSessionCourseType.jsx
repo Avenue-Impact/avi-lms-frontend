@@ -60,9 +60,6 @@ const EditLiveSessionCourseType = ({
   );
   const { data: globalCohorts } = useFetchGlobalCohorts();
 
-  console.log("Global Cohorts list for selection:", globalCohorts);
-  console.log("Existing course cohorts:", existingCohorts);
-
   const getTime = (timeStr) => {
     const t = timeStr;
     const time = t.slice(0, -2).split(":");
