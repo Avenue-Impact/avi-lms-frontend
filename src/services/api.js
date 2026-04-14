@@ -286,3 +286,12 @@ export const updateLiveSessionDetails = async ({
     { title, description },
   );
 };
+
+
+export const regenerateMeeting = async ({ courseId, cohortId }) => {
+  return await axiosAdmin.post(
+    `/courses/${courseId}/cohorts/${cohortId}/regenerate-meeting`,
+    {},
+  );
+};
+

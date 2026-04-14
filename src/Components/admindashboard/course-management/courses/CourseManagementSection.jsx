@@ -5,12 +5,15 @@ import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/format-date";
 import { useState, useEffect } from "react";
 import { useToggleCohortLive } from "@/hooks/course-management/use-toggle-cohort-live";
-import { Loader2, AlertTriangle } from "lucide-react";
+import { Loader2, AlertTriangle, RotateCcw } from "lucide-react";
 import liveSession from "../../../../assets/images/dashboard/live-session.png";
 import EditLiveSessionForm from "../live-session/EditLiveSession";
 import EditLiveSession from "../live-session/EditLiveSession";
 import { Skeleton } from "@/Components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
+import { regenerateMeeting } from "@/services/api";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-hot-toast";
 import ReactPlayer from "react-player";
 import { useFetchAdmin } from "@/hooks/account-management/use-fetch-admin";
 import {
@@ -101,6 +104,7 @@ const LiveContent = ({ data }) => {
   const navigate = useNavigate();
 
   const cohortId = queryString.get("cohortId");
+  const queryClient = useQueryClient();
   const { fetAdmin, isPending: isFetchingInstructor } = useFetchAdmin();
   const { toggleLive, isToggling } = useToggleCohortLive(courseId, cohortId);
 
@@ -108,11 +112,10 @@ const LiveContent = ({ data }) => {
   const {
     title = "",
     subtitle = "",
-    class_day = "",
     start_time = "",
     instructor = null,
     is_live = false,
-  } = data?.data?.data ?? {};
+  } = data?.data?.session ?? {};
 
   // 2. Fetch Instructor logic (Fixes Infinite Loop)
   useEffect(() => {
@@ -140,6 +143,23 @@ const LiveContent = ({ data }) => {
     navigate(`/meeting/${courseId}?${params.toString()}`);
   };
 
+  // 4. Generate new meeting link
+  const [isGenerating, setIsGenerating] = useState(false);
+  const handleGenerateLink = async () => {
+    setIsGenerating(true);
+    try {
+      await regenerateMeeting({ courseId, cohortId });
+      toast.success("Meeting link regenerated successfully");
+      queryClient.invalidateQueries(["get-single-cohort", courseId, cohortId]);
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Failed to regenerate meeting link",
+      );
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   return (
     <>
       {meeting ? (
@@ -165,7 +185,7 @@ const LiveContent = ({ data }) => {
 
             <div className="mb-4 space-y-2">
               <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
-                <strong>Class day:</strong> {class_day}
+                <strong>Class day:</strong> {data?.data?.data?.class_days}
               </p>
               <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
                 <strong>Meeting date:</strong> {start_time} UTC
@@ -182,7 +202,20 @@ const LiveContent = ({ data }) => {
               </p>
             </div>
 
-            <CommonButton onClick={handleJoin}>Join Meeting</CommonButton>
+            <div className="flex items-center justify-start gap-5">
+              <CommonButton onClick={handleJoin}>Join Meeting</CommonButton>
+              <button
+                onClick={handleGenerateLink}
+                disabled={isGenerating}
+                className="hover:text-primary-color-800 flex items-center gap-2 text-sm font-medium text-primary-color-600 transition-colors disabled:opacity-50"
+                title="Generate new meeting link"
+              >
+                <RotateCcw
+                  className={`h-4 w-4 ${isGenerating ? "animate-spin" : ""}`}
+                />
+                Generate new link
+              </button>
+            </div>
 
             {/* Toggle Live Session Card */}
             <div className="mt-10 rounded-lg border border-yellow-200 bg-yellow-50 p-6">

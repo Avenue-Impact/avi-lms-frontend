@@ -26,10 +26,17 @@ export default function AllStudent() {
     handleSearch(event.target.value);
   };
 
-  const studentsList = Array.isArray(data?.data?.data) ? data.data.data : (data?.data?.data?.students || []);
-  
+  const studentsList = Array.isArray(data?.data?.data)
+    ? data.data.data
+    : data?.data?.data?.users || [];
+
   const filteredStudent = studentsList.filter((student) =>
-    ((student?.firstname || "") + ' ' + (student?.lastname || "") + (student?.email || ""))
+    (
+      (student?.firstname || "") +
+      " " +
+      (student?.lastname || "") +
+      (student?.email || "")
+    )
       .toLowerCase()
       .includes(searchQuery.toLowerCase()),
   );
@@ -73,12 +80,13 @@ export default function AllStudent() {
             User not found
           </p>
         ) : (
-          <Table cols={"0.3fr 1.2fr 1fr 1.8fr 1.2fr 1fr"}>
+          <Table cols={"0.3fr 1.2fr 1fr 1.8fr 1fr 1.2fr 1fr"}>
             <Table.Header className={"*:text-sm *:font-medium"}>
               <h4>S/N</h4>
               <h4>Name</h4>
               <h4>Username</h4>
               <h4>Email</h4>
+              <h4>Status</h4>
               <h4>Date Created </h4>
               <h4>Action</h4>
             </Table.Header>
@@ -95,6 +103,9 @@ export default function AllStudent() {
                     {student.username}
                   </p>
                   <p className="pl-2 text-sm text-[#344054]">{student.email}</p>
+                  <p className="text-sm text-[#344054]">
+                    {student.user_status}
+                  </p>
                   <p className="pl-2 text-sm text-[#344054]">
                     {student.createdAt ?? "N/A"}
                   </p>
