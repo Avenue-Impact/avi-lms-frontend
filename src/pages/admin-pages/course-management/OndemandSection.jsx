@@ -8,24 +8,11 @@ import { useRef, useState } from "react";
 import EditOndemandCourseSectionForm from "@/Components/admindashboard/course-management/on-demand-section/EditOndemandCourseSectionForm";
 
 import { Skeleton } from "@/Components/ui/skeleton";
-import ReactPlayer from "react-player";
-import {
-  MediaControlBar,
-  MediaController,
-  MediaFullscreenButton,
-  MediaMuteButton,
-  MediaPlaybackRateButton,
-  MediaPlayButton,
-  MediaSeekBackwardButton,
-  MediaSeekForwardButton,
-  MediaTimeDisplay,
-  MediaTimeRange,
-  MediaVolumeRange,
-} from "media-chrome/react";
-import { Loader2 } from "lucide-react";
+import VideoPlayer from "@/Components/VideoPlayer";
 
 function OndemandSection() {
   const [edit, setEdit] = useState(false);
+  const [editSectionData, setEditSectionData] = useState(null);
   const [videoUrl, setVideoUrl] = useState();
   const { courseId } = useParams();
   const [sectionDetails, setSectionDetails] = useState({
@@ -52,7 +39,10 @@ function OndemandSection() {
   return (
     <div>
       {edit ? (
-        <EditOndemandCourseSectionForm setEdit={setEdit} />
+        <EditOndemandCourseSectionForm
+          setEdit={setEdit}
+          initialSection={editSectionData}
+        />
       ) : (
         <div className="grid grid-cols-[3fr_1.7fr]">
           {sectionDetails.topic ? (
@@ -71,7 +61,9 @@ function OndemandSection() {
                     section={sectionDetails.section}
                     videoUrl={videoUrl}
                   />
-                  <p className="mt-6 capitalize">{sectionDetails.videoTitle}</p>
+                  <h2 className="mt-6 text-lg font-medium capitalize">
+                    {sectionDetails.videoTitle}
+                  </h2>
                 </div>
               </div>
             </main>
@@ -84,6 +76,7 @@ function OndemandSection() {
               setSectionDetails={setSectionDetails}
               setEdit={setEdit}
               setVideoUrl={setVideoUrl}
+              setEditSectionData={setEditSectionData}
             />
           </aside>
         </div>
@@ -95,8 +88,6 @@ function OndemandSection() {
 export default OndemandSection;
 
 const PreviewVideoCourse = ({ videoUrl, section }) => {
-  const [waiting, setWaiting] = useState(false);
-
   if (!videoUrl)
     return (
       <p className="text-primary-color-500">
@@ -106,56 +97,8 @@ const PreviewVideoCourse = ({ videoUrl, section }) => {
     );
 
   return (
-    <>
-      <div className="relative">
-        {waiting && (
-          <div className="absolute left-0 top-0 z-40 flex h-full w-full items-center justify-center">
-            <span>
-              <Loader2 className="animate-spin text-primary-color-600" />
-            </span>
-          </div>
-        )}
-        <MediaController
-          style={{
-            width: "100%",
-            aspectRatio: "16/9",
-          }}
-        >
-          <ReactPlayer
-            slot="media"
-            src={videoUrl}
-            controls={false}
-            onSeeking={() => {
-              setWaiting(true);
-            }}
-            onWaiting={() => {
-              setWaiting(true);
-            }}
-            onSeeked={() => {
-              setWaiting(false);
-            }}
-            onPlaying={() => {
-              setWaiting(false);
-            }}
-            style={{
-              width: "100%",
-              height: "100%",
-              "--controls": "none",
-            }}
-          ></ReactPlayer>
-          <MediaControlBar className="z-50">
-            <MediaPlayButton />
-            <MediaSeekBackwardButton seekOffset={10} />
-            <MediaSeekForwardButton seekOffset={10} />
-            <MediaTimeRange />
-            <MediaTimeDisplay showDuration />
-            <MediaMuteButton />
-            <MediaVolumeRange />
-            <MediaPlaybackRateButton />
-            <MediaFullscreenButton />
-          </MediaControlBar>
-        </MediaController>
-      </div>
-    </>
+    <div className="relative">
+      <VideoPlayer videoUrl={videoUrl} />
+    </div>
   );
 };

@@ -9,7 +9,7 @@ import { CommonButton } from "@/Components/ui/button";
 
 import { ClipLoader } from "react-spinners";
 
-import { cohorts } from "@/lib/cohorts";
+import { useFetchGlobalCohorts } from "@/hooks/admin-global/use-fetch-global-cohorts";
 import { cn } from "@/lib/utils";
 import DashButton from "../../auth/ButtonDash";
 import { useCreateSingleCohort } from "@/hooks/course-management/use-create-single-cohorts";
@@ -21,6 +21,7 @@ const CourseCohortPreview = ({ setSection }) => {
   const [cohortErr, setCohortErr] = useState("");
 
   const { createSingleCohort, isCreating } = useCreateSingleCohort();
+  const { data: globalCohorts } = useFetchGlobalCohorts();
 
   const handleAddCohort = () => {
     if (!cohort) return setCohortErr("Add cohort");
@@ -52,7 +53,7 @@ const CourseCohortPreview = ({ setSection }) => {
       <div className="mb-4 mt-5 grid grid-cols-12 items-start gap-10 rounded border border-gray-300 p-10 md:mb-0">
         <div className="col-span-5">
           <h3 className="text-[20px] font-[500] text-[#344054] lg:text-[24px]">
-            Live session + Mentoring
+            Live session + Mentoringss
           </h3>
           <p>
             Add Course Original Price, Discounted Price, Cohort, and Duration
@@ -60,7 +61,7 @@ const CourseCohortPreview = ({ setSection }) => {
 
           <div className="w-full pt-3">
             <CohortSelection
-              data={cohorts}
+              data={globalCohorts}
               setCohort={setCohort}
               text={"Select cohort"}
             />

@@ -4,11 +4,14 @@ import { useCallback, useState } from "react";
 import { IoSearch } from "react-icons/io5";
 import StudentDetails from "./StudentDetails";
 import { useFetchAllManagementStudent } from "@/hooks/data-management/use-fetch-all-students-stats";
+import GlobalPagination from "@/Components/ui/GlobalPagination";
 import _ from "lodash";
 
 export default function EnrolledStudent() {
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
   const [selectedStudentId, setSelectedStudentId] = useState(null);
-  const { data, error, isLoading } = useFetchAllManagementStudent();
+  const { data, error, isLoading } = useFetchAllManagementStudent(page, perPage);
   // console.log("Fetch all the students", data);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -23,8 +26,10 @@ export default function EnrolledStudent() {
     handleSearch(event.target.value);
   };
 
-  const filteredStudent = data?.data?.data?.students.filter((student) =>
-    (student.student_name + student.student_email)
+  const studentsList = Array.isArray(data?.data?.data) ? data.data.data : (data?.data?.data?.students || []);
+
+  const filteredStudent = studentsList.filter((student) =>
+    ((student?.student_name || "") + (student?.student_email || ""))
       .toLowerCase()
       .includes(searchQuery.toLowerCase()),
   );
@@ -45,7 +50,7 @@ export default function EnrolledStudent() {
     <div>
       <header className="mt-7 flex items-center justify-between px-4 py-5">
         <p className="text-xl text-[#475367]">
-          All Students({data?.data?.data?.students.length})
+          All Students({studentsList.length})
         </p>
         <div className="flex w-full max-w-[528px] items-center gap-x-4 rounded-md border border-[#D0D5DD] px-4 py-2">
           <label htmlFor="search">
@@ -104,6 +109,16 @@ export default function EnrolledStudent() {
               ))}
             </div>
           </Table>
+        )}
+        {data?.data?.pagination && (
+          <GlobalPagination
+            pagination={data.data.pagination}
+            onPageChange={setPage}
+            onLimitChange={(limit) => {
+              setPerPage(limit);
+              setPage(1);
+            }}
+          />
         )}
       </div>
     </div>

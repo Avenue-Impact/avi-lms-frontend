@@ -6,6 +6,8 @@ import {
   FaVolumeUp,
   FaExpand,
 } from "react-icons/fa";
+import { useAddVideoProgress } from "@/hooks/students/use-add-video-progress";
+import { useFetchVideoProgress } from "@/hooks/students/use-fetch-video-progress";
 
 const formatTime = (timeInSeconds) => {
   if (isNaN(timeInSeconds)) return "00:00";
@@ -18,7 +20,13 @@ const formatTime = (timeInSeconds) => {
   return `${m}:${s}`;
 };
 
-const VideoPlayer = ({ videoUrl, coverImage, className }) => {
+const VideoPlayer = ({
+  videoUrl,
+  coverImage,
+  className,
+  courseId,
+  videoId,
+}) => {
   const videoRef = useRef(null);
   const containerRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -29,7 +37,20 @@ const VideoPlayer = ({ videoUrl, coverImage, className }) => {
   const [isMuted, setIsMuted] = useState(false);
   const [showControls, setShowControls] = useState(true);
 
+  const { data: progressData } = useFetchVideoProgress(courseId, videoId);
+  const { mutate: updateProgress } = useAddVideoProgress();
+
   const timeoutRef = useRef(null);
+  const throttleRef = useRef({ lastPing: 0 });
+
+  useEffect(() => {
+    if (progressData?.data?.current_time && videoRef.current && !hasStarted) {
+      videoRef.current.currentTime = progressData.data.current_time;
+      if (progressData.data.progress_percentage) {
+        setProgress(progressData.data.progress_percentage);
+      }
+    }
+  }, [progressData, hasStarted]);
 
   const resetControlsTimeout = () => {
     setShowControls(true);
@@ -71,7 +92,24 @@ const VideoPlayer = ({ videoUrl, coverImage, className }) => {
       setCurrentTime(current);
       setDuration(durationVal);
       if (durationVal > 0) {
-        setProgress((current / durationVal) * 100);
+        let progressPerc = (current / durationVal) * 100;
+        setProgress(progressPerc);
+
+        // Tracking Throttle Logic
+        if (courseId && videoId && isPlaying) {
+          const currentTimeMs = Date.now();
+          // ping every 10 seconds
+          if (currentTimeMs - throttleRef.current.lastPing > 10000) {
+            updateProgress({
+              courseId,
+              video_id: videoId,
+              current_time: current,
+              progress_percentage: progressPerc,
+              is_completed: progressPerc >= 95,
+            });
+            throttleRef.current.lastPing = currentTimeMs;
+          }
+        }
       }
     }
   };
@@ -108,12 +146,13 @@ const VideoPlayer = ({ videoUrl, coverImage, className }) => {
   return (
     <div
       ref={containerRef}
-      className={`group relative w-full overflow-hidden bg-black shadow-lg lg:rounded-3xl ${className || ""}`}
+      className={`group relative aspect-video w-full overflow-hidden bg-black shadow-lg lg:rounded-3xl ${className || ""}`}
       onMouseMove={resetControlsTimeout}
       onMouseLeave={() => {
         if (isPlaying) setShowControls(false);
       }}
       onClick={togglePlay}
+      onContextMenu={(e) => e.preventDefault()}
     >
       <video
         ref={videoRef}

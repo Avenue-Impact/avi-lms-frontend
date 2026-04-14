@@ -6,11 +6,12 @@ const fetchMe = async () => {
   return data?.data;
 };
 
-export const useInstructorAuth = () => {
+export const useInstructorAuth = (options = {}) => {
   return useQuery({
     queryKey: ["instructor-me"],
     queryFn: fetchMe,
     staleTime: 1000 * 60 * 5,
     retry: 1,
+    ...options,
   });
 };

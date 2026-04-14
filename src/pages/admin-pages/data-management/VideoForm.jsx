@@ -11,7 +11,9 @@ import { Input } from "@/Components/ui/input";
 import { CommonButton } from "@/Components/ui/button";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useFetchAllAdminCourses } from "@/hooks/course-management/use-fetch-all-courses";
+import { X } from "lucide-react";
 
 const schema = z.object({
   videoTitle: z.string().min(1, { message: "Video title is required" }),
@@ -31,6 +33,13 @@ export default function VideoForm({
   onSubmit,
   isPending,
 }) {
+  const [tags, setTags] = useState([]);
+  const [tagInput, setTagInput] = useState("");
+  const { data: coursesData } = useFetchAllAdminCourses(1, 100, true);
+
+  const suggestedTags =
+    coursesData?.data?.data?.courses?.map((c) => c.title) || [];
+  // console.log(coursesData?.data);
   const {
     register,
     handleSubmit,
@@ -52,12 +61,13 @@ export default function VideoForm({
       if (initialData && isEdit) {
         reset({
           videoTitle: initialData.videoTitle || initialData.title || "",
-          s3Url: initialData.s3Url || "https://example.com/s3.mp4", // placeholder to pass validation if missing since we don't edit it
+          s3Url: initialData.s3Url || "https://example.com/s3.mp4",
           fileExtension: initialData.fileExtension || "",
           issue_date: initialData.issue_date
             ? new Date(initialData.issue_date)
             : new Date(),
         });
+        setTags(initialData.tags || []);
       } else {
         reset({
           videoTitle: "",
@@ -65,14 +75,21 @@ export default function VideoForm({
           fileExtension: "",
           issue_date: new Date(),
         });
+        setTags([]);
       }
+      setTagInput("");
     }
   }, [open, initialData, isEdit, reset]);
 
   const onFormSubmit = (data) => {
-    // If it's edit, we don't actually send s3Url if we don't want to change it.
-    // The backend route for edit is PATCH /videoTitle or issue_date.
-    onSubmit(data);
+    onSubmit({ ...data, tags });
+  };
+
+  const handleAddTag = (tag) => {
+    if (tag.trim() && !tags.includes(tag.trim())) {
+      setTags([...tags, tag.trim()]);
+    }
+    setTagInput("");
   };
 
   return (
@@ -96,6 +113,70 @@ export default function VideoForm({
                 {errors.videoTitle.message}
               </span>
             )}
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium">Tags (Optional)</label>
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <Input
+                  placeholder="Type a tag and press Enter"
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleAddTag(tagInput);
+                    }
+                  }}
+                />
+                <CommonButton
+                  type="button"
+                  onClick={() => handleAddTag(tagInput)}
+                >
+                  Add
+                </CommonButton>
+              </div>
+
+              {/* Suggested Tags based on Course Titles */}
+              <div className="mt-1 flex items-center gap-2">
+                <select
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  onChange={(e) => {
+                    if (e.target.value) handleAddTag(e.target.value);
+                    e.target.value = "";
+                  }}
+                >
+                  <option value="">
+                    Select a course title to add as tag...
+                  </option>
+                  {suggestedTags.map((st, i) => (
+                    <option key={i} value={st}>
+                      {st}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Tag Pills */}
+              <div className="mt-2 flex flex-wrap gap-2">
+                {tags.map((t) => (
+                  <div
+                    key={t}
+                    className="bg-primary-color-50 border-primary-color-200 flex items-center gap-1 rounded-full border px-3 py-1 text-sm text-primary-color-600"
+                  >
+                    <span>{t}</span>
+                    <button
+                      type="button"
+                      onClick={() => setTags(tags.filter((x) => x !== t))}
+                      className="text-primary-color-600 hover:text-red-500"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
 
           {!isEdit && (

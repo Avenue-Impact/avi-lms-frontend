@@ -24,7 +24,7 @@ const AVI = () => {
   return (
     <>
       <ScrollRestoration />
-      {showToast && <ReferralToast onTimeout={() => setShowToast(false)} />}
+      {/* {showToast && <ReferralToast onTimeout={() => setShowToast(false)} />} */}
       {/* <ColorHero /> */}
 
       {/* Checkout our top courses */}

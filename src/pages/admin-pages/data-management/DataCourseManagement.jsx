@@ -8,13 +8,16 @@ import { LiveSessionIcon, OnDemandIcon } from "@/Components/Icon";
 import { GoArrowDownLeft, GoArrowUpRight } from "react-icons/go";
 import { useCallback, useState, useEffect } from "react";
 import { useFetchCourseStats } from "@/hooks/data-management/use-fetch-course-stats";
+import GlobalPagination from "@/Components/ui/GlobalPagination";
 import _ from "lodash";
 
 export default function DataCourseManagement() {
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
   const [courses, setCourses] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const { isLoading, error, data} = useFetchCourseStats();
+  const { isLoading, error, data} = useFetchCourseStats(page, perPage);
   
   // Update courses when data is fetched
   useEffect(() => {
@@ -237,6 +240,16 @@ export default function DataCourseManagement() {
               })}
             </div>
           </Table>
+        )}
+        {data?.data?.pagination && (
+          <GlobalPagination
+            pagination={data.data.pagination}
+            onPageChange={setPage}
+            onLimitChange={(limit) => {
+              setPerPage(limit);
+              setPage(1);
+            }}
+          />
         )}
       </div>
     </div>

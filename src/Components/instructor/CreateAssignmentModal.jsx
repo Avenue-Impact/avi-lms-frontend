@@ -1,11 +1,19 @@
 import React, { useState } from "react";
 import { useFetchInstructorCohorts } from "@/hooks/instructor/use-fetch-instructor-cohorts";
 import { useCreateAssignmentTask } from "@/hooks/instructor/use-assignment-management";
-import { X, Upload, CalendarDays, FileText, Link as LinkIcon } from "lucide-react";
+import {
+  X,
+  Upload,
+  CalendarDays,
+  FileText,
+  Link as LinkIcon,
+} from "lucide-react";
 
 const CreateAssignmentModal = ({ onClose }) => {
-  const { data: cohortsData, isLoading: cohortsLoading } = useFetchInstructorCohorts();
-  const { mutate: createTask, isPending: isCreating } = useCreateAssignmentTask();
+  const { data: cohortsData, isLoading: cohortsLoading } =
+    useFetchInstructorCohorts();
+  const { mutate: createTask, isPending: isCreating } =
+    useCreateAssignmentTask();
   const cohorts = cohortsData?.data?.cohorts || [];
 
   const [title, setTitle] = useState("");
@@ -24,13 +32,14 @@ const CreateAssignmentModal = ({ onClose }) => {
       {
         title,
         description,
-        course_id: selectedCohortObj?.course_id?._id || selectedCohortObj?.course_id,
+        course_id:
+          selectedCohortObj?.course_id?.id || selectedCohortObj?.course_id?._id || selectedCohortObj?.course_id,
         cohort_id: selectedCohort,
         due_date: dueDate,
       },
       {
         onSuccess: () => onClose(),
-      }
+      },
     );
   };
 
@@ -43,23 +52,21 @@ const CreateAssignmentModal = ({ onClose }) => {
       />
 
       {/* Modal */}
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-6 border-b border-gray-100">
-          <h2 className="text-xl font-bold text-gray-900">
-            Create Assignment
-          </h2>
+      <div className="relative mx-4 max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl bg-white shadow-2xl">
+        <div className="flex items-center justify-between border-b border-gray-100 p-6">
+          <h2 className="text-xl font-bold text-gray-900">Create Assignment</h2>
           <button
             onClick={onClose}
-            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+            className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
           >
             <X size={20} />
           </button>
         </div>
 
-        <div className="p-6 space-y-5">
+        <div className="space-y-5 p-6">
           {/* Title */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+            <label className="mb-1.5 block text-sm font-semibold text-gray-700">
               Assignment Title
             </label>
             <input
@@ -67,19 +74,19 @@ const CreateAssignmentModal = ({ onClose }) => {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter assignment title"
-              className="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary-color-200 focus:border-primary-color-400"
+              className="focus:ring-primary-color-200 focus:border-primary-color-400 w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2"
             />
           </div>
 
           {/* Course / Cohort dropdown */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+            <label className="mb-1.5 block text-sm font-semibold text-gray-700">
               Select Course / Cohort
             </label>
             <select
               value={selectedCohort}
               onChange={(e) => setSelectedCohort(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary-color-200 focus:border-primary-color-400 bg-white"
+              className="focus:ring-primary-color-200 focus:border-primary-color-400 w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2"
             >
               <option value="">Choose a cohort...</option>
               {cohortsLoading ? (
@@ -96,7 +103,7 @@ const CreateAssignmentModal = ({ onClose }) => {
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+            <label className="mb-1.5 block text-sm font-semibold text-gray-700">
               Description
             </label>
             <textarea
@@ -104,16 +111,16 @@ const CreateAssignmentModal = ({ onClose }) => {
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Assignment instructions..."
               rows={3}
-              className="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary-color-200 focus:border-primary-color-400 resize-none"
+              className="focus:ring-primary-color-200 focus:border-primary-color-400 w-full resize-none rounded-lg border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2"
             />
           </div>
 
           {/* Upload Materials */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+            <label className="mb-1.5 block text-sm font-semibold text-gray-700">
               Upload Materials
             </label>
-            <label className="flex items-center gap-3 px-4 py-3 border-2 border-dashed border-gray-200 rounded-lg cursor-pointer hover:border-primary-color-300 hover:bg-primary-color-50/30 transition-all">
+            <label className="hover:bg-primary-color-50/30 flex cursor-pointer items-center gap-3 rounded-lg border-2 border-dashed border-gray-200 px-4 py-3 transition-all hover:border-primary-color-300">
               <Upload size={20} className="text-gray-400" />
               <span className="text-sm text-gray-500">
                 {file ? file.name : "PDF, Images or Word documents"}
@@ -129,7 +136,7 @@ const CreateAssignmentModal = ({ onClose }) => {
 
           {/* Due Date */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+            <label className="mb-1.5 block text-sm font-semibold text-gray-700">
               Due Date
             </label>
             <div className="relative">
@@ -141,19 +148,19 @@ const CreateAssignmentModal = ({ onClose }) => {
                 type="date"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary-color-200 focus:border-primary-color-400"
+                className="focus:ring-primary-color-200 focus:border-primary-color-400 w-full rounded-lg border border-gray-200 py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-2"
               />
             </div>
           </div>
 
           {/* Submission Type */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="mb-2 block text-sm font-semibold text-gray-700">
               Submission Type
             </label>
             <div className="flex gap-4">
               <label
-                className={`flex items-center gap-2.5 px-4 py-3 rounded-lg border cursor-pointer transition-all flex-1 ${
+                className={`flex flex-1 cursor-pointer items-center gap-2.5 rounded-lg border px-4 py-3 transition-all ${
                   submissionType === "file"
                     ? "border-primary-color-400 bg-primary-color-50 text-primary-color-700"
                     : "border-gray-200 text-gray-600 hover:border-gray-300"
@@ -171,7 +178,7 @@ const CreateAssignmentModal = ({ onClose }) => {
                 <span className="text-sm font-medium">File Upload</span>
               </label>
               <label
-                className={`flex items-center gap-2.5 px-4 py-3 rounded-lg border cursor-pointer transition-all flex-1 ${
+                className={`flex flex-1 cursor-pointer items-center gap-2.5 rounded-lg border px-4 py-3 transition-all ${
                   submissionType === "link"
                     ? "border-primary-color-400 bg-primary-color-50 text-primary-color-700"
                     : "border-gray-200 text-gray-600 hover:border-gray-300"
@@ -193,17 +200,17 @@ const CreateAssignmentModal = ({ onClose }) => {
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-100">
+        <div className="flex items-center justify-end gap-3 border-t border-gray-100 p-6">
           <button
             onClick={onClose}
-            className="px-5 py-2.5 rounded-lg text-sm font-semibold text-gray-600 hover:bg-gray-100 transition-colors"
+            className="rounded-lg px-5 py-2.5 text-sm font-semibold text-gray-600 transition-colors hover:bg-gray-100"
           >
             Cancel
           </button>
           <button
             onClick={handlePublish}
             disabled={isCreating || !title || !selectedCohort || !dueDate}
-            className="px-6 py-2.5 rounded-lg bg-primary-color-600 text-white text-sm font-semibold hover:bg-primary-color-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="hover:bg-primary-color-700 rounded-lg bg-primary-color-600 px-6 py-2.5 text-sm font-semibold text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isCreating ? "Publishing..." : "Publish Assignment"}
           </button>

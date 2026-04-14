@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import "./App.css";
 
 import AppLayout from "./layouts/AppLayout";
@@ -116,6 +116,8 @@ import CohortManagement from "./pages/instructor/CohortManagement";
 import AssignmentManagement from "./pages/instructor/AssignmentManagement";
 import SubmissionReview from "./pages/instructor/SubmissionReview";
 import InstructorErrorPage from "./instructor-error-page";
+import SubmissionsPage from "./pages/instructor/SubmissionsPage";
+import MessagesPage, { FeedbackPage } from "./pages/instructor/MessagesAndFeedback";
 import UserJoinMeeting from "./pages/dashboard/UserJoinMeeting";
 import PreviewCourse from "./pages/previewCourse";
 import PreviewVideoCourse from "./pages/previewVideoCourse";
@@ -134,6 +136,8 @@ import ReviewMainPage from "./pages/admin-pages/reviews/ReviewMainPage";
 import { elements } from "chart.js";
 import Dashbaord from "./pages/dashbaord";
 import LoadingPage from "./Components/LoadingPage";
+import NotFoundPage from "./pages/NotFoundPage";
+import InstructorLiveSessions from "./pages/instructor/InstructorLiveSessions";
 
 const queryClient = new QueryClient();
 
@@ -649,29 +653,53 @@ function App() {
           children: [
             {
               element: <InstructorLayout />,
-              path: "/instructor/dashboard",
+              path: "/instructor/",
               children: [
                 {
-                  index: true,
+                  path: "login",
+                  element: <Navigate to="/login?_r=/instructor/dashboard" replace />,
+                },
+                {
+                  path: "dashboard",
                   element: <InstructorDashboard />,
                 },
                 {
-                  path: "cohort/:cohortId",
+                  path: "cohorts",
                   element: <CohortManagement />,
                 },
                 {
-                  path: "cohort/:cohortId/assignments",
+                  path: "cohorts/:cohortId/assignments",
                   element: <AssignmentManagement />,
                 },
                 {
                   path: "assignments/:taskId/submissions",
                   element: <SubmissionReview />,
                 },
+                {
+                  path: "submissions",
+                  element: <SubmissionsPage />,
+                },
+                {
+                  path: "live-sessions",
+                  element: <InstructorLiveSessions />,
+                },
+                {
+                  path: "messages",
+                  element: <MessagesPage />,
+                },
+                {
+                  path: "feedbacks",
+                  element: <FeedbackPage />,
+                },
               ],
             },
           ],
         },
       ],
+    },
+    {
+      path: "*",
+      element: <NotFoundPage />,
     },
   ]);
 

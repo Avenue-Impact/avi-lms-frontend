@@ -4,7 +4,7 @@ import OnDemandRecordedSection from "./OnDemandRecordedSection";
 import { useState } from "react";
 import { CommonButton } from "@/Components/ui/button";
 
-const EditOndemandCourseSectionForm = ({ setEdit }) => {
+const EditOndemandCourseSectionForm = ({ setEdit, initialSection }) => {
   const { courseId } = useParams();
   const [section, setSection] = useState(null);
 
@@ -16,6 +16,7 @@ const EditOndemandCourseSectionForm = ({ setEdit }) => {
             courseId={courseId}
             section={section}
             setSection={setSection}
+            initialSection={initialSection}
           />
         </div>
         <div className="overflow-y-hidden">

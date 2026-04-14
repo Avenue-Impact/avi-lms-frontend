@@ -32,6 +32,7 @@ import { Save } from "lucide-react";
 import React, { useCallback, useState } from "react";
 import toast from "react-hot-toast";
 import { FaTimes } from "react-icons/fa";
+import GlobalPagination from "@/Components/ui/GlobalPagination";
 
 function formapateString(dateString) {
   const date = new Date(dateString);
@@ -76,7 +77,9 @@ const AccountManagementPage = ({ data }) => {
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [adminToEdit, setAdminToEdit] = useState({});
 
-  const { data: adminData, isLoading, error } = useFetchAccountManagement();
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
+  const { data: adminData, isLoading, error } = useFetchAccountManagement(page, perPage);
 
   const { mutate, isPending: isEditing } = useEditAdminRole();
 
@@ -97,7 +100,7 @@ const AccountManagementPage = ({ data }) => {
   };
 
   // Filter courses by title
-  const filteredList = adminData?.data?.data?.admins.filter((account) => {
+  const filteredList = (adminData?.data?.data?.admins || []).filter((account) => {
     const fullText = (
       account.firstname +
       account.lastname +
@@ -316,6 +319,16 @@ const AccountManagementPage = ({ data }) => {
               </div>
             }
           </Table>
+        )}
+        {!isLoading && !error && adminData?.data?.pagination && (
+          <GlobalPagination
+            pagination={adminData.data.pagination}
+            onPageChange={setPage}
+            onLimitChange={(limit) => {
+              setPerPage(limit);
+              setPage(1);
+            }}
+          />
         )}
       </div>
 

@@ -27,19 +27,20 @@ const AccountManagLayout = () => {
             <FontAwesomeIcon icon={faPlus} className="mr-2" /> Add New Admin
           </DashButton>
 
-          {/* <DashButton
+          <DashButton
             onClick={() => setInstructorModal(true)}
             className="text-[14px] text-[white]"
           >
-            <FontAwesomeIcon icon={faPlus} className="mr-2" /> Invite New Instructor
-          </DashButton> */}
+            <FontAwesomeIcon icon={faPlus} className="mr-2" /> Invite New
+            Instructor
+          </DashButton>
         </div>
       </AdminNav>
       <Outlet />
 
       {adminModal && (
         <Modal>
-          <BorderCard className="max-h-[90vh] w-[90%] md:w-2/5 overflow-y-scroll rounded-lg bg-white p-6 shadow-lg">
+          <BorderCard className="max-h-[90vh] w-[90%] overflow-y-scroll rounded-lg bg-white p-6 shadow-lg md:w-2/5">
             <button
               className="ml-auto block w-min text-gray-500 hover:text-gray-700 focus:outline-none"
               onClick={() => setAdminModal(false)}
@@ -53,7 +54,7 @@ const AccountManagLayout = () => {
 
       {instructorModal && (
         <Modal>
-          <BorderCard className="max-h-[90vh] w-[90%] md:w-2/5 overflow-y-scroll rounded-lg bg-white p-6 shadow-lg">
+          <BorderCard className="max-h-[90vh] w-[90%] overflow-y-scroll rounded-lg bg-white p-6 shadow-lg md:w-2/5">
             <button
               className="ml-auto block w-min text-gray-500 hover:text-gray-700 focus:outline-none"
               onClick={() => setInstructorModal(false)}

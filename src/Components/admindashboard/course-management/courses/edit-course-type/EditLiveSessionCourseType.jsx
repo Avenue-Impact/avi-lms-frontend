@@ -28,7 +28,7 @@ import {
 import { useEffect } from "react";
 import FormInput from "@/Components/ui/form-input";
 import { useEditCourseType } from "@/hooks/course-management/use-edit-course-type";
-import { cohorts } from "@/lib/cohorts";
+import { useFetchGlobalCohorts } from "@/hooks/admin-global/use-fetch-global-cohorts";
 import { courseTypeSchema } from "@/lib/form-schemas/forms-schema";
 import { cn } from "@/lib/utils";
 import { ClipLoader } from "react-spinners";
@@ -55,13 +55,10 @@ const EditLiveSessionCourseType = ({
 }) => {
   const str = "dkj";
   str.endsWith;
-  // Use existing cohort from course data if available, otherwise empty
   const [cohort, setCohort] = useState(
     () => existingCohorts?.[0]?.cohort || "",
   );
-
-  console.log("Cohorts list for selection:", cohorts);
-  console.log("Existing course cohorts:", existingCohorts);
+  const { data: globalCohorts } = useFetchGlobalCohorts();
 
   const getTime = (timeStr) => {
     const t = timeStr;
@@ -366,7 +363,7 @@ const EditLiveSessionCourseType = ({
                   className="w-full rounded border border-gray-300 p-2"
                 >
                   <option value="">Select cohort</option>
-                  {cohorts?.map((c) => (
+                  {globalCohorts?.map((c) => (
                     <option key={c.id} value={`${c.month} ${c.year}`}>
                       {c.month} {c.year}
                     </option>

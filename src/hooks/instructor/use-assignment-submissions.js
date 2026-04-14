@@ -1,15 +1,20 @@
 import { useQuery } from "@tanstack/react-query";
 import { axiosInstructor } from "@/services/api";
 
-const fetchSubmissions = async (taskId) => {
-  const { data } = await axiosInstructor.get(`/assignments/${taskId}/submissions`);
+const fetchSubmissions = async (taskId, page, total) => {
+  const { data } = await axiosInstructor.get("/assignments/submissions", {
+    params: { taskId, page, total },
+  });
   return data;
 };
 
-export const useFetchAssignmentSubmissions = (taskId) => {
+export const useFetchAssignmentSubmissions = (
+  taskId = "all",
+  page = 1,
+  total = 40,
+) => {
   return useQuery({
-    queryKey: ["assignment-submissions", taskId],
-    queryFn: () => fetchSubmissions(taskId),
-    enabled: !!taskId,
+    queryKey: ["assignment-submissions", taskId, page, total],
+    queryFn: () => fetchSubmissions(taskId, page, total),
   });
 };

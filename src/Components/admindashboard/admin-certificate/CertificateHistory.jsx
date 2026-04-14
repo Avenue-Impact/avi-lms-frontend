@@ -6,13 +6,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import _ from "lodash";
 import React, { useCallback, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import GlobalPagination from "@/Components/ui/GlobalPagination";
 
 const CertificateHistory = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
-  const { data, isLoading, isError } = useFetchedIssuedCert(id);
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
+  const { data, isLoading, isError } = useFetchedIssuedCert(id, page, perPage);
 
   const handleSearch = useCallback(
     _.debounce((query) => {
@@ -26,7 +29,7 @@ const CertificateHistory = () => {
   };
 
   // Filter courses by title
-  const filteredHistories = data?.data?.data?.filter((course) =>
+  const filteredHistories = (data?.data?.data || []).filter((course) =>
     course.course_title.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
@@ -95,6 +98,16 @@ const CertificateHistory = () => {
               ))}
             </tbody>
           </table>
+        )}
+        {!isLoading && !isError && data?.data?.pagination && (
+          <GlobalPagination
+            pagination={data.data.pagination}
+            onPageChange={setPage}
+            onLimitChange={(limit) => {
+              setPerPage(limit);
+              setPage(1);
+            }}
+          />
         )}
       </div>
     </div>

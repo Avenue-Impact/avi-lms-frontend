@@ -14,6 +14,7 @@ function OnDemandAdminSection({
   setSectionDetails,
   setEdit,
   setVideoUrl,
+  setEditSectionData,
 }) {
   const [active, setActive] = useState("1");
   const [videoActive, setVideoActive] = useState("");
@@ -79,7 +80,7 @@ function OnDemandAdminSection({
                           section: section.section,
                           videoTitle: video.video_title,
                         }));
-                        setVideoUrl(video.video_url);
+                        setVideoUrl(video.video_url.link);
                         setVideoActive(video.id);
                       }}
                     >
@@ -95,6 +96,19 @@ function OnDemandAdminSection({
                     </AccordionContent>
                   );
                 })}
+                <AccordionContent>
+                  <CommonButton
+                    type="button"
+                    variant="outline"
+                    className="w-full mt-2 border-primary-color-200 text-primary-color-600 hover:bg-primary-color-50"
+                    onClick={() => {
+                      setEditSectionData(section);
+                      setEdit(true);
+                    }}
+                  >
+                    + Add Video
+                  </CommonButton>
+                </AccordionContent>
               </AccordionItem>
             );
           })}

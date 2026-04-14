@@ -2,12 +2,12 @@ import { BASE_URL } from "@/constant";
 import { useQuery } from "@tanstack/react-query";
 import { axiosAdmin } from "@/services/api";
 
-const fetchAccountManagement = async () => {
-  return await axiosAdmin.get(BASE_URL);
+const fetchAccountManagement = async (page = 1, perPage = 10) => {
+  return await axiosAdmin.get(`?page=${page}&perPage=${perPage}`);
 };
 
-export const useFetchAccountManagement = () =>
+export const useFetchAccountManagement = (page = 1, perPage = 10) =>
   useQuery({
-    queryKey: ["get-all-admins-account"],
-    queryFn: fetchAccountManagement,
+    queryKey: ["get-all-admins-account", { page, perPage }],
+    queryFn: () => fetchAccountManagement(page, perPage),
   });
