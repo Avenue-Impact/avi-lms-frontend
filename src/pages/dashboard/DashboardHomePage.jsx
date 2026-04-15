@@ -22,6 +22,7 @@ import Courses from "@/Components/dashboard/Courses";
 import { useGetRegisteredCourses } from "@/hooks/students/use-get-registered-courses";
 import { useFetchPreviewlist } from "@/hooks/wishlists/use-fetch-previewlist";
 import { useNavigate } from "react-router-dom";
+import fallbackCourseImage from "@/assets/images/join_team.png";
 // import Cookies from "js-cookie";
 // import { useProfile } from "@/services/queries";
 
@@ -165,7 +166,7 @@ const OnDemandSessionCourses = () => {
             return (
               <RecordedSessionCourseCard
                 key={course.id}
-                imgSrc={course.cover_image}
+                imgSrc={course.cover_image || fallbackCourseImage}
                 altText={course.title}
                 title={course.title}
                 rating={course.average_rating}
@@ -191,8 +192,6 @@ const LiveSessionCourses = () => {
 
   const { data } = useQuery(liveSessionDetailQuery());
   const registeredCourses = useGetRegisteredCourses();
-  console.log("live session data", data)
-  console.log("registered courses from localStorage", registeredCourses)
 
   // Use API data if available, otherwise fall back to localStorage
   const courses = data?.data?.data?.courses && data?.data?.data?.courses.length > 0 
@@ -208,7 +207,7 @@ const LiveSessionCourses = () => {
           return (
             <LiveSessionCourseCard
               key={course.id || course.courseId}
-              imgSrc={course?.cover_image}
+              imgSrc={course?.cover_image || fallbackCourseImage}
               altText={course?.title}
               title={course?.title}
               rating={Number(course?.average_rating || 0).toFixed(1)}
@@ -284,7 +283,7 @@ const PreviewListCourses = () => {
                 className="cursor-pointer"
               >
                 <img
-                  src={course.cover_image}
+                  src={course.cover_image || fallbackCourseImage}
                   className="h-[180px] lg:h-[200px] w-full object-cover"
                   alt={course.title}
                 />

@@ -1,5 +1,5 @@
 console.log("Loading api.js - Version: FIX-TOKEN-UNDEFINED-V2");
-import { BASE_URL } from "@/constant";
+import { BASE_URL, STUDENT_BASE_URL } from "@/constant";
 import axios from "axios";
 import Cookies from "js-cookie";
 
@@ -104,6 +104,31 @@ axiosInstructor.interceptors.response.use(
       }
       return Promise.reject(error);
     }
+    return Promise.reject(error);
+  },
+);
+
+export const axiosStudent = axios.create({
+  baseURL: `${STUDENT_BASE_URL}/courses`,
+  withCredentials: true,
+});
+
+axiosStudent.interceptors.request.use(
+  (config) => {
+    const token = Cookies.get("token");
+    if (token && token !== "undefined") {
+      config.headers.Authorization = `Bearer ${token}`;
+    } else if (token === "undefined") {
+      Cookies.remove("token");
+    }
+    return config;
+  },
+  (error) => Promise.reject(error),
+);
+
+axiosStudent.interceptors.response.use(
+  (response) => response,
+  async (error) => {
     return Promise.reject(error);
   },
 );

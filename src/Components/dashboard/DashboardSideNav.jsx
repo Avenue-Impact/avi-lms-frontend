@@ -1,6 +1,7 @@
 import { GrHomeRounded } from "react-icons/gr";
 // import { BiBell } from "react-icons/bi";
 import { FaRegHeart, FaRegBell } from "react-icons/fa";
+import { MdAssignment } from "react-icons/md";
 
 import { useState } from "react";
 import { Sidebar, SidebarItem } from "./SideNav";
@@ -17,6 +18,16 @@ export const navItem = [
   },
   {
     id: 2,
+    text: "Assignment",
+
+    icon: <MdAssignment />,
+
+    active: "assignment",
+    alert: "alert",
+    path: "/dashboard/assignment",
+  },
+  {
+    id: 3,
     text: "Notification",
 
     icon: <FaRegBell />,
@@ -26,7 +37,7 @@ export const navItem = [
     path: "/dashboard/notification",
   },
   {
-    id: 3,
+    id: 4,
     text: "Wishlist",
 
     icon: <FaRegHeart />,

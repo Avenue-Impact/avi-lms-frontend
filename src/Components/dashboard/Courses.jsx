@@ -4,7 +4,7 @@ import { StarRating } from "../star-rating";
 import { useNavigate } from "react-router-dom";
 import { useDeleteWishlist } from "@/hooks/students/use-delete-wishlist";
 import { FaTrash } from "react-icons/fa";
-
+import fallbackCourseImage from "@/assets/images/join_team.png";
 
 function Courses({ wishlist, handleWishlist }) {
   const { title, average_rating, total_reviews, id } = wishlist;
@@ -19,9 +19,12 @@ function Courses({ wishlist, handleWishlist }) {
         className="cursor-pointer"
       >
         <img
-          src={wishlist.cover_image}
-          className="h-[180px] lg:h-[200px] w-full object-cover"
+          src={wishlist.cover_image || fallbackCourseImage}
+          className="h-[180px] w-full object-cover lg:h-[200px]"
           alt={title}
+          onError={(e) => {
+            e.target.src = fallbackCourseImage;
+          }}
         />
       </div>
 
@@ -56,7 +59,7 @@ function Courses({ wishlist, handleWishlist }) {
             {wishlist.price}
           </span> */}
           <button
-            className="font-light transition-colors duration-150 p-2 rounded-full"
+            className="rounded-full p-2 font-light transition-colors duration-150"
             title="Remove from Wishlist"
             onClick={() => mutate(id)}
           >

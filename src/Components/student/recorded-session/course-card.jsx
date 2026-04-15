@@ -1,6 +1,7 @@
 import { StarRating } from "@/Components/star-rating";
 import CommonButton from "@/Components/ui/button";
 import { Link } from "react-router-dom";
+import fallbackCourseImage from "@/assets/images/join_team.png";
 
 const RecordedSessionCourseCard = ({
   imgSrc,
@@ -36,6 +37,9 @@ const RecordedSessionCourseCard = ({
           className="h-full w-full object-cover"
           src={imgSrc}
           alt={altText}
+          onError={(e) => {
+            e.target.src = fallbackCourseImage;
+          }}
         />
       </div>
 
