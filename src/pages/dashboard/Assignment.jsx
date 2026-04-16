@@ -7,7 +7,7 @@ import { CommonButton } from "@/Components/ui/button";
 import { Form } from "@/Components/ui/form";
 import FormInput from "@/Components/ui/form-input";
 import { useViewCourseSections } from "@/hooks/students/use-course-secion-view";
-import { useSubmitAssignment } from "@/hooks/students/use-submit-assingment";
+import { useSubmitAssignment } from "@/hooks/students/use-submit-assignment";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { zodResolver } from "@hookform/resolvers/zod";

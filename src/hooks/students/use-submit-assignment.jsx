@@ -3,32 +3,33 @@ import { axiosStudent } from "@/services/api";
 import toast from "react-hot-toast";
 
 /**
- * API call to submit an assignment task.
- * Uses taskId as a URL parameter as per RESTful requirements.
+ * OLD API call to submit an assignment.
+ * Uses courseId, cohortId, and section in the URL.
  */
-const submitTaskRequest = async ({ taskId, payload }) => {
-  const { data } = await axiosStudent.post(`/tasks/${taskId}/submit`, payload, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
-  return data;
+const submitAssignmentOld = async ({ data, courseId, cohortId, section }) => {
+  const { data: responseData } = await axiosStudent.post(
+    `/enrolled/${courseId}/cohorts/${cohortId}/sections/${section}/assignments`,
+    data,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+  return responseData;
 };
 
 /**
- * Hook for student assignment submissions.
- * 
- * @param {Object} options - Mutation options like onSuccess or onError
- * @returns {Object} { submitTask, isSubmitting, error, data }
+ * Hook for student assignment submissions (Old Structure).
  */
 export const useSubmitAssignment = (options = {}) => {
   const queryClient = useQueryClient();
   
   const { mutate, isPending, error, data } = useMutation({
-    mutationFn: submitTaskRequest,
+    mutationFn: (params) => submitAssignmentOld(params),
     onSuccess: (res) => {
-      // Invalidate cache to reflect submission status in the list
-      queryClient.invalidateQueries({ queryKey: ["active-assignments"] });
+      // Invalidate cache if needed
+      queryClient.invalidateQueries({ queryKey: ["get-all-admins-account"] }); // Keep for compatibility
       
       toast.success(res.message || "Assignment submitted successfully");
       if (options.onSuccess) options.onSuccess(res);
@@ -42,8 +43,8 @@ export const useSubmitAssignment = (options = {}) => {
   });
 
   return {
-    submitTask: (taskId, payload) => mutate({ taskId, payload }),
-    isSubmitting: isPending,
+    mutate,
+    isPending,
     error,
     data
   };
