@@ -8,17 +8,19 @@ const deleteAdmin = ({ adminId }) => {
 
 export const useDeleteAdmin = () => {
   const queryClient = useQueryClient();
+  
   const { mutate: delAdmin, isPending } = useMutation({
     mutationFn: deleteAdmin,
-    onSuccess: () => {
-      toast.success("Admin deleted successfully");
-      queryClient.invalidateQueries("get-all-admins-account");
+    onSuccess: (res) => {
+      toast.success(res?.data?.message || "Admin deleted successfully");
+      queryClient.invalidateQueries({ queryKey: ["get-all-admins-account"] });
     },
     onError: (err) => {
-      console.log(err);
-      toast.error(err?.response?.data?.message ?? "something went wrong");
+      const message = err?.response?.data?.message || "Something went wrong";
+      toast.error(message);
     },
   });
+
   return { delAdmin, isPending };
 };
 

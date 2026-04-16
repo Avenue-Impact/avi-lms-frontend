@@ -142,7 +142,6 @@ const AccountManagementPage = ({ data }) => {
       role: adminToEdit.role,
     };
 
-    console.log(data);
     mutate(
       { data, adminId: adminToEdit.id },
       {
