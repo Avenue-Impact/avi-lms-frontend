@@ -1,5 +1,5 @@
 console.log("Loading api.js - Version: FIX-TOKEN-UNDEFINED-V2");
-import { BASE_URL, STUDENT_BASE_URL } from "@/constant";
+import { BASE_URL, STUDENT_BASE_URL, INSTRUCTOR_BASE_URL } from "@/constant";
 import axios from "axios";
 import Cookies from "js-cookie";
 
@@ -71,7 +71,7 @@ axiosAdmin.interceptors.response.use(
 
 // Instructor API instance - uses student token, different base URL
 export const axiosInstructor = axios.create({
-  baseURL: `${BASE_URL}`.replace("/admins", "/instructor"),
+  baseURL: `${INSTRUCTOR_BASE_URL}`,
   withCredentials: true,
 });
 
