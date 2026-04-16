@@ -176,8 +176,6 @@ const SignUp = ({ isPage = true }) => {
         },
       });
 
-      console.log("Signup Response:", response.data);
-
       if (response.data.status === "success") {
         console.log("forward Url:", response.data.forward_url);
         if (response.data.forward_url) {

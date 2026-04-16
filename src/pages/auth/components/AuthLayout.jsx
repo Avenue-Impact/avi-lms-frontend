@@ -44,7 +44,7 @@ const AuthLayout = ({
           className={`flex w-full max-w-[1480px] flex-col items-center justify-center lg:flex-row ${alignTop ? "lg:items-start" : "lg:items-center"} lg:gap-16`}
         >
           {isPage && (
-            <div className="w-full lg:w-1/2">
+            <div className="w-full lg:w-1/2 hidden sm:block">
               <div className="overflow-hidden rounded-3xl shadow-sm">
                 {" "}
                 <img
