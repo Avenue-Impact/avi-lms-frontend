@@ -33,10 +33,10 @@ export default function VideoTable({ videos, onEdit, onDelete, onView }) {
             >
               {video.videoTitle || video.title}
             </p>
-            <div className="flex px-2">
+            <div className="flex flex-wrap gap-1 px-2">
                {video.tags && video.tags.length > 0 ? (
                  video.tags.map(tag => (
-                   <span key={tag} className="text-[14px]" title={tag}>
+                   <span key={tag} className="text-[12px] bg-primary-color-50 text-primary-color-600 px-2 py-0.5 rounded-md truncate max-w-[120px]" title={tag}>
                      {tag}
                    </span>
                  ))

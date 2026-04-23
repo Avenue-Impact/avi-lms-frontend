@@ -177,7 +177,6 @@ const SignUp = ({ isPage = true }) => {
       });
 
       if (response.data.status === "success") {
-        console.log("forward Url:", response.data.forward_url);
         if (response.data.forward_url) {
           sessionStorage.setItem(
             "signup_forward_url",
@@ -204,9 +203,6 @@ const SignUp = ({ isPage = true }) => {
         toast.error("Network error. Please check your connection.");
         return;
       }
-
-      // Log the full error response
-      console.error("Error Response:", error.response);
 
       // Handle specific error cases
       if (error.response.status === 409) {

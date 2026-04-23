@@ -49,11 +49,11 @@ import Button from "../Button";
 
 const MainContent = () => {
   return (
-    <Hero videoSrc={bgVideo} className={"items-center pb-12"}>
+    <div className={"items-center pb-12"}>
       <div className="mt-32 h-fit lg:mt-28 relative">
-        <HeroHeading className={"font leading-snug 2xl:w-[1060px]"}>
+        <div className={"font leading-snug 2xl:w-[1060px]"}>
           Expert Consultants for Sustainable Success
-        </HeroHeading>
+        </div>
 
         <div className="my-4 h-[2px] w-full bg-white md:mb-5 md:mt-14" />
 
@@ -69,7 +69,7 @@ const MainContent = () => {
           </Button>
         </div>
       </div>
-    </Hero>
+    </div>
   );
 };
 

@@ -19,15 +19,19 @@ import PopUp from "@/Components/dashboard/PopUp";
 import { useEnrolledCourses } from "@/hooks/students/use-enrolled-courses";
 
 const DiscoverCourses = () => {
+  const [searchParams] = useSearchParams();
+  const courseType = searchParams.get("course_type") || "";
+
   const { data: allCourses, isLoading: isFetchingAllCourses } =
-    useFetchAllCourses();
+    useFetchAllCourses(courseType);
   const { data, isLoading } = useQuery({
     queryKey: ["userProfile"],
     queryFn: fetchUserProfile,
   });
   const { cohortCourseIds, onDemandCourseIds } = useEnrolledCourses();
 
-  const [searchParams] = useSearchParams();
+  const isAuthenticated = !!data?.data?.data;
+
   const initialSearch = searchParams.get("search") || "";
 
   const [searchQuery, setSearchQuery] = useState(initialSearch);
@@ -69,7 +73,7 @@ const DiscoverCourses = () => {
     <>
       {/* Header */}
       <div className="flex items-center justify-between gap-6 px-6 py-7 lg:px-20">
-        <Link to="/dashboard">
+        <Link to={isAuthenticated ? "/dashboard" : "/digital-learning-hub"}>
           <DarkLogo />
         </Link>
         <div className="hidden w-full max-w-lg items-center rounded-lg bg-white px-4 py-2 lg:flex">
@@ -85,33 +89,35 @@ const DiscoverCourses = () => {
             onChange={handleChange}
           />
         </div>
-        <div className="flex items-center gap-4">
-          <Link
-            to="/dashboard"
-            className="rounded bg-[#CC1747] px-4 py-2 text-sm text-white"
-          >
-            Dashboard
-          </Link>
-          <FontAwesomeIcon
-            icon={faSearch}
-            className="text-gray-500 md:hidden"
-          />
-          <Link to="/dashboard/notification">
-            <FaRegBell />
-          </Link>
-          <PopUp>
-            <Avatar>
-              <AvatarImage src={data?.data?.data.avatar || ""} />
-              {isLoading && <Skeleton className="h-12 w-12 rounded-full" />}
-              <AvatarFallback>
-                {isLoading
-                  ? ""
-                  : data?.data?.data.firstname[0].toUpperCase() +
-                    data?.data?.data.lastname[0].toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-          </PopUp>
-        </div>
+        {isAuthenticated && (
+          <div className="flex items-center gap-4">
+            <Link
+              to="/dashboard"
+              className="rounded bg-[#CC1747] px-4 py-2 text-sm text-white"
+            >
+              Dashboard
+            </Link>
+            <FontAwesomeIcon
+              icon={faSearch}
+              className="text-gray-500 md:hidden"
+            />
+            <Link to="/dashboard/notification">
+              <FaRegBell />
+            </Link>
+            <PopUp>
+              <Avatar>
+                <AvatarImage src={data?.data?.data.avatar || ""} />
+                {isLoading && <Skeleton className="h-12 w-12 rounded-full" />}
+                <AvatarFallback>
+                  {isLoading
+                    ? ""
+                    : data?.data?.data.firstname[0].toUpperCase() +
+                      data?.data?.data.lastname[0].toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            </PopUp>
+          </div>
+        )}
       </div>
 
       {/* Toggle Demo/Real */}

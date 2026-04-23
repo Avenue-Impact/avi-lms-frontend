@@ -167,7 +167,11 @@ export const addCourseInformation = async (data) => {
 };
 
 export const editCourseInformationApi = async ({ data, courseId }) => {
-  return axiosAdmin.patch(`/courses/${courseId}/course-informations`, data);
+  return axiosAdmin.patch(`/courses/${courseId}/course-informations`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 };
 
 export const addCourseType = async ({ data, courseId }) => {

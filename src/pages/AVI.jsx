@@ -1,6 +1,6 @@
 // import MainContent from "../Components/MainContent/MainContent";
 import React, { useState } from "react";
-import { ScrollRestoration } from "react-router-dom";
+import { ScrollRestoration, Link, NavLink } from "react-router-dom";
 import certificate from "../assets/images/certificate.png";
 import teamDiscussion from "../assets/images/enhacing_team.png";
 import CourseCard from "../Components/CourseCard";
@@ -8,8 +8,7 @@ import styles from "./pages.module.css";
 import { useFetchAllCourses } from "@/hooks/students/use-fetch-all-courses";
 import CreatedCourseCard from "@/Components/admindashboard/course-management/CreatedCourseCard";
 import { motion } from "framer-motion";
-import { FaStar, FaRegStar, FaStarHalfAlt } from "react-icons/fa";
-import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
+import { ImArrowUpRight2 } from "react-icons/im";
 // import img from "../assets/images/data-solution.jpg";
 import HeroImg from "../assets/imgs/Union.svg";
 import InfoGrid from "../Components/InfoGrid";
@@ -17,48 +16,93 @@ import AVIFooter from "../Components/AVIFooter";
 import ReferralToast from "../Components/ReferralToast";
 import { certifiedProfessionals, industriesServed } from "@/lib/aviPageData";
 import { Search } from "lucide-react";
+import heroCollabImg from "../assets/images/hero-collab.jpg";
+import darkLogo from "../assets/logo/logo.svg";
+
+/* ─────────────────────────────────────────
+   Hero Section
+───────────────────────────────────────── */
+const HeroSection = () => {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  return (
+    <section className="relative block min-h-screen bg-[#ffffff] pb-[18px] font-sans sm:min-h-[calc(100vh-250px)]">
+      {/* ── Two-column body ── */}
+      <div className="grid grid-cols-1 items-center gap-[36px] px-[24px] pt-[40px] md:px-[40px] md:pt-[64px] lg:grid-cols-[1.2fr_0.8fr] lg:gap-[48px]">
+        {/* Left column */}
+        <div className="flex w-full flex-col items-start">
+          <h1 className="mb-[20px] text-[clamp(45px,4vw,70px)] font-normal leading-[1.15] tracking-[-0.02em] text-[#1a2340]">
+            Welcome to Our
+            <br />
+            Digital Learning
+            <br />
+            Hub
+          </h1>
+          <p className="mb-[32px] max-w-[440px] text-[16px] sm:text-lg font-normal leading-[1.7] text-[#666]">
+            Streamline learning, simplify management, and scale knowledge with a
+            platform built for modern education.
+          </p>
+          <Link
+            to="/discover-courses"
+            className="inline-flex items-center rounded-[999px] bg-[#CC1747] px-[32px] py-[14px] text-[15px] font-semibold text-white no-underline transition-colors duration-200 hover:bg-[#a8103a]"
+          >
+            Explore Courses
+          </Link>
+        </div>
+
+        {/* Right column */}
+        <div className="flex flex-col gap-[16px] ">
+          <img
+            src={heroCollabImg}
+            alt="Two students collaborating on a laptop"
+            className="aspect-square w-full rounded-[20px] object-cover sm:max-h-[calc(100vh-600px)] md:max-h-[calc(100vh-500px)]"
+          />
+
+          {/* Action cards */}
+          <div className="grid grid-cols-1 gap-[12px] sm:grid-cols-2">
+            <Link
+              to="/partner"
+              className="relative flex min-h-[70px] flex-row items-center justify-between overflow-hidden rounded-[12px] bg-[#CC1747] px-[16px] py-[10px] text-white no-underline transition-all duration-200 hover:-translate-y-[2px] hover:bg-[#a8103a]"
+            >
+              <span className="text-[18px] font-semibold leading-[1.3] text-white">
+                Refer a Friend
+              </span>
+              <span className="text-[28px] font-bold text-white opacity-90">
+                <ImArrowUpRight2 />
+              </span>
+            </Link>
+            <Link
+              to="/self-pace"
+              className="relative flex min-h-[70px] flex-row items-center justify-between overflow-hidden rounded-[12px] bg-[#CC1747] px-[16px] py-[10px] text-white no-underline transition-all duration-200 hover:-translate-y-[2px] hover:bg-[#a8103a]"
+            >
+              <span className="text-[18px] font-semibold leading-[1.3] text-white">
+                Self-Paced Learning
+              </span>
+              <span className="text-[28px] font-bold text-white opacity-90">
+                <ImArrowUpRight2 />
+              </span>
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
 
 const AVI = () => {
   const [showToast, setShowToast] = useState(true);
   const [searchQuery, setSearchQuery] = React.useState("");
   return (
-    <>
+    <div className="sm:mx-10">
       <ScrollRestoration />
       {/* {showToast && <ReferralToast onTimeout={() => setShowToast(false)} />} */}
-      {/* <ColorHero /> */}
+
+      {/* Hero Section */}
+      <HeroSection />
 
       {/* Checkout our top courses */}
       <div className={styles.checkout_courses}>
         <div className="px-8 pt-10 lg:px-14 lg:py-4">
-          <section className="mb-10 grid-cols-2 items-center gap-8 md:gap-16 lg:grid">
-            <div>
-              <h1 className="text-3xl capitalize sm:text-5xl md:text-8xl">
-                Checkout our top courses
-              </h1>
-              <p className="py-10 text-lg font-thin text-black sm:text-2xl">
-                Discover our most popular courses, carefully curated to enhance
-                your skills and advance your career. Join thousands of learners
-                who have already taken the next step with Avenue Impact.
-              </p>
-              <button className="hidden items-center gap-2 rounded-full border border-gray-300 px-4 py-2 md:flex">
-                <Search />
-                <input
-                  type="text"
-                  className="border-none p-2 outline-none"
-                  placeholder="Search courses..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </button>
-            </div>
-            <div className="relative">
-              <img src={HeroImg} alt="" className="w-full object-cover" />
-              <div className="absolute right-[5%] top-[13%] h-10 w-10 rounded-full bg-[#D50241] sm:top-0 sm:h-14 sm:w-14 md:right-[35%]" />
-              <div className="absolute bottom-[44%] left-[-18px] h-10 w-10 rounded-full bg-[#FFB8CD] sm:left-0 sm:h-14 sm:w-14 md:bottom-[45%]" />
-              <div className="absolute bottom-0 left-[32%] h-10 w-10 rounded-full bg-[#14345F] sm:h-14 sm:w-14 md:left-[35%]" />
-            </div>
-          </section>
-
           <div className="my-4 flex items-center gap-2 rounded-full border border-gray-300 px-4 py-1 md:hidden">
             <Search />
             <input
@@ -71,15 +115,31 @@ const AVI = () => {
           </div>
 
           <div>
-            <div className="mb-4 max-w-4xl pt-4 sm:mb-2">
-              <h1 className="text-center text-2xl capitalize sm:text-start sm:text-3xl md:text-5xl">
-                Checkout related courses
-              </h1>
-              <p className="py-2 text-center text-base font-extralight text-black sm:py-6 sm:text-start sm:text-2xl">
-                Discover our most popular courses, carefully curated to enhance
-                your skills and advance your career. Join thousands of learners
-                who have already taken the next step with Avenue Impact
-              </p>
+            <div className="mb-4 w-full pt-4 sm:mb-2">
+              <div className="flex w-full items-center justify-between">
+                <h1 className="text-center text-2xl capitalize sm:text-start sm:text-3xl md:text-5xl">
+                  Checkout related courses
+                </h1>
+
+                <button className="hidden items-center gap-2 rounded-full border border-gray-300 px-4 py-2 md:flex">
+                  <Search />
+                  <input
+                    type="text"
+                    className="border-none p-2 outline-none"
+                    placeholder="Search courses..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </button>
+              </div>
+              <div className="max-w-4xl">
+                <p className="py-2 text-center text-base font-extralight text-black sm:py-6 sm:text-start sm:text-2xl">
+                  Discover our most popular courses, carefully curated to
+                  enhance your skills and advance your career. Join thousands of
+                  learners who have already taken the next step with Avenue
+                  Impact
+                </p>
+              </div>
             </div>
 
             {/* Preview this Course */}
@@ -171,7 +231,7 @@ const AVI = () => {
       </section>
 
       <AVIFooter />
-    </>
+    </div>
   );
 };
 

@@ -6,6 +6,8 @@ import AppLayout from "./layouts/AppLayout";
 import About from "./pages/About";
 import AvenueImpactDevelopment from "./pages/AvenueImpactDevelopment";
 import AVI from "./pages/AVI";
+import Partner from "./pages/Partner";
+import SelfPace from "./pages/SelfPace";
 
 import BusinessAnalysis from "./pages/courses/businessAnalysis";
 import DataAnalytics from "./pages/courses/dataAnalytics";
@@ -259,6 +261,14 @@ function App() {
                 {
                   path: "/digital-learning-hub",
                   element: <AVI />,
+                },
+                {
+                  path: "/partner",
+                  element: <Partner />,
+                },
+                {
+                  path: "/self-pace",
+                  element: <SelfPace />,
                 },
                 {
                   path: "login",

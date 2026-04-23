@@ -27,42 +27,6 @@ const Home = () => {
   return (
     <>
       <MainContent />
-      {/* <section className="bg-[#f4f5f7] py-12 text-center">
-        <div className="px-6">
-          <h2 className="mb-4 text-center text-2xl font-light capitalize text-[#23314A] md:text-3xl 2xl:text-[40px]">
-            we deliver real results
-          </h2>
-          <p className="m-auto max-w-3xl text-base text-[#23314A] md:text-xl">
-            Our seasoned consultants bring a wealth of experience from serving a
-            diverse range of government and private sector clients.
-          </p>
-        </div>
-        <div className="mt-6 overflow-x-hidden">
-          <ImageSwiper slideDesk={7} slideMobile={4}>
-            <img src={img1} alt="" />
-            <img src={img2} alt="" />
-            <img src={img3} alt="" />
-            <img src={img4} alt="" />
-            <img src={img2} alt="" />
-            <img src={img3} alt="" />
-            <img src={img4} alt="" />
-            <img src={img1} alt="" />
-            <img src={img2} alt="" />
-            <img src={img3} alt="" />
-            <img src={img4} alt="" />
-            <img src={img2} alt="" />
-            <img src={img3} alt="" />
-            <img src={img4} alt="" />
-            <img src={img1} alt="" />
-            <img src={img2} alt="" />
-            <img src={img3} alt="" />
-            <img src={img4} alt="" />
-            <img src={img2} alt="" />
-            <img src={img3} alt="" />
-            <img src={img4} alt="" />
-          </ImageSwiper>
-        </div>
-      </section> */}
       <Container>
         <section className="grid gap-3 font-[300] md:grid-cols-2 2xl:gap-0">
           <h2 className="text-[24px] text-[#23314A] lg:text-[40px] 2xl:w-[558px]">

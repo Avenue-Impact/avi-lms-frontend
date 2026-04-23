@@ -116,11 +116,11 @@ export default function VideoForm({
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium">Tags (Optional)</label>
+            <label className="text-sm font-medium">Course (Optional)</label>
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2">
                 <Input
-                  placeholder="Type a tag and press Enter"
+                  placeholder="Type a course name and press Enter"
                   value={tagInput}
                   onChange={(e) => setTagInput(e.target.value)}
                   onKeyDown={(e) => {
@@ -148,7 +148,7 @@ export default function VideoForm({
                   }}
                 >
                   <option value="">
-                    Select a course title to add as tag...
+                    Select a course title...
                   </option>
                   {suggestedTags.map((st, i) => (
                     <option key={i} value={st}>
