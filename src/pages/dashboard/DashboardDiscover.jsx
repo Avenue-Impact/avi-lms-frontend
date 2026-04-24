@@ -245,7 +245,7 @@ const LiveSessionCourses = () => {
       <div
         className={`grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-6 lg:grid-cols-4`}
       >
-        {data?.data?.data?.courses.map((course) => {
+        {data?.data?.data?.courses.length > 0 ? data?.data?.data?.courses.map((course) => {
           return (
             <DashboardDiscover
               key={course.id}
@@ -259,7 +259,7 @@ const LiveSessionCourses = () => {
               courseId={course.id}
             />
           );
-        })}
+        }) : <p>No courses found</p>}
       </div>
     );
   }

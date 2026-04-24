@@ -243,13 +243,17 @@ const WishlistedCourses = () => {
         <div
           className={`grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-6 lg:grid-cols-4`}
         >
-          {data?.data?.data?.map((course) => {
-            return (
-              <div key={course.id} className="bg-white shadow-md rounded-lg">
-                <Courses wishlist={course} />
-              </div>
-            );
-          })}
+          {data?.data?.data?.length > 0 ? (
+            data.data.data.map((course) => {
+              return (
+                <div key={course.id} className="bg-white shadow-md rounded-lg">
+                  <Courses wishlist={course} />
+                </div>
+              );
+            })
+          ) : (
+            <p>No wishlisted courses yet. Start adding courses to your wishlist!</p>
+          )}
         </div>
       )}
     </>
