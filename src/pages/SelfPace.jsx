@@ -1,5 +1,6 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { ScrollRestoration, Link } from "react-router-dom";
+import generateToken from "../utils/tokenGenerator";
 import AVIFooter from "../Components/AVIFooter";
 import CTABanner from "../Components/shared/CTABanner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -24,6 +25,17 @@ import imgCard09 from "../assets/images/selfpace_cards/portfolio-update/pana.png
 import imgCard10 from "../assets/images/selfpace_cards/Rectangle 5201.png";
 
 const SelfPace = () => {
+  const [token, setToken] = useState('');
+
+  const handleGenerate = () => {
+    const newToken = generateToken(24);
+    setToken(newToken);
+  };
+
+  useEffect(() => {
+    handleGenerate();
+  }, []);
+
   const featureCards = [
     {
       title: "Mentorship & Support (1/3/6 Months Access)",
@@ -121,7 +133,7 @@ const SelfPace = () => {
                 Browse Courses
               </Link>
               <Link
-                to="/signup"
+                to={`/signup?token=${token}&_r=/dashboard&role=student&title=Sign up and learn at your own pace&type=on_demand`}
                 className="inline-flex items-center rounded-[999px] border-2 border-[#1a2340] px-[32px] py-[14px] text-[15px] font-semibold text-[#1a2340] no-underline transition-colors duration-200 hover:bg-[#1a2340] hover:text-white"
               >
                 Sign up now
@@ -232,10 +244,10 @@ const SelfPace = () => {
                   "lg:col-start-3 flex-col lg:row-start-3 h-[350px]";
               else if (idx === 8)
                 gridClasses =
-                  "lg:col-span-2 flex-row items-center justify-between";
+                  "lg:col-span-2 flex-col sm:flex-row items-center justify-between";
               else if (idx === 9)
                 gridClasses =
-                  "lg:col-span-1 flex-row items-center justify-between";
+                  "lg:col-span-1 flex-col sm:flex-row items-center justify-between";
 
               return (
                 <div

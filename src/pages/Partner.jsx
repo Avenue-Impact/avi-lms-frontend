@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { ScrollRestoration, Link } from "react-router-dom";
+import generateToken from "../utils/tokenGenerator";
 import AVIFooter from "../Components/AVIFooter";
 import CTABanner from "../Components/shared/CTABanner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -80,6 +81,17 @@ const IconStar = () => (
 );
 
 const Partner = () => {
+  const [token, setToken] = useState("");
+
+  const handleGenerate = () => {
+    const newToken = generateToken(24);
+    setToken(newToken);
+  };
+
+  useEffect(() => {
+    handleGenerate();
+  }, []);
+
   return (
     <div className="bg-white sm:mx-10">
       <ScrollRestoration />
@@ -102,7 +114,7 @@ const Partner = () => {
             </p>
             <div className="flex flex-wrap gap-[12px]">
               <Link
-                to="/signup?_r=/dashboard/referral"
+                to={`/signup?t=${token}&ttl=Sign up and start earning&_r=/dashboard/referral&r=student&l=${token.slice(5,19)}`}
                 className="inline-flex items-center rounded-[999px] bg-[#CC1747] px-[32px] py-[14px] text-[15px] font-semibold text-white no-underline transition-colors duration-200 hover:bg-[#a8103a]"
               >
                 Refer a Friend
@@ -357,7 +369,7 @@ const Partner = () => {
 
           {/* Horizontal scrollable row */}
           <div className="relative">
-            <div className="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 pr-4 pt-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            <div className="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 pr-4 pt-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {[
                 {
                   step: "01",

@@ -59,6 +59,7 @@ const loginSchema = z
 
 const SignUp = ({ isPage = true }) => {
   const [success, setSuccess] = useState("");
+  const [title, setTitle] = useState("Sign up and start learning");
   const [confirm, setConfirm] = useState(false);
   const [modal, setModal] = useState(false);
   const [user, setUser] = useState();
@@ -234,6 +235,7 @@ const SignUp = ({ isPage = true }) => {
       "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no";
     document.head.appendChild(meta);
 
+    setTitle(queryString.get("ttl") || "Sign up and start learning");
     return () => {
       document.head.removeChild(meta);
     };
@@ -310,8 +312,8 @@ const SignUp = ({ isPage = true }) => {
       )}
 
       <AuthLayout
-        title="Sign up and start learning"
         subtitle="Use your email to sign up"
+        title={title}
         isMobileStacked={true}
         isPage={isPage}
         alignTop={true}
@@ -319,7 +321,7 @@ const SignUp = ({ isPage = true }) => {
         <Form {...form}>
           <form ref={formRef} onSubmit={form.handleSubmit(handleSubmit)}>
             <div className="">
-              <div className={`${isPage ? "" : "grid-cols-2"} grid gap-x-3`}>
+              <div className={`${isPage ? "" : "sm:grid-cols-2"} grid gap-x-3`}>
                 <FormInput
                   label="firstname"
                   name="firstName"
@@ -345,7 +347,7 @@ const SignUp = ({ isPage = true }) => {
                   absoluteError
                 />
               </div>
-              <div className={`${isPage ? "" : "grid-cols-2"} grid gap-x-3`}>
+              <div className={`${isPage ? "" : "sm:grid-cols-2"} grid gap-x-3`}>
                 <FormInput
                   label="username"
                   name="username"
@@ -381,7 +383,7 @@ const SignUp = ({ isPage = true }) => {
                 autoComplete="tel"
                 absoluteError
               />
-              <div className={`${isPage ? "" : "grid-cols-2"} grid gap-x-3`}>
+              <div className={`${isPage ? "" : "sm:grid-cols-2"} grid gap-x-3`}>
                 <PasswordInput
                   id="password"
                   autoComplete="new-password"
