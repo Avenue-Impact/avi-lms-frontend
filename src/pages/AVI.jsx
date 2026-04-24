@@ -1,5 +1,6 @@
 // import MainContent from "../Components/MainContent/MainContent";
 import React, { useState } from "react";
+import FloatingWhatsApp from "@/Components/FloatingWhatsApp";
 import { ScrollRestoration, Link, NavLink } from "react-router-dom";
 import certificate from "../assets/images/certificate.png";
 import teamDiscussion from "../assets/images/enhacing_team.png";
@@ -231,6 +232,7 @@ const AVI = () => {
       </section>
 
       <AVIFooter />
+      <FloatingWhatsApp />
     </div>
   );
 };

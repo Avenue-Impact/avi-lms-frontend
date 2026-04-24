@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import FloatingWhatsApp from "@/Components/FloatingWhatsApp";
 import Container from "@/Components/Container";
 import CourseCard from "@/Components/CourseCard";
 import { DarkLogo } from "@/Components/Logo";
@@ -197,6 +198,7 @@ const DiscoverCourses = () => {
           </div>
         )}
       </Container>
+      <FloatingWhatsApp />
     </>
   );
 };

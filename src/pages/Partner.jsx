@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import FloatingWhatsApp from "@/Components/FloatingWhatsApp";
 import { ScrollRestoration, Link } from "react-router-dom";
 import generateToken from "../utils/tokenGenerator";
 import AVIFooter from "../Components/AVIFooter";
@@ -437,6 +438,7 @@ shaping the future of education."
       />
 
       <AVIFooter />
+      <FloatingWhatsApp />
     </div>
   );
 };

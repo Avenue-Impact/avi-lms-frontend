@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import FloatingWhatsApp from "@/Components/FloatingWhatsApp";
 import { ScrollRestoration, Link } from "react-router-dom";
 import generateToken from "../utils/tokenGenerator";
 import AVIFooter from "../Components/AVIFooter";
@@ -291,6 +292,7 @@ const SelfPace = () => {
       />
 
       <AVIFooter />
+      <FloatingWhatsApp />
     </div>
   );
 };
