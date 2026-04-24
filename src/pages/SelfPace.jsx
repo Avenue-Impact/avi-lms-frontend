@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollRestoration, Link } from "react-router-dom";
 import generateToken from "../utils/tokenGenerator";
 import AVIFooter from "../Components/AVIFooter";
@@ -25,7 +25,7 @@ import imgCard09 from "../assets/images/selfpace_cards/portfolio-update/pana.png
 import imgCard10 from "../assets/images/selfpace_cards/Rectangle 5201.png";
 
 const SelfPace = () => {
-  const [token, setToken] = useState('');
+  const [token, setToken] = useState("");
 
   const handleGenerate = () => {
     const newToken = generateToken(24);
@@ -127,7 +127,7 @@ const SelfPace = () => {
             </p>
             <div className="flex flex-wrap gap-[12px]">
               <Link
-                to="/discover-courses"
+                to="/discover-courses?course_type=on_demand"
                 className="inline-flex items-center rounded-[999px] bg-[#CC1747] px-[32px] py-[14px] text-[15px] font-semibold text-white no-underline transition-colors duration-200 hover:bg-[#a8103a]"
               >
                 Browse Courses
@@ -223,7 +223,8 @@ const SelfPace = () => {
                 gridClasses =
                   "lg:col-start-1 flex-col lg:row-start-1 lg:row-span-2";
               else if (idx === 1)
-                gridClasses = "lg:col-start-1 flex-col lg:row-start-3 h-[350px]";
+                gridClasses =
+                  "lg:col-start-1 flex-col lg:row-start-3 h-[350px]";
               else if (idx === 2)
                 gridClasses =
                   "lg:col-start-2 flex-col lg:row-start-1 h-[330px]";
