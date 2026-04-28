@@ -85,6 +85,8 @@ const IconStar = () => (
 const Partner = () => {
   const [token, setToken] = useState("");
 
+
+  const isAuthenticated = !!Cookies.get("token");
   const handleGenerate = () => {
     const newToken = generateToken(24);
     setToken(newToken);
