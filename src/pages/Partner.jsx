@@ -10,6 +10,7 @@ import {
   faArrowRight,
   faArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
+import Cookies from "js-cookie";
 
 // Import images
 import heroImg from "../assets/images/partner/partner_hero_collab_1776809342038.png";
@@ -115,7 +116,7 @@ const Partner = () => {
             </p>
             <div className="flex flex-wrap gap-[12px]">
               <Link
-                to={`/signup?t=${token}&ttl=Sign up and start earning&_r=/dashboard/referral&r=student&l=${token.slice(5,19)}`}
+                to={isAuthenticated ? '/dashboard/referral' : `/signup?t=${token}&ttl=Sign up and start earning&_r=/dashboard/referral&r=student&l=${token.slice(5,19)}`}
                 className="inline-flex items-center rounded-[999px] bg-[#CC1747] px-[32px] py-[14px] text-[15px] font-semibold text-white no-underline transition-colors duration-200 hover:bg-[#a8103a]"
               >
                 Refer a Friend
@@ -434,7 +435,7 @@ const Partner = () => {
         subtitle="Join a growing network of partners who are 
 shaping the future of education."
         primaryBtnText="Refer a Friend"
-        primaryBtnTo="/register"
+        primaryBtnTo={isAuthenticated ? '/dashboard/referral' : `/signup?t=${token}&ttl=Sign up and start earning&_r=/dashboard/referral&r=student&l=${token.slice(5,19)}`}
       />
 
       <AVIFooter />

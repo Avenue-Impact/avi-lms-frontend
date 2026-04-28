@@ -10,6 +10,7 @@ import PopUp from "../dashboard/PopUp";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserProfile } from "@/services/api";
 import { Skeleton } from "../ui/skeleton";
+import Cookies from "js-cookie";
 
 const AviNav = ({ showNav, setShowNav }) => {
   const navLinks = [
@@ -21,8 +22,13 @@ const AviNav = ({ showNav, setShowNav }) => {
     },
     { label: "Refer a friend", to: "/partner" },
     { label: "Self-Paced Learning", to: "/self-pace" },
-    { label: "Login", to: "/login" },
   ];
+
+  const isAuthenticated = !!Cookies.get("token");
+
+  if (!isAuthenticated) {
+    navLinks.push({ label: "Login", to: "/login" });
+  }
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -66,15 +72,27 @@ const AviNav = ({ showNav, setShowNav }) => {
             );
           })}
         </ul>
-        <button
-          onClick={() => {
-            navigate("/signup");
-            setShowNav((prev) => !prev);
-          }}
-          className="rounded-full bg-[#CC1747] px-6 py-2 capitalize text-[#FFEBF0] xl:px-10 xl:py-4"
-        >
-          Register
-        </button>
+        {isAuthenticated ? (
+          <button
+            onClick={() => {
+              navigate("/dashboard");
+              setShowNav((prev) => !prev);
+            }}
+            className="rounded-full bg-[#CC1747] px-6 py-2 capitalize text-[#FFEBF0] xl:px-10 xl:py-4"
+          >
+            Dashboard
+          </button>
+        ) : (
+          <button
+            onClick={() => {
+              navigate("/signup");
+              setShowNav((prev) => !prev);
+            }}
+            className="rounded-full bg-[#CC1747] px-6 py-2 capitalize text-[#FFEBF0] xl:px-10 xl:py-4"
+          >
+            Register
+          </button>
+        )}
         {/* <button
           onClick={() => {
             navigate("/signup");

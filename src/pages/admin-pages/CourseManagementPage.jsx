@@ -53,6 +53,7 @@ const CourseManagementPage = () => {
     technologies: courseInformation.tools_and_technologies.join("\n"),
     overview: courseInformation.overview,
     url: "",
+    is_private: courseInformation.is_private ?? false,
   };
 
   const isEdit = Boolean(courseId);
@@ -74,6 +75,7 @@ const CourseManagementPage = () => {
           technologies: "",
           overview: "",
           url: "",
+          is_private: false,
         },
   });
 
@@ -86,6 +88,7 @@ const CourseManagementPage = () => {
       technologies,
       overview,
       url,
+      is_private,
     } = data;
 
     const courses = {
@@ -96,6 +99,7 @@ const CourseManagementPage = () => {
       course_includes: stringToArray(courseIncludes),
       overview: overview,
       coverImage: image.file,
+      is_private,
     };
 
     let courseToUpload;
@@ -139,6 +143,7 @@ const CourseManagementPage = () => {
       technologies,
       overview,
       url,
+      is_private,
     } = data;
 
     if (!image.file) {
@@ -164,6 +169,7 @@ const CourseManagementPage = () => {
       course_includes: stringToArray(courseIncludes),
       overview: overview,
       coverImage: image.file,
+      is_private,
     };
 
     let courseToUpload;
@@ -233,6 +239,22 @@ const CourseManagementPage = () => {
                   : 0}
                 /60
               </p>
+            </div>
+
+            {/* Course Visibility */}
+            <div className="mb-6">
+              <p className="mb-2 font-[500] text-[#475367]">
+                Course Visibility: <span className="text-[#CC1747]">*</span>
+              </p>
+              <select
+                {...form.register("is_private", {
+                  setValueAs: (v) => v === "true" || v === true,
+                })}
+                className="h-[56px] w-full rounded border border-gray-300 bg-white p-2 outline-none"
+              >
+                <option value="false">Public (Appears in catalog and search)</option>
+                <option value="true">Non-Public (Hidden from catalog, accessible via direct link)</option>
+              </select>
             </div>
 
             <div className="mb-6">

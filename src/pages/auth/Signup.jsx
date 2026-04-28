@@ -75,7 +75,6 @@ const SignUp = ({ isPage = true }) => {
 
   const courseId = queryString.get("id");
   const courseTitle = queryString.get("title");
-  const [searchParams] = useSearchParams();
 
   const form = useForm({
     resolver: zodResolver(loginSchema),
@@ -222,7 +221,7 @@ const SignUp = ({ isPage = true }) => {
     }
   };
 
-  const code = searchParams.get("code");
+  const code = queryString.get("code");
   if (code) {
     form.setValue("referralCode", code);
   }

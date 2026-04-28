@@ -251,25 +251,30 @@ function App() {
           ],
         },
         {
+          path: "",
+          element: <AuthLayout />,
+          children: [
+            {
+              path: "/digital-learning-hub",
+              element: <AVI />,
+            },
+            {
+              path: "/partner",
+              element: <Partner />,
+            },
+            {
+              path: "/self-pace",
+              element: <SelfPace />,
+            },
+          ],
+        },
+        {
           element: <AuthProtectedRoute tokin={"token"} path={"/dashboard"} />,
           children: [
             {
               path: "",
               element: <AuthLayout />,
-
               children: [
-                {
-                  path: "/digital-learning-hub",
-                  element: <AVI />,
-                },
-                {
-                  path: "/partner",
-                  element: <Partner />,
-                },
-                {
-                  path: "/self-pace",
-                  element: <SelfPace />,
-                },
                 {
                   path: "login",
                   element: (

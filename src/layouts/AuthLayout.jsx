@@ -58,6 +58,7 @@ const AuthLayout = () => {
       pathname.includes("/login") || pathname.includes("/signup") || pathname.includes("/forgot-password") || pathname.includes("/new-password");
 
     setHideNav(shouldHide);
+    setShowModal(false);
   }, [location.pathname]); // runs on every route change
 
   // Interaction Listener
