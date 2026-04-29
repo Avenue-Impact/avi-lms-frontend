@@ -179,13 +179,7 @@ const LiveContent = ({ data }) => {
               </p>
               <p className="text-base font-light text-tertiary-color-900 lg:text-xl">
                 <strong>Assigned Instructor:</strong>{" "}
-                {isFetchingInstructor ? (
-                  <span className="animate-pulse text-gray-400">
-                    Loading...
-                  </span>
-                ) : (
-                  instructorName || "No instructor assigned"
-                )}
+                {instructorName || "No instructor assigned"}
               </p>
             </div>
 
