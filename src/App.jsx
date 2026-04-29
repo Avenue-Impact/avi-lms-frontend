@@ -648,7 +648,7 @@ function App() {
         },
         // instructor routes
         {
-          element: <ProtectedRoute tokin={"token"} path={"/login"} />,
+          element: <ProtectedRoute tokin={"token"} path={"/login"} requiredRole="Instructor" />,
           errorElement: <InstructorErrorPage />,
           children: [
             {

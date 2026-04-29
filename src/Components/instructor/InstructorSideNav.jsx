@@ -56,6 +56,7 @@ const InstructorSideNav = () => {
     localStorage.clear();
     sessionStorage.clear();
     Cookies.remove("token");
+    Cookies.remove("userRole");
     window.location.href = "/login?_r=/instructor/dashboard";
   };
 

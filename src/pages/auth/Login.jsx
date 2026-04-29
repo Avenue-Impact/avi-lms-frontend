@@ -67,13 +67,22 @@ const Login = () => {
           sameSite: "strict",
           path: "/",
         });
+        Cookies.set("userRole", data.data.user.role, {
+          expires: 1,
+          secure: true,
+          sameSite: "strict",
+          path: "/",
+        });
 
         if (courseId) {
           navigate(
             `/preview-video-course/${courseId}/enroll?title=${courseTitle}`,
           );
         } else {
-          navigate(data.forward_url || from);
+          const defaultPath = data.data.user.role?.toLowerCase() === "instructor" 
+            ? "/instructor/dashboard" 
+            : "/dashboard";
+          navigate(data.forward_url || (_r ? from : defaultPath));
         }
       },
       onError: (err) => {

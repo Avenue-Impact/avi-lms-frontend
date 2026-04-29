@@ -21,6 +21,7 @@ export function Sidebar({ children, toggleNav, setToggleNav }) {
 
   const handleLogout = () => {
     Cookies.remove("token");
+    Cookies.remove("userRole");
     window.location.href = "/login";
   };
 
