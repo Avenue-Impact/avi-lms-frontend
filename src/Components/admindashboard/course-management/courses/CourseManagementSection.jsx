@@ -111,9 +111,8 @@ const LiveContent = ({ data }) => {
     title = "",
     subtitle = "",
     start_time = "",
-    instructor = null,
-    is_live = false,
   } = data?.data?.session ?? {};
+  const {instructor = null, is_live = false,} = data?.data?.data ?? {};
 
   // 2. Derive Instructor Name
   const instructorName = instructor
@@ -175,7 +174,7 @@ const LiveContent = ({ data }) => {
                 <strong>Class day:</strong> {data?.data?.data?.class_days}
               </p>
               <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
-                <strong>Meeting date:</strong> {start_time} UTC
+                <strong>Meeting date:</strong> {`${start_time} UTC` || 'N/A'}
               </p>
               <p className="text-base font-light text-tertiary-color-900 lg:text-xl">
                 <strong>Assigned Instructor:</strong>{" "}
