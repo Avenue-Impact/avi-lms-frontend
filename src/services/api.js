@@ -333,3 +333,7 @@ export const regenerateMeetingInstructor = async ({ courseId, cohortId }) => {
     {},
   );
 };
+
+export const deleteStudentApi = async (studentId) => {
+  return await axiosAdmin.delete(`/users/${studentId}`);
+};

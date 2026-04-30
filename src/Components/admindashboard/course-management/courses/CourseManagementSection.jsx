@@ -97,7 +97,6 @@ function CourseManagementSection() {
 
 const LiveContent = ({ data }) => {
   const [meeting, setMeeting] = useState(false);
-  const [instructorName, setInstructorName] = useState("");
 
   const [queryString] = useSearchParams();
   const { courseId } = useParams();
@@ -105,7 +104,6 @@ const LiveContent = ({ data }) => {
 
   const cohortId = queryString.get("cohortId");
   const queryClient = useQueryClient();
-  const { fetAdmin, isPending: isFetchingInstructor } = useFetchAdmin();
   const { toggleLive, isToggling } = useToggleCohortLive(courseId, cohortId);
 
   // 1. Clean Destructuring
@@ -113,25 +111,13 @@ const LiveContent = ({ data }) => {
     title = "",
     subtitle = "",
     start_time = "",
-    instructor = null,
-    is_live = false,
   } = data?.data?.session ?? {};
+  const {instructor = null, is_live = false,} = data?.data?.data ?? {};
 
-  // 2. Fetch Instructor logic (Fixes Infinite Loop)
-  useEffect(() => {
-    if (instructor) {
-      fetAdmin(
-        { adminId: instructor },
-        {
-          onSuccess: (res) => {
-            const { firstname, lastname } = res?.data ?? {};
-            if (firstname) setInstructorName(`${firstname} ${lastname}`);
-          },
-          onError: () => setInstructorName("Instructor not found"),
-        },
-      );
-    }
-  }, [instructor, fetAdmin]);
+  // 2. Derive Instructor Name
+  const instructorName = instructor
+    ? `${instructor.first_name || ""} ${instructor.last_name || ""}`.trim()
+    : "No instructor assigned";
 
   // 3. Navigation Helper
   const handleJoin = () => {
@@ -188,17 +174,11 @@ const LiveContent = ({ data }) => {
                 <strong>Class day:</strong> {data?.data?.data?.class_days}
               </p>
               <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
-                <strong>Meeting date:</strong> {start_time} UTC
+                <strong>Meeting date:</strong> {`${start_time} UTC` || 'N/A'}
               </p>
               <p className="text-base font-light text-tertiary-color-900 lg:text-xl">
                 <strong>Assigned Instructor:</strong>{" "}
-                {isFetchingInstructor ? (
-                  <span className="animate-pulse text-gray-400">
-                    Loading...
-                  </span>
-                ) : (
-                  instructorName || "No instructor assigned"
-                )}
+                {instructorName || "No instructor assigned"}
               </p>
             </div>
 
