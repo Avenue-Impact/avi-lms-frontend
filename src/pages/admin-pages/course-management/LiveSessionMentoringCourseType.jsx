@@ -319,7 +319,7 @@ const LiveSessionMentoringCourseType = () => {
               {isCreating ? (
                 <ClipLoader size={20} color={"#fff"} />
               ) : (
-                "Save & Continue"
+                "Save"
               )}
             </CommonButton>
           </div>

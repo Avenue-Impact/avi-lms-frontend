@@ -30,7 +30,7 @@ const LiveOrRecordedSelection = () => {
         </SaveButton>
       </div>
 
-      <LIveOrRecordedSelectionTabs tab={subTab} setTab={setSubTab} />
+      <LIveOrRecordedSelectionTabs />
     </div>
   );
 };
