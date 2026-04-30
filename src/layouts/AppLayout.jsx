@@ -1,6 +1,7 @@
 import { Outlet, ScrollRestoration } from "react-router-dom";
 import Navbar from "../Components/Navbar/Navbar";
 import { Footer } from "@/Components/footer";
+import FloatingWhatsApp from "@/Components/FloatingWhatsApp";
 
 const AppLayout = () => {
   return (
@@ -9,6 +10,7 @@ const AppLayout = () => {
       <Navbar />
       <Outlet />
       <Footer />
+      <FloatingWhatsApp />
     </div>
   );
 };

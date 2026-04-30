@@ -22,6 +22,7 @@ import Container from "../Components/Container";
 import ImageSwiper from "../Components/home/ImageSwiper";
 import Avenue from "../Components/AvenueImpact/Avenue";
 import { Link } from 'react-router-dom';
+import FloatingWhatsApp from "@/Components/FloatingWhatsApp";
 
 const Home = () => {
   return (
@@ -244,6 +245,8 @@ const Home = () => {
           Give Feedback
         </Link>
       </div>
+
+      <FloatingWhatsApp />
     </>
   );
 };
