@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi";
 
 export default function GlobalPagination({ pagination, onPageChange, onLimitChange }) {
   if (!pagination) return null;
 
   const { page, perPage, total, lastPage } = pagination;
+
+  const [basePerPage] = useState(perPage || 10);
+  const options = [basePerPage, basePerPage * 2, basePerPage * 3, basePerPage * 4];
 
   return (
     <div className="flex items-center justify-between px-4 py-3 border-t mt-4 border-[#E4E7EC] sm:px-6">
@@ -25,9 +28,9 @@ export default function GlobalPagination({ pagination, onPageChange, onLimitChan
              value={perPage} 
              onChange={(e) => onLimitChange(Number(e.target.value))}
            >
-              <option value={10}>10</option>
-              <option value={20}>20</option>
-              <option value={50}>50</option>
+              {options.map(opt => (
+                <option key={opt} value={opt}>{opt}</option>
+              ))}
            </select>
         </div>
       </div>

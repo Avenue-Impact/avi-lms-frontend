@@ -9,7 +9,7 @@ import _ from "lodash";
 
 export default function EnrolledStudent() {
   const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
+  const [perPage, setPerPage] = useState(20);
   const [selectedStudentId, setSelectedStudentId] = useState(null);
   const { data, error, isLoading } = useFetchAllManagementStudent(page, perPage);
   // console.log("Fetch all the students", data);

@@ -12,7 +12,7 @@ import _ from "lodash";
 
 const CreatedCourse = () => {
   const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
+  const [perPage, setPerPage] = useState(24);
   const { data, isLoading, error } = useFetchAllAdminCourses(page, perPage, true);
   const [searchQuery, setSearchQuery] = useState("");
 
