@@ -13,15 +13,38 @@ import { usePreviewCourses } from "@/hooks/students/use-fetch-all-courses";
 // import SignUp from "@/pages/auth/Signup";
 
 
+import { ClipLoader } from "react-spinners";
+
 export default function LandingPage() {
   const { courseId } = useParams();
   // Use real API if not demo, else use demo data
   const { previewCourse, isLoading, error } = usePreviewCourses(courseId);
-  console.log('courseId', previewCourse);
 
-  const courseDetails = previewCourse?.data?.data.course;
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <ClipLoader size={50} color="#1a365d" />
+      </div>
+    );
+  }
 
+  if (error) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-lg text-red-500">Failed to load course information. Please try again.</p>
+      </div>
+    );
+  }
 
+  const courseDetails = previewCourse?.data?.data?.course;
+
+  if (!courseDetails) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-lg">Course not found.</p>
+      </div>
+    );
+  }
 
   return (
     <main className="min-h-screen max-sm:pt-6 ">
