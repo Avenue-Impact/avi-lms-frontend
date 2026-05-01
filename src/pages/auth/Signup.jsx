@@ -323,7 +323,7 @@ const SignUp = ({ isPage = true }) => {
         <Form {...form}>
           <form ref={formRef} onSubmit={form.handleSubmit(handleSubmit)}>
             <div className="">
-              <div className={`${isPage ? "" : "grid-cols-2"} grid gap-x-3`}>
+              <div className={`${isPage ? "" : "sm:grid-cols-2"} grid gap-x-3`}>
                 <FormInput
                   label="firstname"
                   name="firstName"
@@ -349,7 +349,7 @@ const SignUp = ({ isPage = true }) => {
                   absoluteError
                 />
               </div>
-              <div className={`${isPage ? "" : "grid-cols-2"} grid gap-x-3`}>
+              <div className={`${isPage ? "" : "sm:grid-cols-2"} grid gap-x-3`}>
                 <FormInput
                   label="username"
                   name="username"
@@ -385,7 +385,7 @@ const SignUp = ({ isPage = true }) => {
                 autoComplete="tel"
                 absoluteError
               />
-              <div className={`${isPage ? "" : "grid-cols-2"} grid gap-x-3`}>
+              <div className={`${isPage ? "" : "sm:grid-cols-2"} grid gap-x-3`}>
                 <PasswordInput
                   id="password"
                   autoComplete="new-password"
