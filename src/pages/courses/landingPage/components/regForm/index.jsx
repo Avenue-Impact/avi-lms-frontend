@@ -20,13 +20,13 @@ export const CoursesRegistrationForm = () => {
 
   return (
     <div className="overflow-hidden rounded-2xl bg-white shadow-xl">
-      <div className="md:flex">
+      <div className="flex md:flex-row flex-col">
         {/* Left Panel */}
         <div className="bg-gradient-to-br from-[#CC1747] to-[#1E2A3F] p-8 text-white md:w-1/2 md:p-12">
-          <h2 className="mb-6 text-2xl font-bold">
+          <h2 className="mb-6 text-xl sm:text-2xl font-bold">
             Ready to Start Your BA Journey?
           </h2>
-          <p className="mb-8 text-blue-100">
+          <p className="mb-8 text-base sm:text-lg text-blue-100">
             Fill out the form to register for our upcoming training program
             starting July 21st.
           </p>
@@ -37,10 +37,10 @@ export const CoursesRegistrationForm = () => {
                 <Mail className="h-5 w-5" />
               </div>
               <div>
-                <h4 className="font-semibold">Email Us</h4>
+                <h4 className="font-semibold text-base sm:text-lg">Email Us</h4>
                 <a
                   href="mailto:info@avenueimpact.com"
-                  className="text-blue-100 hover:underline"
+                  className="text-blue-100 hover:underline text-base sm:text-lg"
                 >
                   info@avenueimpact.com
                 </a>
@@ -52,10 +52,10 @@ export const CoursesRegistrationForm = () => {
                 <Phone className="h-5 w-5" />
               </div>
               <div>
-                <h4 className="font-semibold">Call Us</h4>
+                <h4 className="font-semibold text-base sm:text-lg">Call Us</h4>
                 <a
                   href="tel:+4480005410720"
-                  className="text-blue-100 hover:underline"
+                  className="text-blue-100 hover:underline text-base sm:text-lg"
                 >
                   +4480005410720
                 </a>
@@ -67,8 +67,8 @@ export const CoursesRegistrationForm = () => {
                 <MapPin className="h-5 w-5" />
               </div>
               <div>
-                <h4 className="font-semibold">Visit Us</h4>
-                <p className="text-blue-100">London, UK</p>
+                <h4 className="font-semibold text-base sm:text-lg">Visit Us</h4>
+                <p className="text-blue-100 text-base sm:text-lg">London, UK</p>
               </div>
             </div>
           </div>
