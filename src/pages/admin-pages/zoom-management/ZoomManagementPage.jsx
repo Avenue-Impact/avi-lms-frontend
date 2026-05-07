@@ -199,8 +199,12 @@ function AddZoomAccountModal({ onClose }) {
     account_id: "",
     client_id: "",
     client_secret: "",
+    sdk_key: "",
+    sdk_secret: "",
   });
   const [showSecret, setShowSecret] = useState(false);
+  const [showSdkSecret, setShowSdkSecret] = useState(false);
+  const [showSdkFields, setShowSdkFields] = useState(false);
   const { mutate: addAccount, isPending } = useAddZoomAccount();
 
   const handleChange = (e) =>
@@ -276,6 +280,56 @@ function AddZoomAccountModal({ onClose }) {
             </p>
           </div>
 
+          {/* Optional SDK Section */}
+          <div>
+            <button
+              type="button"
+              onClick={() => setShowSdkFields((v) => !v)}
+              className="flex items-center gap-1.5 text-xs font-medium text-blue-600 hover:text-blue-700"
+            >
+              {showSdkFields ? "▾" : "▸"} Meeting SDK credentials (optional)
+            </button>
+            {showSdkFields && (
+              <div className="mt-3 space-y-3 rounded-lg border border-blue-100 bg-blue-50 p-4">
+                <p className="text-xs text-blue-600">
+                  Only needed if this account has its <em>own</em> Meeting SDK app.
+                  Leave blank to use the platform-wide SDK key.
+                </p>
+                <Field
+                  label="SDK Key (Client ID)"
+                  name="sdk_key"
+                  placeholder="From Meeting SDK app dashboard"
+                  value={form.sdk_key}
+                  onChange={handleChange}
+                  required={false}
+                />
+                {/* SDK Secret with toggle */}
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-gray-700">
+                    SDK Secret (Client Secret)
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showSdkSecret ? "text" : "password"}
+                      name="sdk_secret"
+                      placeholder="Encrypted before saving"
+                      value={form.sdk_secret}
+                      onChange={handleChange}
+                      className="w-full rounded-lg border border-gray-200 px-3 py-2.5 pr-10 text-sm outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-100"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowSdkSecret((v) => !v)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    >
+                      {showSdkSecret ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
           <div className="flex gap-3 pt-2">
             <button
               type="button"
@@ -299,17 +353,19 @@ function AddZoomAccountModal({ onClose }) {
   );
 }
 
-function Field({ label, name, placeholder, value, onChange }) {
+function Field({ label, name, placeholder, value, onChange, required = true }) {
   return (
     <div>
-      <label className="mb-1 block text-sm font-medium text-gray-700">{label}</label>
+      <label className="mb-1 block text-sm font-medium text-gray-700">
+        {label}{!required && <span className="ml-1 text-xs text-gray-400">(optional)</span>}
+      </label>
       <input
         type="text"
         name={name}
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        required
+        required={required}
         className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-100"
       />
     </div>

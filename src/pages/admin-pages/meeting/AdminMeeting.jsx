@@ -92,7 +92,7 @@ const AdminMeeting = () => {
           userName={userName}
           userEmail={userEmail}
           signature={data?.data?.data?.signature}
-          apiKey={import.meta.env.VITE_ZOOM_API_KEY}
+          apiKey={data?.data?.data?.sdkKey}
           password={data?.data?.data?.password}
           zak={data?.data?.data?.accessToken} // Used for authenticated hosts
           leaveUrl={leaveUrl}

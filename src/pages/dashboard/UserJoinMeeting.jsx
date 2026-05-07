@@ -49,7 +49,7 @@ const UserJoinMeeting = () => {
           meetingNumber={data?.data?.data?.meeting_id}
           userName={userProfileDetails?.data?.data?.username ?? "User"}
           signature={data?.data?.data?.signature}
-          apiKey={`${import.meta.env.VITE_ZOOM_API_KEY}`}
+          apiKey={data?.data?.data?.sdkKey}
           password={data?.data?.data?.password}
           zak={data?.data?.data?.accessToken}
           obfToken={data?.data?.data?.obfToken} 
