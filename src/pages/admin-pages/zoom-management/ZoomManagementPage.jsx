@@ -1,0 +1,319 @@
+import { useOutletContext } from "react-router-dom";
+import { useState } from "react";
+import {
+  useZoomAccounts,
+  useAddZoomAccount,
+  useToggleZoomAccount,
+  useTestZoomAccount,
+} from "@/hooks/zoom-management/use-zoom-accounts";
+import {
+  Plus,
+  Wifi,
+  WifiOff,
+  FlaskConical,
+  Eye,
+  EyeOff,
+  CheckCircle,
+  XCircle,
+  Loader2,
+  Video,
+} from "lucide-react";
+
+const ZoomManagementPage = () => {
+  const { showAddModal, setShowAddModal } = useOutletContext();
+
+  const { data, isLoading } = useZoomAccounts();
+  const accounts = data?.data?.data || [];
+
+  return (
+    <div>
+
+      {/* Stats */}
+      <div className="my-6 p-5 flex gap-4 rounded-[20px] border border-[#F0F2F5]  bg-white shadow-md">
+        <StatCard
+          label="Total Accounts"
+          value={accounts.length}
+          color="blue"
+        />
+        <div className="h-full min-h-[102px] w-px bg-[#E6EDFF]"></div>
+        <StatCard
+          label="Active"
+          value={accounts.filter((a) => a.is_active).length}
+          color="green"
+        />
+        <div className="h-full min-h-[102px] w-px bg-[#E6EDFF]"></div>
+        <StatCard
+          label="Inactive"
+          value={accounts.filter((a) => !a.is_active).length}
+          color="red"
+        />
+      </div>
+
+      {/* Account List */}
+      {isLoading ? (
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="h-8 w-8 animate-spin text-primary-color-600" />
+        </div>
+      ) : accounts.length === 0 ? (
+        <EmptyState onAdd={() => setShowAddModal(true)} />
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {accounts.map((account) => (
+            <ZoomAccountCard key={account.id} account={account} />
+          ))}
+        </div>
+      )}
+
+      {showAddModal && <AddZoomAccountModal onClose={() => setShowAddModal(false)} />}
+    </div>
+  );
+};
+
+/* ─── Sub-components ─── */
+
+function StatCard({ label, value, color }) {
+  return (
+    <div className="w-full flex-1 pl-4">
+      <p className={`mt-1 font-bold text-[28px]`}>{value}</p>
+      <p className="text-sm text-gray-500">{label}</p>
+    </div>
+  );
+}
+
+function ZoomAccountCard({ account }) {
+  const { mutate: toggle, isPending: isToggling } = useToggleZoomAccount();
+  const { mutate: test, isPending: isTesting } = useTestZoomAccount();
+
+  return (
+    <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm transition hover:shadow-md">
+      {/* Top Row */}
+      <div className="mb-4 flex items-start justify-between">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50">
+            <Video className="h-5 w-5 text-blue-600" />
+          </div>
+          <div>
+            <p className="font-semibold text-gray-900">{account.name}</p>
+            <p className="text-xs text-gray-400">{account.email || account.account_id}</p>
+          </div>
+        </div>
+        <StatusBadge active={account.is_active} />
+      </div>
+
+      {/* Info */}
+      <div className="mb-4 space-y-1 rounded-lg bg-gray-50 p-3 text-xs text-gray-500">
+        <div className="flex justify-between">
+          <span>Token Type</span>
+          <span className="font-medium text-gray-700">{account.token_type}</span>
+        </div>
+        <div className="flex justify-between">
+          <span>Last Refresh</span>
+          <span className="font-medium text-gray-700">
+            {account.token_expires_at
+              ? new Date(account.token_expires_at).toLocaleString()
+              : "—"}
+          </span>
+        </div>
+      </div>
+
+      {/* Actions */}
+      <div className="flex gap-2">
+        <button
+          onClick={() => test(account.id)}
+          disabled={isTesting}
+          className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-medium text-blue-700 transition hover:bg-blue-100 disabled:opacity-60"
+        >
+          {isTesting ? (
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          ) : (
+            <FlaskConical className="h-3.5 w-3.5" />
+          )}
+          Test
+        </button>
+        <button
+          onClick={() => toggle(account.id)}
+          disabled={isToggling}
+          className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-medium transition disabled:opacity-60 ${
+            account.is_active
+              ? "border-red-200 bg-red-50 text-red-700 hover:bg-red-100"
+              : "border-green-200 bg-green-50 text-green-700 hover:bg-green-100"
+          }`}
+        >
+          {isToggling ? (
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          ) : account.is_active ? (
+            <WifiOff className="h-3.5 w-3.5" />
+          ) : (
+            <Wifi className="h-3.5 w-3.5" />
+          )}
+          {account.is_active ? "Deactivate" : "Activate"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function StatusBadge({ active }) {
+  return (
+    <span
+      className={`flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium ${
+        active
+          ? "bg-green-100 text-green-700"
+          : "bg-gray-100 text-gray-500"
+      }`}
+    >
+      {active ? (
+        <CheckCircle className="h-3 w-3" />
+      ) : (
+        <XCircle className="h-3 w-3" />
+      )}
+      {active ? "Active" : "Inactive"}
+    </span>
+  );
+}
+
+function EmptyState({ onAdd }) {
+  return (
+    <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-gray-200 bg-white py-20 text-center">
+      <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-blue-50">
+        <Video className="h-7 w-7 text-blue-500" />
+      </div>
+      <h3 className="text-lg font-semibold text-gray-800">No Zoom Accounts Yet</h3>
+      <p className="mb-5 mt-1 max-w-xs text-sm text-gray-400">
+        Add your first Zoom integration to start scheduling live sessions.
+      </p>
+      <button
+        onClick={onAdd}
+        className="flex items-center gap-2 rounded-lg bg-primary-color-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-color-700"
+      >
+        <Plus className="h-4 w-4" />
+        Add Zoom Account
+      </button>
+    </div>
+  );
+}
+
+function AddZoomAccountModal({ onClose }) {
+  const [form, setForm] = useState({
+    name: "",
+    account_id: "",
+    client_id: "",
+    client_secret: "",
+  });
+  const [showSecret, setShowSecret] = useState(false);
+  const { mutate: addAccount, isPending } = useAddZoomAccount();
+
+  const handleChange = (e) =>
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    addAccount(form, {
+      onSuccess: () => onClose(),
+    });
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+      <div className="w-full max-w-md rounded-2xl bg-white p-7 shadow-2xl">
+        <div className="mb-5 flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50">
+            <Video className="h-5 w-5 text-blue-600" />
+          </div>
+          <div>
+            <h2 className="text-lg font-bold text-gray-900">Add Zoom Account</h2>
+            <p className="text-xs text-gray-400">Server-to-Server OAuth credentials</p>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <Field
+            label="Account Label"
+            name="name"
+            placeholder="e.g. Main Platform Zoom"
+            value={form.name}
+            onChange={handleChange}
+          />
+          <Field
+            label="Account ID"
+            name="account_id"
+            placeholder="From Zoom app dashboard"
+            value={form.account_id}
+            onChange={handleChange}
+          />
+          <Field
+            label="Client ID"
+            name="client_id"
+            placeholder="From Zoom app dashboard"
+            value={form.client_id}
+            onChange={handleChange}
+          />
+          {/* Secret with toggle */}
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Client Secret
+            </label>
+            <div className="relative">
+              <input
+                type={showSecret ? "text" : "password"}
+                name="client_secret"
+                placeholder="Encrypted before saving"
+                value={form.client_secret}
+                onChange={handleChange}
+                required
+                className="w-full rounded-lg border border-gray-200 px-3 py-2.5 pr-10 text-sm outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-100"
+              />
+              <button
+                type="button"
+                onClick={() => setShowSecret((v) => !v)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                {showSecret ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
+            <p className="mt-1 text-xs text-gray-400">
+              🔒 This is encrypted with AES-256 before being stored.
+            </p>
+          </div>
+
+          <div className="flex gap-3 pt-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 rounded-lg border border-gray-200 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isPending}
+              className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary-color-600 py-2.5 text-sm font-semibold text-white hover:bg-primary-color-700 disabled:opacity-70"
+            >
+              {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
+              {isPending ? "Saving..." : "Add Account"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function Field({ label, name, placeholder, value, onChange }) {
+  return (
+    <div>
+      <label className="mb-1 block text-sm font-medium text-gray-700">{label}</label>
+      <input
+        type="text"
+        name={name}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        required
+        className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-100"
+      />
+    </div>
+  );
+}
+
+export default ZoomManagementPage;

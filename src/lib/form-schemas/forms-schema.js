@@ -87,6 +87,7 @@ export const courseTypeSchema = z.object({
   startDate: z.string({ message: "This field is required" }),
   discountType: z.string({ message: "This field is required" }),
   discountValue: z.union([z.string(), z.number()]).optional(),
+  zoom_account_id: z.string().optional(),
 });
 
 export const courseInformationSchema = z.object({

@@ -15,6 +15,7 @@ import { DarkLogo } from "@/Components/Logo";
 import { cn } from "@/lib/utils";
 import Cookies from "js-cookie";
 import { NavLink, useLocation } from "react-router-dom";
+import { Video } from "lucide-react";
 
 // import { Sidebar, SidebarItem } from "./SideNav";
 const navItem = [
@@ -57,6 +58,12 @@ const navitem2 = [
     text: "Account Management",
     icon: <AccountIcon />,
     path: "/admin/account-management",
+  },
+  {
+    id: 4,
+    text: "Zoom Management",
+    icon: <Video />,
+    path: "/admin/zoom-management",
   },
 ];
 

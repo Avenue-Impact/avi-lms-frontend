@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { formatDate } from "@/lib/format-date";
-
 import { ClipLoader } from "react-spinners";
 import { fetchCohorts, fetchAdmins } from "@/services/api";
 import { cn } from "@/lib/utils";
@@ -8,6 +7,8 @@ import { useState } from "react";
 import Modal from "@/pages/auth/components/Modal";
 import { useAssignInstructor } from "@/hooks/course-management/use-assign-instructor";
 import { useParams } from "react-router-dom";
+import { useAssignZoomToCohort, useZoomAccounts } from "@/hooks/zoom-management/use-zoom-accounts";
+import { Video } from "lucide-react";
 
 const AllCohorts = ({ setCohortId }) => {
   const { courseId } = useParams();
@@ -30,6 +31,30 @@ const AllCohorts = ({ setCohortId }) => {
 
   const { assign, isAssigning } = useAssignInstructor(courseId, cohortToAssign);
 
+  // Zoom assignment state
+  const [isZoomModalOpen, setIsZoomModalOpen] = useState(false);
+  const [selectedZoomAccountId, setSelectedZoomAccountId] = useState("");
+  const [cohortToAssignZoom, setCohortToAssignZoom] = useState(null);
+  const { mutate: assignZoom, isPending: isAssigningZoom } = useAssignZoomToCohort();
+  const { data: zoomAccountsData } = useZoomAccounts();
+  const zoomAccounts = zoomAccountsData?.data?.data?.filter((a) => a.is_active) || [];
+
+  const handleZoomAssignClick = (e, cohortId) => {
+    e.stopPropagation();
+    setCohortToAssignZoom(cohortId);
+    setSelectedZoomAccountId("");
+    setIsZoomModalOpen(true);
+  };
+
+  const handleZoomAssignSubmit = (e) => {
+    e.preventDefault();
+    if (!selectedZoomAccountId) return;
+    assignZoom(
+      { cohortId: cohortToAssignZoom, zoom_account_id: selectedZoomAccountId },
+      { onSuccess: () => setIsZoomModalOpen(false) }
+    );
+  };
+
   const handleAssignClick = (e, cohortId) => {
     e.stopPropagation();
     setCohortToAssign(cohortId);
@@ -47,6 +72,7 @@ const AllCohorts = ({ setCohortId }) => {
 
   return (
     <>
+    piopwqpwpqwowop
       {isLoading ? (
         <ClipLoader size={20} color={"#CC1747"} />
       ) : (
@@ -84,6 +110,13 @@ const AllCohorts = ({ setCohortId }) => {
                 className="px-4 py-2 bg-primary-color-600 text-white rounded-md text-sm hover:bg-primary-color-700"
               >
                 Assign Instructor
+              </button>
+              <button
+                onClick={(e) => handleZoomAssignClick(e, cohortItem.id)}
+                className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700"
+              >
+                <Video className="h-3.5 w-3.5" />
+                {cohortItem.zoom_account_id ? "Change Zoom" : "Assign Zoom"}
               </button>
             </div>
           ))}
@@ -126,6 +159,67 @@ const AllCohorts = ({ setCohortId }) => {
                   className="px-4 py-2 bg-primary-color-600 text-white rounded-md hover:bg-primary-color-700 disabled:opacity-50"
                 >
                   {isAssigning ? "Assigning..." : "Assign"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </Modal>
+      )}
+
+      {/* Zoom Account Assignment Modal */}
+      {isZoomModalOpen && (
+        <Modal>
+          <div className="w-[400px] bg-white p-6 rounded-lg">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50">
+                <Video className="h-4 w-4 text-blue-600" />
+              </div>
+              <h2 className="text-xl font-semibold text-tertiary-color-700">Assign Zoom Account</h2>
+            </div>
+            <form onSubmit={handleZoomAssignSubmit}>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Select Zoom Account
+                </label>
+                {zoomAccounts.length === 0 ? (
+                  <p className="text-sm text-red-500 py-2">
+                    No active Zoom accounts found. Add one in{" "}
+                    <a href="/admin/zoom-management" className="underline text-blue-600">
+                      Zoom Management
+                    </a>
+                    .
+                  </p>
+                ) : (
+                  <select
+                    value={selectedZoomAccountId}
+                    onChange={(e) => setSelectedZoomAccountId(e.target.value)}
+                    className="w-full border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
+                    required
+                  >
+                    <option value="" disabled>Select a Zoom account</option>
+                    {zoomAccounts.map((account) => (
+                      <option key={account.id} value={account.id}>
+                        {account.name}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </div>
+              <div className="flex justify-end space-x-2">
+                <button
+                  type="button"
+                  onClick={() => setIsZoomModalOpen(false)}
+                  className="px-4 py-2 border rounded-md text-gray-600 hover:bg-gray-50"
+                  disabled={isAssigningZoom}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isAssigningZoom || !selectedZoomAccountId}
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+                >
+                  {isAssigningZoom ? "Assigning..." : "Assign"}
                 </button>
               </div>
             </form>

@@ -97,8 +97,10 @@ import WithdrawalRequest from "./pages/admin-pages/affiliate/WithdrawalRequest";
 import CertificateIssueHistory from "./pages/admin-pages/certificate/CertificateIssueHistory";
 import CertificateMainPage from "./pages/admin-pages/certificate/CertificateMainPage";
 
+import ZoomManagementLayout from "./layouts/admin/ZoomManagementLayout";
 import AccountManagLayout from "./layouts/admin/AccountManagLayout";
 import AccountMagament from "./pages/admin-pages/account-managemnet/AccountMagament";
+import ZoomManagementPage from "./pages/admin-pages/zoom-management/ZoomManagementPage";
 
 import CourseWorkAreaLayout from "./layouts/admin/CourseWorkAreaLayout";
 import CourseWorkArea from "./pages/admin-pages/course-work-area/CourseWorkArea";
@@ -517,6 +519,18 @@ function App() {
                 {
                   element: <AdminConfirmationRole />,
                   path: "set-admin-password/create-password",
+                },
+
+                // Zoom Management
+                {
+                  element: <ZoomManagementLayout />,
+                  path: "zoom-management",
+                  children: [
+                    {
+                      index: true,
+                      element: <ZoomManagementPage />,
+                    },
+                  ],
                 },
 
                 // Fianancial Aid

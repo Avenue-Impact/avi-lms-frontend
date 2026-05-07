@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils";
 import { useCreateCourseType } from "@/hooks/course-management/use-create-course-type";
 import { courseTypeSchema } from "@/lib/form-schemas/forms-schema";
 import WeekdaysSelector from "@/Components/ui/weekday-selector";
+import { useZoomAccounts } from "@/hooks/zoom-management/use-zoom-accounts";
 
 const convertTo12Hour = (time24) => {
   if (!time24) return "";
@@ -46,6 +47,7 @@ const LiveSessionMentoringCourseType = () => {
   const { createCourseType, isCreating } = useCreateCourseType();
   const { setActiveTab, setSubTab } = useCourseManagementInfo();
   const { data: globalCohorts } = useFetchGlobalCohorts();
+  const { data: zoomAccounts } = useZoomAccounts();
 
   const onSubmit = async (data) => {
     // const time = data.time.split(":");
@@ -72,6 +74,7 @@ const LiveSessionMentoringCourseType = () => {
         currency_symbol: "£",
         discount_type: data.discountType,
         discount_value: Number(data.discountValue),
+        zoom_account_id: data.zoom_account_id && data.zoom_account_id !== "none" ? data.zoom_account_id : undefined,
       },
     };
 
@@ -103,6 +106,7 @@ const LiveSessionMentoringCourseType = () => {
       startDate: savedForm?.startDate || "",
       discountType: savedForm?.discountType || "None",
       discountValue: savedForm?.discountValue || "0",
+      zoom_account_id: savedForm?.zoom_account_id || "none",
     },
   });
 
@@ -300,6 +304,33 @@ const LiveSessionMentoringCourseType = () => {
                     </p>
                   )}
                 </div>
+              </div>
+
+              {/* Zoom Account */}
+              <div className="w-full pt-4">
+                <FormField
+                  control={form.control}
+                  name="zoom_account_id"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-base font-medium">Zoom Account (Optional)</FormLabel>
+                      <FormControl>
+                        <select
+                          {...field}
+                          className="w-full rounded border border-gray-300 p-2 h-[42px] bg-white text-sm"
+                        >
+                          <option value="none">No Zoom Account</option>
+                          {zoomAccounts?.data?.data?.map((acc) => (
+                            <option key={acc.id} value={acc.id}>
+                              {acc.name}
+                            </option>
+                          ))}
+                        </select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
             </div>
           </div>
