@@ -138,8 +138,8 @@ const AllCohorts = ({ setCohortId }) => {
                 >
                   <option value="" disabled>Select an instructor</option>
                   {instructors.map((inst) => (
-                    <option key={inst._id} value={inst._id}>
-                      {inst.first_name} {inst.last_name} ({inst.email})
+                    <option key={inst.id} value={inst.id}>
+                      {inst.firstname} {inst.lastname} ({inst.email})
                     </option>
                   ))}
                 </select>
