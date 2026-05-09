@@ -87,7 +87,10 @@ const InstructorSignUp = ({ isPage = true }) => {
   // Auto-fill email if token is valid
   useEffect(() => {
     if (inviteData?.data?.email) {
-      form.setValue("email", inviteData.data.email);
+      form.setValue("email", inviteData.data.email, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
     }
   }, [inviteData, form]);
 
@@ -271,6 +274,7 @@ const InstructorSignUp = ({ isPage = true }) => {
                   autoCapitalize="none"
                   readOnly // Email is tied to the invitation token
                   absoluteError
+                  disabled={inviteData?.data?.email ? true : false}
                 />
               </div>
               <FormInput
