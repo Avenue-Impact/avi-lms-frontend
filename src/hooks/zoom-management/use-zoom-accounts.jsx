@@ -47,7 +47,7 @@ export const useTestZoomAccount = () => {
   return useMutation({
     mutationFn: testZoomAccountApi,
     onSuccess: () => {
-      toast.success("✅ Connection verified successfully!");
+      toast.success("Connection verified successfully!");
     },
     onError: (err) => {
       toast.error(err?.response?.data?.message || "Connection test failed");

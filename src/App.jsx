@@ -137,6 +137,7 @@ import { homePageLoader } from "./loaders/student/home-page-loader";
 import Notifications from "./pages/admin-pages/notification/Notifications";
 import ReviewDetails from "./pages/admin-pages/reviews/ReviewInfo";
 import ReviewMainPage from "./pages/admin-pages/reviews/ReviewMainPage";
+import ZoomSetupPage from "./pages/docs/ZoomSetupPage";
 import { elements } from "chart.js";
 import Dashbaord from "./pages/dashbaord";
 import LoadingPage from "./Components/LoadingPage";
@@ -188,6 +189,10 @@ function App() {
             {
               path: "/contact",
               element: <Contact />,
+            },
+            {
+              path: "/docs/zoom-setup",
+              element: <ZoomSetupPage />,
             },
           ],
         },

@@ -2,16 +2,21 @@ import { STUDENT_BASE_URL } from "@/constant";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-const fetchAllCourses = (courseType = "") => {
-  const url = `${STUDENT_BASE_URL}/courses?perPage=10&page=1${courseType ? `&course_type=${courseType}` : ""}`;
-
-  return axios.get(url);
+const fetchAllCourses = ({ courseType = "", page = 1, perPage = 12, searchQuery = "" } = {}) => {
+  const params = new URLSearchParams({
+    page,
+    per_page: perPage,
+    ...(courseType ? { course_type: courseType } : {}),
+    ...(searchQuery ? { searchQuery } : {}),
+  });
+  return axios.get(`${STUDENT_BASE_URL}/courses?${params.toString()}`);
 };
 
-export const useFetchAllCourses = (courseType = "") => {
+export const useFetchAllCourses = ({ courseType = "", page = 1, perPage = 12, searchQuery = "" } = {}) => {
   return useQuery({
-    queryKey: ["fetch-all-courses", courseType],
-    queryFn: () => fetchAllCourses(courseType),
+    queryKey: ["fetch-all-courses", courseType, page, perPage, searchQuery],
+    queryFn: () => fetchAllCourses({ courseType, page, perPage, searchQuery }),
+    keepPreviousData: true,
   });
 };
 

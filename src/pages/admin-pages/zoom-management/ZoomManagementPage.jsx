@@ -27,14 +27,9 @@ const ZoomManagementPage = () => {
 
   return (
     <div>
-
       {/* Stats */}
-      <div className="my-6 p-5 flex gap-4 rounded-[20px] border border-[#F0F2F5]  bg-white shadow-md">
-        <StatCard
-          label="Total Accounts"
-          value={accounts.length}
-          color="blue"
-        />
+      <div className="my-6 flex gap-4 rounded-[20px] border border-[#F0F2F5] bg-white p-5 shadow-md">
+        <StatCard label="Total Accounts" value={accounts.length} color="blue" />
         <div className="h-full min-h-[102px] w-px bg-[#E6EDFF]"></div>
         <StatCard
           label="Active"
@@ -64,7 +59,9 @@ const ZoomManagementPage = () => {
         </div>
       )}
 
-      {showAddModal && <AddZoomAccountModal onClose={() => setShowAddModal(false)} />}
+      {showAddModal && (
+        <AddZoomAccountModal onClose={() => setShowAddModal(false)} />
+      )}
     </div>
   );
 };
@@ -74,7 +71,7 @@ const ZoomManagementPage = () => {
 function StatCard({ label, value, color }) {
   return (
     <div className="w-full flex-1 pl-4">
-      <p className={`mt-1 font-bold text-[28px]`}>{value}</p>
+      <p className={`mt-1 text-[28px] font-bold`}>{value}</p>
       <p className="text-sm text-gray-500">{label}</p>
     </div>
   );
@@ -94,7 +91,9 @@ function ZoomAccountCard({ account }) {
           </div>
           <div>
             <p className="font-semibold text-gray-900">{account.name}</p>
-            <p className="text-xs text-gray-400">{account.email || account.account_id}</p>
+            <p className="text-xs text-gray-400">
+              {account.email || account.account_id}
+            </p>
           </div>
         </div>
         <StatusBadge active={account.is_active} />
@@ -104,7 +103,9 @@ function ZoomAccountCard({ account }) {
       <div className="mb-4 space-y-1 rounded-lg bg-gray-50 p-3 text-xs text-gray-500">
         <div className="flex justify-between">
           <span>Token Type</span>
-          <span className="font-medium text-gray-700">{account.token_type}</span>
+          <span className="font-medium text-gray-700">
+            {account.token_type}
+          </span>
         </div>
         <div className="flex justify-between">
           <span>Last Refresh</span>
@@ -157,9 +158,7 @@ function StatusBadge({ active }) {
   return (
     <span
       className={`flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium ${
-        active
-          ? "bg-green-100 text-green-700"
-          : "bg-gray-100 text-gray-500"
+        active ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
       }`}
     >
       {active ? (
@@ -178,13 +177,15 @@ function EmptyState({ onAdd }) {
       <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-blue-50">
         <Video className="h-7 w-7 text-blue-500" />
       </div>
-      <h3 className="text-lg font-semibold text-gray-800">No Zoom Accounts Yet</h3>
+      <h3 className="text-lg font-semibold text-gray-800">
+        No Zoom Accounts Yet
+      </h3>
       <p className="mb-5 mt-1 max-w-xs text-sm text-gray-400">
         Add your first Zoom integration to start scheduling live sessions.
       </p>
       <button
         onClick={onAdd}
-        className="flex items-center gap-2 rounded-lg bg-primary-color-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-color-700"
+        className="hover:bg-primary-color-700 flex items-center gap-2 rounded-lg bg-primary-color-600 px-4 py-2 text-sm font-semibold text-white"
       >
         <Plus className="h-4 w-4" />
         Add Zoom Account
@@ -225,11 +226,26 @@ function AddZoomAccountModal({ onClose }) {
             <Video className="h-5 w-5 text-blue-600" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-gray-900">Add Zoom Account</h2>
-            <p className="text-xs text-gray-400">Server-to-Server OAuth credentials</p>
+            <h2 className="text-lg font-bold text-gray-900">
+              Add Zoom Account
+            </h2>
+            <p className="text-xs text-gray-400">
+              Server-to-Server OAuth credentials
+            </p>
           </div>
         </div>
 
+        <div className="alert alert-info my-2 text-xs font-light">
+          <p>
+            <span className="font-normal text-primary-color-600">Important:</span> Please follow{" "}
+            <span className="font-medium text-primary-color-600 underline">
+              <a href="/docs/zoom-setup" target="_blank">
+                this guide
+              </a>
+            </span>{" "}
+            carefully when creating your Zoom account or App credentials.
+          </p>
+        </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <Field
             label="Account Label"
@@ -272,7 +288,11 @@ function AddZoomAccountModal({ onClose }) {
                 onClick={() => setShowSecret((v) => !v)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
               >
-                {showSecret ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                {showSecret ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
               </button>
             </div>
             <p className="mt-1 text-xs text-gray-400">
@@ -292,8 +312,8 @@ function AddZoomAccountModal({ onClose }) {
             {showSdkFields && (
               <div className="mt-3 space-y-3 rounded-lg border border-blue-100 bg-blue-50 p-4">
                 <p className="text-xs text-blue-600">
-                  Only needed if this account has its <em>own</em> Meeting SDK app.
-                  Leave blank to use the platform-wide SDK key.
+                  Only needed if this account has its <em>own</em> Meeting SDK
+                  app. Leave blank to use the platform-wide SDK key.
                 </p>
                 <Field
                   label="SDK Key (Client ID)"
@@ -322,7 +342,11 @@ function AddZoomAccountModal({ onClose }) {
                       onClick={() => setShowSdkSecret((v) => !v)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                     >
-                      {showSdkSecret ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      {showSdkSecret ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
                     </button>
                   </div>
                 </div>
@@ -341,7 +365,7 @@ function AddZoomAccountModal({ onClose }) {
             <button
               type="submit"
               disabled={isPending}
-              className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary-color-600 py-2.5 text-sm font-semibold text-white hover:bg-primary-color-700 disabled:opacity-70"
+              className="hover:bg-primary-color-700 flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary-color-600 py-2.5 text-sm font-semibold text-white disabled:opacity-70"
             >
               {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
               {isPending ? "Saving..." : "Add Account"}
@@ -357,7 +381,10 @@ function Field({ label, name, placeholder, value, onChange, required = true }) {
   return (
     <div>
       <label className="mb-1 block text-sm font-medium text-gray-700">
-        {label}{!required && <span className="ml-1 text-xs text-gray-400">(optional)</span>}
+        {label}
+        {!required && (
+          <span className="ml-1 text-xs text-gray-400">(optional)</span>
+        )}
       </label>
       <input
         type="text"

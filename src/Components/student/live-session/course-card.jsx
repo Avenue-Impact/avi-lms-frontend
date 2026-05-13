@@ -15,6 +15,7 @@ const LiveSessionCourseCard = ({
   progress = 0,
   is_access_revoked,
   last_watched_video_id,
+  enrollmentId,
 }) => {
   const getCourseLink = () => {
     let base = `/dashboard/${courseId}/live?title=${title}&cohortId=${cohortId}`;
@@ -79,7 +80,7 @@ const LiveSessionCourseCard = ({
           {is_access_revoked ? (
             <>
               <Link
-                to={`/preview-course/${courseId}`}
+                to={`/dashboard/pay-installment/${enrollmentId}?courseId=${courseId}`}
                 className="w-full rounded-md bg-[#CC1747] py-2 text-center text-sm font-medium text-white transition-colors hover:bg-[#B3123F]"
               >
                 Pay Now
