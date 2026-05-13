@@ -3,11 +3,13 @@ import { useState } from "react";
 import {
   useZoomAccounts,
   useAddZoomAccount,
+  useUpdateZoomAccount,
   useToggleZoomAccount,
   useTestZoomAccount,
 } from "@/hooks/zoom-management/use-zoom-accounts";
 import {
   Plus,
+  Pencil,
   Wifi,
   WifiOff,
   FlaskConical,
@@ -21,6 +23,7 @@ import {
 
 const ZoomManagementPage = () => {
   const { showAddModal, setShowAddModal } = useOutletContext();
+  const [editingAccount, setEditingAccount] = useState(null);
 
   const { data, isLoading } = useZoomAccounts();
   const accounts = data?.data?.data || [];
@@ -54,13 +57,23 @@ const ZoomManagementPage = () => {
       ) : (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {accounts.map((account) => (
-            <ZoomAccountCard key={account.id} account={account} />
+            <ZoomAccountCard
+              key={account.id}
+              account={account}
+              onEdit={() => setEditingAccount(account)}
+            />
           ))}
         </div>
       )}
 
-      {showAddModal && (
-        <AddZoomAccountModal onClose={() => setShowAddModal(false)} />
+      {(showAddModal || editingAccount) && (
+        <ZoomAccountModal
+          account={editingAccount}
+          onClose={() => {
+            setShowAddModal(false);
+            setEditingAccount(null);
+          }}
+        />
       )}
     </div>
   );
@@ -77,14 +90,14 @@ function StatCard({ label, value, color }) {
   );
 }
 
-function ZoomAccountCard({ account }) {
+function ZoomAccountCard({ account, onEdit }) {
   const { mutate: toggle, isPending: isToggling } = useToggleZoomAccount();
   const { mutate: test, isPending: isTesting } = useTestZoomAccount();
 
   return (
-    <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm transition hover:shadow-md">
-      {/* Top Row */}
-      <div className="mb-4 flex items-start justify-between">
+    <div className="flex flex-col rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition hover:shadow-md">
+      {/* Header */}
+      <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50">
             <Video className="h-5 w-5 text-blue-600" />
@@ -110,9 +123,9 @@ function ZoomAccountCard({ account }) {
         <div className="flex justify-between">
           <span>Last Refresh</span>
           <span className="font-medium text-gray-700">
-            {account.token_expires_at
-              ? new Date(account.token_expires_at).toLocaleString()
-              : "—"}
+            {account.updated_at
+              ? new Date(account.updated_at).toLocaleString()
+              : "Never"}
           </span>
         </div>
       </div>
@@ -122,7 +135,7 @@ function ZoomAccountCard({ account }) {
         <button
           onClick={() => test(account.id)}
           disabled={isTesting}
-          className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-medium text-blue-700 transition hover:bg-blue-100 disabled:opacity-60"
+          className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-2 py-2 text-xs font-medium text-blue-700 transition hover:bg-blue-100 disabled:opacity-60"
         >
           {isTesting ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -132,9 +145,16 @@ function ZoomAccountCard({ account }) {
           Test
         </button>
         <button
+          onClick={onEdit}
+          className="flex items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-medium text-gray-600 transition hover:bg-gray-50"
+        >
+          <Pencil className="h-3.5 w-3.5" />
+          Edit
+        </button>
+        <button
           onClick={() => toggle(account.id)}
           disabled={isToggling}
-          className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-medium transition disabled:opacity-60 ${
+          className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg border px-2 py-2 text-xs font-medium transition disabled:opacity-60 ${
             account.is_active
               ? "border-red-200 bg-red-50 text-red-700 hover:bg-red-100"
               : "border-green-200 bg-green-50 text-green-700 hover:bg-green-100"
@@ -194,28 +214,42 @@ function EmptyState({ onAdd }) {
   );
 }
 
-function AddZoomAccountModal({ onClose }) {
+function ZoomAccountModal({ account, onClose }) {
+  const isEditing = !!account;
   const [form, setForm] = useState({
-    name: "",
-    account_id: "",
-    client_id: "",
-    client_secret: "",
-    sdk_key: "",
+    name: account?.name || "",
+    account_id: account?.account_id || "",
+    client_id: account?.client_id || "",
+    client_secret: "", // Don't pre-fill secrets for security, but allow updating if provided
+    sdk_key: account?.sdk_key || "",
     sdk_secret: "",
   });
   const [showSecret, setShowSecret] = useState(false);
   const [showSdkSecret, setShowSdkSecret] = useState(false);
-  const [showSdkFields, setShowSdkFields] = useState(false);
-  const { mutate: addAccount, isPending } = useAddZoomAccount();
+  const [showSdkFields, setShowSdkFields] = useState(!!account?.sdk_key);
+  
+  const { mutate: addAccount, isPending: isAdding } = useAddZoomAccount();
+  const { mutate: updateAccount, isPending: isUpdating } = useUpdateZoomAccount();
+  
+  const isPending = isAdding || isUpdating;
 
   const handleChange = (e) =>
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    addAccount(form, {
-      onSuccess: () => onClose(),
-    });
+    
+    if (isEditing) {
+      // For update, we only send fields that are not empty if they are sensitive
+      // but here the backend handles it.
+      updateAccount({ id: account.id, data: form }, {
+        onSuccess: () => onClose(),
+      });
+    } else {
+      addAccount(form, {
+        onSuccess: () => onClose(),
+      });
+    }
   };
 
   return (
@@ -223,11 +257,15 @@ function AddZoomAccountModal({ onClose }) {
       <div className="w-full max-w-md rounded-2xl bg-white p-7 shadow-2xl">
         <div className="mb-5 flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50">
-            <Video className="h-5 w-5 text-blue-600" />
+            {isEditing ? (
+              <Pencil className="h-5 w-5 text-blue-600" />
+            ) : (
+              <Video className="h-5 w-5 text-blue-600" />
+            )}
           </div>
           <div>
             <h2 className="text-lg font-bold text-gray-900">
-              Add Zoom Account
+              {isEditing ? "Edit Zoom Account" : "Add Zoom Account"}
             </h2>
             <p className="text-xs text-gray-400">
               Server-to-Server OAuth credentials
@@ -243,7 +281,7 @@ function AddZoomAccountModal({ onClose }) {
                 this guide
               </a>
             </span>{" "}
-            carefully when creating your Zoom account or App credentials.
+            carefully when creating or updating your Zoom app credentials.
           </p>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -271,16 +309,16 @@ function AddZoomAccountModal({ onClose }) {
           {/* Secret with toggle */}
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
-              Client Secret
+              Client Secret {isEditing && <span className="text-[10px] font-normal text-gray-400 ml-1">(Leave blank to keep current)</span>}
             </label>
             <div className="relative">
               <input
                 type={showSecret ? "text" : "password"}
                 name="client_secret"
-                placeholder="Encrypted before saving"
+                placeholder={isEditing ? "••••••••••••••••" : "Encrypted before saving"}
                 value={form.client_secret}
                 onChange={handleChange}
-                required
+                required={!isEditing}
                 className="w-full rounded-lg border border-gray-200 px-3 py-2.5 pr-10 text-sm outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-100"
               />
               <button
@@ -295,9 +333,6 @@ function AddZoomAccountModal({ onClose }) {
                 )}
               </button>
             </div>
-            <p className="mt-1 text-xs text-gray-400">
-              🔒 This is encrypted with AES-256 before being stored.
-            </p>
           </div>
 
           {/* Optional SDK Section */}
@@ -326,13 +361,13 @@ function AddZoomAccountModal({ onClose }) {
                 {/* SDK Secret with toggle */}
                 <div>
                   <label className="mb-1 block text-sm font-medium text-gray-700">
-                    SDK Secret (Client Secret)
+                    SDK Secret {isEditing && <span className="text-[10px] font-normal text-gray-400 ml-1">(Leave blank to keep)</span>}
                   </label>
                   <div className="relative">
                     <input
                       type={showSdkSecret ? "text" : "password"}
                       name="sdk_secret"
-                      placeholder="Encrypted before saving"
+                      placeholder={isEditing ? "••••••••••••••••" : "Encrypted before saving"}
                       value={form.sdk_secret}
                       onChange={handleChange}
                       className="w-full rounded-lg border border-gray-200 px-3 py-2.5 pr-10 text-sm outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-100"
@@ -368,7 +403,7 @@ function AddZoomAccountModal({ onClose }) {
               className="hover:bg-primary-color-700 flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary-color-600 py-2.5 text-sm font-semibold text-white disabled:opacity-70"
             >
               {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-              {isPending ? "Saving..." : "Add Account"}
+              {isPending ? "Saving..." : isEditing ? "Save Changes" : "Add Account"}
             </button>
           </div>
         </form>

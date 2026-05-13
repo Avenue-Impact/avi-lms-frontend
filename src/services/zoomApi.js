@@ -9,6 +9,10 @@ export const addZoomAccountApi = async (data) => {
   return await axiosAdmin.post("/zoom/add", data);
 };
 
+export const updateZoomAccountApi = async ({ id, data }) => {
+  return await axiosAdmin.put(`/zoom/${id}`, data);
+};
+
 export const toggleZoomAccountApi = async (id) => {
   return await axiosAdmin.put(`/zoom/${id}/toggle`);
 };

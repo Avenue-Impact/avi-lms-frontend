@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   fetchZoomAccounts,
   addZoomAccountApi,
+  updateZoomAccountApi,
   toggleZoomAccountApi,
   testZoomAccountApi,
   assignZoomToCohortApi,
@@ -25,6 +26,20 @@ export const useAddZoomAccount = () => {
     },
     onError: (err) => {
       toast.error(err?.response?.data?.message || "Failed to add Zoom account");
+    },
+  });
+};
+
+export const useUpdateZoomAccount = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: updateZoomAccountApi,
+    onSuccess: () => {
+      toast.success("Zoom account updated successfully!");
+      queryClient.invalidateQueries({ queryKey: ["zoomAccounts"] });
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message || "Failed to update Zoom account");
     },
   });
 };
