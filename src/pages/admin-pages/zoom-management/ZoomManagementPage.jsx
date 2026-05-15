@@ -351,7 +351,7 @@ function ZoomAccountModal({ account, onClose }) {
                   app. Leave blank to use the platform-wide SDK key.
                 </p>
                 <Field
-                  label="SDK Key (Client ID)"
+                  label="SDK Key / API Key (Client ID)"
                   name="sdk_key"
                   placeholder="From Meeting SDK app dashboard"
                   value={form.sdk_key}
@@ -361,7 +361,7 @@ function ZoomAccountModal({ account, onClose }) {
                 {/* SDK Secret with toggle */}
                 <div>
                   <label className="mb-1 block text-sm font-medium text-gray-700">
-                    SDK Secret {isEditing && <span className="text-[10px] font-normal text-gray-400 ml-1">(Leave blank to keep)</span>}
+                    SDK Secret / API Secret {isEditing && <span className="text-[10px] font-normal text-gray-400 ml-1">(Leave blank to keep)</span>}
                   </label>
                   <div className="relative">
                     <input

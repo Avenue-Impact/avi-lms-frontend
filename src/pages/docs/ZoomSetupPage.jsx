@@ -95,6 +95,8 @@ const ZoomSetupPage = () => {
                       <li>meeting:read:meeting:admin</li>
                       <li>meeting:read:participant:admin</li>
                       <li>user:read:meeting:admin</li>
+                      <li>user:read:token:admin</li>
+                      <li>user:read:token</li>
                       <li>cloud_recording:read:recording:admin</li>
                     </ul>
                   </li>
