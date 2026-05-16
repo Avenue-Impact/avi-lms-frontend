@@ -6,19 +6,20 @@ import { DarkLogo } from "@/Components/Logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
 import { FaRegBell } from "react-icons/fa6";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserProfile } from "@/services/api";
 import { Skeleton } from "@/Components/ui/skeleton";
 import { useFetchAllCourses } from "@/hooks/students/use-fetch-all-courses";
 import fallbackCourseImage from "../../assets/images/join_team.png";
 import _ from "lodash";
-import { useSearchParams, Link } from "react-router-dom";
+import { useSearchParams, Link, useNavigate } from "react-router-dom";
 import PopUp from "@/Components/dashboard/PopUp";
 import { useEnrolledCourses } from "@/hooks/students/use-enrolled-courses";
 import GlobalPagination from "@/Components/ui/GlobalPagination";
 
 const DiscoverCourses = () => {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const courseType = searchParams.get("course_type") || "";
   const initialSearch = searchParams.get("search") || "";
@@ -80,9 +81,17 @@ const DiscoverCourses = () => {
     <>
       {/* Header */}
       <div className="flex items-center justify-between gap-6 px-6 py-7 lg:px-20">
-        <Link to={isAuthenticated ? "/dashboard" : "/digital-learning-hub"}>
-          <DarkLogo />
-        </Link>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center justify-center rounded-full bg-gray-100 p-2 px-3 text-gray-600 hover:bg-gray-200"
+          >
+            <FontAwesomeIcon icon={faChevronLeft} />
+          </button>
+          <Link to={isAuthenticated ? "/dashboard" : "/digital-learning-hub"}>
+            <DarkLogo />
+          </Link>
+        </div>
 
         {/* Desktop search */}
         <div className="hidden w-full max-w-lg items-center rounded-lg border border-gray-300 bg-white px-4 py-2 lg:flex">

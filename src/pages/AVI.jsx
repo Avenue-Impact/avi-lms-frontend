@@ -173,6 +173,14 @@ const AVI = () => {
 
             {/* Preview this Course */}
             <AllCourses searchQuery={searchQuery} />
+            <div className="mt-10 flex justify-center">
+              <Link
+                to="/discover-courses"
+                className="inline-flex items-center rounded-[999px] border border-[#CC1747] bg-white px-[42px] py-[10px] text-[15px] font-semibold text-[#CC1747] no-underline transition-colors duration-200 hover:bg-[#CC1747] hover:text-white"
+              >
+                See More
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -266,7 +274,7 @@ const AVI = () => {
 };
 
 const AllCourses = ({ searchQuery = "" }) => {
-  const { data, isLoading, error } = useFetchAllCourses();
+const { data, isLoading, error } = useFetchAllCourses({'perPage': 8});
 
   // Filter courses based on search query
   const filteredCourses = React.useMemo(() => {
@@ -311,7 +319,8 @@ const AllCourses = ({ searchQuery = "" }) => {
           title={course.title}
           rating={course.average_rating ?? 0}
           review={course.total_reviews}
-          path={`/courses/landing-page/c/${course.id}`}
+          path={`/preview-course/${course.id}`}
+          // path={`/courses/landing-page/c/${course.id}`}
         />
       ))}
     </div>
