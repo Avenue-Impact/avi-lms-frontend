@@ -20,7 +20,7 @@ const AviNav = ({ showNav, setShowNav }) => {
       to: "/digital-learning-hub",
       label: "Learning Hub",
     },
-    { label: "Refer a friend", to: "/partner" },
+    { label: "Refer a Friend", to: "/partner" },
     { label: "Self-Paced Learning", to: "/self-pace" },
   ];
 

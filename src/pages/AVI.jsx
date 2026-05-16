@@ -25,6 +25,21 @@ import darkLogo from "../assets/logo/logo.svg";
 ───────────────────────────────────────── */
 const HeroSection = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const slideImages = [
+    heroCollabImg,
+    "/images/andreea-avramescu-wR56AUlEsE4-unsplash.jpg",
+    "/images/herlambang-tinasih-gusti-3kc_75Rdgyk-unsplash.jpg",
+    "/images/projectMHero.jpg"
+  ];
+
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slideImages.length);
+    }, 3500);
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <section className="relative block min-h-screen bg-[#ffffff] pb-[18px] font-sans sm:min-h-[calc(100vh-250px)]">
@@ -43,21 +58,34 @@ const HeroSection = () => {
             Streamline learning, simplify management, and scale knowledge with a
             platform built for modern education.
           </p>
-          <Link
-            to="/discover-courses"
+          <button
+            onClick={() => {
+              const element = document.getElementById('courses-section');
+              if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
             className="inline-flex items-center rounded-[999px] bg-[#CC1747] px-[32px] py-[14px] text-[15px] font-semibold text-white no-underline transition-colors duration-200 hover:bg-[#a8103a]"
           >
-            Explore Courses
-          </Link>
+            Explore Live Courses
+          </button>
         </div>
 
         {/* Right column */}
         <div className="flex flex-col gap-[16px] ">
-          <img
-            src={heroCollabImg}
-            alt="Two students collaborating on a laptop"
-            className="aspect-square w-full rounded-[20px] object-cover sm:max-h-[calc(100vh-600px)] md:max-h-[calc(100vh-500px)]"
-          />
+          {/* Image Slider */}
+          <div className="relative aspect-square w-full overflow-hidden rounded-[20px] sm:max-h-[calc(100vh-600px)] md:max-h-[calc(100vh-500px)] bg-gray-100">
+            {slideImages.map((slide, index) => (
+              <img
+                key={index}
+                src={slide}
+                alt={`Digital Learning Hub Slide ${index + 1}`}
+                className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ease-in-out ${
+                  index === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0"
+                }`}
+              />
+            ))}
+          </div>
 
           {/* Action cards */}
           <div className="grid grid-cols-1 gap-[12px] sm:grid-cols-2">
@@ -102,7 +130,7 @@ const AVI = () => {
       <HeroSection />
 
       {/* Checkout our top courses */}
-      <div className={styles.checkout_courses}>
+      <div id="courses-section" className={styles.checkout_courses}>
         <div className="px-8 pt-10 lg:px-14 lg:py-4">
           <div className="my-4 flex items-center gap-2 rounded-full border border-gray-300 px-4 py-1 md:hidden">
             <Search />

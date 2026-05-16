@@ -59,7 +59,7 @@ const loginSchema = z
 
 const SignUp = ({ isPage = true }) => {
   const [success, setSuccess] = useState("");
-  const [title, setTitle] = useState("Sign up and start learning");
+  const [title, setTitle] = useState("Sign Up and Start Learning");
   const [confirm, setConfirm] = useState(false);
   const [modal, setModal] = useState(false);
   const [user, setUser] = useState();
@@ -234,7 +234,7 @@ const SignUp = ({ isPage = true }) => {
       "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no";
     document.head.appendChild(meta);
 
-    setTitle(queryString.get("ttl") || "Sign up and start learning");
+    setTitle(queryString.get("ttl") || "Sign Up and Start Learning");
     return () => {
       document.head.removeChild(meta);
     };

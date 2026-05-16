@@ -59,7 +59,7 @@ const PreviewCourse = () => {
   const alreadyEnrolled = user && isEnrolled(courseId);
 
   const path = !user
-    ? `/signup?id=${courseId}&title=${previewCourse?.data?.data.course.title}`
+    ? `/signup?id=${courseId}&title=${previewCourse?.data?.data.course.title}&_r=${encodeURIComponent(`/preview-video-course/${courseId}/enroll?title=${previewCourse?.data?.data.course.title}`)}`
     : `/preview-video-course/${courseId}/enroll?title=${previewCourse?.data?.data.course.title}`;
 
   const [searchInput, setSearchInput] = useState("");

@@ -25,7 +25,7 @@ const slides = [
     description:
       "Gain practical skills and knowledge from professionals who are leaders in their fields. Our courses are designed to give you a competitive edge in today's dynamic job market.",
     image: heroImg2,
-    button1: "Explore Courses",
+    button1: "Explore Live Courses",
     button2: "Learn More",
     accentColor: "var(--accent-cyan)",
   },
