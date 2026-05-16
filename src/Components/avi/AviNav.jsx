@@ -56,14 +56,14 @@ const AviNav = ({ showNav, setShowNav }) => {
         </button>
 
         {/* Desktop links */}
-        <ul className="flex flex-col gap-x-6 gap-y-10 text-base max-sm:text-white sm:flex-row xl:gap-x-16 xl:text-lg">
+        <ul className="flex flex-col gap-x-6 gap-y-10 nav text-base max-sm:text-white sm:flex-row xl:gap-x-16 xl:text-lg">
           {navLinks.map((l) => {
             const isActive = location.pathname === l.to;
             return (
               <li key={l.label}>
                 <NavLink
                   to={l.to}
-                  className={`py-4 transition-colors hover:underline hover:underline-offset-4 hover:decoration-primary-color-600 ${isActive ? "font-semibold text-primary-color-600" : ""}`}
+                  className={`pt-4 pb-2 transition-colors ${isActive ? "font-semibold text-primary-color-600" : ""}`}
                   onClick={() => setShowNav((prev) => !prev)}
                 >
                   {l.label}
