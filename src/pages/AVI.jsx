@@ -44,7 +44,7 @@ const HeroSection = () => {
   return (
     <section className="relative block min-h-screen bg-[#ffffff] pb-[18px] font-sans sm:min-h-[calc(100vh-250px)]">
       {/* ── Two-column body ── */}
-      <div className="grid grid-cols-1 items-center gap-[36px] px-[24px] pt-[40px] md:px-[40px] md:pt-[64px] lg:grid-cols-[1.2fr_0.8fr] lg:gap-[48px]">
+      <div className="grid grid-cols-1 items-center gap-[36px] px-[24px] pt-[40px] md:px-[40px] md:pt-[64px] lg:grid-cols-[1.2fr_1.2fr] lg:gap-[40px]">
         {/* Left column */}
         <div className="flex w-full flex-col items-start">
           <h1 className="mb-[20px] text-[clamp(45px,4vw,70px)] font-normal leading-[1.15] tracking-[-0.02em] text-[#1a2340]">
@@ -74,7 +74,7 @@ const HeroSection = () => {
         {/* Right column */}
         <div className="flex flex-col gap-[16px] ">
           {/* Image Slider */}
-          <div className="relative aspect-square w-full overflow-hidden rounded-[20px] sm:max-h-[calc(100vh-600px)] md:max-h-[calc(100vh-500px)] bg-gray-100">
+          <div className="relative aspect-square w-full overflow-hidden rounded-[20px] sm:max-h-[calc(100vh-600px)] md:max-h-[calc(100vh-420px)] bg-gray-100">
             {slideImages.map((slide, index) => (
               <img
                 key={index}

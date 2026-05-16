@@ -63,7 +63,7 @@ const AviNav = ({ showNav, setShowNav }) => {
               <li key={l.label}>
                 <NavLink
                   to={l.to}
-                  className={`py-4 transition-colors ${isActive ? "font-semibold text-primary-color-600" : ""}`}
+                  className={`py-4 transition-colors hover:underline hover:underline-offset-4 hover:decoration-primary-color-600 ${isActive ? "font-semibold text-primary-color-600" : ""}`}
                   onClick={() => setShowNav((prev) => !prev)}
                 >
                   {l.label}
