@@ -31,7 +31,7 @@ const HeroSection = () => {
     heroCollabImg,
     "/images/andreea-avramescu-wR56AUlEsE4-unsplash.jpg",
     "/images/herlambang-tinasih-gusti-3kc_75Rdgyk-unsplash.jpg",
-    "/images/projectMHero.jpg"
+    "/images/projectMHero.jpg",
   ];
 
   React.useEffect(() => {
@@ -54,15 +54,15 @@ const HeroSection = () => {
             <br />
             Hub
           </h1>
-          <p className="mb-[32px] max-w-[440px] text-[16px] sm:text-lg font-normal leading-[1.7] text-[#666]">
+          <p className="mb-[32px] max-w-[440px] text-[16px] font-normal leading-[1.7] text-[#666] sm:text-lg">
             Streamline learning, simplify management, and scale knowledge with a
             platform built for modern education.
           </p>
           <button
             onClick={() => {
-              const element = document.getElementById('courses-section');
+              const element = document.getElementById("courses-section");
               if (element) {
-                element.scrollIntoView({ behavior: 'smooth' });
+                element.scrollIntoView({ behavior: "smooth" });
               }
             }}
             className="inline-flex items-center rounded-[999px] bg-[#CC1747] px-[32px] py-[14px] text-[15px] font-semibold text-white no-underline transition-colors duration-200 hover:bg-[#a8103a]"
@@ -72,16 +72,16 @@ const HeroSection = () => {
         </div>
 
         {/* Right column */}
-        <div className="flex flex-col gap-[16px] ">
+        <div className="flex flex-col gap-[16px]">
           {/* Image Slider */}
-          <div className="relative aspect-square w-full overflow-hidden rounded-[20px] sm:max-h-[calc(100vh-600px)] md:max-h-[calc(100vh-420px)] bg-gray-100">
+          <div className="relative aspect-square w-full overflow-hidden rounded-[20px] bg-gray-100 sm:max-h-[calc(100vh-600px)] md:max-h-[calc(100vh-420px)]">
             {slideImages.map((slide, index) => (
               <img
                 key={index}
                 src={slide}
                 alt={`Digital Learning Hub Slide ${index + 1}`}
                 className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ease-in-out ${
-                  index === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0"
+                  index === currentSlide ? "z-10 opacity-100" : "z-0 opacity-0"
                 }`}
               />
             ))}
@@ -173,14 +173,7 @@ const AVI = () => {
 
             {/* Preview this Course */}
             <AllCourses searchQuery={searchQuery} />
-            <div className="mt-10 flex justify-center">
-              <Link
-                to="/discover-courses"
-                className="inline-flex items-center rounded-[999px] border border-[#CC1747] bg-white px-[42px] py-[10px] text-[15px] font-semibold text-[#CC1747] no-underline transition-colors duration-200 hover:bg-[#CC1747] hover:text-white"
-              >
-                See More
-              </Link>
-            </div>
+            {/*  */}
           </div>
         </div>
       </div>
@@ -274,7 +267,7 @@ const AVI = () => {
 };
 
 const AllCourses = ({ searchQuery = "" }) => {
-const { data, isLoading, error } = useFetchAllCourses({'perPage': 8});
+  const { data, isLoading, error } = useFetchAllCourses({ perPage: 10 });
 
   // Filter courses based on search query
   const filteredCourses = React.useMemo(() => {

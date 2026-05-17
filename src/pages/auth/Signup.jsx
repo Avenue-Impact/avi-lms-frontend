@@ -24,8 +24,8 @@ const loginSchema = z
     phoneNumber: z
       .string()
       .min(10, { message: "Please enter a valid phone number" })
-      .regex(/^[0-9+\-\s()]*$/, {
-        message: "Please enter a valid phone number format",
+      .regex(/^[0-9+\-()]*$/, {
+        message: "Spaces are not allowed. Please enter a valid phone number format",
       }),
     password: z
       .string()
@@ -380,6 +380,11 @@ const SignUp = ({ isPage = true }) => {
                 id="phoneNumber"
                 placeholder=""
                 autoComplete="tel"
+                onKeyDown={(e) => {
+                  if (e.key === " ") {
+                    e.preventDefault();
+                  }
+                }}
                 absoluteError
               />
               <div className={`${isPage ? "" : "sm:grid-cols-2"} grid gap-x-3`}>
