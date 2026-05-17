@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { DarkLogo } from "../Logo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faSearch, faClose } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faSearch, faClose, faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { FaRegBell } from "react-icons/fa6";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -34,7 +34,13 @@ const AviNav = ({ showNav, setShowNav }) => {
   const location = useLocation();
   return (
     <nav className="z-50 flex flex-row-reverse items-center justify-between px-6 py-8 md:flex-row lg:px-12 xl:px-20">
-      <div>
+      <div className="flex items-center gap-4">
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center justify-center rounded-full bg-gray-100 p-2 px-3 text-gray-600 hover:bg-gray-200"
+        >
+          <FontAwesomeIcon icon={faChevronLeft} />
+        </button>
         <Link to={"/"} className="cursor-pointer">
           <DarkLogo />
         </Link>
