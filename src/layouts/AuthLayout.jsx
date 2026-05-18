@@ -32,7 +32,7 @@
 // export default AuthLayout;
 
 import { useState, useEffect } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate, Link } from "react-router-dom";
 
 import AviNav from "@/Components/avi/AviNav";
 import CredentialsProvider from "@/providers/CredentialsProvider";
@@ -112,14 +112,47 @@ const AuthLayout = () => {
         {/* Engagement Modal */}
         {showModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm">
-            <div className="relative max-h-[90vh] w-auto overflow-y-auto overflow-x-hidden rounded-3xl bg-white shadow-2xl animate-in zoom-in-95 fade-in duration-300">
+            <div className="relative max-h-[90vh] w-full max-w-xl overflow-y-auto overflow-x-hidden rounded-3xl bg-white p-8 shadow-2xl animate-in zoom-in-95 fade-in duration-300">
               <button
                 onClick={() => setShowModal(false)}
                 className="absolute right-6 top-6 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-500 transition-colors hover:bg-gray-200"
               >
                 <X className="h-5 w-5" />
               </button>
-              <SignUp isPage={false} />
+
+              <div className="mt-4 mb-8 space-y-2 text-center">
+                <h1 className="text-2xl tracking-tight text-[#1a1a1a] md:text-3xl">
+                  Sign Up and Start Learning
+                </h1>
+                <p className="md:text-extralight text-sm text-gray-500">
+                  Enter your details to register
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-4">
+                <button
+                  onClick={() => {
+                    setShowModal(false);
+                    navigate("/signup");
+                  }}
+                  className="w-full rounded-md bg-[#CC1747] px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#a8103a]"
+                >
+                  Sign Up
+                </button>
+
+                <p className="mt-1 flex items-center justify-center gap-4 text-center">
+                  <span className="text-sm text-[#514A4A]">
+                    Already have an account?
+                  </span>
+                  <Link
+                    to="/login"
+                    onClick={() => setShowModal(false)}
+                    className="text-sm font-semibold capitalize text-[#CC1747]"
+                  >
+                    sign in
+                  </Link>
+                </p>
+              </div>
             </div>
           </div>
         )}

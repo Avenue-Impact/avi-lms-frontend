@@ -33,7 +33,7 @@ const AviNav = ({ showNav, setShowNav }) => {
   const navigate = useNavigate();
   const location = useLocation();
   return (
-    <nav className="z-50 flex flex-row-reverse items-center justify-between px-6 py-8 md:flex-row lg:px-12 xl:px-20">
+    <nav className="z-50 flex flex-row-reverse items-center justify-between px-6 py-6 w-[95%] md:flex-row">
       <div className="flex items-center gap-4">
         <button
           onClick={() => navigate(-1)}
@@ -62,14 +62,14 @@ const AviNav = ({ showNav, setShowNav }) => {
         </button>
 
         {/* Desktop links */}
-        <ul className="flex flex-col gap-x-6 gap-y-10 nav text-base max-sm:text-white sm:flex-row xl:gap-x-16 xl:text-lg">
+        <ul className="flex flex-col gap-x-6 gap-y-10 nav text-[#23314A] sm:flex-row">
           {navLinks.map((l) => {
             const isActive = location.pathname === l.to;
             return (
               <li key={l.label}>
                 <NavLink
                   to={l.to}
-                  className={`pt-4 pb-2 transition-colors ${isActive ? "font-semibold text-primary-color-600" : ""}`}
+                  className={`pt-4 pb-2 transition-colors ${isActive ? "text-primary-color-600" : ""}`}
                   onClick={() => setShowNav((prev) => !prev)}
                 >
                   {l.label}
@@ -78,27 +78,6 @@ const AviNav = ({ showNav, setShowNav }) => {
             );
           })}
         </ul>
-        {isAuthenticated ? (
-          <button
-            onClick={() => {
-              navigate("/dashboard");
-              setShowNav((prev) => !prev);
-            }}
-            className="rounded-full bg-[#CC1747] px-6 py-2 capitalize text-[#FFEBF0] xl:px-10 xl:py-4"
-          >
-            Dashboard
-          </button>
-        ) : (
-          <button
-            onClick={() => {
-              navigate("/signup");
-              setShowNav((prev) => !prev);
-            }}
-            className="rounded-full bg-[#CC1747] px-6 py-2 capitalize text-[#FFEBF0] xl:px-10 xl:py-4"
-          >
-            Register
-          </button>
-        )}
         {/* <button
           onClick={() => {
             navigate("/signup");
@@ -108,6 +87,29 @@ const AviNav = ({ showNav, setShowNav }) => {
         >
           register
         </button> */}
+      </div>
+      <div>
+        {isAuthenticated ? (
+          <button
+            onClick={() => {
+              navigate("/dashboard");
+              setShowNav((prev) => !prev);
+            }}
+            className="rounded-full bg-[#CC1747] px-6 py-3 capitalize text-[#FFEBF0] "
+          >
+            Dashboard
+          </button>
+        ) : (
+          <button
+            onClick={() => {
+              navigate("/signup");
+              setShowNav((prev) => !prev);
+            }}
+            className="rounded-full bg-[#CC1747] px-6 py-3 capitalize text-[#FFEBF0]"
+          >
+            Register
+          </button>
+        )}
       </div>
     </nav>
   );
