@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { DarkLogo } from "../Logo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faSearch, faClose, faChevronLeft } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBars,
+  faSearch,
+  faClose,
+  faChevronLeft,
+} from "@fortawesome/free-solid-svg-icons";
 import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { FaRegBell } from "react-icons/fa6";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -33,52 +38,56 @@ const AviNav = ({ showNav, setShowNav }) => {
   const navigate = useNavigate();
   const location = useLocation();
   return (
-    <nav className="z-50 flex flex-row-reverse items-center justify-between px-6 py-6 w-[95%] md:flex-row">
-      <div className="flex items-center gap-4">
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center justify-center rounded-full bg-gray-100 p-2 px-3 text-gray-600 hover:bg-gray-200"
-        >
-          <FontAwesomeIcon icon={faChevronLeft} />
-        </button>
-        <Link to={"/"} className="cursor-pointer">
-          <DarkLogo />
-        </Link>
-      </div>
+    <div className="z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <nav className="flex w-[95%] flex-row-reverse items-center justify-between px-6 pt-4 pb-6 md:flex-row">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center justify-center rounded-full bg-gray-100 p-2 px-3 text-gray-600 hover:bg-gray-200"
+          >
+            <FontAwesomeIcon icon={faChevronLeft} />
+          </button>
+          <Link to={"/"} className="cursor-pointer">
+            <DarkLogo />
+          </Link>
+        </div>
 
-      <button className="md:hidden" onClick={() => setShowNav((prev) => !prev)}>
-        <FontAwesomeIcon icon={faBars} className="text-2xl text-[#23314A]" />
-      </button>
-
-      <div
-        className={`fixed left-0 top-0 z-20 flex h-screen w-full flex-col items-start gap-4 bg-[#14345F] px-8 py-10 transition-transform duration-300 ease-linear sm:items-center sm:bg-transparent md:relative md:h-fit md:w-max md:translate-x-0 md:flex-row md:px-0 md:py-0 xl:gap-8 ${showNav ? "translate-x-full" : "translate-x-0"}`}
-      >
         <button
-          type=" button"
-          className="w-min self-start md:hidden"
+          className="md:hidden"
           onClick={() => setShowNav((prev) => !prev)}
         >
-          <FontAwesomeIcon icon={faClose} className="text-2xl text-white" />
+          <FontAwesomeIcon icon={faBars} className="text-2xl text-[#23314A]" />
         </button>
 
-        {/* Desktop links */}
-        <ul className="flex flex-col gap-x-6 gap-y-10 nav text-[#23314A] sm:flex-row">
-          {navLinks.map((l) => {
-            const isActive = location.pathname === l.to;
-            return (
-              <li key={l.label}>
-                <NavLink
-                  to={l.to}
-                  className={`pt-4 pb-2 transition-colors ${isActive ? "text-primary-color-600" : ""}`}
-                  onClick={() => setShowNav((prev) => !prev)}
-                >
-                  {l.label}
-                </NavLink>
-              </li>
-            );
-          })}
-        </ul>
-        {/* <button
+        <div
+          className={`fixed left-0 top-0 z-20 flex h-screen w-full flex-col items-start gap-4 bg-[#14345F] px-8 py-10 transition-transform duration-300 ease-linear sm:items-center sm:bg-transparent md:relative md:h-fit md:w-max md:translate-x-0 md:flex-row md:px-0 md:py-0 xl:gap-8 ${showNav ? "translate-x-full" : "translate-x-0"}`}
+        >
+          <button
+            type=" button"
+            className="w-min self-start md:hidden"
+            onClick={() => setShowNav((prev) => !prev)}
+          >
+            <FontAwesomeIcon icon={faClose} className="text-2xl text-white" />
+          </button>
+
+          {/* Desktop links */}
+          <ul className="nav flex flex-col gap-x-6 gap-y-10 text-[#23314A] sm:flex-row">
+            {navLinks.map((l) => {
+              const isActive = location.pathname === l.to;
+              return (
+                <li key={l.label}>
+                  <NavLink
+                    to={l.to}
+                    className={`pb-2 pt-4 transition-colors ${isActive ? "text-primary-color-600" : ""}`}
+                    onClick={() => setShowNav((prev) => !prev)}
+                  >
+                    {l.label}
+                  </NavLink>
+                </li>
+              );
+            })}
+          </ul>
+          {/* <button
           onClick={() => {
             navigate("/signup");
             setShowNav((prev) => !prev);
@@ -87,31 +96,32 @@ const AviNav = ({ showNav, setShowNav }) => {
         >
           register
         </button> */}
-      </div>
-      <div>
-        {isAuthenticated ? (
-          <button
-            onClick={() => {
-              navigate("/dashboard");
-              setShowNav((prev) => !prev);
-            }}
-            className="rounded-full bg-[#CC1747] px-6 py-3 capitalize text-[#FFEBF0] "
-          >
-            Dashboard
-          </button>
-        ) : (
-          <button
-            onClick={() => {
-              navigate("/signup");
-              setShowNav((prev) => !prev);
-            }}
-            className="rounded-full bg-[#CC1747] px-6 py-3 capitalize text-[#FFEBF0]"
-          >
-            Register
-          </button>
-        )}
-      </div>
-    </nav>
+        </div>
+        <div>
+          {isAuthenticated ? (
+            <button
+              onClick={() => {
+                navigate("/dashboard");
+                setShowNav((prev) => !prev);
+              }}
+              className="rounded-full bg-[#CC1747] px-6 py-3 capitalize text-[#FFEBF0]"
+            >
+              Dashboard
+            </button>
+          ) : (
+            <button
+              onClick={() => {
+                navigate("/signup");
+                setShowNav((prev) => !prev);
+              }}
+              className="rounded-full bg-[#CC1747] px-6 py-3 capitalize text-[#FFEBF0]"
+            >
+              Register
+            </button>
+          )}
+        </div>
+      </nav>
+    </div>
   );
 };
 
