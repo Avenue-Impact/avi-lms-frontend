@@ -146,7 +146,7 @@ const EditCourseInformationForm = ({ courseInformation, setOnOpenChange }) => {
                 {form.watch("courseTitle")
                   ? `${form.watch("courseTitle").length}`
                   : 0}
-                /60
+                /160
               </p>
             </div>
 
@@ -170,7 +170,7 @@ const EditCourseInformationForm = ({ courseInformation, setOnOpenChange }) => {
                 {form.watch("courseIncludes")
                   ? `${form.watch("courseIncludes").length}`
                   : 0}
-                /100
+                /600
               </p>
             </div>
 
@@ -196,7 +196,7 @@ const EditCourseInformationForm = ({ courseInformation, setOnOpenChange }) => {
                 {form.watch("technologies")
                   ? `${form.watch("technologies").length}`
                   : 0}
-                /405
+                /1200
               </p>
             </div>
 
@@ -221,7 +221,7 @@ const EditCourseInformationForm = ({ courseInformation, setOnOpenChange }) => {
                 {form.watch("benefits")
                   ? `${form.watch("benefits").length}`
                   : 0}
-                /405
+                /1200
               </p>
             </div>
 
@@ -247,7 +247,7 @@ const EditCourseInformationForm = ({ courseInformation, setOnOpenChange }) => {
                 {form.watch("highlight")
                   ? `${form.watch("highlight").length}`
                   : 0}
-                /405
+                /1200
               </p>
             </div>
 
@@ -272,7 +272,7 @@ const EditCourseInformationForm = ({ courseInformation, setOnOpenChange }) => {
                 {form.watch("overview")
                   ? `${form.watch("overview").length}`
                   : 0}
-                /405
+                /1200
               </p>
             </div>
 
