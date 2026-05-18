@@ -139,14 +139,14 @@ const EditLiveSessionCourseType = ({
   const form = useForm({
     resolver: zodResolver(courseTypeSchema),
     defaultValues: {
-      duration: priceInfo?.duration || "",
-      discountPrice: priceInfo?.discounted_price?.amount || 0,
-      coursePrice: priceInfo?.original_price?.amount || 0,
-      time: convertTo24Hour(priceInfo?.time) || "13:00",
+      duration: existingCohorts?.[0]?.class_days || priceInfo?.duration || "",
+      discountPrice: existingCohorts?.[0]?.discounted_price?.amount ?? priceInfo?.discounted_price?.amount ?? 0,
+      coursePrice: existingCohorts?.[0]?.original_price?.amount ?? priceInfo?.original_price?.amount ?? 0,
+      time: convertTo24Hour(existingCohorts?.[0]?.time) || convertTo24Hour(priceInfo?.time) || "13:00",
       timezone: priceInfo?.timezone || "UTC",
       startDate: existingStartDate,
-      discountType: priceInfo?.discount_type || "None",
-      discountValue: priceInfo?.discount_value || 0,
+      discountType: existingCohorts?.[0]?.discounted_price?.discount_type || priceInfo?.discount_type || "None",
+      discountValue: existingCohorts?.[0]?.discounted_price?.discount_value ?? priceInfo?.discount_value ?? 0,
       zoom_account_id: existingCohorts?.[0]?.zoom_account_id || "none",
     },
   });

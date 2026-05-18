@@ -7,6 +7,7 @@ import { HiOutlinePencil } from "react-icons/hi";
 import { ClipLoader } from "react-spinners";
 import EditModal from "../on-demand-section/EditModal";
 import EditCourseType from "../courses/edit-course-type/EditCourseType";
+import EditLiveSessionCourseType from "../courses/edit-course-type/EditLiveSessionCourseType";
 import { useState, useEffect } from "react";
 
 const writeDay = (dayString) => {
@@ -45,6 +46,8 @@ function CourseType({ editButton = false, courseId }) {
   const { data, isLoading, isError } = useFetchCourseInfo(courseId);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeCohorts, setActiveCohorts] = useState(null);
+  const [editingCohort, setEditingCohort] = useState(null);
+  const [isCohortModalOpen, setIsCohortModalOpen] = useState(false);
 
   const cohorts = data?.data?.data?.course?.cohorts ?? [];
   useEffect(() => {
@@ -150,7 +153,7 @@ function CourseType({ editButton = false, courseId }) {
 
                     <Label
                       htmlFor={String(cohort.id)}
-                      className="font-normal capitalize text-[#23314A]"
+                      className="font-normal capitalize text-[#23314A] flex-1"
                     >
                       <div className="flex flex-col justify-between">
                         <div>
@@ -167,6 +170,18 @@ function CourseType({ editButton = false, courseId }) {
                         </span>
                       </div>
                     </Label>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setEditingCohort(cohort);
+                        setIsCohortModalOpen(true);
+                      }}
+                      className="p-2 text-[#667185] hover:text-[#23314A]"
+                    >
+                      <HiOutlinePencil size={20} />
+                    </button>
                   </div>
                 ))}
               </RadioGroup>
@@ -203,6 +218,27 @@ function CourseType({ editButton = false, courseId }) {
           </RadioGroup>
         </section>
       </main>
+
+      {editingCohort && (
+        <EditModal
+          header={`Edit Cohort - ${editingCohort.cohort}`}
+          form={
+            <EditLiveSessionCourseType
+              priceInfo={{}}
+              cohorts={[editingCohort]}
+              setModalOpen={(val) => {
+                setIsCohortModalOpen(val);
+                if (!val) setEditingCohort(null);
+              }}
+            />
+          }
+          open={isCohortModalOpen}
+          setOpen={(val) => {
+            setIsCohortModalOpen(val);
+            if (!val) setEditingCohort(null);
+          }}
+        />
+      )}
     </section>
   );
 }

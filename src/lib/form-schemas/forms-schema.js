@@ -94,27 +94,27 @@ export const courseInformationSchema = z.object({
   courseTitle: z
     .string()
     .min(5, { message: "Title must be at least 5 character long" })
-    .max(60, { message: "Title character must not exceed 60 " }),
+    .max(160, { message: "Title character must not exceed 60 " }),
   courseIncludes: z
     .string()
     .min(5, { message: "This field must be at least 5 character long" })
-    .max(100, { message: "course include character must not exceed 100 " }),
+    .max(600, { message: "course include character must not exceed 100 " }),
   technologies: z
     .string()
     .min(5, { message: "This field must be at least 5 character long" })
-    .max(405, { message: "Technologies character must not exceed 405 " }),
+    .max(1200, { message: "Technologies character must not exceed 405 " }),
   benefits: z
     .string()
     .min(5, { message: "This field must be at least 5 character long" })
-    .max(405, { message: "Benefits character must not exceed 405 " }),
+    .max(1200, { message: "Benefits character must not exceed 405 " }),
   overview: z
     .string()
     .min(5, { message: "This field must be at least 5 character long" })
-    .max(405, { message: "Benefits character must not exceed  405 " }),
+    .max(1200, { message: "Benefits character must not exceed  405 " }),
   highlight: z
     .string()
     .min(5, { message: "This field must be at least 5 character long" })
-    .max(405, { message: "Highlight  character must not exceed 405 " }),
+    .max(1200, { message: "Highlight  character must not exceed 405 " }),
   url: z.union([z.literal(""), z.string().trim().url()]),
   is_private: z.boolean().default(false),
 });
