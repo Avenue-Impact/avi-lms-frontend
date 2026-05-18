@@ -9,7 +9,51 @@ export default function WeekdaysSelector({ control, name }) {
       name={name}
       defaultValue={"Mon,Tue,Wed,Thu,Fri"}
       render={({ field: { value, onChange } }) => {
-        const selectedDays = value ? value.split(",") : [];
+        const parseValue = (val) => {
+          if (!val) return [];
+          const parts = val.split(",");
+          let days = [];
+          parts.forEach((part) => {
+            part = part.trim();
+            if (part.includes("-")) {
+              const [start, end] = part.split("-").map((s) => s.trim());
+              const startIndex = weekdays.findIndex(
+                (d) => d.toLowerCase() === start.toLowerCase()
+              );
+              const endIndex = weekdays.findIndex(
+                (d) => d.toLowerCase() === end.toLowerCase()
+              );
+              if (startIndex !== -1 && endIndex !== -1) {
+                if (startIndex <= endIndex) {
+                  for (let i = startIndex; i <= endIndex; i++) {
+                    if (!days.includes(weekdays[i])) days.push(weekdays[i]);
+                  }
+                } else {
+                  for (let i = startIndex; i < weekdays.length; i++) {
+                    if (!days.includes(weekdays[i])) days.push(weekdays[i]);
+                  }
+                  for (let i = 0; i <= endIndex; i++) {
+                    if (!days.includes(weekdays[i])) days.push(weekdays[i]);
+                  }
+                }
+              } else {
+                if (!days.includes(part)) days.push(part);
+              }
+            } else {
+              const matchingDay = weekdays.find(
+                (d) => d.toLowerCase() === part.toLowerCase()
+              );
+              if (matchingDay) {
+                if (!days.includes(matchingDay)) days.push(matchingDay);
+              } else {
+                if (!days.includes(part)) days.push(part);
+              }
+            }
+          });
+          return days;
+        };
+
+        const selectedDays = parseValue(value);
 
         const toggleDay = (day) => {
           const newDays = selectedDays.includes(day)
