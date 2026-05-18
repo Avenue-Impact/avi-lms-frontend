@@ -17,7 +17,10 @@ import { fetchUserProfile } from "@/services/api";
 import { Skeleton } from "../ui/skeleton";
 import Cookies from "js-cookie";
 
-const AviNav = ({ showNav, setShowNav }) => {
+const AviNav = ({ showNav: propShowNav, setShowNav: propSetShowNav }) => {
+  const [internalShowNav, setInternalShowNav] = useState(true);
+  const showNav = propShowNav !== undefined ? propShowNav : internalShowNav;
+  const setShowNav = propSetShowNav !== undefined ? propSetShowNav : setInternalShowNav;
   const navLinks = [
     { label: "Home", to: "/" },
 
@@ -38,8 +41,8 @@ const AviNav = ({ showNav, setShowNav }) => {
   const navigate = useNavigate();
   const location = useLocation();
   return (
-    <div className="z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <nav className="flex w-[95%] flex-row-reverse items-center justify-between px-6 pt-4 pb-6 md:flex-row">
+    <div className="relative z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <nav className="flex w-[95%] items-center justify-between px-6 pb-6 pt-4">
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate(-1)}
@@ -60,25 +63,25 @@ const AviNav = ({ showNav, setShowNav }) => {
         </button>
 
         <div
-          className={`fixed left-0 top-0 z-20 flex h-screen w-full flex-col items-start gap-4 bg-[#14345F] px-8 py-10 transition-transform duration-300 ease-linear sm:items-center sm:bg-transparent md:relative md:h-fit md:w-max md:translate-x-0 md:flex-row md:px-0 md:py-0 xl:gap-8 ${showNav ? "translate-x-full" : "translate-x-0"}`}
+          className={`fixed left-0 top-0 z-20 flex h-screen w-full flex-col items-start gap-4 bg-[#14345F] px-8 py-10 transition-transform duration-300 ease-linear md:relative md:h-fit md:w-max md:translate-x-0 md:flex-row md:items-center md:bg-transparent md:px-0 md:py-0 xl:gap-8 ${showNav ? "translate-x-full md:translate-x-0" : "translate-x-0"}`}
         >
           <button
-            type=" button"
-            className="w-min self-start md:hidden"
+            type="button"
+            className="mb-4 w-min self-end md:hidden"
             onClick={() => setShowNav((prev) => !prev)}
           >
-            <FontAwesomeIcon icon={faClose} className="text-2xl text-white" />
+            <FontAwesomeIcon icon={faClose} className="text-3xl text-white" />
           </button>
 
-          {/* Desktop links */}
-          <ul className="nav flex flex-col gap-x-6 gap-y-10 text-[#23314A] sm:flex-row">
+          {/* Desktop & Mobile links */}
+          <ul className="nav flex w-full flex-col gap-x-6 gap-y-6 text-white md:w-auto md:flex-row md:text-[#23314A]">
             {navLinks.map((l) => {
               const isActive = location.pathname === l.to;
               return (
                 <li key={l.label}>
                   <NavLink
                     to={l.to}
-                    className={`pb-2 pt-4 transition-colors ${isActive ? "text-primary-color-600" : ""}`}
+                    className={`block pb-2 pt-4 transition-colors ${isActive ? "text-primary-color-600" : ""}`}
                     onClick={() => setShowNav((prev) => !prev)}
                   >
                     {l.label}
@@ -87,38 +90,30 @@ const AviNav = ({ showNav, setShowNav }) => {
               );
             })}
           </ul>
-          {/* <button
-          onClick={() => {
-            navigate("/signup");
-            setShowNav((prev) => !prev);
-          }}
-          className="rounded-lg bg-[#CC1747] px-4 py-2 capitalize text-[#FFEBF0]"
-        >
-          register
-        </button> */}
-        </div>
-        <div>
-          {isAuthenticated ? (
-            <button
-              onClick={() => {
-                navigate("/dashboard");
-                setShowNav((prev) => !prev);
-              }}
-              className="rounded-full bg-[#CC1747] px-6 py-3 capitalize text-[#FFEBF0]"
-            >
-              Dashboard
-            </button>
-          ) : (
-            <button
-              onClick={() => {
-                navigate("/signup");
-                setShowNav((prev) => !prev);
-              }}
-              className="rounded-full bg-[#CC1747] px-6 py-3 capitalize text-[#FFEBF0]"
-            >
-              Register
-            </button>
-          )}
+
+          <div className="mt-8 w-full md:mt-0 md:w-auto">
+            {isAuthenticated ? (
+              <button
+                onClick={() => {
+                  navigate("/dashboard");
+                  setShowNav((prev) => !prev);
+                }}
+                className="w-full rounded-full bg-[#CC1747] px-6 py-3 capitalize text-[#FFEBF0] md:w-auto"
+              >
+                Dashboard
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  navigate("/signup");
+                  setShowNav((prev) => !prev);
+                }}
+                className="w-full rounded-full bg-[#CC1747] px-6 py-3 capitalize text-[#FFEBF0] md:w-auto"
+              >
+                Register
+              </button>
+            )}
+          </div>
         </div>
       </nav>
     </div>
