@@ -51,9 +51,9 @@ const MainContent = () => {
   return (
     <div className={"items-center pb-12"}>
       <div className="mt-32 h-fit lg:mt-28 relative">
-        <div className={"font leading-snug 2xl:w-[1060px]"}>
-          Expert Consultants for Sustainable Success
-        </div>
+        <h1 className="font leading-snug 2xl:w-[1060px] text-4xl lg:text-5xl text-white">
+          Avenue Impact: Expert Consultants for Sustainable Success
+        </h1>
 
         <div className="my-4 h-[2px] w-full bg-white md:mb-5 md:mt-14" />
 

@@ -83,7 +83,7 @@ function CourseType({ editButton = false, courseId }) {
               <span className="text-lg">
                 <HiOutlinePencil />
               </span>
-              <span>Edit section</span>
+              <span>Add section</span>
             </CommonButton>
           </EditModal>
         )}

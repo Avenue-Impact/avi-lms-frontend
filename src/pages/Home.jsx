@@ -65,14 +65,14 @@ const Home = () => {
             }
             img={card}
           />
-          <div onClick={() => window.location.href = '/digital-learning-hub'} className="cursor-pointer">
+          <Link to="/digital-learning-hub" className="cursor-pointer block">
             <Avenue
               number={4}
               heading={"Digital Learning Hub"}
               text={"Explore our Digital Learning Hub for on-demand courses, resources, and interactive learning experiences to upskill at your own pace."}
               img={card}
             />
-          </div>
+          </Link>
         </div>
       </Container>
 
