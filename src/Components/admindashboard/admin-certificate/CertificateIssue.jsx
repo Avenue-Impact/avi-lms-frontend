@@ -23,8 +23,11 @@ const issueCertificate = z.object({
   issue_date: z.string().min(10, "Issue date is required"),
 });
 
+import { useSafeBack } from "@/hooks/use-safe-back";
+
 const CertificateIssue = () => {
   const navigate = useNavigate();
+  const goBack = useSafeBack();
 
   const [selectedCourseId, setSelectedCourseId] = useState(null);
 
@@ -83,7 +86,7 @@ const CertificateIssue = () => {
         <div className="col-span-7 mb-4 px-16">
           <div className="flex items-start justify-between gap-3 lg:justify-normal">
             <button
-              onClick={() => navigate(-1)}
+              onClick={goBack}
               type="button"
               className="flex items-center gap-1"
             >

@@ -6,10 +6,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useNavigate, useSearchParams } from 'react-router-dom';
 // import { Navigate } from 'react-router-dom'
 
+import { useSafeBack } from '@/hooks/use-safe-back';
+
 const CertificateIssueHistory = () => {
 
     const [certActive, setCertActive] = useState('issueCert');
     const navigate = useNavigate();
+    const goBack = useSafeBack();
 
       const [searchParams] = useSearchParams();
         const title = searchParams.get("title");
@@ -20,7 +23,7 @@ const CertificateIssueHistory = () => {
       <div className="mb-8 mt-16 flex items-center justify-between">
         <div className="flex w-full items-center justify-between gap-1 md:gap-6 lg:w-max lg:justify-normal">
           <button
-            onClick={() => navigate(-1)}
+            onClick={goBack}
             type="button"
             className="flex items-center gap-1"
           >

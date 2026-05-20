@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useFetchAssignmentSubmissions } from '@/hooks/instructor/use-assignment-submissions';
 import { useFetchAssignmentTasks } from '@/hooks/instructor/use-assignment-management';
 import { 
@@ -13,8 +13,11 @@ import {
     Loader2
 } from 'lucide-react';
 import { CommonButton } from '@/Components/ui/button';
+import { useSafeBack } from '@/hooks/use-safe-back';
 
 const SubmissionReview = () => {
+    const navigate = useNavigate();
+    const goBack = useSafeBack();
     const { taskId } = useParams();
     const { data: submissionsData, isLoading } = useFetchAssignmentSubmissions(taskId);
     
@@ -34,7 +37,7 @@ const SubmissionReview = () => {
 
     return (
         <div>
-            <button onClick={() => window.history.back()} className="flex items-center gap-2 text-gray-500 hover:text-primary-color-600 mb-6 transition-colors">
+            <button onClick={goBack} className="flex items-center gap-2 text-gray-500 hover:text-primary-color-600 mb-6 transition-colors">
                 <ChevronLeft size={16} />
                 <span className="text-sm font-medium">Back to Assignments</span>
             </button>

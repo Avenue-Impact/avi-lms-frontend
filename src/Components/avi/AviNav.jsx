@@ -16,8 +16,10 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchUserProfile } from "@/services/api";
 import { Skeleton } from "../ui/skeleton";
 import Cookies from "js-cookie";
+import { useSafeBack } from "@/hooks/use-safe-back";
 
 const AviNav = ({ showNav: propShowNav, setShowNav: propSetShowNav }) => {
+  const goBack = useSafeBack();
   const [internalShowNav, setInternalShowNav] = useState(true);
   const showNav = propShowNav !== undefined ? propShowNav : internalShowNav;
   const setShowNav = propSetShowNav !== undefined ? propSetShowNav : setInternalShowNav;
@@ -45,7 +47,7 @@ const AviNav = ({ showNav: propShowNav, setShowNav: propSetShowNav }) => {
       <nav className="flex w-[95%] items-center justify-between px-6 pb-6 pt-4">
         <div className="flex items-center gap-4">
           <button
-            onClick={() => navigate(-1)}
+            onClick={goBack}
             className="flex items-center justify-center rounded-full bg-gray-100 p-2 px-3 text-gray-600 hover:bg-gray-200"
           >
             <FontAwesomeIcon icon={faChevronLeft} />

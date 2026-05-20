@@ -41,8 +41,11 @@ import { useState } from "react";
 import { useEnrolledCourses } from "@/hooks/students/use-enrolled-courses";
 import fallbackCourseImage from "../assets/images/join_team.png";
 
+import { useSafeBack } from "@/hooks/use-safe-back";
+
 const PreviewCourse = () => {
   const navigate = useNavigate();
+  const goBack = useSafeBack();
   const { data, isLoading: isFetching } = useFetchAllCourses();
 
   const { courseId } = useParams();
@@ -141,7 +144,7 @@ const PreviewCourse = () => {
               <div className="px-5 pb-8 pt-4">
                 <div className="mb-4 flex items-center">
                   <button
-                    onClick={() => navigate(-1)}
+                    onClick={goBack}
                     className="text-white hover:text-[#bebcbc]"
                   >
                     <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />

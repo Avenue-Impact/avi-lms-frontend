@@ -1,9 +1,11 @@
 import React from "react";
 import { AlertCircle, LogIn, RefreshCcw, ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { useSafeBack } from "@/hooks/use-safe-back";
 
 const MeetingErrorState = ({ error, onRetry, backUrl }) => {
   const navigate = useNavigate();
+  const goBack = useSafeBack();
   const statusCode = error?.response?.status;
   const message =
     error?.response?.data?.message || error?.message || "Something went wrong.";
@@ -56,7 +58,7 @@ const MeetingErrorState = ({ error, onRetry, backUrl }) => {
               if (backUrl) {
                 window.location.href = backUrl;
               } else {
-                navigate(-1);
+                goBack();
               }
             }}
             className="flex w-full items-center justify-center gap-2 rounded-lg border border-[#E5E5E5] px-6 py-2.5 font-semibold text-[#1A1A2E] transition-colors hover:border-[#C8102E] hover:text-[#C8102E] sm:w-auto"

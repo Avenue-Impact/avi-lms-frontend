@@ -3,8 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { AlertTriangle, Home, ArrowLeft } from "lucide-react";
 import Cookies from "js-cookie";
 
+import { useSafeBack } from "@/hooks/use-safe-back";
+
 const NotFoundPage = () => {
   const navigate = useNavigate();
+  const goBack = useSafeBack();
 
   // Smart routing based on role
   const getHomeLink = () => {
@@ -35,7 +38,7 @@ const NotFoundPage = () => {
 
         <div className="flex flex-col gap-4 w-full sm:flex-row sm:justify-center">
           <button
-            onClick={() => navigate(-1)}
+            onClick={goBack}
             className="flex items-center justify-center gap-2 rounded-lg border border-[#E5E5E5] bg-white px-8 py-3.5 text-sm font-bold text-[#1A1A2E] shadow-sm transition-colors hover:border-[#C8102E] hover:text-[#C8102E]"
           >
             <ArrowLeft size={18} />

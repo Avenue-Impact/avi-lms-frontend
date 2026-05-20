@@ -9,8 +9,11 @@ import CourseTools from "./CourseTools";
 import GroupCourseTools from "./group/GroupCourseTools";
 import GroupStudentManagement from "./group/GroupStudentManagement";
 
+import { useSafeBack } from "@/hooks/use-safe-back";
+
 const EditGroupPage = () => {
   const navigate = useNavigate();
+  const goBack = useSafeBack();
   const [tab, setTab] = useState(1);
 
   const { courseId, groupId } = useParams();
@@ -35,7 +38,7 @@ const EditGroupPage = () => {
       <div className="my-12 flex items-center gap-3">
         <button
           className="flex items-center gap-4"
-          onClick={() => navigate(-1)}
+          onClick={goBack}
         >
           <span className="rounded-sm border border-[#E4E7EC] px-[9px] py-[7.7px]">
             <FaArrowLeft />

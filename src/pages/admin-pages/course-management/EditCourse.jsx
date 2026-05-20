@@ -15,6 +15,8 @@ import { useUnpublishCourse } from "@/hooks/course-management/use-unpublish-cour
 // import { faClose, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 // import { Heading, Paragraph } from "@/pages/auth/components/Text";
 
+import { useSafeBack } from "@/hooks/use-safe-back";
+
 const EditCourse = () => {
   // const [modal, setModal] = useState(false);
   const [activeSection, setActiveSection] = useState("courseInfo");
@@ -30,7 +32,8 @@ const EditCourse = () => {
 
   const { deleted, isDeleting } = useDeleteCourse();
   const { unPublish, isUnPublishing } = useUnpublishCourse();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const goBack = useSafeBack();
 
   const handleUnpublish = () => {
   unPublish(
@@ -63,7 +66,7 @@ const EditCourse = () => {
     <div>
       <div className="mb-8 mt-16 flex items-start justify-between">
         <div className="flex items-center gap-2 text-[#667185]">
-          <button onClick={() => navigate(-1)} className="flex items-center gap-1 hover:text-[#CC1747]">
+          <button onClick={goBack} className="flex items-center gap-1 hover:text-[#CC1747]">
                   <HiArrowLeft />
                   <span>Go Back</span>
               </button>

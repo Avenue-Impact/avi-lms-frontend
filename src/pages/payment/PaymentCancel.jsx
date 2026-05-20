@@ -1,8 +1,11 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
+import { useSafeBack } from "@/hooks/use-safe-back";
+
 const PaymentCancel = () => {
   const navigate = useNavigate();
+  const goBack = useSafeBack();
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-white px-4 py-12 sm:px-6 lg:px-8 font-sans">
@@ -29,7 +32,7 @@ const PaymentCancel = () => {
         {/* Actions */}
         <div className="flex w-full flex-col gap-4">
           <button
-            onClick={() => navigate(-1)}
+            onClick={goBack}
             className="flex min-h-[48px] w-full items-center justify-center rounded-md bg-[#CC1747] px-4 py-3 text-base font-bold text-white transition-colors hover:bg-[#A0124A] focus:outline-none focus:ring-2 focus:ring-[#C2185B] focus:ring-offset-2"
           >
             Retry Payment

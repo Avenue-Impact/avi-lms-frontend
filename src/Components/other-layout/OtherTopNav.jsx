@@ -12,6 +12,8 @@ import {
   useSearchParams,
 } from "react-router-dom";
 
+import { useSafeBack } from "@/hooks/use-safe-back";
+
 const OtherTopNav = ({ setShowModal, setIsQuestionDrawerOpen }) => {
   const [queryString] = useSearchParams();
   const { courseId } = useParams();
@@ -24,9 +26,10 @@ const OtherTopNav = ({ setShowModal, setIsQuestionDrawerOpen }) => {
   const { setSections } = useViewCourseSections();
   // const location = useLocation();
   const navigate = useNavigate();
+  const goBack = useSafeBack();
 
   const handleBack = () => {
-    navigate(-1);
+    goBack();
   };
 
   return (

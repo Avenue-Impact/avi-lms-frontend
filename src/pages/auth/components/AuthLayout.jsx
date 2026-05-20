@@ -3,6 +3,8 @@ import Logo from "@/assets/logo/logo.svg";
 import AuthLayoutImage from "@/assets/images/auth_layout_img.jpg";
 import { ChevronLeft } from "lucide-react";
 
+import { useSafeBack } from "@/hooks/use-safe-back";
+
 const AuthLayout = ({
   children,
   title,
@@ -12,6 +14,7 @@ const AuthLayout = ({
   alignTop = false,
 }) => {
   const navigate = useNavigate();
+  const goBack = useSafeBack();
 
   return (
     <div className={`${isPage ? "min-h-screen" : "py-8"} bg-white`}>
@@ -19,7 +22,7 @@ const AuthLayout = ({
       {isPage && (
         <header className="flex items-center px-4 py-4 md:px-10">
           <button
-            onClick={() => navigate(-1)}
+            onClick={goBack}
             className="mr-4 text-gray-600 transition-colors hover:text-gray-900"
             aria-label="Go back"
           >

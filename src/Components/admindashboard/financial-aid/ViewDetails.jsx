@@ -22,11 +22,14 @@ import { useSingleFinancialAid } from "@/hooks/financial-aid/use-fetch-financial
 import { formatDateString } from "@/lib/formatdatestring";
 import { useFinancialStatus } from "@/hooks/financial-aid/use-update-approve-reject-financial-aid";
 
+import { useSafeBack } from "@/hooks/use-safe-back";
+
 const ViewDetails = () => {
   const [modal, setShowModal] = useState(false);
   // const [showCouponModal, setShowCouponModal] = useState(false);
   const [showSuccessModal, setshowSuccessModal] = useState(false);
   const navigate = useNavigate();
+  const goBack = useSafeBack();
 
   const { id, firstname, lastname, title, email } = useParams();
 
@@ -56,7 +59,7 @@ const ViewDetails = () => {
         <div className="pt-24">
           <div className="flex w-full items-center justify-between gap-1 md:gap-6 lg:w-max lg:justify-normal">
             <button
-              onClick={() => navigate(-1)}
+              onClick={goBack}
               type="button"
               className="flex items-center gap-1"
             >

@@ -17,8 +17,11 @@ import LivePayment from "./auth/components/LivePayment";
 import OnDemandPayment from "./auth/components/OnDemandPayment";
 import styles from "./pages.module.css";
 
+import { useSafeBack } from "@/hooks/use-safe-back";
+
 const PreviewVideoCourse = () => {
   const navigate = useNavigate();
+  const goBack = useSafeBack();
   let { courseId } = useParams();
   const { previewCourse } = usePreviewCourses(courseId);
 
@@ -36,7 +39,7 @@ const PreviewVideoCourse = () => {
             <div className="bg-[#23314A] lg:pb-10">
               <Container>
                 <div className="mb-4 flex items-center lg:hidden lg:pt-9">
-                  <button onClick={() => navigate(-1)} className="text-white">
+                  <button onClick={goBack} className="text-white">
                     <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
                   </button>
                 </div>

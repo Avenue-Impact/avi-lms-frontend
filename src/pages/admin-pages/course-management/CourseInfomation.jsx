@@ -10,9 +10,12 @@ import { fetchAdmins } from "@/services/api";
 import Modal from "@/pages/auth/components/Modal";
 import { useAssignInstructor } from "@/hooks/course-management/use-assign-instructor";
 
+import { useSafeBack } from "@/hooks/use-safe-back";
+
 function CourseInfomation() {
   const [queryString] = useSearchParams();
   const navigate = useNavigate();
+  const goBack = useSafeBack();
 
   const { data: adminsData } = useQuery({
     queryKey: ["get-admins"],
@@ -57,9 +60,7 @@ function CourseInfomation() {
       <header className="flex items-center justify-between">
         <div className="flex w-full items-center justify-between gap-1 md:gap-6 lg:w-max lg:justify-normal">
           <button
-            onClick={() => {
-              navigate(-1);
-            }}
+            onClick={goBack}
             type="button"
             className="flex items-center gap-1"
           >

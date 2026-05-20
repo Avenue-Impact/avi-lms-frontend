@@ -1,16 +1,18 @@
 import React from "react";
 import { MoveLeft, ExternalLink, Info } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useSafeBack } from "@/hooks/use-safe-back";
 
 const ZoomSetupPage = () => {
   const navigate = useNavigate();
+  const goBack = useSafeBack();
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20 pt-10 font-poppins">
       <div className="mx-auto max-w-4xl px-4">
         {/* Header */}
         <button
-          onClick={() => navigate(-1)}
+          onClick={goBack}
           className="mb-8 flex items-center gap-2 text-sm text-gray-500 hover:text-primary-color-600 transition-colors"
         >
           <MoveLeft className="h-4 w-4" />

@@ -17,9 +17,11 @@ import { useSearchParams, Link, useNavigate } from "react-router-dom";
 import PopUp from "@/Components/dashboard/PopUp";
 import { useEnrolledCourses } from "@/hooks/students/use-enrolled-courses";
 import GlobalPagination from "@/Components/ui/GlobalPagination";
+import { useSafeBack } from "@/hooks/use-safe-back";
 
 const DiscoverCourses = () => {
   const navigate = useNavigate();
+  const goBack = useSafeBack();
   const [searchParams] = useSearchParams();
   const courseType = searchParams.get("course_type") || "";
   const initialSearch = searchParams.get("search") || "";
@@ -83,7 +85,7 @@ const DiscoverCourses = () => {
       <div className="flex items-center justify-between gap-6 px-6 py-7 lg:px-20">
         <div className="flex items-center gap-4">
           <button
-            onClick={() => navigate(-1)}
+            onClick={goBack}
             className="flex items-center justify-center rounded-full bg-gray-100 p-2 px-3 text-gray-600 hover:bg-gray-200"
           >
             <FontAwesomeIcon icon={faChevronLeft} />
