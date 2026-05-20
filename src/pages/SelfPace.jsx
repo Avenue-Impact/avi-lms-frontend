@@ -6,6 +6,7 @@ import AVIFooter from "../Components/AVIFooter";
 import CTABanner from "../Components/shared/CTABanner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import SEOHead from "@/Components/SEOHead";
 
 // Import images
 import heroImg from "../assets/images/selfpace/selfpace_hero_man_1776809512956.png";
@@ -106,6 +107,11 @@ const SelfPace = () => {
 
   return (
     <div className="bg-white sm:mx-10">
+      <SEOHead
+        title="Self-Paced Online Courses | Avenue Impact"
+        description="Learn on your own terms with Avenue Impact's self-paced online courses. Flexible scheduling, 1-on-1 mentorship access, and globally recognized certificates."
+        canonical="https://avenueimpact.com/self-pace"
+      />
       <ScrollRestoration />
 
       {/* Hero Section */}

@@ -118,3 +118,88 @@
 
 @media only screen and (max-width: 450px) {
 }
+
+/* ===== VALIDATION STYLES ===== */
+
+/* Inline field error text */
+.field_error {
+  display: block;
+  color: #ff4d6a;
+  font-size: 12px;
+  margin-top: -10px;
+  margin-bottom: 12px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+/* Popup banner at top of form */
+.error_popup {
+  position: relative;
+  margin-bottom: 24px;
+  animation: slideDown 0.25s ease-out;
+}
+
+.error_popup_inner {
+  background: linear-gradient(135deg, #3a0a14, #5c1526);
+  border: 1px solid rgba(255, 77, 106, 0.4);
+  border-radius: 10px;
+  padding: 16px 44px 16px 16px;
+  color: #fff;
+  font-size: 13px;
+  line-height: 1.5;
+  position: relative;
+}
+
+.error_popup_list {
+  margin-top: 8px;
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  color: #ffb3c0;
+}
+
+.error_popup_close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  transition: color 0.15s;
+}
+
+.error_popup_close:hover {
+  color: #fff;
+}
+
+/* Inactive / disabled submit button */
+.btn_inactive {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Ensure disabled button does NOT change to white on hover */
+.get_in_touch_input button:disabled,
+.get_in_touch_input button[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: inherit !important;
+  color: inherit !important;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

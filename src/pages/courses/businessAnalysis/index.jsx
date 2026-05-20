@@ -9,6 +9,7 @@ import Logo from '../../../assets/images/aviLogo.png';
 import cpdLogo from '../../../assets/images/cpd.jpeg'
 import { socialLinks } from '../../../utils/socialLinks';
 import { IoLogoTiktok, IoLogoWhatsapp } from 'react-icons/io5';
+import SEOHead from '@/Components/SEOHead';
 
 // Add Poppins font
 const Poppins = () => {
@@ -117,6 +118,11 @@ export default function BusinessAnalysis() {
 
   return (
     <>
+      <SEOHead
+        title="Business Analysis Training | Avenue Impact"
+        description="Become a certified Business Analyst with Avenue Impact. Expert-led courses covering Agile, digital BA, stakeholder management, and product management. CPD certified."
+        canonical="https://avenueimpact.com/courses/business-analysis"
+      />
       <Poppins />
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white font-poppins">
       {/* Top Banner */}
@@ -419,7 +425,7 @@ export default function BusinessAnalysis() {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-12">
             <div>
-              <img src={Logo} alt="" className="w-12 h-12 object-cover bg-white rounded-full p-1" />
+              <img src={Logo} alt="Avenue Impact logo" className="w-12 h-12 object-cover bg-white rounded-full p-1" />
               <p className="text-gray-400 mb-6">Empowering the next generation of Business Analysts with world-class training and mentorship.</p>
             </div>
             

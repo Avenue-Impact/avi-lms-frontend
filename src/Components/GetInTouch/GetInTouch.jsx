@@ -2,6 +2,13 @@ import { useState } from "react";
 import styles from "./GetInTouch.module.css";
 import Button from "../Button";
 
+const REQUIRED_FIELDS = [
+  { key: "name", label: "Your Name" },
+  { key: "phone", label: "Phone Number" },
+  { key: "email", label: "Email Address" },
+  { key: "message", label: "Comment or Message" },
+];
+
 const GetInTouch = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -10,18 +17,53 @@ const GetInTouch = () => {
     message: "",
   });
 
+  const [errors, setErrors] = useState({});
+  const [popupErrors, setPopupErrors] = useState([]);
+  const [showPopup, setShowPopup] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    setFormData({ ...formData, [name]: value });
+    // Clear individual field error when user starts typing
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
+
+  const isFormComplete = REQUIRED_FIELDS.every(
+    (f) => formData[f.key].trim() !== "",
+  );
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission logic here
+
+    // Validate all required fields
+    const newErrors = {};
+    const missing = [];
+
+    REQUIRED_FIELDS.forEach(({ key, label }) => {
+      if (!formData[key].trim()) {
+        newErrors[key] = `${label} is required`;
+        missing.push(label);
+      } else if (key === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData[key])) {
+        newErrors[key] = "Please enter a valid email address";
+        missing.push("Valid Email Address");
+      }
+    });
+
+    setErrors(newErrors);
+
+    if (missing.length > 0) {
+      setPopupErrors(missing);
+      setShowPopup(true);
+      // Auto-hide popup after 5 seconds
+      setTimeout(() => setShowPopup(false), 5000);
+      return;
+    }
+
+    // All valid — submit
     console.log("Form data submitted:", formData);
+    // TODO: wire up actual API call here
   };
 
   return (
@@ -41,56 +83,115 @@ const GetInTouch = () => {
           business.
         </p>
       </div>
-      <form className={styles.get_in_touch_input} onSubmit={handleSubmit}>
-        <label>
-          {"{Your Name}"}
-          <span>*</span>
+
+      <form className={styles.get_in_touch_input} onSubmit={handleSubmit} noValidate>
+        {/* Validation Popup Banner */}
+        {showPopup && (
+          <div className={styles.error_popup}>
+            <div className={styles.error_popup_inner}>
+              <strong>Please fill in the following required fields:</strong>
+              <ul className={styles.error_popup_list}>
+                {popupErrors.map((msg) => (
+                  <li key={msg}>• {msg}</li>
+                ))}
+              </ul>
+              <button
+                type="button"
+                className={styles.error_popup_close}
+                onClick={() => setShowPopup(false)}
+                aria-label="Dismiss errors"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Name */}
+        <label htmlFor="get-in-touch-name">
+          Your Name<span>*</span>
         </label>
         <input
+          id="get-in-touch-name"
           type="text"
           name="name"
-          // placeholder="Enter Your Name"
+          placeholder="Enter Your Name"
           value={formData.name}
           onChange={handleChange}
+          aria-invalid={!!errors.name}
+          aria-describedby={errors.name ? "error-name" : undefined}
         />
+        {errors.name && (
+          <span id="error-name" className={styles.field_error}>
+            ⚠ {errors.name}
+          </span>
+        )}
 
-        <label>
-          {"{Phone Number}"}
-          <span>*</span>
+        {/* Phone */}
+        <label htmlFor="get-in-touch-phone">
+          Phone Number<span>*</span>
         </label>
         <input
+          id="get-in-touch-phone"
           type="text"
           name="phone"
-          // placeholder="Enter Your Phone Number"
+          placeholder="Enter Your Phone Number"
           value={formData.phone}
           onChange={handleChange}
+          aria-invalid={!!errors.phone}
+          aria-describedby={errors.phone ? "error-phone" : undefined}
         />
+        {errors.phone && (
+          <span id="error-phone" className={styles.field_error}>
+            ⚠ {errors.phone}
+          </span>
+        )}
 
-        <label>
-          {"{Email Address}"}
-          <span>*</span>
+        {/* Email */}
+        <label htmlFor="get-in-touch-email">
+          Email Address<span>*</span>
         </label>
         <input
+          id="get-in-touch-email"
           type="email"
           name="email"
-          // placeholder="Enter Your Email"
+          placeholder="Enter Your Email"
           value={formData.email}
           onChange={handleChange}
+          aria-invalid={!!errors.email}
+          aria-describedby={errors.email ? "error-email" : undefined}
         />
+        {errors.email && (
+          <span id="error-email" className={styles.field_error}>
+            ⚠ {errors.email}
+          </span>
+        )}
 
-        <label>
-          {"{Comment or Message}"}
-          <span>*</span>
+        {/* Message */}
+        <label htmlFor="get-in-touch-message">
+          Comment or Message<span>*</span>
         </label>
         <input
+          id="get-in-touch-message"
           type="text"
           name="message"
-          // placeholder="Write a message here"
+          placeholder="Write a message here"
           value={formData.message}
           onChange={handleChange}
+          aria-invalid={!!errors.message}
+          aria-describedby={errors.message ? "error-message" : undefined}
         />
+        {errors.message && (
+          <span id="error-message" className={styles.field_error}>
+            ⚠ {errors.message}
+          </span>
+        )}
 
-        <Button className="mt-8 lg:mt-11" type="submit">
+        <Button
+          className={`mt-8 lg:mt-11 ${!isFormComplete ? styles.btn_inactive : ""}`}
+          type="submit"
+          disabled={!isFormComplete}
+        >
           Send a message
         </Button>
       </form>

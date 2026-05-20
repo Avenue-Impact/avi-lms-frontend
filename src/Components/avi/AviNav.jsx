@@ -22,7 +22,8 @@ const AviNav = ({ showNav: propShowNav, setShowNav: propSetShowNav }) => {
   const goBack = useSafeBack();
   const [internalShowNav, setInternalShowNav] = useState(true);
   const showNav = propShowNav !== undefined ? propShowNav : internalShowNav;
-  const setShowNav = propSetShowNav !== undefined ? propSetShowNav : setInternalShowNav;
+  const setShowNav =
+    propSetShowNav !== undefined ? propSetShowNav : setInternalShowNav;
   const navLinks = [
     { label: "Home", to: "/" },
 
@@ -93,29 +94,52 @@ const AviNav = ({ showNav: propShowNav, setShowNav: propSetShowNav }) => {
             })}
           </ul>
 
-          <div className="mt-8 w-full md:mt-0 md:w-auto">
-            {isAuthenticated ? (
-              <button
-                onClick={() => {
-                  navigate("/dashboard");
-                  setShowNav((prev) => !prev);
-                }}
-                className="w-full rounded-full bg-[#CC1747] px-6 py-3 capitalize text-[#FFEBF0] md:w-auto"
-              >
-                Dashboard
-              </button>
-            ) : (
-              <button
-                onClick={() => {
-                  navigate("/signup");
-                  setShowNav((prev) => !prev);
-                }}
-                className="w-full rounded-full bg-[#CC1747] px-6 py-3 capitalize text-[#FFEBF0] md:w-auto"
-              >
-                Register
-              </button>
-            )}
-          </div>
+          <div className="mt-8 w-full md:mt-0 md:w-auto md:hidden">
+          {isAuthenticated ? (
+            <button
+              onClick={() => {
+                navigate("/dashboard");
+                setShowNav((prev) => !prev);
+              }}
+              className="w-full rounded-full bg-[#CC1747] px-6 py-3 capitalize text-[#FFEBF0] md:w-auto"
+            >
+              Dashboard
+            </button>
+          ) : (
+            <button
+              onClick={() => {
+                navigate("/signup");
+                setShowNav((prev) => !prev);
+              }}
+              className="w-full rounded-full bg-[#CC1747] px-6 py-3 capitalize text-[#FFEBF0] md:w-auto"
+            >
+              Register
+            </button>
+          )}
+        </div>
+        </div>
+        <div className="mt-8 w-full md:mt-0 md:w-auto max-md:hidden">
+          {isAuthenticated ? (
+            <button
+              onClick={() => {
+                navigate("/dashboard");
+                setShowNav((prev) => !prev);
+              }}
+              className="w-full rounded-full bg-[#CC1747] px-6 py-3 capitalize text-[#FFEBF0] md:w-auto"
+            >
+              Dashboard
+            </button>
+          ) : (
+            <button
+              onClick={() => {
+                navigate("/signup");
+                setShowNav((prev) => !prev);
+              }}
+              className="w-full rounded-full bg-[#CC1747] px-6 py-3 capitalize text-[#FFEBF0] md:w-auto"
+            >
+              Register
+            </button>
+          )}
         </div>
       </nav>
     </div>

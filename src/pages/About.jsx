@@ -9,10 +9,16 @@ import ImageOverlay from "../Components/ImageOverlay";
 import GetInTouch from "../Components/GetInTouch/GetInTouch";
 import AvenueList from "@/Components/Assets/AvenueList";
 import { cn } from "@/lib/utils";
+import SEOHead from "@/Components/SEOHead";
 
 const About = () => {
   return (
     <>
+      <SEOHead
+        title="About Avenue Impact | Our Mission & Expert Team"
+        description="Learn about Avenue Impact's mission, certified professionals, and commitment to business transformation and career growth through expert IT training."
+        canonical="https://avenueimpact.com/about"
+      />
       <AboutHero />
 
       <section>
@@ -61,7 +67,7 @@ const About = () => {
           </section>
 
           <div className={`${styles.welcome_avenue_img} pb-10`}>
-            <img src={AvenueImage} alt="" className="w-full" />
+            <img src={AvenueImage} alt="Avenue Impact certified professionals in a collaborative business setting" className="w-full" />
           </div>
         </div>
 

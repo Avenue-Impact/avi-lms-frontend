@@ -23,6 +23,7 @@ import { socialLinks } from '../../../utils/socialLinks';
 import { IoLogoTiktok, IoLogoWhatsapp } from 'react-icons/io5';
 import Card, { CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
 import heroImage from '../../../../public/images/projectMHero.jpg'
+import SEOHead from '@/Components/SEOHead';
 
 // Add Poppins font
 const Poppins = () => {
@@ -212,6 +213,11 @@ export default function ProjectManagement() {
 
   return (
     <>
+      <SEOHead
+        title="Project Management Training Courses | Avenue Impact"
+        description="Earn your CPD certification in project management with Avenue Impact. Master project planning, Agile methodologies, team leadership, risk management, and budgeting."
+        canonical="https://avenueimpact.com/courses/project-management"
+      />
       <Poppins />
       {/* Share Button */}
       <div className="fixed bottom-8 left-8 z-50 flex flex-col items-end space-y-4">
@@ -273,7 +279,7 @@ export default function ProjectManagement() {
       <header className="bg-white shadow-sm sticky top-0">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-2">
-            <img src={Logo} alt="" className="w-12 h-12 object-cover" />
+            <img src={Logo} alt="Avenue Impact Logo" className="w-12 h-12 object-cover" />
           </div>
           
           <nav className="hidden md:flex items-center space-x-8">
@@ -648,7 +654,7 @@ export default function ProjectManagement() {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-12">
             <div>
-              <img src={Logo} alt="" className="w-12 h-12 object-cover bg-white rounded-full p-1" />
+              <img src={Logo} alt="Avenue Impact Logo" className="w-12 h-12 object-cover bg-white rounded-full p-1" />
               <p className="text-gray-400 mb-6">Empowering the next generation of Business Analysts with world-class training and mentorship.</p>
             </div>
             
@@ -733,7 +739,7 @@ export default function ProjectManagement() {
     <div 
     onClick={() => window.location.href = cpdLink}
     className="fixed bottom-20 right-3 h-16 w-16 cursor-pointer">
-      <img src={cpdLogo} alt="cpdLogo" className=' rounded-full ' />
+      <img src={cpdLogo} alt="CPD Certified Professional logo" className=' rounded-full ' />
     </div>
   </>);
 }

@@ -19,6 +19,7 @@ import { certifiedProfessionals, industriesServed } from "@/lib/aviPageData";
 import { Search } from "lucide-react";
 import heroCollabImg from "../assets/images/hero-collab.jpg";
 import darkLogo from "../assets/logo/logo.svg";
+import SEOHead from "@/Components/SEOHead";
 
 /* ─────────────────────────────────────────
    Hero Section
@@ -123,6 +124,11 @@ const AVI = () => {
   const [searchQuery, setSearchQuery] = React.useState("");
   return (
     <div className="sm:mx-10">
+      <SEOHead
+        title="Digital Learning Hub | Avenue Impact Online Courses"
+        description="Browse and enrol in Avenue Impact's professional online courses in business analysis, data analytics, cloud computing, and project management. Live and on-demand options."
+        canonical="https://avenueimpact.com/digital-learning-hub"
+      />
       <ScrollRestoration />
       {/* {showToast && <ReferralToast onTimeout={() => setShowToast(false)} />} */}
 

@@ -11,6 +11,7 @@ import {
   faArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import Cookies from "js-cookie";
+import SEOHead from "@/Components/SEOHead";
 
 // Import images
 import heroImg from "../assets/images/partner/partner_hero_collab_1776809342038.png";
@@ -98,6 +99,11 @@ const Partner = () => {
 
   return (
     <div className="bg-white sm:mx-10">
+      <SEOHead
+        title="Partner & Affiliate Program | Avenue Impact"
+        description="Join the Avenue Impact Affiliate Partner Program. Refer your friends or network to our courses and earn rewards on every successful enrollment."
+        canonical="https://avenueimpact.com/partner"
+      />
       <ScrollRestoration />
 
       {/* Hero Section */}
@@ -150,28 +156,28 @@ const Partner = () => {
                     <img
                       src={portrait4}
                       className="h-full w-full object-cover"
-                      alt="avatar"
+                      alt="Avenue Impact member profile avatar 4"
                     />
                   </div>
                   <div className="h-10 w-10 overflow-hidden rounded-full border-2 border-gray-200 bg-black">
                     <img
                       src={portrait3}
                       className="h-full w-full object-cover"
-                      alt="avatar"
+                      alt="Avenue Impact member profile avatar 3"
                     />
                   </div>
                   <div className="h-10 w-10 overflow-hidden rounded-full border-2 border-gray-200 bg-black">
                     <img
                       src={portrait2}
                       className="h-full w-full object-cover"
-                      alt="avatar"
+                      alt="Avenue Impact member profile avatar 2"
                     />
                   </div>
                   <div className="h-10 w-10 overflow-hidden rounded-full border-2 border-gray-200 bg-black">
                     <img
                       src={portrait1}
                       className="h-full w-full object-cover"
-                      alt="avatar"
+                      alt="Avenue Impact member profile avatar 1"
                     />
                   </div>
                 </div>
