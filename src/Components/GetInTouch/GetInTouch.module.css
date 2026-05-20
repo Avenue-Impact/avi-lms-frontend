@@ -47,8 +47,8 @@
   input[type="email"],
   input[type="number"] {
     width: 100%;
-    padding: 20px 10px;
-    margin-bottom: 15px;
+    padding: 5px 10px;
+    margin-bottom: 8px;
     border: none;
     background-color: transparent;
     border-bottom: 2px solid #ccc;
