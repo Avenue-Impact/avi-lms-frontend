@@ -130,6 +130,8 @@ const Login = () => {
         title="Welcome back!"
         subtitle="Use your email to sign in to your dashboard"
         isMobileStacked={true}
+        leftHeadline={"Welcome Back\nto Avenue Impact"}
+        leftSubtext="Log in to continue your learning journey, track your progress, and access your courses anytime. "
       >
         <Form {...form}>
           <form
@@ -165,11 +167,11 @@ const Login = () => {
             </Link>
 
             <CommonButton
-              className="hover:bg-primary-color-700 mt-8 w-full bg-primary-color-600 font-poppins text-[16px] font-[500] capitalize text-white disabled:opacity-50"
+              className="hover:bg-[#a8103a] mt-8 w-full bg-[#C41E3A] font-poppins text-[16px] font-[500] capitalize text-white disabled:opacity-50 rounded-lg py-3"
               type="submit"
               disabled={isPending}
             >
-              {isPending ? <ClipLoader size={20} color={"#fff"} /> : "Sign in"}
+              {isPending ? <ClipLoader size={20} color={"#fff"} /> : "Log In"}
             </CommonButton>
           </form>
         </Form>

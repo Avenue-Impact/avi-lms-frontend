@@ -7,6 +7,7 @@ import AuthLayout from "./components/AuthLayout";
 import { CommonButton } from "@/Components/ui/button";
 import { Form } from "@/Components/ui/form";
 import FormInput from "@/Components/ui/form-input";
+import PhoneInput from "@/Components/ui/phone-input";
 import Modal from "./components/Modal";
 import RegisterSuccess from "./components/RegisterSuccess";
 import ConfirmEmail from "./components/ConfirmEmail";
@@ -235,7 +236,7 @@ const InstructorSignUp = ({ isPage = true }) => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)}>
             <div className="">
-              <div className={`${isPage ? "" : "grid-cols-2"} grid gap-x-3`}>
+              <div className={`${isPage ? "" : "sm:grid-cols-2"} grid sm:grid-cols-2 gap-x-3 gap-y-4`}>
                 <FormInput
                   label="firstname"
                   name="firstName"
@@ -261,7 +262,7 @@ const InstructorSignUp = ({ isPage = true }) => {
                   absoluteError
                 />
               </div>
-              <div className={`${isPage ? "" : "grid-cols-2"} grid gap-x-3`}>
+              <div className={`${isPage ? "" : "sm:grid-cols-2"} grid sm:grid-cols-2 gap-x-3 gap-y-4`}>
                 <FormInput
                   label="email"
                   name={"email"}
@@ -277,17 +278,15 @@ const InstructorSignUp = ({ isPage = true }) => {
                   disabled={inviteData?.data?.email ? true : false}
                 />
               </div>
-              <FormInput
+              <PhoneInput
                 label="Phone Number"
                 name="phoneNumber"
                 control={form.control}
-                type="tel"
                 id="phoneNumber"
-                placeholder=""
-                autoComplete="tel"
+                placeholder="813 696 9006"
                 absoluteError
               />
-              <div className={`${isPage ? "" : "grid-cols-2"} grid gap-x-3`}>
+              <div className={`${isPage ? "" : "sm:grid-cols-2"} grid sm:grid-cols-2 gap-x-3 gap-y-4`}>
                 <PasswordInput
                   id="password"
                   autoComplete="new-password"

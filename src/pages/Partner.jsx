@@ -12,6 +12,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Cookies from "js-cookie";
 import SEOHead from "@/Components/SEOHead";
+import { Gift, Users } from "lucide-react";
 
 // Import images
 import heroImg from "../assets/images/partner/partner_hero_collab_1776809342038.png";
@@ -86,7 +87,6 @@ const IconStar = () => (
 const Partner = () => {
   const [token, setToken] = useState("");
 
-
   const isAuthenticated = !!Cookies.get("token");
   const handleGenerate = () => {
     const newToken = generateToken(24);
@@ -107,25 +107,32 @@ const Partner = () => {
       <ScrollRestoration />
 
       {/* Hero Section */}
-      <section className="bg-[#ffffff] pb-[60px] font-sans">
+      <section className="bg-[#ffffff] pb-[30px] font-sans">
         {/* ── Two-column body ── */}
-        <div className="mx-auto grid grid-cols-1 items-center gap-[36px] px-[24px] pt-[40px] md:px-[40px] md:pt-[64px] lg:grid-cols-[1.2fr_0.8fr] lg:gap-[48px]">
+        <div className="mx-auto grid grid-cols-1 items-center gap-[36px] px-[24px] pt-[40px] md:px-[40px] md:pt-[64px] lg:grid-cols-2 lg:gap-[48px]">
           {/* Left column */}
-          <div className="flex w-full flex-col items-start">
-            <h1 className="mb-[20px] text-[clamp(45px,5vw,80px)] font-normal leading-[1.15] tracking-[-0.02em] text-[#1a2340]">
+          <div className="flex w-full flex-col items-start lg:pr-10">
+            <span className="mb-4 text-[10px] font-bold uppercase tracking-[0.15em] text-[#CC1747] sm:text-xs">
+              REFER. SUPPORT. EARN.
+            </span>
+            <h1 className="mb-[20px] text-[clamp(40px,4.5vw,64px)] font-bold leading-[1.15] tracking-tight text-[#1a2340]">
               Refer a Friend &amp; <br className="hidden md:block" />
-              Earn with
-              <span className="text-[#CC1747]"> Avenue Impact</span>
+              Earn Rewards <br className="hidden lg:block" />
+              <span className="text-[#CC1747]">with Avenue Impact</span>
             </h1>
-            <p className="mb-[32px] max-w-[440px] text-base font-normal leading-[1.7] text-[#666] sm:text-lg">
-              Invite your friends, help them grow, and earn rewards for every
-              successful referral. Join our community of advocates and make a
-              tangible difference.
+            <p className="mb-[32px] max-w-[480px] text-base font-normal leading-[1.7] text-[#666] sm:text-[17px]">
+              Know someone who wants to grow their skills and advance their
+              career? Invite them to Avenue Impact and get rewarded when they
+              join our learning community
             </p>
             <div className="flex flex-wrap gap-[12px]">
               <Link
-                to={isAuthenticated ? '/dashboard/referral' : `/signup?t=${token}&ttl=Sign up and start earning&_r=/dashboard/referral&r=student&l=${token.slice(5,19)}`}
-                className="inline-flex items-center rounded-[999px] bg-[#CC1747] px-[32px] py-[14px] text-[15px] font-semibold text-white no-underline transition-colors duration-200 hover:bg-[#a8103a]"
+                to={
+                  isAuthenticated
+                    ? "/dashboard/referral"
+                    : `/signup?t=${token}&ttl=Sign up and start earning&_r=/dashboard/referral&r=student&l=${token.slice(5, 19)}`
+                }
+                className="inline-flex items-center justify-center rounded-full bg-[#CC1747] px-[32px] py-[14px] text-[15px] font-semibold text-white no-underline shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#a8103a]"
               >
                 Refer a Friend
               </Link>
@@ -133,54 +140,82 @@ const Partner = () => {
           </div>
 
           {/* Right column */}
-          <div className="relative flex flex-col gap-[16px]">
-            <img
-              src={heroImg}
-              alt="People collaborating at a laptop"
-              className="h-[400px] w-full rounded-[20px] object-cover sm:h-full sm:max-h-[calc(100vh-600px)] sm:w-[80%] md:max-h-[calc(100vh-400px)]"
-            />
+          <div className="relative flex flex-col gap-[16px] lg:pl-4">
+            <div className="relative w-full overflow-hidden rounded-[24px]">
+              <img
+                src={heroImg}
+                alt="People collaborating at a laptop"
+                className="h-[400px] w-full object-cover sm:h-[500px] md:h-[560px]"
+              />
+            </div>
 
-            {/* Action cards - adapted from badge */}
-            <div className="absolute -left-10 bottom-[50px] grid grid-cols-1 gap-[10px] sm:w-72">
-              <div className="relative flex min-h-[50px] w-full flex-row-reverse items-center justify-between overflow-hidden rounded-[12px] bg-white px-[20px] py-[10px] text-primary-color-600 transition-all duration-200 hover:-translate-y-[2px] hover:bg-[#a8103a] sm:min-h-[70px]">
-                <div className="flex flex-col">
-                  <span className="text-[18px] font-semibold leading-[1.3] text-black">
-                    Over 100+
-                  </span>
-                  <span className="text-[14px] text-primary-color-600/90">
-                    Referrals Made
-                  </span>
+            {/* Top floating badge (Grow Together) */}
+            <div className="absolute -top-4 left-1/2 z-10 hidden max-w-[320px] -translate-x-1/2 items-center gap-4 rounded-xl bg-white p-4 shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-transform hover:-translate-y-1 sm:flex lg:-left-12 lg:top-10 lg:translate-x-0">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-[#CC1747]">
+                <Users className="h-7 w-7 text-white" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[15px] font-bold text-[#1a2340]">
+                  Grow Together
+                </span>
+                <span className="text-[12px] leading-tight text-[#666]">
+                  Help your friends build skills and unlock new opportunities
+                </span>
+              </div>
+            </div>
+
+            {/* Bottom floating badge (Great Rewards) */}
+            <div className="absolute -bottom-6 left-1/2 z-10 hidden max-w-[320px] -translate-x-1/2 items-center gap-4 rounded-xl bg-white p-4 shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-transform hover:-translate-y-1 sm:flex lg:-left-4 lg:bottom-16 lg:translate-x-0">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-[#CC1747]">
+                <Gift className="h-7 w-7 text-white" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[15px] font-bold text-[#1a2340]">
+                  Great Rewards
+                </span>
+                <span className="text-[12px] leading-tight text-[#666]">
+                  Earn exciting rewards for every succesful referral.
+                </span>
+              </div>
+            </div>
+
+            {/* Bottom right dark badge (Over 100+ Referrals) */}
+            <div className="absolute -bottom-4 right-4 z-10 flex items-center gap-4 rounded-xl bg-[#1e2a4a] p-4 shadow-xl sm:-bottom-8 sm:right-4 lg:right-0">
+              <div className="flex -space-x-3">
+                <div className="h-10 w-10 overflow-hidden rounded-full border-2 border-[#1e2a4a] bg-black">
+                  <img
+                    src={portrait4}
+                    className="h-full w-full object-cover"
+                    alt="Avatar"
+                  />
                 </div>
-                <div className="flex -space-x-3">
-                  <div className="h-10 w-10 overflow-hidden rounded-full border-2 border-gray-200 bg-black">
-                    <img
-                      src={portrait4}
-                      className="h-full w-full object-cover"
-                      alt="Avenue Impact member profile avatar 4"
-                    />
-                  </div>
-                  <div className="h-10 w-10 overflow-hidden rounded-full border-2 border-gray-200 bg-black">
-                    <img
-                      src={portrait3}
-                      className="h-full w-full object-cover"
-                      alt="Avenue Impact member profile avatar 3"
-                    />
-                  </div>
-                  <div className="h-10 w-10 overflow-hidden rounded-full border-2 border-gray-200 bg-black">
-                    <img
-                      src={portrait2}
-                      className="h-full w-full object-cover"
-                      alt="Avenue Impact member profile avatar 2"
-                    />
-                  </div>
-                  <div className="h-10 w-10 overflow-hidden rounded-full border-2 border-gray-200 bg-black">
-                    <img
-                      src={portrait1}
-                      className="h-full w-full object-cover"
-                      alt="Avenue Impact member profile avatar 1"
-                    />
-                  </div>
+                <div className="h-10 w-10 overflow-hidden rounded-full border-2 border-[#1e2a4a] bg-black">
+                  <img
+                    src={portrait3}
+                    className="h-full w-full object-cover"
+                    alt="Avatar"
+                  />
                 </div>
+                <div className="h-10 w-10 overflow-hidden rounded-full border-2 border-[#1e2a4a] bg-black">
+                  <img
+                    src={portrait2}
+                    className="h-full w-full object-cover"
+                    alt="Avatar"
+                  />
+                </div>
+                <div className="h-10 w-10 overflow-hidden rounded-full border-2 border-[#1e2a4a] bg-black">
+                  <img
+                    src={portrait1}
+                    className="h-full w-full object-cover"
+                    alt="Avatar"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col pr-2">
+                <span className="text-[16px] font-medium leading-tight text-white">
+                  Over 100+
+                </span>
+                <span className="text-[14px] text-white/80">Referrals</span>
               </div>
             </div>
           </div>
@@ -443,7 +478,11 @@ const Partner = () => {
         subtitle="Join a growing network of partners who are 
 shaping the future of education."
         primaryBtnText="Refer a Friend"
-        primaryBtnTo={isAuthenticated ? '/dashboard/referral' : `/signup?t=${token}&ttl=Sign up and start earning&_r=/dashboard/referral&r=student&l=${token.slice(5,19)}`}
+        primaryBtnTo={
+          isAuthenticated
+            ? "/dashboard/referral"
+            : `/signup?t=${token}&ttl=Sign up and start earning&_r=/dashboard/referral&r=student&l=${token.slice(5, 19)}`
+        }
       />
 
       <AVIFooter />

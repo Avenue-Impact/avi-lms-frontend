@@ -7,6 +7,7 @@ import AuthLayout from "./components/AuthLayout";
 import { CommonButton } from "@/Components/ui/button";
 import { Form } from "@/Components/ui/form";
 import FormInput from "@/Components/ui/form-input";
+import PhoneInput from "@/Components/ui/phone-input";
 import Modal from "./components/Modal";
 import RegisterSuccess from "./components/RegisterSuccess";
 import ConfirmEmail from "./components/ConfirmEmail";
@@ -25,7 +26,8 @@ const loginSchema = z
       .string()
       .min(10, { message: "Please enter a valid phone number" })
       .regex(/^[0-9+\-()]*$/, {
-        message: "Spaces are not allowed. Please enter a valid phone number format",
+        message:
+          "Spaces are not allowed. Please enter a valid phone number format",
       }),
     password: z
       .string()
@@ -311,18 +313,21 @@ const SignUp = ({ isPage = true }) => {
       )}
 
       <AuthLayout
-        subtitle="Use your email to sign up"
-        title={title}
+        title="Register Now"
         isMobileStacked={true}
         isPage={isPage}
         alignTop={true}
+        leftHeadline={"Ready to Build\nIn-Demand Skills?"}
+        leftSubtext="Join learners gaining practical knowledge, career support, and industry-ready experience through "
       >
         <Form {...form}>
           <form ref={formRef} onSubmit={form.handleSubmit(handleSubmit)}>
-            <div className="">
-              <div className={`${isPage ? "" : "sm:grid-cols-2"} grid gap-x-3`}>
+            <div className="space-y-4">
+              <div
+                className={`${isPage ? "" : "sm:grid-cols-2"} grid gap-x-3 gap-y-4 sm:grid-cols-2`}
+              >
                 <FormInput
-                  label="firstname"
+                  label="First Name"
                   name="firstName"
                   control={form.control}
                   type="text"
@@ -334,7 +339,7 @@ const SignUp = ({ isPage = true }) => {
                   absoluteError
                 />
                 <FormInput
-                  label="lastname"
+                  label="Last Name"
                   name="lastName"
                   control={form.control}
                   type="text"
@@ -346,9 +351,11 @@ const SignUp = ({ isPage = true }) => {
                   absoluteError
                 />
               </div>
-              <div className={`${isPage ? "" : "sm:grid-cols-2"} grid gap-x-3`}>
+              <div
+                className={`${isPage ? "" : "sm:grid-cols-2"} grid gap-x-3 gap-y-4 sm:grid-cols-2`}
+              >
                 <FormInput
-                  label="username"
+                  label="User Name"
                   name="username"
                   control={form.control}
                   type="text"
@@ -360,7 +367,7 @@ const SignUp = ({ isPage = true }) => {
                   absoluteError
                 />
                 <FormInput
-                  label="email"
+                  label="Email Address"
                   name={"email"}
                   control={form.control}
                   type="email"
@@ -372,26 +379,21 @@ const SignUp = ({ isPage = true }) => {
                   absoluteError
                 />
               </div>
-              <FormInput
+              <PhoneInput
                 label="Phone Number"
                 name="phoneNumber"
                 control={form.control}
-                type="tel"
                 id="phoneNumber"
-                placeholder=""
-                autoComplete="tel"
-                onKeyDown={(e) => {
-                  if (e.key === " ") {
-                    e.preventDefault();
-                  }
-                }}
+                placeholder="813 696 9006"
                 absoluteError
               />
-              <div className={`${isPage ? "" : "sm:grid-cols-2"} grid gap-x-3`}>
+              <div
+                className={`${isPage ? "" : "sm:grid-cols-2"} grid gap-x-3 gap-y-4 sm:grid-cols-2`}
+              >
                 <PasswordInput
                   id="password"
                   autoComplete="new-password"
-                  label="password"
+                  label="Password"
                   name="password"
                   control={form.control}
                   placeholder=""
@@ -407,7 +409,7 @@ const SignUp = ({ isPage = true }) => {
                 <PasswordInput
                   id="confirmPassword"
                   autoComplete="new-password"
-                  label="confirm password"
+                  label="Confirm Password"
                   name="confirmPassword"
                   control={form.control}
                   placeholder=""
@@ -453,7 +455,7 @@ const SignUp = ({ isPage = true }) => {
               </div>
 
               <FormInput
-                label="Referral Code (Optional)"
+                label="AVI Reference Code"
                 name="referralCode"
                 control={form.control}
                 type="text"
@@ -492,11 +494,11 @@ const SignUp = ({ isPage = true }) => {
             </div>
 
             <CommonButton
-              className="mt-4 w-full bg-primary-color-600 py-4 font-poppins text-base font-semibold capitalize text-white hover:bg-primary-color-600"
+              className="mt-4 w-full rounded-lg bg-[#C41E3A] py-3 font-poppins text-base font-semibold capitalize text-white hover:bg-[#a8103a]"
               type="submit"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "loading..." : " sign up"}
+              {isSubmitting ? "loading..." : "Submit Application"}
             </CommonButton>
           </form>
         </Form>
