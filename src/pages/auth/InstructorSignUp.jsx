@@ -47,6 +47,9 @@ const registerSchema = z
     lastName: z
       .string()
       .min(1, { message: "last name must be at least 4 characters long" }),
+    username: z
+      .string()
+      .min(1, { message: "username must be at least 4 characters long" }),
     referralCode: z.string().optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -79,6 +82,7 @@ const InstructorSignUp = ({ isPage = true }) => {
       password: "",
       firstName: "",
       lastName: "",
+      username: "",
       confirmPassword: "",
       referralCode: searchParams.get("code") || "",
       phoneNumber: "",
@@ -263,6 +267,18 @@ const InstructorSignUp = ({ isPage = true }) => {
                 />
               </div>
               <div className={`${isPage ? "" : "sm:grid-cols-2"} grid sm:grid-cols-2 gap-x-3 gap-y-4`}>
+                <FormInput
+                  label="User Name"
+                  name="username"
+                  control={form.control}
+                  type="text"
+                  id="username"
+                  placeholder=""
+                  onFocus={handleInputFocus}
+                  autoComplete="username"
+                  autoCapitalize="words"
+                  absoluteError
+                />
                 <FormInput
                   label="email"
                   name={"email"}
