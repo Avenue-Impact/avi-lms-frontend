@@ -25,14 +25,14 @@ const trustees = [
 export function TrustedBySection() {
   return (
     <section className="w-full border-b border-gray-100 bg-white py-8">
-      <div className="mx-auto max-w-[90%] px-6 md:px-12 lg:px-20">
-        <div className="flex flex-col gap-8 md:flex-row md:items-center md:gap-12">
+      <div className="mx-auto max-w-[80%] px-6 md:px-12 lg:px-20">
+        <div className="flex flex-col gap-8 md:flex-row md:items-center md:gap-10">
           {/* Left label */}
-          <div className="flex-shrink-0 md:w-[160px]">
-            <p className="text-xs font-semibold leading-relaxed text-gray-500">
+          <div className="flex-shrink-0 md:w-[240px]">
+            <p className="text-sm font-bold text-[#1a2340] md:text-base">
               Trusted by
               <br />
-              <span className="text-gray-700">
+              <span className="text-xs font-normal text-[#64748b] md:text-sm">
                 Government &amp; Enterprise
                 <br />
                 Organisations
@@ -41,24 +41,28 @@ export function TrustedBySection() {
           </div>
 
           {/* Vertical divider (desktop only) */}
-          <div className="hidden h-14 w-px flex-shrink-0 bg-gray-200 md:block" />
+          <div className="hidden h-12 w-px flex-shrink-0 bg-gray-200 md:block" />
 
-          {/* Logo cards */}
-          <div className="flex flex-1 flex-wrap items-center gap-4 md:gap-6">
-            {trustees.map((t) => (
-              <div
-                key={t.alt}
-                className="flex min-w-[170px] items-center gap-3 rounded-lg border border-gray-200 bg-white px-4 py-3 transition-shadow duration-200 hover:shadow-sm"
-              >
-                <img
-                  src={t.src}
-                  alt={t.alt}
-                  className="h-auto w-12 flex-shrink-0 whitespace-nowrap object-contain"
-                  loading="lazy"
-                />
-                <span className="whitespace-pre-line text-[10px] font-bold uppercase leading-tight tracking-wide text-gray-700">
-                  {t.name}
-                </span>
+          {/* Logo list */}
+          <div className="flex flex-1 flex-wrap items-center gap-y-6 md:justify-between">
+            {trustees.map((t, index) => (
+              <div key={t.alt} className="flex items-center">
+                {/* Divider before each item except the first (desktop only) */}
+                {index > 0 && (
+                  <div className="mr-6 hidden h-10 w-px bg-gray-200 md:block lg:mr-8" />
+                )}
+
+                <div className="flex items-center gap-3 pr-6 md:pr-0 lg:pr-8">
+                  <img
+                    src={t.src}
+                    alt={t.alt}
+                    className="h-10 w-auto flex-shrink-0 object-contain sm:w-12 mix-blend-multiply"
+                    loading="lazy"
+                  />
+                  <span className="whitespace-pre-line text-[10px] font-bold uppercase leading-tight tracking-wide text-black md:text-[11px]">
+                    {t.name}
+                  </span>
+                </div>
               </div>
             ))}
           </div>
