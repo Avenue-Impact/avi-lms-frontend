@@ -1,6 +1,8 @@
 import { useState } from "react";
 import styles from "./GetInTouch.module.css";
 import Button from "../Button";
+import { toast } from "react-hot-toast";
+import { submitContactUsForm } from "../../services/api";
 
 const REQUIRED_FIELDS = [
   { key: "name", label: "Your Name" },
@@ -20,6 +22,7 @@ const GetInTouch = () => {
   const [errors, setErrors] = useState({});
   const [popupErrors, setPopupErrors] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,7 +37,7 @@ const GetInTouch = () => {
     (f) => formData[f.key].trim() !== "",
   );
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Validate all required fields
@@ -62,8 +65,27 @@ const GetInTouch = () => {
     }
 
     // All valid — submit
-    console.log("Form data submitted:", formData);
-    // TODO: wire up actual API call here
+    try {
+      setIsSubmitting(true);
+      const response = await submitContactUsForm(formData);
+      
+      if (response.data.success) {
+        toast.success(response.data.message || "Message sent successfully!");
+        setFormData({
+          name: "",
+          phone: "",
+          email: "",
+          message: "",
+        });
+      }
+    } catch (error) {
+      console.error("Contact Form Error:", error);
+      toast.error(
+        error.response?.data?.message || "Something went wrong. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -188,11 +210,11 @@ const GetInTouch = () => {
         )}
 
         <Button
-          className={`mt-8 lg:mt-11 ${!isFormComplete ? styles.btn_inactive : ""}`}
+          className={`mt-8 lg:mt-11 ${!isFormComplete || isSubmitting ? styles.btn_inactive : ""}`}
           type="submit"
-          disabled={!isFormComplete}
+          disabled={!isFormComplete || isSubmitting}
         >
-          Send a message
+          {isSubmitting ? "Sending..." : "Send a message"}
         </Button>
       </form>
     </div>
