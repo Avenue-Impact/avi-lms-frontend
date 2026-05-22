@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { Link, useSearchParams, useLocation } from "react-router-dom";
 import { z } from "zod";
 import AuthLayout from "./components/AuthLayout";
+import ReferralAuthLayout from "./components/ReferralAuthLayout";
 import { CommonButton } from "@/Components/ui/button";
 import { Form } from "@/Components/ui/form";
 import FormInput from "@/Components/ui/form-input";
@@ -77,6 +78,9 @@ const SignUp = ({ isPage = true }) => {
 
   const courseId = queryString.get("id");
   const courseTitle = queryString.get("title");
+
+  // Determine if this signup is a referral from the Partner page
+  const isPartnerReferral = queryString.get("r") === "student" && !!queryString.get("t");
 
   const form = useForm({
     resolver: zodResolver(loginSchema),
@@ -312,15 +316,21 @@ const SignUp = ({ isPage = true }) => {
         </Modal>
       )}
 
-      <AuthLayout
-        title="Register Now"
-        isMobileStacked={true}
-        isPage={isPage}
-        alignTop={true}
-        leftHeadline={"Ready to Build\nIn-Demand Skills?"}
-        leftSubtext="Join learners gaining practical knowledge, career support, and industry-ready experience through "
-      >
-        <Form {...form}>
+      {/* Conditionally render the appropriate layout */}
+      {(() => {
+        const LayoutComponent = isPartnerReferral ? ReferralAuthLayout : AuthLayout;
+        return (
+          <LayoutComponent
+            title="Register Now"
+            isMobileStacked={true}
+            isPage={isPage}
+            alignTop={true}
+            leftHeadline={isPartnerReferral ? "You've been invited!" : "Ready to Build\nIn-Demand Skills?"}
+            leftSubtext={isPartnerReferral 
+              ? "Join learners gaining practical knowledge, career support, and industry-ready experience through Avenue Impact." 
+              : "Join learners gaining practical knowledge, career support, and industry-ready experience through "}
+          >
+            <Form {...form}>
           <form ref={formRef} onSubmit={form.handleSubmit(handleSubmit)}>
             <div className="space-y-4">
               <div
@@ -520,7 +530,9 @@ const SignUp = ({ isPage = true }) => {
             sign in
           </Link>
         </p>
-      </AuthLayout>
+          </LayoutComponent>
+        );
+      })()}
 
       {modal && (
         <Modal>
