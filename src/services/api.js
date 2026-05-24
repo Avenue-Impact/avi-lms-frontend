@@ -340,5 +340,5 @@ export const deleteStudentApi = async (studentId) => {
 
 export const submitContactUsForm = async (data) => {
   // Using plain axios since this is a public unauthenticated route
-  return await axios.post(`${BASE_URL}/contact`, data);
+  return await axios.post(`${STUDENT_BASE_URL}/contact`, data);
 };
