@@ -28,11 +28,11 @@ export function TrustedBySection() {
       <div className="mx-auto max-w-[80%] px-6 md:px-12 lg:px-20">
         <div className="flex flex-col gap-8 md:flex-row md:items-center md:gap-10">
           {/* Left label */}
-          <div className="flex-shrink-0 md:w-[240px]">
-            <p className="text-sm font-bold text-[#1a2340] md:text-base">
+          <div className="flex-shrink-0 md:w-[140px] lg:w-[180px] xl:w-[240px]">
+            <p className="text-sm font-bold text-[#1a2340] md:text-sm lg:text-base">
               Trusted by
               <br />
-              <span className="text-xs font-normal text-[#64748b] md:text-sm">
+              <span className="text-xs font-normal text-[#64748b] md:text-[10px] lg:text-xs xl:text-sm">
                 Government &amp; Enterprise
                 <br />
                 Organisations
@@ -41,25 +41,25 @@ export function TrustedBySection() {
           </div>
 
           {/* Vertical divider (desktop only) */}
-          <div className="hidden h-12 w-px flex-shrink-0 bg-gray-200 md:block" />
+          <div className="hidden h-12 w-px flex-shrink-0 bg-gray-200 md:block md:h-8 lg:h-12" />
 
           {/* Logo list */}
-          <div className="flex flex-1 flex-wrap items-center gap-y-6 md:justify-between">
+          <div className="flex flex-1 flex-wrap items-center gap-y-6 md:flex-nowrap md:justify-between md:gap-x-1 lg:gap-x-4">
             {trustees.map((t, index) => (
-              <div key={t.alt} className="flex items-center">
+              <div key={t.alt} className="flex min-w-0 items-center">
                 {/* Divider before each item except the first (desktop only) */}
                 {index > 0 && (
-                  <div className="mr-6 hidden h-10 w-px bg-gray-200 md:block lg:mr-8" />
+                  <div className="mr-6 hidden h-10 w-px flex-shrink-0 bg-gray-200 md:mr-1 md:block md:h-6 lg:mr-4 lg:h-10 xl:mr-6" />
                 )}
 
-                <div className="flex items-center gap-3 pr-6 md:pr-0 lg:pr-8">
+                <div className="flex min-w-0 items-center gap-3 pr-6 md:gap-1.5 md:pr-0 lg:gap-2 lg:pr-2 xl:gap-3 xl:pr-6">
                   <img
                     src={t.src}
                     alt={t.alt}
-                    className="h-10 w-auto flex-shrink-0 object-contain sm:w-12 mix-blend-multiply"
+                    className="h-10 w-auto flex-shrink-0 object-contain mix-blend-multiply sm:w-12 md:h-6 md:w-8 lg:h-8 lg:w-10 xl:h-10 xl:w-12"
                     loading="lazy"
                   />
-                  <span className="whitespace-pre-line text-[10px] font-bold uppercase leading-tight tracking-wide text-black md:text-[11px]">
+                  <span className="min-w-0 whitespace-pre-line text-[10px] font-bold uppercase leading-tight tracking-wide text-black md:text-[7px] lg:text-[9px] xl:text-[11px]">
                     {t.name}
                   </span>
                 </div>
