@@ -14,25 +14,27 @@ const AssignmentReviewModal = ({ submission, onClose }) => {
   const { mutate: sendFeedback, isPending } = useSubmitFeedback();
 
   const student = submission.student_id;
+  const fName = student?.firstname || student?.first_name || "";
+  const lName = student?.lastname || student?.last_name || "";
   const studentName = student
-    ? `${student.firstname || ""} ${student.lastname || ""}`
+    ? `${fName} ${lName}`.trim() || student.email
     : "Unknown Student";
   const studentInitials = student
-    ? `${student.firstname?.[0] || ""}${student.lastname?.[0] || ""}`
+    ? `${fName?.[0] || ""}${lName?.[0] || ""}`.toUpperCase() || "?"
     : "?";
 
   const submittedDate = submission.date_submitted || submission.created_at;
 
   const handleSendFeedback = () => {
     sendFeedback(
-      { submissionId: submission.id, feedback },
+      { submissionId: submission.id || submission._id, feedback },
       { onSuccess: () => onClose() }
     );
   };
 
   const handleMarkReviewed = () => {
     sendFeedback(
-      { submissionId: submission.id, feedback: feedback || "Reviewed" },
+      { submissionId: submission.id || submission._id, feedback: feedback || "Reviewed" },
       { onSuccess: () => onClose() }
     );
   };
@@ -118,6 +120,26 @@ const AssignmentReviewModal = ({ submission, onClose }) => {
               </div>
             )}
 
+            {/* Google Drive Link */}
+            {submission.google_drive_link && (
+              <div className="flex items-start gap-3 p-4 bg-emerald-50/50 rounded-lg border border-emerald-100/50 mb-4">
+                <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse mt-1.5 flex-shrink-0" />
+                <div className="min-w-0 flex-grow">
+                  <p className="text-xs font-semibold text-emerald-700 uppercase tracking-wider mb-1">
+                    Google Drive Link
+                  </p>
+                  <a
+                    href={submission.google_drive_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm font-semibold text-rose-600 hover:underline break-all block"
+                  >
+                    {submission.google_drive_link}
+                  </a>
+                </div>
+              </div>
+            )}
+
             {/* Submission text content */}
             {submission.additional_informations && (
               <div className="prose prose-sm max-w-none text-gray-700 leading-relaxed bg-gray-50/50 rounded-lg p-4 border border-gray-100">
@@ -126,7 +148,8 @@ const AssignmentReviewModal = ({ submission, onClose }) => {
             )}
 
             {!submission.file_details?.name &&
-              !submission.additional_informations && (
+              !submission.additional_informations &&
+              !submission.google_drive_link && (
                 <div className="text-center text-gray-400 py-10">
                   <FileText size={32} className="mx-auto mb-2" />
                   <p className="text-sm">No submission content available</p>
@@ -168,6 +191,16 @@ const AssignmentReviewModal = ({ submission, onClose }) => {
               >
                 <Download size={16} />
                 Download File
+              </a>
+            )}
+            {submission.google_drive_link && (
+              <a
+                href={submission.google_drive_link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-primary-color-600 text-sm font-medium text-primary-color-600 hover:bg-primary-color-50 transition-colors"
+              >
+                Open Google Drive Link
               </a>
             )}
           </div>
