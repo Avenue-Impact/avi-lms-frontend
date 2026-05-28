@@ -499,7 +499,7 @@ const SignUp = ({ isPage = true }) => {
               />
 
               <p className="text-sm text-label">
-                I agree to the terms and conditions
+                I agree to the <Link to="/terms-of-service" className="text-[#C41E3A] hover:underline font-semibold">terms and conditions</Link>
               </p>
             </div>
 

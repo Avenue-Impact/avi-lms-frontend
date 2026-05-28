@@ -378,7 +378,7 @@ const InstructorSignUp = ({ isPage = true }) => {
               />
 
               <p className="text-sm text-label">
-                I agree to the terms and conditions
+                I agree to the <Link to="/terms-of-service" className="text-primary-color-600 hover:underline font-semibold">terms and conditions</Link>
               </p>
             </div>
 

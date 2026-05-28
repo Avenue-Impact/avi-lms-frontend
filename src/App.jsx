@@ -17,6 +17,8 @@ import ThanksPage from "./pages/thanksPage";
 import LandingPage from "./pages/courses/landingPage";
 
 import Contact from "./pages/Contact";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
 // import BusinessAnalysis from "./pages/courses/businessAnalysis";
 // import DataAnalytics from "./pages/courses/dataAnalytics";
 import DataSolution from "./pages/DataSolution";
@@ -185,13 +187,21 @@ function App() {
               index: true,
               element: <Dashbaord />,
             },
-            {
+             {
               path: "/about",
               element: <About />,
             },
             {
               path: "/contact",
               element: <Contact />,
+            },
+            {
+              path: "/privacy-policy",
+              element: <PrivacyPolicy />,
+            },
+            {
+              path: "/terms-of-service",
+              element: <TermsOfService />,
             },
             {
               path: "/docs/zoom-setup",
