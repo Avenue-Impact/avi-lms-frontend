@@ -196,7 +196,7 @@ const InstructorSettings = () => {
       >
         {/* Avatar row */}
         <div className="mb-6 flex items-center gap-4">
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-color-700 text-xl font-bold text-white shadow-md">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-color-600 text-xl font-bold text-white shadow-md">
             {initials}
           </div>
           <div>
