@@ -41,6 +41,8 @@ import InstructorSignUp from "./pages/auth/InstructorSignUp";
 import DashBoardHomePage from "./pages/dashboard/DashboardHomePage";
 import UserNotification from "./pages/dashboard/UserNotification";
 import Wishlist from "./pages/dashboard/Wishlist";
+import AssignmentList from "./pages/dashboard/AssignmentList";
+import AssignmentDetails from "./pages/dashboard/AssignmentDetails";
 
 import AdminLayout from "./layouts/AdminLayout";
 import OtherLayout from "./layouts/OtherLayout";
@@ -347,6 +349,14 @@ function App() {
                 {
                   path: "notification",
                   element: <UserNotification />,
+                },
+                {
+                  path: "assignment",
+                  element: <AssignmentList />,
+                },
+                {
+                  path: "assignment/:taskId",
+                  element: <AssignmentDetails />,
                 },
                 {
                   path: "wishlists",
