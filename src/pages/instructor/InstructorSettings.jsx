@@ -25,12 +25,14 @@ const SettingsCard = ({ title, subtitle, icon: Icon, children }) => (
   <div className="rounded-2xl border border-gray-100 bg-white shadow-sm">
     <div className="border-b border-gray-50 px-6 py-5">
       <div className="flex items-center gap-3">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-color-50 text-primary-color-600">
+        <div className="bg-primary-color-50 flex h-9 w-9 items-center justify-center rounded-xl text-primary-color-600">
           <Icon size={18} />
         </div>
         <div>
           <h3 className="text-sm font-bold text-gray-900">{title}</h3>
-          {subtitle && <p className="text-xs text-gray-400 mt-0.5">{subtitle}</p>}
+          {subtitle && (
+            <p className="mt-0.5 text-xs text-gray-400">{subtitle}</p>
+          )}
         </div>
       </div>
     </div>
@@ -41,7 +43,13 @@ const SettingsCard = ({ title, subtitle, icon: Icon, children }) => (
 /* ─────────────────────────────────────────────
    Text field
 ───────────────────────────────────────────── */
-const Field = ({ label, value, readOnly = true, icon: Icon, type = "text" }) => (
+const Field = ({
+  label,
+  value,
+  readOnly = true,
+  icon: Icon,
+  type = "text",
+}) => (
   <div className="space-y-1.5">
     <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">
       {label}
@@ -61,8 +69,8 @@ const Field = ({ label, value, readOnly = true, icon: Icon, type = "text" }) => 
           Icon ? "pl-9" : "pl-4"
         } ${
           readOnly
-            ? "border-gray-100 bg-gray-50 text-gray-500 cursor-default"
-            : "border-gray-200 bg-white focus:border-primary-color-400 focus:ring-2 focus:ring-primary-color-100"
+            ? "cursor-default border-gray-100 bg-gray-50 text-gray-500"
+            : "focus:border-primary-color-400 border-gray-200 bg-white focus:ring-2 focus:ring-primary-color-100"
         }`}
       />
     </div>
@@ -89,7 +97,7 @@ const PasswordField = ({ label, value, onChange, placeholder }) => {
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          className="w-full rounded-xl border border-gray-200 bg-white py-2.5 pl-9 pr-10 text-sm text-gray-700 focus:border-primary-color-400 focus:outline-none focus:ring-2 focus:ring-primary-color-100"
+          className="focus:border-primary-color-400 w-full rounded-xl border border-gray-200 bg-white py-2.5 pl-9 pr-10 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-color-100"
         />
         <button
           type="button"
@@ -111,7 +119,8 @@ const InstructorSettings = () => {
 
   const fName = instructor?.firstname || instructor?.first_name || "";
   const lName = instructor?.lastname || instructor?.last_name || "";
-  const initials = `${fName?.[0] || ""}${lName?.[0] || ""}`.toUpperCase() || "I";
+  const initials =
+    `${fName?.[0] || ""}${lName?.[0] || ""}`.toUpperCase() || "I";
   const fullName = `${fName} ${lName}`.trim() || "Instructor";
 
   // Password change state
@@ -151,7 +160,8 @@ const InstructorSettings = () => {
       setConfirmPassword("");
     } catch (err) {
       toast.error(
-        err?.response?.data?.message || "Failed to update password. Check your current password.",
+        err?.response?.data?.message ||
+          "Failed to update password. Check your current password.",
       );
     } finally {
       setChangingPassword(false);
@@ -167,10 +177,10 @@ const InstructorSettings = () => {
   };
 
   return (
-    <div className="mx-auto max-w-3xl space-y-8">
+    <div className="space-y-8">
       {/* Page header */}
       <div>
-        <h1 className="text-[28px] font-bold text-gray-900 leading-tight">
+        <h1 className="text-[28px] font-bold leading-tight text-gray-900">
           Account Settings
         </h1>
         <p className="mt-1 text-sm text-gray-400">
@@ -186,12 +196,12 @@ const InstructorSettings = () => {
       >
         {/* Avatar row */}
         <div className="mb-6 flex items-center gap-4">
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-color-500 to-primary-color-700 text-xl font-bold text-white shadow-md">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-color-700 text-xl font-bold text-white shadow-md">
             {initials}
           </div>
           <div>
             <p className="text-base font-bold text-gray-900">{fullName}</p>
-            <p className="text-sm text-gray-400 capitalize">
+            <p className="text-sm capitalize text-gray-400">
               {instructor?.role || "Instructor"}
             </p>
             <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-600">
@@ -204,11 +214,7 @@ const InstructorSettings = () => {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Field label="First Name" value={fName} icon={User} />
           <Field label="Last Name" value={lName} icon={User} />
-          <Field
-            label="Email Address"
-            value={instructor?.email}
-            icon={Mail}
-          />
+          <Field label="Email Address" value={instructor?.email} icon={Mail} />
           <Field
             label="Phone"
             value={instructor?.phone || instructor?.phoneNumber || "—"}
@@ -258,15 +264,23 @@ const InstructorSettings = () => {
                 { label: "Uppercase letter", ok: /[A-Z]/.test(newPassword) },
                 { label: "Lowercase letter", ok: /[a-z]/.test(newPassword) },
                 { label: "Number", ok: /[0-9]/.test(newPassword) },
-                { label: "Special character", ok: /[^A-Za-z0-9]/.test(newPassword) },
-                { label: "Passwords match", ok: newPassword === confirmPassword && confirmPassword !== "" },
+                {
+                  label: "Special character",
+                  ok: /[^A-Za-z0-9]/.test(newPassword),
+                },
+                {
+                  label: "Passwords match",
+                  ok: newPassword === confirmPassword && confirmPassword !== "",
+                },
               ].map((r) => (
                 <li key={r.label} className="flex items-center gap-1.5">
                   <CheckCircle
                     size={12}
                     className={r.ok ? "text-emerald-500" : "text-gray-300"}
                   />
-                  <span className={`text-xs ${r.ok ? "text-emerald-700" : "text-gray-400"}`}>
+                  <span
+                    className={`text-xs ${r.ok ? "text-emerald-700" : "text-gray-400"}`}
+                  >
                     {r.label}
                   </span>
                 </li>
@@ -278,7 +292,7 @@ const InstructorSettings = () => {
             <button
               type="submit"
               disabled={changingPassword}
-              className="flex items-center gap-2 rounded-xl bg-primary-color-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-color-700 disabled:opacity-50"
+              className="hover:bg-primary-color-700 flex items-center gap-2 rounded-xl bg-primary-color-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors disabled:opacity-50"
             >
               <Save size={15} />
               {changingPassword ? "Updating..." : "Update Password"}
@@ -288,7 +302,7 @@ const InstructorSettings = () => {
       </SettingsCard>
 
       {/* ── Notifications ── */}
-      <SettingsCard
+      {/* <SettingsCard
         title="Notification Preferences"
         subtitle="Control which in-app alerts you receive."
         icon={Bell}
@@ -338,7 +352,7 @@ const InstructorSettings = () => {
             </div>
           ))}
         </div>
-      </SettingsCard>
+      </SettingsCard> */}
 
       {/* ── Security / Danger Zone ── */}
       <SettingsCard
@@ -349,8 +363,10 @@ const InstructorSettings = () => {
         <div className="space-y-3">
           <div className="flex items-center justify-between rounded-xl border border-red-100 bg-red-50/50 p-4">
             <div>
-              <p className="text-sm font-semibold text-gray-800">Sign out of all devices</p>
-              <p className="text-xs text-gray-400 mt-0.5">
+              <p className="text-sm font-semibold text-gray-800">
+                Sign out of all devices
+              </p>
+              <p className="mt-0.5 text-xs text-gray-400">
                 This will clear your session and redirect you to login.
               </p>
             </div>

@@ -123,7 +123,7 @@ const InstructorSideNav = ({ open, onClose }) => {
         <div className="border-t border-gray-100 p-4">
           <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-3 transition-colors hover:bg-gray-100">
             {/* Avatar */}
-            <div className="relative flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary-color-500 to-primary-color-700 text-sm font-bold text-white shadow-sm">
+            <div className="relative flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary-color-700 text-sm font-bold text-white shadow-sm">
               {initials}
               {/* Online dot */}
               <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-white bg-emerald-500" />
