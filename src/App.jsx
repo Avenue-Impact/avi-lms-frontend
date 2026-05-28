@@ -126,6 +126,7 @@ import SubmissionReview from "./pages/instructor/SubmissionReview";
 import InstructorErrorPage from "./instructor-error-page";
 import SubmissionsPage from "./pages/instructor/SubmissionsPage";
 import MessagesPage, { FeedbackPage } from "./pages/instructor/MessagesAndFeedback";
+import InstructorSettings from "./pages/instructor/InstructorSettings";
 import UserJoinMeeting from "./pages/dashboard/UserJoinMeeting";
 import PreviewCourse from "./pages/previewCourse";
 import PreviewVideoCourse from "./pages/previewVideoCourse";
@@ -749,6 +750,10 @@ function App() {
                 {
                   path: "feedbacks",
                   element: <FeedbackPage />,
+                },
+                {
+                  path: "settings",
+                  element: <InstructorSettings />,
                 },
               ],
             },
