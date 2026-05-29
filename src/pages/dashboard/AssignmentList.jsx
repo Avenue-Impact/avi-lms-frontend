@@ -199,15 +199,20 @@ export default function AssignmentList() {
 
                       {/* STATUS BADGE */}
                       <td className="px-6 py-4">
-                        {isSubmitted ? (
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-green-50 text-green-700 border border-green-200">
-                            <CheckCircle size={12} />
-                            Submitted
-                          </span>
-                        ) : (
+                        {!isSubmitted ? (
                           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
                             <AlertCircle size={12} />
                             Not submitted
+                          </span>
+                        ) : task.user_submission?.status === "reviewed" ? (
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-green-50 text-green-700 border border-green-200">
+                            <CheckCircle size={12} />
+                            Reviewed
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                            <CheckCircle size={12} />
+                            Under Review
                           </span>
                         )}
                       </td>

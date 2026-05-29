@@ -20,7 +20,7 @@ const CreateAssignmentModal = ({ onClose }) => {
   const [selectedCohort, setSelectedCohort] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [description, setDescription] = useState("");
-  const [submissionType, setSubmissionType] = useState("file");
+  const [submissionType, setSubmissionType] = useState("both");
   const [file, setFile] = useState(null);
 
   const selectedCohortObj = cohorts.find((c) => c.id === selectedCohort);
@@ -36,6 +36,7 @@ const CreateAssignmentModal = ({ onClose }) => {
           selectedCohortObj?.course_id?.id || selectedCohortObj?.course_id?._id || selectedCohortObj?.course_id,
         cohort_id: selectedCohort,
         due_date: dueDate,
+        submission_type: submissionType,
       },
       {
         onSuccess: () => onClose(),
@@ -158,43 +159,32 @@ const CreateAssignmentModal = ({ onClose }) => {
             <label className="mb-2 block text-sm font-semibold text-gray-700">
               Submission Type
             </label>
-            <div className="flex gap-4">
-              <label
-                className={`flex flex-1 cursor-pointer items-center gap-2.5 rounded-lg border px-4 py-3 transition-all ${
-                  submissionType === "file"
-                    ? "border-primary-color-400 bg-primary-color-50 text-primary-color-700"
-                    : "border-gray-200 text-gray-600 hover:border-gray-300"
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="submissionType"
-                  value="file"
-                  checked={submissionType === "file"}
-                  onChange={() => setSubmissionType("file")}
-                  className="accent-primary-color-600"
-                />
-                <FileText size={18} />
-                <span className="text-sm font-medium">File Upload</span>
-              </label>
-              <label
-                className={`flex flex-1 cursor-pointer items-center gap-2.5 rounded-lg border px-4 py-3 transition-all ${
-                  submissionType === "link"
-                    ? "border-primary-color-400 bg-primary-color-50 text-primary-color-700"
-                    : "border-gray-200 text-gray-600 hover:border-gray-300"
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="submissionType"
-                  value="link"
-                  checked={submissionType === "link"}
-                  onChange={() => setSubmissionType("link")}
-                  className="accent-primary-color-600"
-                />
-                <LinkIcon size={18} />
-                <span className="text-sm font-medium">Link</span>
-              </label>
+            <div className="grid grid-cols-3 gap-3">
+              {[
+                { value: "file", label: "File Upload", icon: FileText },
+                { value: "link", label: "Link Only", icon: LinkIcon },
+                { value: "both", label: "File or Link", icon: Upload },
+              ].map(({ value, label, icon: Icon }) => (
+                <label
+                  key={value}
+                  className={`flex cursor-pointer flex-col items-center gap-2 rounded-xl border p-3 text-center transition-all ${
+                    submissionType === value
+                      ? "border-primary-color-400 bg-primary-color-50 text-primary-color-700"
+                      : "border-gray-200 text-gray-500 hover:border-gray-300"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="submissionType"
+                    value={value}
+                    checked={submissionType === value}
+                    onChange={() => setSubmissionType(value)}
+                    className="sr-only"
+                  />
+                  <Icon size={18} />
+                  <span className="text-xs font-semibold">{label}</span>
+                </label>
+              ))}
             </div>
           </div>
         </div>

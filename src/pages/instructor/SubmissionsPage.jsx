@@ -49,9 +49,10 @@ const SubmissionsPage = () => {
   };
 
   const getStatus = (sub) => {
-    if (!sub.date_submitted && !sub.file_url) return "Not Submitted";
+    if (!sub.date_submitted && !sub.file_details?.url && !sub.google_drive_link) return "Not Submitted";
     if (sub.status === "reviewed") return "Reviewed";
-    return "Pending Review";
+    if (sub.status === "reviewing") return "Reviewing";
+    return "Reviewing"; // fallback for legacy 'not reviewed' docs that have a submission
   };
 
   return (
@@ -219,17 +220,21 @@ const SubmissionsPage = () => {
 };
 
 const StatusLabel = ({ status }) => {
-  const colors = {
-    "Pending Review": "text-amber-600",
-    Reviewed: "text-green-600",
-    "Not Submitted": "text-[#888]",
+  const styles = {
+    Reviewing: "bg-amber-50 text-amber-700 border-amber-200",
+    Reviewed:  "bg-green-50 text-green-700 border-green-200",
+    "Not Submitted": "bg-gray-100 text-gray-500 border-gray-200",
   };
-  return <span className={`text-sm font-medium ${colors[status] || "text-[#888]"}`}>{status}</span>;
+  return (
+    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border ${styles[status] || "bg-gray-100 text-gray-500 border-gray-200"}`}>
+      {status}
+    </span>
+  );
 };
 
 const ActionButton = ({ status, submission, onReview }) => {
   if (status === "Not Submitted") {
-    return <span className="text-[#888]">–</span>;
+    return <span className="text-gray-300 text-lg">—</span>;
   }
   if (status === "Reviewed") {
     return (
@@ -237,10 +242,11 @@ const ActionButton = ({ status, submission, onReview }) => {
         onClick={onReview}
         className="inline-flex items-center gap-1.5 rounded-full bg-green-50 px-4 py-2 text-xs font-bold text-green-700 border border-green-200 hover:bg-green-100 transition-colors"
       >
-        View Review
+        View Feedback
       </button>
     );
   }
+  // Reviewing
   return (
     <button
       onClick={onReview}
