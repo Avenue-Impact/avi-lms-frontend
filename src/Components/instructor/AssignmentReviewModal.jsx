@@ -22,6 +22,7 @@ const AssignmentReviewModal = ({ submission, onClose }) => {
 
   const submittedDate = submission.date_submitted || submission.created_at;
   const feedbackThread = Array.isArray(submission.feedback) ? submission.feedback : [];
+  const isReviewed = submission.status === "reviewed";
 
   const handleSendFeedback = () => {
     if (!newMessage.trim()) return;
@@ -226,23 +227,32 @@ const AssignmentReviewModal = ({ submission, onClose }) => {
 
             {/* Input area */}
             <div className="px-5 py-4 border-t border-gray-100">
-              <div className="flex gap-2">
-                <textarea
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  placeholder="Write feedback..."
-                  rows={2}
-                  className="flex-1 px-3 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary-color-200 focus:border-primary-color-400 resize-none"
-                />
-                <button
-                  onClick={handleSendFeedback}
-                  disabled={isPending || !newMessage.trim()}
-                  className="flex-shrink-0 self-end p-2.5 rounded-xl bg-primary-color-600 text-white hover:bg-primary-color-700 transition-colors disabled:opacity-40"
-                  title="Send feedback"
-                >
-                  <Send size={16} />
-                </button>
-              </div>
+              {isReviewed ? (
+                <div className="flex items-center gap-2.5 rounded-xl bg-green-50 border border-green-200 px-4 py-3">
+                  <CheckCircle size={15} className="text-green-600 flex-shrink-0" />
+                  <p className="text-xs font-semibold text-green-700">
+                    This submission has been reviewed. No further feedback can be added.
+                  </p>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <textarea
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    placeholder="Write feedback..."
+                    rows={2}
+                    className="flex-1 px-3 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary-color-200 focus:border-primary-color-400 resize-none"
+                  />
+                  <button
+                    onClick={handleSendFeedback}
+                    disabled={isPending || !newMessage.trim()}
+                    className="flex-shrink-0 self-end p-2.5 rounded-xl bg-primary-color-600 text-white hover:bg-primary-color-700 transition-colors disabled:opacity-40"
+                    title="Send feedback"
+                  >
+                    <Send size={16} />
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
