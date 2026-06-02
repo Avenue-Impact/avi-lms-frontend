@@ -3,13 +3,15 @@
   grid-template-columns: 2fr 3fr;
   gap: 8rem;
   z-index: 1;
+  align-items: center;
 }
 
 /*======= GET IN TOUCH USING NESTING PROPERTY ====== */
 .get_in_touch_info {
+  margin-top: 10px;
   & h4 {
 
-    margin-bottom: 12px;
+    margin-bottom: 5px;
     color: #fff;
 
     font-size: 38px;
