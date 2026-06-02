@@ -118,6 +118,7 @@ const InstructorSignUp = ({ isPage = true }) => {
       password: values.password,
       password_confirm: values.confirmPassword,
       phone: values.phoneNumber,
+      token: token
     };
 
     registerInstructor(
