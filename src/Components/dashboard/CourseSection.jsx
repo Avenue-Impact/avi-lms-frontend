@@ -11,7 +11,7 @@ import {
   AccordionTrigger,
 } from "../ui/accordion";
 import { CommonButton } from "../ui/button";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { useGetEnrolledSectionVideos } from "@/hooks/students/use-get-enrolled-section-videos";
 import ClipLoader from "react-spinners/ClipLoader";
 
@@ -146,6 +146,48 @@ function CourseSection({ editButton, data }) {
   } = useViewCourseSections();
   const { courseId } = useParams();
   const cohortId = data?.data?.data?.cohort_id;
+  const [searchParams] = useSearchParams();
+  const urlVideoId = searchParams.get("videoId");
+
+  useEffect(() => {
+    const recordedSessions = data?.data?.course_detail?.recorded_session;
+    if (!recordedSessions || recordedSessions.length < 1) return;
+
+    if (urlVideoId) {
+      if (urlVideoId === "live") {
+        setActive("1");
+        setSession("live");
+      } else {
+        let targetSection = null;
+        let targetVideo = null;
+        for (const section of recordedSessions) {
+          const video = section.videos?.find(
+            (v) => v.id === urlVideoId || v._id === urlVideoId
+          );
+          if (video) {
+            targetSection = section;
+            targetVideo = video;
+            break;
+          }
+        }
+
+        if (targetSection && targetVideo) {
+          setActive(targetSection.id);
+          setSectionActive(targetSection.section);
+          setSectionDetails((prev) => ({
+            ...prev,
+            topic: targetSection.title,
+            section: targetSection.section,
+            overview: targetSection.overview,
+            videoTitle: targetVideo.title || targetVideo.video_title,
+          }));
+          setSession("recorded");
+          setVideoUrl(targetVideo.video_url);
+          setVideoId(targetVideo.id || targetVideo._id);
+        }
+      }
+    }
+  }, [data?.data?.course_detail?.recorded_session, urlVideoId, setVideoUrl, setVideoId, setSession, setSectionDetails, setActive, setSectionActive]);
 
   return (
     <div className="flex h-full flex-col bg-white">

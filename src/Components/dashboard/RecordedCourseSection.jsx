@@ -1,6 +1,7 @@
 import { useViewCourseSections } from "@/hooks/students/use-course-secion-view";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { HiOutlinePencil } from "react-icons/hi";
 import {
   Accordion,
@@ -14,14 +15,64 @@ function RecordedCourseSection({ editButton, data }) {
   const { setSession, setSectionDetails, setVideoUrl, setVideoId, videoId, active, setActive, setSectionActive } =
     useViewCourseSections();
 
-  useEffect(() => {
-    if (data?.data?.data?.on_demand_sections.length < 1) return;
+  const [searchParams] = useSearchParams();
+  const urlVideoId = searchParams.get("videoId");
 
-    setVideoUrl(
-      data?.data?.data?.on_demand_sections[0].lessons[0].video_url?.link ||
-        data?.data?.data?.on_demand_sections[0].lessons[0].video_url,
-    );
-  }, [data?.data?.on_demand_sections, setVideoUrl]);
+  useEffect(() => {
+    if (!data?.data?.data?.on_demand_sections) return;
+    const sections = data.data.data.on_demand_sections;
+    if (sections.length < 1) return;
+
+    let targetSection = null;
+    let targetLesson = null;
+
+    if (urlVideoId) {
+      for (const section of sections) {
+        const lesson = (section.lessons || section.videos)?.find(
+          (l) => l.id === urlVideoId || l._id === urlVideoId
+        );
+        if (lesson) {
+          targetSection = section;
+          targetLesson = lesson;
+          break;
+        }
+      }
+    }
+
+    if (targetSection && targetLesson) {
+      setActive(targetSection._id);
+      setSectionActive(targetSection.section);
+      setSectionDetails((prev) => ({
+        ...prev,
+        topic: targetSection.title,
+        section: targetSection.section,
+        videoTitle: targetLesson.video_title || targetLesson.title,
+      }));
+      setSession("recorded");
+      setVideoUrl(targetLesson.video_url?.link || targetLesson.video_url);
+      setVideoId(targetLesson.id || targetLesson._id);
+    } else {
+      // Default fallback
+      const firstSection = sections[0];
+      const firstLesson = (firstSection?.lessons || firstSection?.videos)?.[0];
+      if (firstSection && firstLesson) {
+        // Only set default if no video is currently selected
+        // Or if we specifically want to default to the first one
+        // Wait, if urlVideoId is not present, we can just default to the first
+        setActive(firstSection._id);
+        setSectionActive(firstSection.section);
+        setSectionDetails((prev) => ({
+          ...prev,
+          topic: firstSection.title,
+          section: firstSection.section,
+          videoTitle: firstLesson.video_title || firstLesson.title,
+        }));
+        setSession("recorded");
+        setVideoUrl(firstLesson.video_url?.link || firstLesson.video_url);
+        setVideoId(firstLesson.id || firstLesson._id);
+      }
+    }
+  }, [data?.data?.data?.on_demand_sections, urlVideoId, setVideoUrl, setVideoId, setSession, setSectionDetails, setActive, setSectionActive]);
 
   return (
     <div>
@@ -91,8 +142,8 @@ function RecordedCourseSection({ editButton, data }) {
 
                   <AccordionContent className="pb-0 pt-2">
                     <div className="ml-1 flex flex-col space-y-4 border-l-2 border-gray-100 pl-4">
-                      {section?.videos?.map((video, i) => {
-                        const isVideoActive = videoId === video._id;
+                      {(section?.lessons || section?.videos)?.map((video, i) => {
+                        const isVideoActive = videoId === (video._id || video.id);
                         return (
                           <div
                             key={video._id}
@@ -107,13 +158,13 @@ function RecordedCourseSection({ editButton, data }) {
                                 ...prev,
                                 topic: section.title,
                                 section: section.section,
-                                videoTitle: video.video_title,
+                                videoTitle: video.video_title || video.title,
                               }));
                               setSession("recorded");
                               setVideoUrl(
                                 video.video_url?.link || video.video_url,
                               );
-                              setVideoId(video._id);
+                              setVideoId(video._id || video.id);
                             }}
                           >
                             <span
@@ -127,7 +178,7 @@ function RecordedCourseSection({ editButton, data }) {
                               {i + 1 < 10 ? `0${i + 1}.` : `${i + 1}.`}
                             </span>
                             <p className="text-sm font-medium leading-tight">
-                              {video.video_title}
+                              {video.video_title || video.title}
                             </p>
                           </div>
                         );

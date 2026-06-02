@@ -64,18 +64,6 @@ const LiveSessionCourseCard = ({
       <div className="my-[5px] hidden h-[1px] w-full bg-gray-100 lg:block" />
 
       <div className="mt-auto flex flex-col gap-2 px-[7px] pb-4">
-        <div className="flex items-center justify-between text-[10px] text-[#667185]">
-          <p>{courseProgress}</p>
-          <p>{progress > 0 ? `${Math.round(progress)}%` : "0%"}</p>
-        </div>
-
-        <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
-          <div
-            className="h-full rounded-full bg-[#E11D48] transition-all duration-300"
-            style={{ width: `${Math.max(0, Math.min(100, progress || 0))}%` }}
-          />
-        </div>
-
         <CommonButton className="flex w-full flex-col gap-2 pt-1">
           {is_access_revoked ? (
             <>

@@ -26,6 +26,7 @@ const VideoPlayer = ({
   className,
   courseId,
   videoId,
+  cohortId,
 }) => {
   const videoRef = useRef(null);
   const containerRef = useRef(null);
@@ -114,6 +115,23 @@ const VideoPlayer = ({
     }
   };
 
+  const handlePause = () => {
+    if (videoRef.current && courseId && videoId) {
+      const current = videoRef.current.currentTime;
+      const durationVal = videoRef.current.duration;
+      const progressPerc = durationVal > 0 ? (current / durationVal) * 100 : 0;
+      updateProgress({
+        courseId,
+        video_id: videoId,
+        current_time: current,
+        progress_percentage: progressPerc,
+        is_completed: progressPerc >= 95,
+        timestamp: current,
+        cohort_id: cohortId,
+      });
+    }
+  };
+
   const handleProgressChange = (e) => {
     if (videoRef.current) {
       const newTime = (e.target.value / 100) * duration;
@@ -161,6 +179,7 @@ const VideoPlayer = ({
         onTimeUpdate={handleTimeUpdate}
         onEnded={() => setIsPlaying(false)}
         onLoadedMetadata={handleTimeUpdate}
+        onPause={handlePause}
         onContextMenu={(e) => e.preventDefault()}
         controlsList="nodownload"
         className="max-h-[699px] w-full object-contain"

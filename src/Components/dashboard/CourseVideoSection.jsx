@@ -55,7 +55,7 @@ function CourseVideoSection({ data }) {
   );
 }
 
-const PreviewVideo = ({ videoId, videoUrl, courseId }) => {
+const PreviewVideo = ({ videoId, videoUrl, courseId, cohortId }) => {
   const [waiting, setWaiting] = useState(false);
   const { data: progressData } = useFetchVideoProgress(courseId, videoId);
   const { mutate: addProgress } = useAddVideoProgress();
@@ -97,6 +97,8 @@ const PreviewVideo = ({ videoId, videoUrl, courseId }) => {
         current_time: currentTime,
         progress_percentage: Math.floor(progress.played * 100),
         is_completed: progress.played > 0.95,
+        timestamp: currentTime,
+        cohort_id: cohortId,
       });
     }
   };
@@ -105,7 +107,7 @@ const PreviewVideo = ({ videoId, videoUrl, courseId }) => {
     if (!videoId || !courseId || !playerRef.current) return;
     const currentTime = playerRef.current.getCurrentTime();
     const duration = playerRef.current.getDuration();
-    const played = currentTime / duration;
+    const played = duration > 0 ? currentTime / duration : 0;
 
     lastSavedTime.current = currentTime;
     addProgress({
@@ -114,6 +116,8 @@ const PreviewVideo = ({ videoId, videoUrl, courseId }) => {
       current_time: currentTime,
       progress_percentage: Math.floor(played * 100),
       is_completed: played > 0.95,
+      timestamp: currentTime,
+      cohort_id: cohortId,
     });
   };
 
@@ -125,6 +129,8 @@ const PreviewVideo = ({ videoId, videoUrl, courseId }) => {
       current_time: 0,
       progress_percentage: 100,
       is_completed: true,
+      timestamp: 0,
+      cohort_id: cohortId,
     });
   };
 
