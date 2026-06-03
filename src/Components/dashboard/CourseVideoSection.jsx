@@ -27,7 +27,7 @@ function CourseVideoSection({ data }) {
             videoId={videoId}
             courseId={courseId}
             videoUrl={videoUrl}
-            coverImage={joinTeamImage}
+            coverImage={data?.data?.course_detail?.cover_image || data?.data?.data?.cover_image || joinTeamImage}
           />
         ) : (
           <div className="flex aspect-video w-full items-center justify-center bg-gray-200">
