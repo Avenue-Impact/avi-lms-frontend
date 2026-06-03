@@ -28,7 +28,7 @@ export default function Dashbaord() {
         <PlatformShowcaseSection />
         <BusinessIdeaSection />
         {/* <EmpowermentSection /> */}
-        <ImpactProcessSection />
+        {/* <ImpactProcessSection /> */}
         <TestimonialsSection />
         <GlobalDeliverySection />
         {/* <ProfessionalsSection /> */}

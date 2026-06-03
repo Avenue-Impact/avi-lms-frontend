@@ -15,15 +15,44 @@ const XIcon = ({ className }) => (
   </svg>
 );
 
+// Validates full email format with domain check (must have a TLD of 2+ chars)
+const isValidEmailDomain = (email) => {
+  // Split on @ — must have exactly one @
+  const parts = email.split("@");
+  if (parts.length !== 2) return false;
+  const domain = parts[1];
+  // Domain must have at least one dot and a TLD of 2+ chars
+  const domainRegex = /^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$/;
+  return domainRegex.test(domain);
+};
+
 const AVIFooter = () => {
   const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
 
   const handleSubscribe = (e) => {
     e.preventDefault();
-    if (email) {
-      alert(`Subscribed ${email} to Insights!`);
-      setEmail("");
+    setEmailError("");
+
+    if (!email.trim()) {
+      setEmailError("Please enter your email address.");
+      return;
     }
+    // Basic format check
+    if (!/^[^\s@]+@[^\s@]+/.test(email)) {
+      setEmailError("Please enter a valid email address.");
+      return;
+    }
+    // Domain validation
+    if (!isValidEmailDomain(email)) {
+      setEmailError("Email domain appears invalid. Please check and try again.");
+      return;
+    }
+
+    setSubscribed(true);
+    setEmail("");
+    setTimeout(() => setSubscribed(false), 4000);
   };
 
   return (
@@ -115,29 +144,45 @@ const AVIFooter = () => {
           </div>
 
           {/* Subscribe to Insights */}
-          <div className="lg:col-span-3 space-y-4">
+          {/* <div className="lg:col-span-3 space-y-4">
             <h3 className="text-base font-semibold tracking-wider text-white">Subscribe to Insights</h3>
             <p className="text-sm leading-relaxed text-gray-300">
               Get the latest insights on transformation, workforce and growth.
             </p>
-            <form onSubmit={handleSubscribe} className="flex w-full items-center rounded bg-[#0d1e3d] border border-gray-700 focus-within:border-gray-500 overflow-hidden">
-              <input
-                type="email"
-                required
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-transparent px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none"
-              />
-              <button
-                type="submit"
-                aria-label="Subscribe"
-                className="bg-[#D50241] text-white px-4 py-2.5 hover:bg-[#b00235] transition-colors flex items-center justify-center shrink-0"
-              >
-                <ArrowRight size={18} />
-              </button>
+            <form onSubmit={handleSubscribe} noValidate>
+              <div className="flex w-full items-center rounded bg-[#0d1e3d] border border-gray-700 focus-within:border-gray-500 overflow-hidden">
+                <input
+                  id="footer-subscribe-email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => { setEmail(e.target.value); setEmailError(""); }}
+                  aria-describedby={emailError ? "footer-email-error" : undefined}
+                  aria-invalid={!!emailError}
+                  className="w-full bg-transparent px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none"
+                />
+                <button
+                  type="submit"
+                  aria-label="Subscribe"
+                  className="bg-[#D50241] text-white px-4 py-2.5 hover:bg-[#b00235] transition-colors flex items-center justify-center shrink-0"
+                >
+                  <ArrowRight size={18} />
+                </button>
+              </div>
+              
+              {emailError && (
+                <p id="footer-email-error" role="alert" className="mt-2 text-xs text-[#ff6b6b] flex items-center gap-1">
+                  <span aria-hidden="true">⚠</span> {emailError}
+                </p>
+              )}
+              
+              {subscribed && (
+                <p role="status" className="mt-2 text-xs text-green-400 flex items-center gap-1">
+                  <span aria-hidden="true">✓</span> You've been subscribed!
+                </p>
+              )}
             </form>
-          </div>
+          </div> */}
 
         </div>
 
