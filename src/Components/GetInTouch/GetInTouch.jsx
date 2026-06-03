@@ -33,9 +33,7 @@ const GetInTouch = () => {
     }
   };
 
-  const isFormComplete = REQUIRED_FIELDS.every(
-    (f) => formData[f.key].trim() !== "",
-  );
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -210,9 +208,9 @@ const GetInTouch = () => {
         )}
 
         <Button
-          className={`mt-8 lg:mt-11 ${!isFormComplete || isSubmitting ? styles.btn_inactive : ""}`}
+          className={`mt-8 lg:mt-11 ${isSubmitting ? styles.btn_inactive : ""}`}
           type="submit"
-          disabled={!isFormComplete || isSubmitting}
+          disabled={isSubmitting}
         >
           {isSubmitting ? "Sending..." : "Send a message"}
         </Button>

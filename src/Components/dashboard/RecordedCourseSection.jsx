@@ -19,8 +19,8 @@ function RecordedCourseSection({ editButton, data }) {
   const urlVideoId = searchParams.get("videoId");
 
   useEffect(() => {
-    if (!data?.data?.data?.on_demand_sections) return;
-    const sections = data.data.data.on_demand_sections;
+    if (!data?.data?.data?.recorded_sessions) return;
+    const sections = data.data.data.recorded_sessions;
     if (sections.length < 1) return;
 
     let targetSection = null;
@@ -72,7 +72,7 @@ function RecordedCourseSection({ editButton, data }) {
         setVideoId(firstLesson.id || firstLesson._id);
       }
     }
-  }, [data?.data?.data?.on_demand_sections, urlVideoId, setVideoUrl, setVideoId, setSession, setSectionDetails, setActive, setSectionActive]);
+  }, [data?.data?.data?.recorded_sessions, urlVideoId, setVideoUrl, setVideoId, setSession, setSectionDetails, setActive, setSectionActive]);
 
   return (
     <div>
@@ -104,11 +104,11 @@ function RecordedCourseSection({ editButton, data }) {
       </div>
       {/* <CourseSections  active={active} /> */}
       <div className="rounded-lg bg-white pt-8">
-        {data?.data?.data?.on_demand_sections.length < 1 ? (
+        {data?.data?.data?.recorded_sessions?.length < 1 ? (
           <p>No courses yet...</p>
         ) : (
           <Accordion type="single" collapsible value={active} onValueChange={setActive} className="w-full space-y-4">
-            {data?.data?.data?.on_demand_sections.map((section, index) => {
+            {data?.data?.data?.recorded_sessions?.map((section, index) => {
               // Check if this section is currently active (contains the active video or is selected)
               const isSectionActive = active === section._id;
 

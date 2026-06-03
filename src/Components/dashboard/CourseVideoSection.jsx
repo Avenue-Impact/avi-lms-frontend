@@ -50,7 +50,7 @@ function CourseVideoSection({ data }) {
           cohortId={data?.data?.data?.cohort_id}
         />
       </div>
-      {/* <CourseNavigation /> */}
+      <CourseNavigation cohortId={data?.data?.data?.cohort_id} />
     </section>
   );
 }

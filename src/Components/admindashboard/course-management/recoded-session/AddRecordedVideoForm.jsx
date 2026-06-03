@@ -12,12 +12,12 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useParams, useSearchParams } from "react-router-dom";
 
-const AddRecordedVideoForm = ({ sectionToAddVideo, setVideoModal }) => {
+const AddRecordedVideoForm = ({ sectionToAddVideo, setVideoModal, sectionId }) => {
   const [queryString] = useSearchParams();
   const params = useParams();
-  let section = localStorage.getItem("recordedSection")
+  let section = sectionId || (localStorage.getItem("recordedSection")
     ? localStorage.getItem("recordedSection")
-    : 2;
+    : 2);
 
   const cohort = queryString.get("cohort") ?? localStorage.getItem("cohorts");
   const courseId = params.courseId ?? localStorage.getItem("courseId");
