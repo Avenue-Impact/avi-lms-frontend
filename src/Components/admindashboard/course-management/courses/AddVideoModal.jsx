@@ -1,4 +1,8 @@
 import { useState, useMemo } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createVideo } from "@/services/api";
+import toast from "react-hot-toast";
+import VideoForm from "@/pages/admin-pages/data-management/VideoForm";
 import {
   Dialog,
   DialogContent,
@@ -20,6 +24,24 @@ export function AddVideoModal({ children, sectionId, courseId, cohortId }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedVideos, setSelectedVideos] = useState([]);
   const [page, setPage] = useState(1);
+  const [isCreateVideoOpen, setIsCreateVideoOpen] = useState(false);
+
+  const queryClient = useQueryClient();
+  const createMutation = useMutation({
+    mutationFn: createVideo,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["get-all-videos"]);
+      toast.success("Video created successfully");
+      setIsCreateVideoOpen(false);
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message || "Failed to create video");
+    },
+  });
+
+  const handleCreateNewVideo = (formData) => {
+    createMutation.mutate(formData);
+  };
 
   const { mutate: addVideos, isAdding } = useAddVideosToRecordedSession(
     courseId,
@@ -74,8 +96,15 @@ export function AddVideoModal({ children, sectionId, courseId, cohortId }) {
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="max-w-[90%] sm:max-w-[1020px]">
-        <DialogHeader>
+        <DialogHeader className="flex flex-row items-center justify-between pr-8">
           <DialogTitle>Add Videos to Section</DialogTitle>
+          <CommonButton
+            type="button"
+            className="bg-[#cc1747] text-white hover:bg-[#a6133a]"
+            onClick={() => setIsCreateVideoOpen(true)}
+          >
+            Create Video
+          </CommonButton>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 py-4">
           <div className="relative">
@@ -182,6 +211,16 @@ export function AddVideoModal({ children, sectionId, courseId, cohortId }) {
           </div>
         </form>
       </DialogContent>
+      {isCreateVideoOpen && (
+        <VideoForm
+          open={isCreateVideoOpen}
+          onOpenChange={setIsCreateVideoOpen}
+          isEdit={false}
+          initialData={null}
+          onSubmit={handleCreateNewVideo}
+          isPending={createMutation.isPending}
+        />
+      )}
     </Dialog>
   );
 }
