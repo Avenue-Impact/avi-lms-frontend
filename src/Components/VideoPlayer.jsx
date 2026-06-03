@@ -43,6 +43,67 @@ const VideoPlayer = ({
   const timeoutRef = useRef(null);
   const throttleRef = useRef({ lastPing: 0 });
 
+  const syncProgress = (force = false, isCompleted = false) => {
+    if (courseId && videoId && videoRef.current) {
+      const current = videoRef.current.currentTime;
+      const durationVal = videoRef.current.duration;
+      
+      if (durationVal > 0) {
+        let progressPerc = (current / durationVal) * 100;
+        if (isCompleted) {
+          progressPerc = 100;
+        }
+        
+        const currentTimeMs = Date.now();
+        if (force || currentTimeMs - throttleRef.current.lastPing > 10000) {
+          updateProgress({
+            courseId,
+            video_id: videoId,
+            current_time: isCompleted ? 0 : current,
+            progress_percentage: progressPerc,
+            is_completed: progressPerc >= 95 || isCompleted,
+          });
+          throttleRef.current.lastPing = currentTimeMs;
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        syncProgress(true);
+      }
+    };
+    
+    const handleBeforeUnload = () => {
+      syncProgress(true);
+    };
+
+    const handleOffline = () => {
+      if (videoRef.current && !videoRef.current.paused) {
+        videoRef.current.pause();
+        setIsPlaying(false);
+      }
+    };
+
+    const handleOnline = () => {
+      syncProgress(true);
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    window.addEventListener("offline", handleOffline);
+    window.addEventListener("online", handleOnline);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      window.removeEventListener("offline", handleOffline);
+      window.removeEventListener("online", handleOnline);
+    };
+  }, [courseId, videoId]);
+
   useEffect(() => {
     if (progressData?.data?.current_time && videoRef.current && !hasStarted) {
       videoRef.current.currentTime = progressData.data.current_time;
@@ -81,6 +142,7 @@ const VideoPlayer = ({
       } else {
         videoRef.current.pause();
         setIsPlaying(false);
+        syncProgress(true);
       }
     }
   };
@@ -95,20 +157,8 @@ const VideoPlayer = ({
         let progressPerc = (current / durationVal) * 100;
         setProgress(progressPerc);
 
-        // Tracking Throttle Logic
-        if (courseId && videoId && isPlaying) {
-          const currentTimeMs = Date.now();
-          // ping every 10 seconds
-          if (currentTimeMs - throttleRef.current.lastPing > 10000) {
-            updateProgress({
-              courseId,
-              video_id: videoId,
-              current_time: current,
-              progress_percentage: progressPerc,
-              is_completed: progressPerc >= 95,
-            });
-            throttleRef.current.lastPing = currentTimeMs;
-          }
+        if (isPlaying) {
+          syncProgress(false);
         }
       }
     }
@@ -159,7 +209,10 @@ const VideoPlayer = ({
         src={videoUrl}
         poster={coverImage}
         onTimeUpdate={handleTimeUpdate}
-        onEnded={() => setIsPlaying(false)}
+        onEnded={() => {
+          setIsPlaying(false);
+          syncProgress(true, true);
+        }}
         onLoadedMetadata={handleTimeUpdate}
         onContextMenu={(e) => e.preventDefault()}
         controlsList="nodownload"
