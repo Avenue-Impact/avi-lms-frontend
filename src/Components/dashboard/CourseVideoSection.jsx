@@ -3,7 +3,6 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import VideoPlayer from "@/Components/VideoPlayer";
 import joinTeamImage from "@/assets/images/join_team.png";
-import CourseNavigation from "@/Components/dashboard/CourseNavigation";
 
 function CourseVideoSection({ data }) {
   const { sectionDetails, videoUrl, videoId } = useViewCourseSections();
@@ -36,7 +35,6 @@ function CourseVideoSection({ data }) {
           </div>
         )}
       </div>
-      <CourseNavigation cohortId={data?.data?.data?.cohort_id} />
     </section>
   );
 }
