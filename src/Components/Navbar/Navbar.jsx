@@ -40,7 +40,7 @@ const Navbar = () => {
   ];
 
   return (
-    <div className="fixed left-0 top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <div className="w-full border-b border-border bg-background">
       <div className="w-full">
         <div className="mx-auto flex w-[95%] items-center justify-between overflow-x-hidden py-4 transition-all duration-300 ease-linear sm:w-[85%] lg:py-[10px]">
           <div className="nav-logo">
@@ -55,7 +55,7 @@ const Navbar = () => {
           </div>
           <div>
             <div
-              className={`absolute w-full md:h-fit md:w-auto ${
+              className={`fixed z-50 h-screen overflow-y-auto w-full md:h-fit md:w-auto md:overflow-visible ${
                 showNav
                   ? "translate-x-0 duration-150 ease-linear"
                   : "translate-x-full duration-150 ease-linear"

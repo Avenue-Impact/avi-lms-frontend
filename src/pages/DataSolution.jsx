@@ -8,10 +8,16 @@ import Slide from "../Components/data-solution/Slide";
 import Swiper from "../Components/data-solution/Swiper";
 import AccordionSlide from "@/Components/data-solution/AccordionSlide";
 import AccordionSlider from "@/Components/data-solution/AccordionSlider";
+import SEOHead from "@/Components/SEOHead";
 
 const DataSolution = () => {
   return (
     <>
+      <SEOHead
+        title="Data Analytics & Solutions | Avenue Impact"
+        description="Leverage Avenue Impact's expert data management, analytics, and business intelligence solutions to drive strategic insights and competitive business growth."
+        canonical="https://avenueimpact.com/data-solution"
+      />
       <ImageHero imageSrc={img} className={"items-end lg:items-start"}>
         <div className="">
           <div>

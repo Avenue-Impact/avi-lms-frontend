@@ -17,6 +17,8 @@ import ThanksPage from "./pages/thanksPage";
 import LandingPage from "./pages/courses/landingPage";
 
 import Contact from "./pages/Contact";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
 // import BusinessAnalysis from "./pages/courses/businessAnalysis";
 // import DataAnalytics from "./pages/courses/dataAnalytics";
 import DataSolution from "./pages/DataSolution";
@@ -41,6 +43,8 @@ import InstructorSignUp from "./pages/auth/InstructorSignUp";
 import DashBoardHomePage from "./pages/dashboard/DashboardHomePage";
 import UserNotification from "./pages/dashboard/UserNotification";
 import Wishlist from "./pages/dashboard/Wishlist";
+import AssignmentList from "./pages/dashboard/AssignmentList";
+import AssignmentDetails from "./pages/dashboard/AssignmentDetails";
 
 import AdminLayout from "./layouts/AdminLayout";
 import OtherLayout from "./layouts/OtherLayout";
@@ -122,6 +126,7 @@ import SubmissionReview from "./pages/instructor/SubmissionReview";
 import InstructorErrorPage from "./instructor-error-page";
 import SubmissionsPage from "./pages/instructor/SubmissionsPage";
 import MessagesPage, { FeedbackPage } from "./pages/instructor/MessagesAndFeedback";
+import InstructorSettings from "./pages/instructor/InstructorSettings";
 import UserJoinMeeting from "./pages/dashboard/UserJoinMeeting";
 import PreviewCourse from "./pages/previewCourse";
 import PreviewVideoCourse from "./pages/previewVideoCourse";
@@ -183,13 +188,21 @@ function App() {
               index: true,
               element: <Dashbaord />,
             },
-            {
+             {
               path: "/about",
               element: <About />,
             },
             {
               path: "/contact",
               element: <Contact />,
+            },
+            {
+              path: "/privacy-policy",
+              element: <PrivacyPolicy />,
+            },
+            {
+              path: "/terms-of-service",
+              element: <TermsOfService />,
             },
             {
               path: "/docs/zoom-setup",
@@ -347,6 +360,14 @@ function App() {
                 {
                   path: "notification",
                   element: <UserNotification />,
+                },
+                {
+                  path: "assignment",
+                  element: <AssignmentList />,
+                },
+                {
+                  path: "assignment/:taskId",
+                  element: <AssignmentDetails />,
                 },
                 {
                   path: "wishlists",
@@ -729,6 +750,10 @@ function App() {
                 {
                   path: "feedbacks",
                   element: <FeedbackPage />,
+                },
+                {
+                  path: "settings",
+                  element: <InstructorSettings />,
                 },
               ],
             },

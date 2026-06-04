@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { FileCheck, Download, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { useFetchAssignmentSubmissions } from "@/hooks/instructor/use-assignment-submissions";
+import AssignmentReviewModal from "@/Components/instructor/AssignmentReviewModal";
 
 const SubmissionsPage = () => {
   const [searchParams] = useSearchParams();
@@ -9,6 +10,7 @@ const SubmissionsPage = () => {
   
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedSubmission, setSelectedSubmission] = useState(null);
   const itemsPerPage = 40;
 
   const { data: subsData, isLoading } = useFetchAssignmentSubmissions(urlTaskId, page, itemsPerPage);
@@ -28,7 +30,10 @@ const SubmissionsPage = () => {
     return submissions.filter(
       (s) =>
         s.student_id?.firstname?.toLowerCase().includes(q) ||
+        s.student_id?.first_name?.toLowerCase().includes(q) ||
         s.student_id?.lastname?.toLowerCase().includes(q) ||
+        s.student_id?.last_name?.toLowerCase().includes(q) ||
+        s.student_id?.email?.toLowerCase().includes(q) ||
         s.title?.toLowerCase().includes(q)
     );
   }, [submissions, searchQuery]);
@@ -44,9 +49,10 @@ const SubmissionsPage = () => {
   };
 
   const getStatus = (sub) => {
-    if (!sub.date_submitted && !sub.file_url) return "Not Submitted";
+    if (!sub.date_submitted && !sub.file_details?.url && !sub.google_drive_link) return "Not Submitted";
     if (sub.status === "reviewed") return "Reviewed";
-    return "Pending Review";
+    if (sub.status === "reviewing") return "Reviewing";
+    return "Reviewing"; // fallback for legacy 'not reviewed' docs that have a submission
   };
 
   return (
@@ -110,7 +116,11 @@ const SubmissionsPage = () => {
                         {((page - 1) * itemsPerPage + idx + 1).toString().padStart(2, "0")}
                       </td>
                       <td className="px-6 py-4 font-medium">
-                        {sub.student_id?.firstname} {sub.student_id?.lastname}
+                        {sub.student_id?.firstname || sub.student_id?.first_name ? (
+                          `${sub.student_id.firstname || sub.student_id.first_name} ${sub.student_id.lastname || sub.student_id.last_name || ""}`.trim()
+                        ) : (
+                          sub.student_id?.email || "Unknown Student"
+                        )}
                       </td>
                       <td className="max-w-[220px] truncate px-6 py-4 text-[#555]">
                         {sub.title || "—"}
@@ -122,7 +132,11 @@ const SubmissionsPage = () => {
                         <StatusLabel status={status} />
                       </td>
                       <td className="px-6 py-4">
-                        <ActionButton status={status} submission={sub} />
+                        <ActionButton
+                          status={status}
+                          submission={sub}
+                          onReview={() => setSelectedSubmission(sub)}
+                        />
                       </td>
                     </tr>
                   );
@@ -194,36 +208,50 @@ const SubmissionsPage = () => {
           </div>
         </div>
       )}
+
+      {selectedSubmission && (
+        <AssignmentReviewModal
+          submission={selectedSubmission}
+          onClose={() => setSelectedSubmission(null)}
+        />
+      )}
     </div>
   );
 };
 
 const StatusLabel = ({ status }) => {
-  const colors = {
-    "Pending Review": "text-amber-600",
-    Reviewed: "text-green-600",
-    "Not Submitted": "text-[#888]",
+  const styles = {
+    Reviewing: "bg-amber-50 text-amber-700 border-amber-200",
+    Reviewed:  "bg-green-50 text-green-700 border-green-200",
+    "Not Submitted": "bg-gray-100 text-gray-500 border-gray-200",
   };
-  return <span className={`text-sm font-medium ${colors[status] || "text-[#888]"}`}>{status}</span>;
+  return (
+    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border ${styles[status] || "bg-gray-100 text-gray-500 border-gray-200"}`}>
+      {status}
+    </span>
+  );
 };
 
-const ActionButton = ({ status, submission }) => {
+const ActionButton = ({ status, submission, onReview }) => {
   if (status === "Not Submitted") {
-    return <span className="text-[#888]">–</span>;
+    return <span className="text-gray-300 text-lg">—</span>;
   }
   if (status === "Reviewed") {
     return (
-      <a
-        href={submission.file_url || "#"}
-        download
-        className="inline-flex items-center gap-1.5 rounded-full bg-[#C8102E] px-4 py-2 text-xs font-bold text-white hover:bg-red-700 transition-colors"
+      <button
+        onClick={onReview}
+        className="inline-flex items-center gap-1.5 rounded-full bg-green-50 px-4 py-2 text-xs font-bold text-green-700 border border-green-200 hover:bg-green-100 transition-colors"
       >
-        <Download size={12} /> Download
-      </a>
+        View Feedback
+      </button>
     );
   }
+  // Reviewing
   return (
-    <button className="rounded-full bg-[#C8102E] px-4 py-2 text-xs font-bold text-white hover:bg-red-700 transition-colors">
+    <button
+      onClick={onReview}
+      className="rounded-full bg-[#C8102E] px-4 py-2 text-xs font-bold text-white hover:bg-red-700 transition-colors"
+    >
       Review
     </button>
   );

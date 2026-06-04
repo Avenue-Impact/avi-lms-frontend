@@ -5,13 +5,18 @@ import Card from "../Components/digital-transformation/Card";
 import { digitalData } from "../assets/lib/data";
 import ImpactCard from "../Components/digital-transformation/ImpactCard";
 import DigitalSwiper from "@/Components/digital-transformation/DigitalSwiper";
-
 import ServiceHeading from "@/Components/ServiceHeading";
+import SEOHead from "@/Components/SEOHead";
 
 
 const DigitalTransformation = () => {
   return (
     <>
+      <SEOHead
+        title="Digital Transformation Services | Avenue Impact"
+        description="Unlock your business potential with Avenue Impact's digital transformation consulting. Expert-led strategies for technology adoption, process improvement, and sustainable growth."
+        canonical="https://avenueimpact.com/digital-transformation"
+      />
       <ImageHero imageSrc={img} className={"items-end lg:items-start"}>
         <div className="mt-28">
           <div className="flex items-center gap-8 lg:my-20 2xl:mb-32 2xl:mt-[225px]">

@@ -3,13 +3,15 @@
   grid-template-columns: 2fr 3fr;
   gap: 8rem;
   z-index: 1;
+  align-items: center;
 }
 
 /*======= GET IN TOUCH USING NESTING PROPERTY ====== */
 .get_in_touch_info {
+  margin-top: -20px;
   & h4 {
 
-    margin-bottom: 12px;
+    margin-bottom: 5px;
     color: #fff;
 
     font-size: 38px;
@@ -47,8 +49,8 @@
   input[type="email"],
   input[type="number"] {
     width: 100%;
-    padding: 20px 10px;
-    margin-bottom: 15px;
+    padding: 5px 10px;
+    margin-bottom: 8px;
     border: none;
     background-color: transparent;
     border-bottom: 2px solid #ccc;
@@ -117,4 +119,261 @@
 }
 
 @media only screen and (max-width: 450px) {
+}
+
+/* ===== VALIDATION STYLES ===== */
+
+/* Inline field error text */
+.field_error {
+  display: block;
+  color: #ff4d6a;
+  font-size: 12px;
+  margin-top: -10px;
+  margin-bottom: 12px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+/* Popup banner at top of form */
+.error_popup {
+  position: relative;
+  margin-bottom: 24px;
+  animation: slideDown 0.25s ease-out;
+}
+
+.error_popup_inner {
+  background: linear-gradient(135deg, #3a0a14, #5c1526);
+  border: 1px solid rgba(255, 77, 106, 0.4);
+  border-radius: 10px;
+  padding: 16px 44px 16px 16px;
+  color: #fff;
+  font-size: 13px;
+  line-height: 1.5;
+  position: relative;
+}
+
+.error_popup_list {
+  margin-top: 8px;
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  color: #ffb3c0;
+}
+
+.error_popup_close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  transition: color 0.15s;
+}
+
+.error_popup_close:hover {
+  color: #fff;
+}
+
+/* Inactive / disabled submit button */
+.btn_inactive {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Ensure disabled button does NOT change to white on hover */
+.get_in_touch_input button:disabled,
+.get_in_touch_input button[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: inherit !important;
+  color: inherit !important;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== PHONE FIELD: country code + digit input ===== */
+
+.phone_field_wrapper {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  width: 100%;
+  border-bottom: 2px solid #ccc;
+  margin-bottom: 8px;
+  transition: border-color 0.3s ease;
+}
+
+.phone_field_wrapper:focus-within {
+  border-bottom-color: #0073d7;
+}
+
+/* ---- Country selector ---- */
+.country_select_wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.country_trigger {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  border-right: 1px solid rgba(204, 204, 204, 0.35);
+  color: #ccc;
+  padding: 5px 10px 5px 6px;
+  cursor: pointer;
+  font-size: 14px;
+  white-space: nowrap;
+  transition: color 0.2s;
+  height: 100%;
+}
+
+.country_trigger:hover,
+.country_trigger:focus {
+  color: #fff;
+  outline: none;
+}
+
+.dial_code {
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.caret {
+  font-size: 8px;
+  opacity: 0.6;
+}
+
+/* ---- Dropdown panel ---- */
+.country_dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 200;
+  width: 260px;
+  background: #0d1e3d;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  animation: slideDown 0.15s ease-out;
+}
+
+.country_search_wrap {
+  padding: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.country_search_input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 5px;
+  color: #fff;
+  font-size: 13px;
+  padding: 6px 10px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.country_search_input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.country_search_input:focus {
+  border-color: #0073d7;
+}
+
+.country_list {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  max-height: 220px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.15) transparent;
+}
+
+.country_option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #ccc;
+  transition: background 0.15s, color 0.15s;
+}
+
+.country_option:hover {
+  background: rgba(0, 115, 215, 0.2);
+  color: #fff;
+}
+
+.country_option_active {
+  background: rgba(0, 115, 215, 0.3);
+  color: #fff;
+}
+
+.country_name {
+  flex: 1;
+  font-weight: 300;
+}
+
+.country_dial {
+  font-size: 12px;
+  opacity: 0.65;
+  margin-left: auto;
+}
+
+.country_no_result {
+  padding: 10px 12px;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 13px;
+  text-align: center;
+}
+
+/* ---- Local phone number input ---- */
+.phone_number_input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #ccc;
+  font-size: inherit;
+  font-weight: 300;
+  padding: 5px 10px;
+  outline: none;
+}
+
+.phone_number_input::placeholder {
+  color: #fff;
+  opacity: 0.4;
+}
+
+.phone_number_input:focus::placeholder {
+  color: #fff;
+  opacity: 0.25;
+}
+
+/* Responsive: stack on small screens */
+@media only screen and (max-width: 450px) {
+  .country_dropdown {
+    width: 220px;
+  }
 }

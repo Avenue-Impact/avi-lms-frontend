@@ -60,7 +60,6 @@ const StartMeeting = ({
         'link[href*="zoomus"], style[data-zm]',
       );
       zoomStyles.forEach((style) => style.remove());
-      console.log("Zoom styles removed on unmount");
     };
   }, [
     meetingNumber,

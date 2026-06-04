@@ -129,6 +129,7 @@ function SectionPopover({ children, className, section, course }) {
               <AddRecordedVideoForm
                 sectionToAddVideo={course}
                 setVideoModal={setAddVideoModal}
+                sectionId={section}
               />
             }
             header="Add More video"

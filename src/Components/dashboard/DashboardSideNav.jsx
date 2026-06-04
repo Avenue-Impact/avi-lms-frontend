@@ -16,16 +16,16 @@ export const navItem = [
     alert: "alert",
     path: "/dashboard",
   },
-  // {
-  //   id: 2,
-  //   text: "Assignment",
+  {
+    id: 2,
+    text: "Assignment",
 
-  //   icon: <MdAssignment />,
+    icon: <MdAssignment />,
 
-  //   active: "assignment",
-  //   alert: "alert",
-  //   path: "/dashboard/assignment",
-  // },
+    active: "assignment",
+    alert: "alert",
+    path: "/dashboard/assignment",
+  },
   {
     id: 3,
     text: "Notification",

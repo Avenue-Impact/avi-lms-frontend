@@ -337,3 +337,8 @@ export const regenerateMeetingInstructor = async ({ courseId, cohortId }) => {
 export const deleteStudentApi = async (studentId) => {
   return await axiosAdmin.delete(`/users/${studentId}`);
 };
+
+export const submitContactUsForm = async (data) => {
+  // Using plain axios since this is a public unauthenticated route
+  return await axios.post(`${STUDENT_BASE_URL}/contact`, data);
+};

@@ -14,6 +14,7 @@ import dataTwo  from "../../../assets/images/Data-Second.jpeg";
 import dataThree  from "../../../assets/images/Data-Third.jpeg";
 import dataFour  from "../../../assets/images/Data-Fourth.jpeg";
 import group from "../../../assets/images/big-team.jpg";
+import SEOHead from '@/Components/SEOHead';
 
 // Add Poppins font
 const Poppins = () => {
@@ -189,6 +190,11 @@ export default function DataAnalytics() {
 
   return (
     <>
+      <SEOHead
+        title="Data Analytics Courses | Avenue Impact"
+        description="Master data analytics with Avenue Impact. Learn Power BI, SQL, Excel, Tableau, and Python from certified professionals. Live classes, hands-on projects, and CPD certification."
+        canonical="https://avenueimpact.com/courses/data-analytics"
+      />
       <Poppins />
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white font-poppins">
       {/* Top Banner */}
@@ -577,7 +583,7 @@ export default function DataAnalytics() {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-12">
             <div>
-              <img src={Logo} alt="" className="w-12 h-12 object-cover bg-white rounded-full p-1" />
+              <img src={Logo} alt="Avenue Impact logo" className="w-12 h-12 object-cover bg-white rounded-full p-1" />
               <p className="text-gray-400 mb-6">Empowering the next generation of Data Analysts with world-class training and mentorship.</p>
             </div>
             

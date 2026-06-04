@@ -4,35 +4,46 @@ import {
   X,
   Download,
   CheckCircle,
-  User,
   Calendar,
   FileText,
+  MessageSquare,
+  Send,
 } from "lucide-react";
 
 const AssignmentReviewModal = ({ submission, onClose }) => {
-  const [feedback, setFeedback] = useState(submission.feedback || "");
+  const [newMessage, setNewMessage] = useState("");
   const { mutate: sendFeedback, isPending } = useSubmitFeedback();
 
   const student = submission.student_id;
-  const studentName = student
-    ? `${student.firstname || ""} ${student.lastname || ""}`
-    : "Unknown Student";
-  const studentInitials = student
-    ? `${student.firstname?.[0] || ""}${student.lastname?.[0] || ""}`
-    : "?";
+  const fName = student?.firstname || student?.first_name || "";
+  const lName = student?.lastname || student?.last_name || "";
+  const studentName = `${fName} ${lName}`.trim() || student?.email || "Unknown Student";
+  const studentInitials = `${fName?.[0] || ""}${lName?.[0] || ""}`.toUpperCase() || "?";
 
   const submittedDate = submission.date_submitted || submission.created_at;
+  const feedbackThread = Array.isArray(submission.feedback) ? submission.feedback : [];
+  const isReviewed = submission.status === "reviewed";
 
   const handleSendFeedback = () => {
+    if (!newMessage.trim()) return;
     sendFeedback(
-      { submissionId: submission.id, feedback },
-      { onSuccess: () => onClose() }
+      { submissionId: submission.id || submission._id, feedback: newMessage, mark_reviewed: false },
+      {
+        onSuccess: () => {
+          setNewMessage("");
+          onClose();
+        },
+      }
     );
   };
 
   const handleMarkReviewed = () => {
     sendFeedback(
-      { submissionId: submission.id, feedback: feedback || "Reviewed" },
+      {
+        submissionId: submission.id || submission._id,
+        feedback: newMessage.trim() || undefined,
+        mark_reviewed: true,
+      },
       { onSuccess: () => onClose() }
     );
   };
@@ -40,10 +51,7 @@ const AssignmentReviewModal = ({ submission, onClose }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
 
       {/* Modal */}
       <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl mx-4 max-h-[90vh] flex flex-col overflow-hidden">
@@ -51,16 +59,14 @@ const AssignmentReviewModal = ({ submission, onClose }) => {
         <div className="p-6 border-b border-gray-100 flex-shrink-0">
           <div className="flex items-start justify-between">
             <div>
-              <h2 className="text-xl font-bold text-gray-900">
-                Assignment Review: {submission.title}
+              <h2 className="text-lg font-bold text-gray-900">
+                {submission.title}
               </h2>
-              <div className="flex items-center gap-3 mt-1.5 text-sm text-gray-500">
-                {submission.course_id?.title && (
-                  <span>{submission.course_id.title}</span>
-                )}
+              <div className="flex items-center gap-3 mt-1.5 text-sm text-gray-400">
+                {submission.course_id?.title && <span>{submission.course_id.title}</span>}
                 {submission.cohort_id?.cohort && (
                   <>
-                    <span className="text-gray-300">|</span>
+                    <span className="text-gray-200">|</span>
                     <span>{submission.cohort_id.cohort}</span>
                   </>
                 )}
@@ -75,16 +81,17 @@ const AssignmentReviewModal = ({ submission, onClose }) => {
           </div>
         </div>
 
-        {/* Body — split panel */}
-        <div className="flex-grow overflow-y-auto flex flex-col md:flex-row">
-          {/* Left — Student Submission */}
-          <div className="flex-1 p-6 border-r border-gray-100">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="h-11 w-11 rounded-full bg-primary-color-100 flex items-center justify-center text-primary-color-700 font-bold text-sm flex-shrink-0">
+        {/* Body */}
+        <div className="flex-grow overflow-y-auto flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-gray-100">
+          {/* Left — Submission Details */}
+          <div className="flex-1 p-6 space-y-5">
+            {/* Student Info */}
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-full bg-primary-color-100 flex items-center justify-center text-primary-color-700 font-bold text-sm flex-shrink-0">
                 {studentInitials}
               </div>
               <div>
-                <p className="font-semibold text-gray-900">{studentName}</p>
+                <p className="font-semibold text-sm text-gray-900">{studentName}</p>
                 <p className="text-xs text-gray-400 flex items-center gap-1">
                   <Calendar size={12} />
                   {submittedDate
@@ -101,63 +108,157 @@ const AssignmentReviewModal = ({ submission, onClose }) => {
               </div>
             </div>
 
-            {/* Submission file info */}
+            {/* Status pill */}
+            <div>
+              {submission.status === "reviewed" ? (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-green-50 text-green-700 border border-green-200">
+                  <CheckCircle size={12} /> Reviewed
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                  Under Review
+                </span>
+              )}
+            </div>
+
+            {/* File */}
             {submission.file_details?.name && (
-              <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg mb-4">
-                <FileText size={20} className="text-gray-400 flex-shrink-0" />
+              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
+                <FileText size={18} className="text-gray-400 flex-shrink-0" />
                 <div className="min-w-0 flex-grow">
-                  <p className="text-sm font-medium text-gray-700 truncate">
-                    {submission.file_details.name}
-                  </p>
+                  <p className="text-sm font-medium text-gray-700 truncate">{submission.file_details.name}</p>
                   {submission.file_details.size && (
-                    <p className="text-xs text-gray-400">
-                      {submission.file_details.size}
-                    </p>
+                    <p className="text-xs text-gray-400">{submission.file_details.size}</p>
                   )}
                 </div>
               </div>
             )}
 
-            {/* Submission text content */}
-            {submission.additional_informations && (
-              <div className="prose prose-sm max-w-none text-gray-700 leading-relaxed bg-gray-50/50 rounded-lg p-4 border border-gray-100">
-                <p>{submission.additional_informations}</p>
+            {/* Google Drive */}
+            {submission.google_drive_link && (
+              <div className="flex items-start gap-3 p-4 bg-emerald-50/50 rounded-xl border border-emerald-100/50">
+                <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse mt-1.5 flex-shrink-0" />
+                <div className="min-w-0 flex-grow">
+                  <p className="text-xs font-semibold text-emerald-700 uppercase tracking-wider mb-1">
+                    Google Drive / Project Link
+                  </p>
+                  <a
+                    href={submission.google_drive_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm font-semibold text-rose-600 hover:underline break-all block"
+                  >
+                    {submission.google_drive_link}
+                  </a>
+                </div>
               </div>
             )}
 
-            {!submission.file_details?.name &&
-              !submission.additional_informations && (
-                <div className="text-center text-gray-400 py-10">
-                  <FileText size={32} className="mx-auto mb-2" />
-                  <p className="text-sm">No submission content available</p>
-                </div>
-              )}
+            {/* Additional Info */}
+            {submission.additional_informations && (
+              <div className="bg-gray-50/50 rounded-xl p-4 border border-gray-100">
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Note</p>
+                <p className="text-sm text-gray-700">{submission.additional_informations}</p>
+              </div>
+            )}
+
+            {!submission.file_details?.name && !submission.additional_informations && !submission.google_drive_link && (
+              <div className="text-center text-gray-400 py-8">
+                <FileText size={32} className="mx-auto mb-2" />
+                <p className="text-sm">No submission content</p>
+              </div>
+            )}
           </div>
 
-          {/* Right — Feedback */}
-          <div className="w-full md:w-80 p-6 flex flex-col">
-            <h3 className="text-sm font-semibold text-gray-700 mb-2">
-              Feedback
-            </h3>
-            <textarea
-              value={feedback}
-              onChange={(e) => setFeedback(e.target.value)}
-              placeholder="Write feedback for the student..."
-              rows={8}
-              className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary-color-200 focus:border-primary-color-400 resize-none flex-grow"
-            />
+          {/* Right — Feedback Thread */}
+          <div className="w-full md:w-96 flex flex-col">
+            <div className="px-5 py-4 border-b border-gray-50 flex items-center gap-2">
+              <MessageSquare size={16} className="text-gray-400" />
+              <h3 className="text-sm font-bold text-gray-700">Feedback Thread</h3>
+              {feedbackThread.length > 0 && (
+                <span className="ml-auto text-xs font-semibold bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">
+                  {feedbackThread.length}
+                </span>
+              )}
+            </div>
 
-            {submission.status === "reviewed" && (
-              <div className="mt-3 flex items-center gap-2 text-emerald-600 text-xs font-medium">
-                <CheckCircle size={14} />
-                Already reviewed
-              </div>
-            )}
+            {/* Thread messages */}
+            <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3 min-h-[140px]">
+              {feedbackThread.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-full py-8 text-center text-gray-400">
+                  <MessageSquare size={28} className="mb-2 opacity-30" />
+                  <p className="text-xs">No feedback yet. Send the first message.</p>
+                </div>
+              ) : (
+                feedbackThread.map((entry, i) => (
+                  <div
+                    key={i}
+                    className={`flex flex-col gap-1 ${
+                      entry.sent_by === "instructor" ? "items-end" : "items-start"
+                    }`}
+                  >
+                    <span className="text-[10px] font-semibold text-gray-400 px-1 capitalize">
+                      {entry.sent_by}
+                    </span>
+                    <div
+                      className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-snug ${
+                        entry.sent_by === "instructor"
+                          ? "bg-primary-color-600 text-white rounded-tr-sm"
+                          : "bg-gray-100 text-gray-800 rounded-tl-sm"
+                      }`}
+                    >
+                      {entry.message}
+                    </div>
+                    <span className="text-[10px] text-gray-300 px-1">
+                      {entry.sent_at
+                        ? new Date(entry.sent_at).toLocaleString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            hour: "numeric",
+                            minute: "2-digit",
+                            hour12: true,
+                          })
+                        : ""}
+                    </span>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Input area */}
+            <div className="px-5 py-4 border-t border-gray-100">
+              {isReviewed ? (
+                <div className="flex items-center gap-2.5 rounded-xl bg-green-50 border border-green-200 px-4 py-3">
+                  <CheckCircle size={15} className="text-green-600 flex-shrink-0" />
+                  <p className="text-xs font-semibold text-green-700">
+                    This submission has been reviewed. No further feedback can be added.
+                  </p>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <textarea
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    placeholder="Write feedback..."
+                    rows={2}
+                    className="flex-1 px-3 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary-color-200 focus:border-primary-color-400 resize-none"
+                  />
+                  <button
+                    onClick={handleSendFeedback}
+                    disabled={isPending || !newMessage.trim()}
+                    className="flex-shrink-0 self-end p-2.5 rounded-xl bg-primary-color-600 text-white hover:bg-primary-color-700 transition-colors disabled:opacity-40"
+                    title="Send feedback"
+                  >
+                    <Send size={16} />
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-gray-100 flex items-center justify-between flex-shrink-0 flex-wrap gap-3">
+        <div className="p-5 border-t border-gray-100 flex items-center justify-between flex-shrink-0 flex-wrap gap-3">
           <div className="flex items-center gap-2">
             {submission.file_details?.url && (
               <a
@@ -170,28 +271,34 @@ const AssignmentReviewModal = ({ submission, onClose }) => {
                 Download File
               </a>
             )}
+            {submission.google_drive_link && (
+              <a
+                href={submission.google_drive_link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-primary-color-200 text-sm font-medium text-primary-color-600 hover:bg-primary-color-50 transition-colors"
+              >
+                Open Project Link
+              </a>
+            )}
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={onClose}
               className="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors"
             >
-              Cancel
+              Close
             </button>
-            <button
-              onClick={handleMarkReviewed}
-              disabled={isPending}
-              className="px-4 py-2 rounded-lg border border-gray-200 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50"
-            >
-              Mark as Reviewed
-            </button>
-            <button
-              onClick={handleSendFeedback}
-              disabled={isPending || !feedback.trim()}
-              className="px-5 py-2 rounded-lg bg-primary-color-600 text-white text-sm font-semibold hover:bg-primary-color-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isPending ? "Sending..." : "Send Feedback"}
-            </button>
+            {submission.status !== "reviewed" && (
+              <button
+                onClick={handleMarkReviewed}
+                disabled={isPending}
+                className="flex items-center gap-2 px-5 py-2 rounded-lg bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700 transition-colors disabled:opacity-50"
+              >
+                <CheckCircle size={15} />
+                {isPending ? "Saving..." : "Mark as Reviewed"}
+              </button>
+            )}
           </div>
         </div>
       </div>

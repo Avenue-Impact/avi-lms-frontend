@@ -4,9 +4,11 @@ import { useForm } from "react-hook-form";
 import { Link, useSearchParams, useLocation } from "react-router-dom";
 import { z } from "zod";
 import AuthLayout from "./components/AuthLayout";
+import ReferralAuthLayout from "./components/ReferralAuthLayout";
 import { CommonButton } from "@/Components/ui/button";
 import { Form } from "@/Components/ui/form";
 import FormInput from "@/Components/ui/form-input";
+import PhoneInput from "@/Components/ui/phone-input";
 import Modal from "./components/Modal";
 import RegisterSuccess from "./components/RegisterSuccess";
 import ConfirmEmail from "./components/ConfirmEmail";
@@ -25,7 +27,8 @@ const loginSchema = z
       .string()
       .min(10, { message: "Please enter a valid phone number" })
       .regex(/^[0-9+\-()]*$/, {
-        message: "Spaces are not allowed. Please enter a valid phone number format",
+        message:
+          "Spaces are not allowed. Please enter a valid phone number format",
       }),
     password: z
       .string()
@@ -75,6 +78,9 @@ const SignUp = ({ isPage = true }) => {
 
   const courseId = queryString.get("id");
   const courseTitle = queryString.get("title");
+
+  // Determine if this signup is a referral from the Partner page
+  const isPartnerReferral = queryString.get("r") === "student" && !!queryString.get("t");
 
   const form = useForm({
     resolver: zodResolver(loginSchema),
@@ -310,19 +316,28 @@ const SignUp = ({ isPage = true }) => {
         </Modal>
       )}
 
-      <AuthLayout
-        subtitle="Use your email to sign up"
-        title={title}
-        isMobileStacked={true}
-        isPage={isPage}
-        alignTop={true}
-      >
-        <Form {...form}>
+      {/* Conditionally render the appropriate layout */}
+      {(() => {
+        const LayoutComponent = isPartnerReferral ? ReferralAuthLayout : AuthLayout;
+        return (
+          <LayoutComponent
+            title="Register Now"
+            isMobileStacked={true}
+            isPage={isPage}
+            alignTop={true}
+            leftHeadline={isPartnerReferral ? "You've been invited!" : "Ready to Build\nIn-Demand Skills?"}
+            leftSubtext={isPartnerReferral 
+              ? "Join learners gaining practical knowledge, career support, and industry-ready experience through Avenue Impact." 
+              : "Join learners gaining practical knowledge, career support, and industry-ready experience through "}
+          >
+            <Form {...form}>
           <form ref={formRef} onSubmit={form.handleSubmit(handleSubmit)}>
-            <div className="">
-              <div className={`${isPage ? "" : "sm:grid-cols-2"} grid gap-x-3`}>
+            <div className="space-y-4">
+              <div
+                className={`${isPage ? "" : "sm:grid-cols-2"} grid gap-x-3 gap-y-4 sm:grid-cols-2`}
+              >
                 <FormInput
-                  label="firstname"
+                  label="First Name"
                   name="firstName"
                   control={form.control}
                   type="text"
@@ -334,7 +349,7 @@ const SignUp = ({ isPage = true }) => {
                   absoluteError
                 />
                 <FormInput
-                  label="lastname"
+                  label="Last Name"
                   name="lastName"
                   control={form.control}
                   type="text"
@@ -346,9 +361,11 @@ const SignUp = ({ isPage = true }) => {
                   absoluteError
                 />
               </div>
-              <div className={`${isPage ? "" : "sm:grid-cols-2"} grid gap-x-3`}>
+              <div
+                className={`${isPage ? "" : "sm:grid-cols-2"} grid gap-x-3 gap-y-4 sm:grid-cols-2`}
+              >
                 <FormInput
-                  label="username"
+                  label="User Name"
                   name="username"
                   control={form.control}
                   type="text"
@@ -360,7 +377,7 @@ const SignUp = ({ isPage = true }) => {
                   absoluteError
                 />
                 <FormInput
-                  label="email"
+                  label="Email Address"
                   name={"email"}
                   control={form.control}
                   type="email"
@@ -372,26 +389,21 @@ const SignUp = ({ isPage = true }) => {
                   absoluteError
                 />
               </div>
-              <FormInput
+              <PhoneInput
                 label="Phone Number"
                 name="phoneNumber"
                 control={form.control}
-                type="tel"
                 id="phoneNumber"
-                placeholder=""
-                autoComplete="tel"
-                onKeyDown={(e) => {
-                  if (e.key === " ") {
-                    e.preventDefault();
-                  }
-                }}
+                placeholder="813 696 9006"
                 absoluteError
               />
-              <div className={`${isPage ? "" : "sm:grid-cols-2"} grid gap-x-3`}>
+              <div
+                className={`${isPage ? "" : "sm:grid-cols-2"} grid gap-x-3 gap-y-4 sm:grid-cols-2`}
+              >
                 <PasswordInput
                   id="password"
                   autoComplete="new-password"
-                  label="password"
+                  label="Password"
                   name="password"
                   control={form.control}
                   placeholder=""
@@ -407,7 +419,7 @@ const SignUp = ({ isPage = true }) => {
                 <PasswordInput
                   id="confirmPassword"
                   autoComplete="new-password"
-                  label="confirm password"
+                  label="Confirm Password"
                   name="confirmPassword"
                   control={form.control}
                   placeholder=""
@@ -453,7 +465,7 @@ const SignUp = ({ isPage = true }) => {
               </div>
 
               <FormInput
-                label="Referral Code (Optional)"
+                label="AVI Reference Code"
                 name="referralCode"
                 control={form.control}
                 type="text"
@@ -487,16 +499,16 @@ const SignUp = ({ isPage = true }) => {
               />
 
               <p className="text-sm text-label">
-                I agree to the terms and conditions
+                I agree to the <Link to="/terms-of-service" className="text-[#C41E3A] hover:underline font-semibold">terms and conditions</Link>
               </p>
             </div>
 
             <CommonButton
-              className="mt-4 w-full bg-primary-color-600 py-4 font-poppins text-base font-semibold capitalize text-white hover:bg-primary-color-600"
+              className="mt-4 w-full rounded-lg bg-[#C41E3A] py-3 font-poppins text-base font-semibold capitalize text-white hover:bg-[#a8103a]"
               type="submit"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "loading..." : " sign up"}
+              {isSubmitting ? "loading..." : "Submit Application"}
             </CommonButton>
           </form>
         </Form>
@@ -518,7 +530,9 @@ const SignUp = ({ isPage = true }) => {
             sign in
           </Link>
         </p>
-      </AuthLayout>
+          </LayoutComponent>
+        );
+      })()}
 
       {modal && (
         <Modal>
