@@ -14,6 +14,7 @@ import { CommonButton } from "../ui/button";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useGetEnrolledSectionVideos } from "@/hooks/students/use-get-enrolled-section-videos";
 import ClipLoader from "react-spinners/ClipLoader";
+import { useEffect } from "react";
 
 function EnrolledSectionItem({
   section,
