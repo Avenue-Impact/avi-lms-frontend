@@ -6,29 +6,29 @@ import { submitContactUsForm } from "../../services/api";
 
 // ─── Country codes (flag emoji + name + dial code) ───────────────────────────
 const COUNTRY_CODES = [
-  { code: "GB", name: "United Kingdom", dial: "+44" },
-  { code: "NG", name: "Nigeria",         dial: "+234" },
-  { code: "KE", name: "Kenya",           dial: "+254" },
-  { code: "GH", name: "Ghana",           dial: "+233" },
-  { code: "ZA", name: "South Africa",    dial: "+27" },
-  { code: "US", name: "United States",   dial: "+1" },
-  { code: "CA", name: "Canada",          dial: "+1" },
-  { code: "AU", name: "Australia",       dial: "+61" },
-  { code: "IN", name: "India",           dial: "+91" },
-  { code: "DE", name: "Germany",         dial: "+49" },
-  { code: "FR", name: "France",          dial: "+33" },
-  { code: "AE", name: "UAE",             dial: "+971" },
-  { code: "SG", name: "Singapore",       dial: "+65" },
-  { code: "ZM", name: "Zambia",          dial: "+260" },
-  { code: "TZ", name: "Tanzania",        dial: "+255" },
-  { code: "UG", name: "Uganda",          dial: "+256" },
-  { code: "RW", name: "Rwanda",          dial: "+250" },
-  { code: "ET", name: "Ethiopia",        dial: "+251" },
-  { code: "SN", name: "Senegal",         dial: "+221" },
-  { code: "CI", name: "Côte d'Ivoire",   dial: "+225" },
-  { code: "CM", name: "Cameroon",        dial: "+237" },
-  { code: "EG", name: "Egypt",           dial: "+20" },
-  { code: "MA", name: "Morocco",         dial: "+212" },
+  { code: "GB", name: "United Kingdom", dial: "+44", minLen: 10, maxLen: 10 },
+  { code: "NG", name: "Nigeria",         dial: "+234", minLen: 10, maxLen: 10 },
+  { code: "KE", name: "Kenya",           dial: "+254", minLen: 9, maxLen: 9 },
+  { code: "GH", name: "Ghana",           dial: "+233", minLen: 9, maxLen: 9 },
+  { code: "ZA", name: "South Africa",    dial: "+27", minLen: 9, maxLen: 9 },
+  { code: "US", name: "United States",   dial: "+1", minLen: 10, maxLen: 10 },
+  { code: "CA", name: "Canada",          dial: "+1", minLen: 10, maxLen: 10 },
+  { code: "AU", name: "Australia",       dial: "+61", minLen: 9, maxLen: 9 },
+  { code: "IN", name: "India",           dial: "+91", minLen: 10, maxLen: 10 },
+  { code: "DE", name: "Germany",         dial: "+49", minLen: 10, maxLen: 11 },
+  { code: "FR", name: "France",          dial: "+33", minLen: 9, maxLen: 9 },
+  { code: "AE", name: "UAE",             dial: "+971", minLen: 9, maxLen: 9 },
+  { code: "SG", name: "Singapore",       dial: "+65", minLen: 8, maxLen: 8 },
+  { code: "ZM", name: "Zambia",          dial: "+260", minLen: 9, maxLen: 9 },
+  { code: "TZ", name: "Tanzania",        dial: "+255", minLen: 9, maxLen: 9 },
+  { code: "UG", name: "Uganda",          dial: "+256", minLen: 9, maxLen: 9 },
+  { code: "RW", name: "Rwanda",          dial: "+250", minLen: 9, maxLen: 9 },
+  { code: "ET", name: "Ethiopia",        dial: "+251", minLen: 9, maxLen: 9 },
+  { code: "SN", name: "Senegal",         dial: "+221", minLen: 9, maxLen: 9 },
+  { code: "CI", name: "Côte d'Ivoire",   dial: "+225", minLen: 10, maxLen: 10 },
+  { code: "CM", name: "Cameroon",        dial: "+237", minLen: 9, maxLen: 9 },
+  { code: "EG", name: "Egypt",           dial: "+20", minLen: 10, maxLen: 10 },
+  { code: "MA", name: "Morocco",         dial: "+212", minLen: 9, maxLen: 9 },
 ];
 
 // Flag emoji helper
@@ -80,19 +80,40 @@ const GetInTouch = () => {
     `${c.name} ${c.dial}`.toLowerCase().includes(countrySearch.toLowerCase())
   );
 
+  const validateField = (fieldName, value, currentDial = formData.countryDial) => {
+    const fieldKey = fieldName === "localPhone" ? "phone" : fieldName;
+    let errorMsg = "";
+
+    if (!value.trim()) {
+      const label = REQUIRED_FIELDS.find((f) => f.key === fieldKey)?.label || fieldName;
+      errorMsg = `${label} is required`;
+    } else {
+      if (fieldName === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) {
+        errorMsg = "Please enter a valid email address";
+      } else if (fieldName === "localPhone") {
+        const digits = value.trim();
+        if (digits.startsWith("0")) {
+          errorMsg = "Phone number cannot start with a zero";
+        } else {
+          const country = COUNTRY_CODES.find(c => c.dial === currentDial) || COUNTRY_CODES[0];
+          if (digits.length < country.minLen) {
+            errorMsg = `Phone number is too short (min ${country.minLen} digits)`;
+          } else if (digits.length > country.maxLen) {
+            errorMsg = `Phone number is too long (max ${country.maxLen} digits)`;
+          }
+        }
+      }
+    }
+    
+    return errorMsg;
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
     
     const fieldKey = name === "localPhone" ? "phone" : name;
-    let errorMsg = "";
-
-    if (!value.trim()) {
-      const label = REQUIRED_FIELDS.find((f) => f.key === fieldKey)?.label || name;
-      errorMsg = `${label} is required`;
-    } else if (name === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) {
-      errorMsg = "Please enter a valid email address";
-    }
+    const errorMsg = validateField(name, value);
 
     setErrors((prev) => ({ ...prev, [fieldKey]: errorMsg }));
   };
@@ -110,22 +131,16 @@ const GetInTouch = () => {
     const missing = [];
 
     REQUIRED_FIELDS.forEach(({ key, label }) => {
-      if (key === "phone") {
-        if (!formData.localPhone.trim()) {
-          newErrors.phone = `${label} is required`;
-          missing.push(label);
-        } else if (!/^\d{4,15}$/.test(formData.localPhone.trim())) {
-          newErrors.phone = "Enter digits only (4–15 numbers).";
-          missing.push("Valid Phone Number");
-        }
-      } else {
-        const val = formData[key]?.trim() ?? "";
-        if (!val) {
-          newErrors[key] = `${label} is required`;
-          missing.push(label);
-        } else if (key === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
-          newErrors[key] = "Please enter a valid email address";
-          missing.push("Valid Email Address");
+      const fieldName = key === "phone" ? "localPhone" : key;
+      const val = formData[fieldName];
+      const errorMsg = validateField(fieldName, val);
+
+      if (errorMsg) {
+        newErrors[key] = errorMsg;
+        if (!val.trim()) {
+          missing.push(`${label} is required`);
+        } else {
+          missing.push(`Invalid ${label}`);
         }
       }
     });
@@ -286,7 +301,13 @@ const GetInTouch = () => {
                           setFormData((prev) => ({ ...prev, countryDial: c.dial }));
                           setDropdownOpen(false);
                           setCountrySearch("");
-                          if (errors.phone) setErrors((prev) => ({ ...prev, phone: "" }));
+                          // Re-validate phone with new dial code
+                          if (formData.localPhone) {
+                            const phoneError = validateField("localPhone", formData.localPhone, c.dial);
+                            setErrors((prev) => ({ ...prev, phone: phoneError }));
+                          } else if (errors.phone) {
+                            setErrors((prev) => ({ ...prev, phone: "" }));
+                          }
                         }}
                       >
                         <span aria-hidden="true">{flagEmoji(c.code)}</span>
@@ -313,7 +334,8 @@ const GetInTouch = () => {
               // Allow only digits
               const digits = e.target.value.replace(/\D/g, "");
               setFormData((prev) => ({ ...prev, localPhone: digits }));
-              if (errors.phone) setErrors((prev) => ({ ...prev, phone: "" }));
+              const errorMsg = validateField("localPhone", digits);
+              setErrors((prev) => ({ ...prev, phone: errorMsg }));
             }}
             aria-invalid={!!errors.phone}
             aria-describedby={errors.phone ? "error-phone" : undefined}
