@@ -507,7 +507,7 @@ const SignUp = ({ isPage = true }) => {
             <CommonButton
               className="mt-4 w-full rounded-lg bg-[#C41E3A] py-3 font-poppins text-base font-semibold capitalize text-white hover:bg-[#a8103a]"
               type="submit"
-              disabled={isSubmitting || !form.formState.isValid}
+              disabled={isSubmitting}
             >
               {isSubmitting ? "loading..." : "Submit Application"}
             </CommonButton>

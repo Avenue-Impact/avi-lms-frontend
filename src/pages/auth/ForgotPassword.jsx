@@ -125,7 +125,7 @@ const ForgotPassword = () => {
                 <CommonButton
                   className="mt-8 w-full bg-primary-color-600 font-poppins text-xl font-semibold capitalize text-white hover:bg-primary-color-600"
                   type="submit"
-                  disabled={isSubmitting || !form.formState.isValid}
+                  disabled={isSubmitting}
                 >
                   {isSubmitting ? "loading ..." : "reset"}
                 </CommonButton>
