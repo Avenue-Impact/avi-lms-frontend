@@ -170,7 +170,7 @@ const Login = () => {
             <CommonButton
               className="hover:bg-[#a8103a] mt-8 w-full bg-[#C41E3A] font-poppins text-[16px] font-[500] capitalize text-white disabled:opacity-50 rounded-lg py-3"
               type="submit"
-              disabled={isPending || !form.formState.isValid}
+              disabled={isPending}
             >
               {isPending ? <ClipLoader size={20} color={"#fff"} /> : "Log In"}
             </CommonButton>
