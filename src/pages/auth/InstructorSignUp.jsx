@@ -387,7 +387,7 @@ const InstructorSignUp = ({ isPage = true }) => {
             <CommonButton
               className="mt-4 w-full bg-primary-color-600 py-4 font-poppins text-base font-semibold capitalize text-white hover:bg-primary-color-600"
               type="submit"
-              disabled={isRegistering || isSubmitting || !form.formState.isValid}
+              disabled={isRegistering || isSubmitting}
             >
               {isRegistering ? "Registering..." : "Complete Registration"}
             </CommonButton>
