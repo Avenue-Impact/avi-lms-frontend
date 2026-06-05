@@ -62,6 +62,7 @@ const ForgotPassword = () => {
 
   const form = useForm({
     resolver: zodResolver(forgetPasswordSchema),
+    mode: "onChange",
     defaultValues: {
       email: "",
     },
@@ -124,7 +125,7 @@ const ForgotPassword = () => {
                 <CommonButton
                   className="mt-8 w-full bg-primary-color-600 font-poppins text-xl font-semibold capitalize text-white hover:bg-primary-color-600"
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !form.formState.isValid}
                 >
                   {isSubmitting ? "loading ..." : "reset"}
                 </CommonButton>

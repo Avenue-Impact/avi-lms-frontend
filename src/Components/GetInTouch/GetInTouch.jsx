@@ -362,9 +362,25 @@ const GetInTouch = () => {
         )}
 
         <Button
-          className={`mt-8 lg:mt-11 ${isSubmitting ? styles.btn_inactive : ""}`}
+          className={`mt-8 lg:mt-11 ${
+            isSubmitting ||
+            !formData.name.trim() ||
+            !formData.localPhone.trim() ||
+            !formData.email.trim() ||
+            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim()) ||
+            !formData.message.trim()
+              ? styles.btn_inactive
+              : ""
+          }`}
           type="submit"
-          disabled={isSubmitting}
+          disabled={
+            isSubmitting ||
+            !formData.name.trim() ||
+            !formData.localPhone.trim() ||
+            !formData.email.trim() ||
+            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim()) ||
+            !formData.message.trim()
+          }
         >
           {isSubmitting ? "Sending..." : "Send a message"}
         </Button>
