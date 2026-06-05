@@ -108,17 +108,25 @@ const GetInTouch = () => {
     return errorMsg;
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    
-    const fieldKey = name === "localPhone" ? "phone" : name;
-    const errorMsg = validateField(name, value);
-
-    setErrors((prev) => ({ ...prev, [fieldKey]: errorMsg }));
+  const validateAllFields = (currentData) => {
+    const newErrors = {};
+    REQUIRED_FIELDS.forEach(({ key }) => {
+      const fieldName = key === "phone" ? "localPhone" : key;
+      const val = currentData[fieldName];
+      const errorMsg = validateField(fieldName, val, currentData.countryDial);
+      if (errorMsg) {
+        newErrors[key] = errorMsg;
+      }
+    });
+    return newErrors;
   };
 
-
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    const newFormData = { ...formData, [name]: value };
+    setFormData(newFormData);
+    setErrors(validateAllFields(newFormData));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -127,16 +135,13 @@ const GetInTouch = () => {
     const combinedPhone = `${formData.countryDial}${formData.localPhone.trim()}`;
 
     // Validate all required fields
-    const newErrors = {};
+    const newErrors = validateAllFields(formData);
     const missing = [];
 
     REQUIRED_FIELDS.forEach(({ key, label }) => {
-      const fieldName = key === "phone" ? "localPhone" : key;
-      const val = formData[fieldName];
-      const errorMsg = validateField(fieldName, val);
-
-      if (errorMsg) {
-        newErrors[key] = errorMsg;
+      if (newErrors[key]) {
+        const fieldName = key === "phone" ? "localPhone" : key;
+        const val = formData[fieldName];
         if (!val.trim()) {
           missing.push(`${label} is required`);
         } else {
@@ -298,16 +303,11 @@ const GetInTouch = () => {
                             : ""
                         }`}
                         onClick={() => {
-                          setFormData((prev) => ({ ...prev, countryDial: c.dial }));
+                          const newFormData = { ...formData, countryDial: c.dial };
+                          setFormData(newFormData);
                           setDropdownOpen(false);
                           setCountrySearch("");
-                          // Re-validate phone with new dial code
-                          if (formData.localPhone) {
-                            const phoneError = validateField("localPhone", formData.localPhone, c.dial);
-                            setErrors((prev) => ({ ...prev, phone: phoneError }));
-                          } else if (errors.phone) {
-                            setErrors((prev) => ({ ...prev, phone: "" }));
-                          }
+                          setErrors(validateAllFields(newFormData));
                         }}
                       >
                         <span aria-hidden="true">{flagEmoji(c.code)}</span>
@@ -333,9 +333,9 @@ const GetInTouch = () => {
             onChange={(e) => {
               // Allow only digits
               const digits = e.target.value.replace(/\D/g, "");
-              setFormData((prev) => ({ ...prev, localPhone: digits }));
-              const errorMsg = validateField("localPhone", digits);
-              setErrors((prev) => ({ ...prev, phone: errorMsg }));
+              const newFormData = { ...formData, localPhone: digits };
+              setFormData(newFormData);
+              setErrors(validateAllFields(newFormData));
             }}
             aria-invalid={!!errors.phone}
             aria-describedby={errors.phone ? "error-phone" : undefined}
