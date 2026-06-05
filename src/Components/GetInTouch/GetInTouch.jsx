@@ -83,11 +83,18 @@ const GetInTouch = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    // Clear individual field error when user starts typing
+    
     const fieldKey = name === "localPhone" ? "phone" : name;
-    if (errors[fieldKey]) {
-      setErrors((prev) => ({ ...prev, [fieldKey]: "" }));
+    let errorMsg = "";
+
+    if (!value.trim()) {
+      const label = REQUIRED_FIELDS.find((f) => f.key === fieldKey)?.label || name;
+      errorMsg = `${label} is required`;
+    } else if (name === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) {
+      errorMsg = "Please enter a valid email address";
     }
+
+    setErrors((prev) => ({ ...prev, [fieldKey]: errorMsg }));
   };
 
 
@@ -362,25 +369,9 @@ const GetInTouch = () => {
         )}
 
         <Button
-          className={`mt-8 lg:mt-11 ${
-            isSubmitting ||
-            !formData.name.trim() ||
-            !formData.localPhone.trim() ||
-            !formData.email.trim() ||
-            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim()) ||
-            !formData.message.trim()
-              ? styles.btn_inactive
-              : ""
-          }`}
+          className={`mt-8 lg:mt-11 ${isSubmitting ? styles.btn_inactive : ""}`}
           type="submit"
-          disabled={
-            isSubmitting ||
-            !formData.name.trim() ||
-            !formData.localPhone.trim() ||
-            !formData.email.trim() ||
-            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim()) ||
-            !formData.message.trim()
-          }
+          disabled={isSubmitting}
         >
           {isSubmitting ? "Sending..." : "Send a message"}
         </Button>
