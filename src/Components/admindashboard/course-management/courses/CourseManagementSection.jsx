@@ -174,7 +174,7 @@ const LiveContent = ({ data }) => {
                 <strong>Class day:</strong> {data?.data?.data?.class_days}
               </p>
               <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
-                <strong>Meeting date:</strong> {`${start_time} UTC` || 'N/A'}
+                <strong>Meeting date:</strong> {start_time ? `${start_time} (UK Time)` : 'N/A'}
               </p>
               <p className="text-base font-light text-tertiary-color-900 lg:text-xl">
                 <strong>Assigned Instructor:</strong>{" "}
