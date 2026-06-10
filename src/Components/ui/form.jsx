@@ -110,6 +110,18 @@ const FormMessage = React.forwardRef(
       return null;
     }
 
+    let formattedBody = body;
+    if (typeof body === "string" && body.includes(" - ")) {
+      const parts = body.split(" - ");
+      if (parts.length === 2) {
+        formattedBody = (
+          <>
+            {parts[0]} - <strong>{parts[1]}</strong>
+          </>
+        );
+      }
+    }
+
     return (
       <p
         ref={ref}
@@ -117,7 +129,7 @@ const FormMessage = React.forwardRef(
         className={cn("text-sm font-medium text-destructive", className)}
         {...props}
       >
-        {body}
+        {formattedBody}
       </p>
     );
   },

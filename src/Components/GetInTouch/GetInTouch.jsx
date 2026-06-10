@@ -88,8 +88,25 @@ const GetInTouch = () => {
       const label = REQUIRED_FIELDS.find((f) => f.key === fieldKey)?.label || fieldName;
       errorMsg = `${label} is required`;
     } else {
-      if (fieldName === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) {
-        errorMsg = "Please enter a valid email address";
+      if (fieldName === "email") {
+        const email = value.trim();
+        if (/\\s/.test(email)) errorMsg = "⚠ Please enter a valid email address - You have entered a blank space";
+        else if (!email.includes("@")) errorMsg = "⚠ Please enter a valid email address - You have missed out the @ symbol";
+        else {
+          const [username, ...rest] = email.split("@");
+          const domainPart = rest.join("@");
+          if (!username) errorMsg = "⚠ Please enter a valid email address - You have missed out the username";
+          else if (!domainPart || rest.length > 1) {
+            if (!domainPart) errorMsg = "⚠ Please enter a valid email address - You have missed out the domain";
+            else errorMsg = "⚠ Please enter a valid email address";
+          } else if (!domainPart.includes(".")) errorMsg = '⚠ Please enter a valid email address - You have missed out the a "."';
+          else {
+            const domainParts = domainPart.split(".");
+            const tld = domainParts[domainParts.length - 1];
+            if (!tld || tld.length < 2) errorMsg = "⚠ Please enter a valid email address - You have missed out the Top Leve Domain";
+            else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errorMsg = "⚠ Please enter a valid email address";
+          }
+        }
       } else if (fieldName === "localPhone") {
         const digits = value.trim();
         if (digits.startsWith("0")) {
@@ -191,6 +208,8 @@ const GetInTouch = () => {
       setIsSubmitting(false);
     }
   };
+
+  const isFormValid = Object.keys(validateAllFields(formData)).length === 0;
 
   return (
     <div
@@ -366,7 +385,13 @@ const GetInTouch = () => {
         />
         {errors.email && (
           <span id="error-email" className={styles.field_error}>
-            ⚠ {errors.email}
+            {(() => {
+              const parts = errors.email.split(" - ");
+              if (parts.length === 2) {
+                return <>{parts[0]} - <strong>{parts[1]}</strong></>;
+              }
+              return `⚠ ${errors.email}`;
+            })()}
           </span>
         )}
 
@@ -391,9 +416,9 @@ const GetInTouch = () => {
         )}
 
         <Button
-          className={`mt-8 lg:mt-11 ${isSubmitting ? styles.btn_inactive : ""}`}
+          className={`mt-8 lg:mt-11 ${isSubmitting || !isFormValid ? styles.btn_inactive : ""}`}
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || !isFormValid}
         >
           {isSubmitting ? "Sending..." : "Send a message"}
         </Button>

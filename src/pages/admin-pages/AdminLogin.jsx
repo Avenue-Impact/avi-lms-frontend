@@ -48,8 +48,10 @@ import { Heading, Paragraph } from "../auth/components/Text";
 //     "message": "Login successful"
 // }
 
+import { customEmailSchema } from "@/lib/form-schemas/forms-schema";
+
 const loginSchema = z.object({
-  email: z.string().email(),
+  email: customEmailSchema,
   password: z
     .string()
     .min(4, { message: "password must be at least 4 characters long" }),
@@ -91,6 +93,9 @@ const AdminLogin = () => {
       password: "",
     },
   });
+
+  const { errors } = form.formState;
+  const hasErrors = Object.keys(errors).length > 0;
 
   return (
     <>
@@ -141,7 +146,7 @@ const AdminLogin = () => {
                 <CommonButton
                   className="mt-8 w-full bg-primary-color-600 font-poppins text-[16px] font-[500] capitalize text-white hover:bg-primary-color-600"
                   type="submit"
-                  disabled={isPending}
+                  disabled={isPending || hasErrors}
                 >
                   {isPending ? (
                     <BeatLoader size={10} color={"#fff"} />
