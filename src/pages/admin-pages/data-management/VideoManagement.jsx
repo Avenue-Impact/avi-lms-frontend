@@ -19,7 +19,7 @@ import joinTeamImage from "@/assets/images/join_team.png";
 
 export default function VideoManagement() {
   const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
+  const [perPage, setPerPage] = useState(20);
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,8 +28,8 @@ export default function VideoManagement() {
   const [viewingVideo, setViewingVideo] = useState(null);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["get-all-videos", { page, limit: perPage }],
-    queryFn: () => getAllVideos(page, perPage),
+    queryKey: ["get-all-videos", { page, limit: perPage, search: searchQuery }],
+    queryFn: () => getAllVideos(page, perPage, searchQuery),
   });
 
   const createMutation = useMutation({
@@ -75,12 +75,6 @@ export default function VideoManagement() {
   );
 
   const videos = data?.data?.data?.videos || data?.data?.data || [];
-
-  const filteredVideos = videos.filter((video) =>
-    (video.videoTitle || video.title || "")
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase()),
-  );
 
   const handleCreateNew = () => {
     setEditingVideo(null);
@@ -148,7 +142,7 @@ export default function VideoManagement() {
           <p className="text-center text-[#CC1747]">Error loading videos.</p>
         ) : (
           <VideoTable
-            videos={filteredVideos}
+            videos={videos}
             onView={handleView}
             onEdit={handleEdit}
             onDelete={handleDelete}
