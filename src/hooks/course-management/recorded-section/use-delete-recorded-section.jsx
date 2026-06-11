@@ -1,15 +1,15 @@
 import { BASE_URL } from "@/constant";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import { axiosAdmin } from "@/services/api";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 
 const deleteRecordedSectionApi = ({ section, courseId, cohortId }) => {
   const token = Cookies.get("adminToken");
 
-  const url = `${BASE_URL}/courses/${courseId}/cohorts/${cohortId}/sections/${section}`;
+  const url = `/courses/${courseId}/cohorts/${cohortId}/sections/${section}`;
 
-  return axios.delete(url, {
+  return axiosAdmin.delete(url,{
     headers: {
       Authorization: `Bearer ${token}`,
     },

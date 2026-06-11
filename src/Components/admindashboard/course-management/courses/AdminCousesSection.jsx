@@ -15,6 +15,7 @@ import { EditSectionModal } from "./EditSectionModal";
 import { AddVideoModal } from "./AddVideoModal";
 import { useDeleteRecordedSessionVideo } from "@/hooks/course-management/use-delete-recorded-session-video";
 import { useGetSectionVideos } from "@/hooks/course-management/use-get-section-videos";
+import { useDeleteRecordedSection } from "@/hooks/course-management/recorded-section/use-delete-recorded-section";
 import { ClipLoader } from "react-spinners";
 
 function RecordedSectionItem({
@@ -40,6 +41,7 @@ function RecordedSectionItem({
   );
 
   const videos = videosData?.data?.data || [];
+  const { deleteRecordedSection, isDeleting } = useDeleteRecordedSection();
 
   return (
     <AccordionItem value={section.title}>
@@ -78,6 +80,19 @@ function RecordedSectionItem({
                 <SquarePen size={18} />
               </button>
             </EditSectionModal>
+            <button
+              className="p-1 text-[#cc1747] hover:text-[#a6133a] disabled:opacity-50"
+              title="Delete Section"
+              disabled={isDeleting}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (window.confirm("Are you sure you want to delete this section?")) {
+                  deleteRecordedSection({ section: section.section, courseId, cohortId });
+                }
+              }}
+            >
+              <Trash2 size={18} />
+            </button>
           </div>
           <p
             className={cn(

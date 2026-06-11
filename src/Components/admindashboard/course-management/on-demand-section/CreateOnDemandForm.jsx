@@ -7,6 +7,7 @@ import {
   useCreateOnDemandCourse,
   useCreateEmptyOnDemandCourse,
 } from "@/hooks/course-management/use-create-demand-course";
+import { useFetchCourseInfo } from "@/hooks/course-management/use-fetch-course-information";
 import { useGetAllVideos } from "@/hooks/course-management/use-get-all-videos";
 import { onDemandSessionSchema } from "@/lib/form-schemas/forms-schema";
 import { cn } from "@/lib/utils";
@@ -28,8 +29,9 @@ const CreateOndemandForm = ({ courseId, initialSection }) => {
     initialSection ? initialSection.section : null,
   );
 
-  const { data } = useFetchondemandCourse(courseId);
-  const { data: videosData } = useGetAllVideos(1, 100, "");
+  const { data: courseData } = useFetchCourseInfo(courseId);
+  const courseTitle = courseData?.data?.data?.course?.title || courseData?.data?.data?.title || courseData?.data?.title || "";
+  const { data: videosData } = useGetAllVideos(1, 100, "", courseTitle);
   const videoRef = useRef();
   const documentRef = useRef();
 

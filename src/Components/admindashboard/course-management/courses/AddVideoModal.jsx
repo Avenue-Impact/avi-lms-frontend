@@ -15,6 +15,7 @@ import { Input } from "@/Components/ui/input";
 import { CommonButton } from "@/Components/ui/button";
 import { useAddVideosToRecordedSession } from "@/hooks/course-management/use-add-videos-recorded-session";
 import { useGetAllVideos } from "@/hooks/course-management/use-get-all-videos";
+import { useFetchCourseInfo } from "@/hooks/course-management/use-fetch-course-information";
 import { Search, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ClipLoader from "react-spinners/ClipLoader";
@@ -47,6 +48,9 @@ export function AddVideoModal({ children, sectionId, courseId, cohortId }) {
     courseId,
     cohortId,
   );
+  const { data: courseData } = useFetchCourseInfo(courseId);
+  const courseTitle = courseData?.data?.data?.course?.title || courseData?.data?.data?.title || courseData?.data?.title || "";
+
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
 
   useEffect(() => {
@@ -56,7 +60,7 @@ export function AddVideoModal({ children, sectionId, courseId, cohortId }) {
     return () => clearTimeout(handler);
   }, [searchQuery]);
 
-  const { data: videosData, isLoading } = useGetAllVideos(page, 20, debouncedSearchQuery, open);
+  const { data: videosData, isLoading } = useGetAllVideos(page, 20, debouncedSearchQuery, courseTitle, open && !!courseTitle);
 
   const allVideos = videosData?.data?.data || [];
   const meta = videosData?.data?.pagination || videosData?.data?.meta || {};
