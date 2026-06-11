@@ -345,3 +345,15 @@ export const submitContactUsForm = async (data) => {
   // Using plain axios since this is a public unauthenticated route
   return await axios.post(`${STUDENT_BASE_URL}/contact`, data);
 };
+
+export const reorderRecordedSessionVideos = async ({
+  courseId,
+  cohortId,
+  section,
+  videoIds,
+}) => {
+  return await axiosAdmin.patch(
+    `/courses/${courseId}/cohorts/${cohortId}/sections/${section}/reorder-recordings`,
+    { videoIds }
+  );
+};

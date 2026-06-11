@@ -6,8 +6,8 @@ import {
 } from "@/Components/ui/accordion";
 import { CommonButton } from "@/Components/ui/button";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
-import { Trash2, SquarePen } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Trash2, SquarePen, GripVertical } from "lucide-react";
 import { FaPlus } from "react-icons/fa";
 import { useParams, useSearchParams } from "react-router-dom";
 import { AddSectionModal } from "./AddSectionModal";
@@ -16,6 +16,7 @@ import { AddVideoModal } from "./AddVideoModal";
 import { useDeleteRecordedSessionVideo } from "@/hooks/course-management/use-delete-recorded-session-video";
 import { useGetSectionVideos } from "@/hooks/course-management/use-get-section-videos";
 import { useDeleteRecordedSection } from "@/hooks/course-management/recorded-section/use-delete-recorded-section";
+import { useReorderRecordedVideos } from "@/hooks/course-management/recorded-section/use-reorder-recorded-videos";
 import { ClipLoader } from "react-spinners";
 
 function RecordedSectionItem({
@@ -42,6 +43,45 @@ function RecordedSectionItem({
 
   const videos = videosData?.data?.data || [];
   const { deleteRecordedSection, isDeleting } = useDeleteRecordedSection();
+  const { reorderVideos } = useReorderRecordedVideos();
+
+  const [localVideos, setLocalVideos] = useState([]);
+  const [draggedItemIndex, setDraggedItemIndex] = useState(null);
+
+  useEffect(() => {
+    setLocalVideos(videosData?.data?.data || []);
+  }, [videosData]);
+
+  const handleDragStart = (e, index) => {
+    setDraggedItemIndex(index);
+    // e.dataTransfer.effectAllowed = "move";
+  };
+
+  const handleDragOver = (e, index) => {
+    e.preventDefault();
+    if (draggedItemIndex === null || draggedItemIndex === index) return;
+
+    const updatedVideos = [...localVideos];
+    const [draggedItem] = updatedVideos.splice(draggedItemIndex, 1);
+    updatedVideos.splice(index, 0, draggedItem);
+
+    setDraggedItemIndex(index);
+    setLocalVideos(updatedVideos);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    if (draggedItemIndex === null) return;
+    setDraggedItemIndex(null);
+
+    const videoIds = localVideos.map((v) => v.id);
+    reorderVideos({
+      courseId,
+      cohortId,
+      section: section.section,
+      videoIds,
+    });
+  };
 
   return (
     <AccordionItem value={section.title}>
@@ -110,9 +150,13 @@ function RecordedSectionItem({
           <ClipLoader color="#cc1747" size={24} />
         </div>
       ) : (
-        videos.map((video) => (
+        localVideos.map((video, index) => (
           <AccordionContent
             key={video.id}
+            draggable
+            onDragStart={(e) => handleDragStart(e, index)}
+            onDragOver={(e) => handleDragOver(e, index)}
+            onDrop={handleDrop}
             className={cn(
               "group/topic cursor-pointer px-5 py-[10px] hover:bg-primary-color-300/20",
               videoActive === video.id && "bg-primary-color-300/20",
@@ -121,7 +165,7 @@ function RecordedSectionItem({
             <div className="flex w-full items-center justify-between">
               <div
                 className={cn(
-                  "flex cursor-pointer items-start gap-3 text-sm group-hover/topic:text-primary-color-600 md:text-base",
+                  "flex cursor-pointer items-center gap-3 text-sm group-hover/topic:text-primary-color-600 md:text-base",
                   videoActive === video.id && "text-primary-color-600",
                 )}
                 onClick={() => {
@@ -136,6 +180,9 @@ function RecordedSectionItem({
                   setvideoActive(video.id);
                 }}
               >
+                <div className="cursor-grab text-gray-400 hover:text-gray-600 active:cursor-grabbing mr-2">
+                  <GripVertical size={16} />
+                </div>
                 <p>{video.title}</p>
               </div>
               <button

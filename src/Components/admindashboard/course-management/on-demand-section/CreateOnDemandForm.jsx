@@ -46,6 +46,7 @@ const CreateOndemandForm = ({ courseId, initialSection }) => {
       video_title: "",
       overview: initialSection?.overview || "",
       description: "",
+      sort_order: 0,
       video_from_url: "",
       video_id: "",
     },
@@ -122,6 +123,7 @@ const CreateOndemandForm = ({ courseId, initialSection }) => {
       overview: form.getValues("overview"),
       video_title: data.video_title,
       description: data.description,
+      sort_order: data.sort_order || 0,
       document: document.file,
     };
 
@@ -250,6 +252,15 @@ const CreateOndemandForm = ({ courseId, initialSection }) => {
               control={form.control}
               placeholder="Enter details about this specific lesson/video"
               textarea={true}
+            />
+
+            <FormInput
+              name="sort_order"
+              type="number"
+              id="sort_order"
+              label="Sort Order"
+              control={form.control}
+              placeholder="Enter numerical sort order (e.g. 1)"
             />
 
             <div className="mb-4 mt-4 flex gap-4">

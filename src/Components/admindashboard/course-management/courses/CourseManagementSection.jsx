@@ -110,7 +110,7 @@ const LiveContent = ({ data }) => {
   const {
     title = "",
     subtitle = "",
-    start_time = "",
+    class_date = "",
   } = data?.data?.session ?? {};
   const {instructor = null, is_live = false,} = data?.data?.data ?? {};
 
@@ -174,8 +174,11 @@ const LiveContent = ({ data }) => {
                 <strong>Class day:</strong> {data?.data?.data?.class_days}
               </p>
               <p className="text-sm font-light text-tertiary-color-900 lg:text-xl">
-                <strong>Meeting date:</strong> {start_time ? `${start_time} (UK Time)` : 'N/A'}
+                <strong>Meeting date:</strong> {class_date ? `${formatDate(class_date)} (Local Time)` : 'N/A'}
               </p>
+              <span className="text-xs text-gray-500 italic mt-1 block">
+                * Note: Cohort schedules are anchored to UK Time, but times shown above are automatically converted to your local timezone.
+              </span>
               <p className="text-base font-light text-tertiary-color-900 lg:text-xl">
                 <strong>Assigned Instructor:</strong>{" "}
                 {instructorName || "No instructor assigned"}

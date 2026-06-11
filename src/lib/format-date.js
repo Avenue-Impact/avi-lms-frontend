@@ -1,5 +1,3 @@
-
-
 export const formatDate = (date, showTime = true) => {
   if (!date) return "TBA";
   const createdAt = new Date(date);
@@ -13,9 +11,11 @@ export const formatDate = (date, showTime = true) => {
   const hour = createdAt.getHours();
   const min = createdAt.getMinutes();
 
-  const get12hrs = hour > 12 ? hour - 12 : hour;
+  const get12hrs = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
 
   const amOrPm = hour >= 12 ? "PM" : "AM";
-  if (showTime) return `${day} ${month}, ${year} | ${get12hrs}:${min}${amOrPm}`
-  return `${day} ${month}, ${year} `;
+  const paddedMin = min.toString().padStart(2, "0");
+
+  if (showTime) return `${day} ${month}, ${year} | ${get12hrs}:${paddedMin}${amOrPm}`;
+  return `${day} ${month}, ${year}`;
 };

@@ -22,6 +22,7 @@ export const onDemandSessionSchema = z.object({
   overview: z.string().optional(),
   description: z.string().optional(),
   video_id: z.string().optional(),
+  sort_order: z.coerce.number().optional(),
   video_from_url: z.union([z.literal(""), z.string().trim().url()]),
 });
 export const editOnDemandVideoSchema = z.object({
@@ -31,6 +32,7 @@ export const editOnDemandVideoSchema = z.object({
     .min(1, { message: "This field is required" })
     .max(70, { message: "you've reach the max character length" }),
 
+  sort_order: z.coerce.number().optional(),
   video_from_url: z.union([z.literal(""), z.string().trim().url()]),
 });
 

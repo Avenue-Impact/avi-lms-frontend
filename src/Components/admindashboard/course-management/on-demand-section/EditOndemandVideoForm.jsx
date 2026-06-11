@@ -27,6 +27,7 @@ const EditOndemandVideoForm = ({ videoToEdit, section, setModal }) => {
       title: videoToEdit.title,
       video_title: videoToEdit.video_title,
       overview: videoToEdit.overview,
+      sort_order: videoToEdit.sort_order || 0,
       video_from_url: "",
     },
   });
@@ -60,7 +61,7 @@ const EditOndemandVideoForm = ({ videoToEdit, section, setModal }) => {
     if (video.file) {
       recorded = {
         video_title,
-
+        sort_order: data.sort_order || 0,
         video: video.file,
       };
     } else if (video_from_url) {
@@ -70,6 +71,7 @@ const EditOndemandVideoForm = ({ videoToEdit, section, setModal }) => {
     } else {
       recorded = {
         video_title,
+        sort_order: data.sort_order || 0,
       };
     }
 
@@ -111,6 +113,19 @@ const EditOndemandVideoForm = ({ videoToEdit, section, setModal }) => {
                 : 0}
               /70
             </p>
+          </div>
+        }
+
+        {
+          <div>
+            <FormInput
+              name="sort_order"
+              type="number"
+              id="sort_order"
+              label="Sort Order"
+              control={form.control}
+              placeholder="Enter numerical sort order (e.g. 1)"
+            />
           </div>
         }
 
