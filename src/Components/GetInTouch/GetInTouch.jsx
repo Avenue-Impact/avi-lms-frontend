@@ -3,6 +3,11 @@ import styles from "./GetInTouch.module.css";
 import Button from "../Button";
 import { toast } from "react-hot-toast";
 import { submitContactUsForm } from "../../services/api";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay } from 'swiper/modules';
+
+import 'swiper/css';
+import 'swiper/css/autoplay';
 
 // ─── Country codes (flag emoji + name + dial code) ───────────────────────────
 const COUNTRY_CODES = [
@@ -58,6 +63,7 @@ const GetInTouch = () => {
   const [errors, setErrors] = useState({});
   const [popupErrors, setPopupErrors] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [countrySearch, setCountrySearch] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -118,6 +124,10 @@ const GetInTouch = () => {
           } else if (digits.length > country.maxLen) {
             errorMsg = `Phone number is too long (max ${country.maxLen} digits)`;
           }
+        }
+      } else if (fieldName === "message") {
+        if (value.trim().length < 10) {
+          errorMsg = "Please enter a valid message (at least 10 characters)";
         }
       }
     }
@@ -190,7 +200,7 @@ const GetInTouch = () => {
       const response = await submitContactUsForm(payload);
       
       if (response.data.success) {
-        toast.success(response.data.message || "Message sent successfully!");
+        setShowSuccessModal(true);
         setFormData({
           name: "",
           localPhone: "",
@@ -198,6 +208,7 @@ const GetInTouch = () => {
           email: "",
           message: "",
         });
+        setTimeout(() => setShowSuccessModal(false), 5000);
       }
     } catch (error) {
       console.error("Contact Form Error:", error);
@@ -213,12 +224,39 @@ const GetInTouch = () => {
 
   return (
     <div
-      className={`${styles.get_in_touch} px-8 py-10 pt-20 lg:px-14 lg:pt-28 2xl:px-20 2xl:py-[50px]`}
+      className={`${styles.get_in_touch} px-8 py-10 pt-12 lg:px-14 2xl:px-20 2xl:pb-[50px] 2xl:pt-[20px]`}
     >
       <div className={styles.get_in_touch_info}>
         <h4 className="text-2xl font-light 2xl:text-[40px] 2xl:leading-[40px]">
           Elevate Your Business with Avenue Impact
         </h4>
+        
+        <div className="mt-8 overflow-hidden rounded-[12px] shadow-lg w-full max-w-[90%] lg:max-w-[550px] 2xl:max-w-[650px]">
+          <Swiper
+            modules={[Autoplay]}
+            autoplay={{
+              delay: 10000,
+              disableOnInteraction: false,
+            }}
+            loop={true}
+            speed={800}
+            className="h-auto w-full aspect-video"
+          >
+            <SwiperSlide>
+              <img src="/assets/contact-slider/media__1781169630230.jpg" alt="Slide 1" className="h-full w-full object-cover" />
+            </SwiperSlide>
+            <SwiperSlide>
+              <img src="/assets/contact-slider/media__1781169658040.jpg" alt="Slide 2" className="h-full w-full object-cover" />
+            </SwiperSlide>
+            <SwiperSlide>
+              <img src="/assets/contact-slider/media__1781169666750.jpg" alt="Slide 3" className="h-full w-full object-cover" />
+            </SwiperSlide>
+            <SwiperSlide>
+              <img src="/assets/contact-slider/media__1781169685953.png" alt="Slide 4" className="h-full w-full object-cover" />
+            </SwiperSlide>
+          </Swiper>
+        </div>
+        
         {/* <p className="2xl:text-xl 2xl:font-light">
           Let us be your partner in elevating your business to new levels of
           success. Our team of knowledgeable experts will collaborate with you
@@ -230,6 +268,38 @@ const GetInTouch = () => {
       </div>
 
       <form className={styles.get_in_touch_input} onSubmit={handleSubmit} noValidate>
+        {/* Success Modal */}
+        {showSuccessModal && (
+          <div className={styles.success_modal_overlay}>
+            <div className={styles.success_modal}>
+              <div className={styles.success_icon_wrapper}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={styles.success_icon}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+              </div>
+              <h3>Message Sent Successfully!</h3>
+              <p>Thank you for getting in touch. We will get back to you shortly.</p>
+              <button 
+                type="button" 
+                onClick={() => setShowSuccessModal(false)}
+                className={styles.success_close_btn}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Validation Popup Banner */}
         {showPopup && (
           <div className={styles.error_popup}>
