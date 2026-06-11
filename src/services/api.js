@@ -120,6 +120,11 @@ export const axiosStudent = axios.create({
   withCredentials: true,
 });
 
+export const axiosMentorship = axios.create({
+  baseURL: `${STUDENT_BASE_URL}/mentorship`,
+  withCredentials: true,
+});
+
 axiosStudent.interceptors.request.use(
   (config) => {
     const token = Cookies.get("token");
@@ -133,7 +138,27 @@ axiosStudent.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
+axiosMentorship.interceptors.request.use(
+  (config) => {
+    const token = Cookies.get("token");
+    if (token && token !== "undefined") {
+      config.headers.Authorization = `Bearer ${token}`;
+    } else if (token === "undefined") {
+      Cookies.remove("token");
+    }
+    return config;
+  },
+  (error) => Promise.reject(error),
+);
+
 axiosStudent.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    return Promise.reject(error);
+  },
+);
+
+axiosMentorship.interceptors.response.use(
   (response) => response,
   async (error) => {
     return Promise.reject(error);
@@ -298,6 +323,32 @@ export const toggleCohortLive = async ({ courseId, cohortId, is_live }) => {
   return await axiosAdmin.patch(`/courses/${courseId}/cohorts/${cohortId}`, {
     is_live,
   });
+};
+
+export const toggleCohortMentorship = async ({ courseId, cohortId, enabled }) => {
+  return await axiosAdmin.patch(`/courses/${courseId}/cohorts/${cohortId}/mentorship`, {
+    enabled,
+  });
+};
+
+export const checkMentorshipAccess = async () => {
+  return await axiosMentorship.get("/access");
+};
+
+export const fetchMentors = async () => {
+  return await axiosMentorship.get("/mentors");
+};
+
+export const getMentorAvailability = async (mentorId) => {
+  return await axiosMentorship.get(`/mentors/${mentorId}/availability`);
+};
+
+export const bookMentorshipSession = async (data) => {
+  return await axiosMentorship.post("/bookings", data);
+};
+
+export const getMentorshipBookings = async () => {
+  return await axiosMentorship.get("/bookings");
 };
 
 export const fetchAdmins = async (page = 1, perPage = 100) => {

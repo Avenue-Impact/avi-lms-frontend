@@ -61,6 +61,7 @@ import EmptyJoinProjectTeam from "./pages/dashboard/EmptyJoinProjectTeam";
 import GetCertificate from "./pages/dashboard/GetCertificate";
 import JoinProjectTeam from "./pages/dashboard/JoinProjectTeam";
 import LeaveRating from "./pages/dashboard/LeaveRating";
+import MentorshipList from "./pages/dashboard/MentorshipList";
 
 import { useState } from "react";
 import { Toaster } from "react-hot-toast";
@@ -380,6 +381,10 @@ function App() {
                 {
                   path: "student-settings",
                   element: <StudentSettings />,
+                },
+                {
+                  path: "mentorship",
+                  element: <MentorshipList />,
                 },
                 {
                   path: "Dashboard_Discover",

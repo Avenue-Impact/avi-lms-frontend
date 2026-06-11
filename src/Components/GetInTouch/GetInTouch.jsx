@@ -125,10 +125,6 @@ const GetInTouch = () => {
             errorMsg = `Phone number is too long (max ${country.maxLen} digits)`;
           }
         }
-      } else if (fieldName === "message") {
-        if (value.trim().length < 10) {
-          errorMsg = "Please enter a valid message (at least 10 characters)";
-        }
       }
     }
     
@@ -226,12 +222,8 @@ const GetInTouch = () => {
     <div
       className={`${styles.get_in_touch} px-8 py-10 pt-12 lg:px-14 2xl:px-20 2xl:pb-[50px] 2xl:pt-[20px]`}
     >
-      <div className={styles.get_in_touch_info}>
-        <h4 className="text-2xl font-light 2xl:text-[40px] 2xl:leading-[40px]">
-          Elevate Your Business with Avenue Impact
-        </h4>
-        
-        <div className="mt-8 overflow-hidden rounded-[12px] shadow-lg w-full max-w-[90%] lg:max-w-[550px] 2xl:max-w-[650px]">
+      <div className={`${styles.get_in_touch_info} min-w-0`}>
+        <div className="mb-8 overflow-hidden rounded-[12px] shadow-lg w-full min-w-0">
           <Swiper
             modules={[Autoplay]}
             autoplay={{
@@ -256,6 +248,10 @@ const GetInTouch = () => {
             </SwiperSlide>
           </Swiper>
         </div>
+        
+        <h4 className="text-2xl font-light 2xl:text-[40px] 2xl:leading-[40px]">
+          Elevate Your Business with Avenue Impact
+        </h4>
         
         {/* <p className="2xl:text-xl 2xl:font-light">
           Let us be your partner in elevating your business to new levels of
