@@ -49,6 +49,7 @@ const EditCourseInformationForm = ({ courseInformation, setOnOpenChange }) => {
     technologies: courseInformation.tools_and_technologies.join("\n"),
     overview: courseInformation.overview,
     url: "",
+    is_private: courseInformation.is_private ?? false,
   };
 
   const [message, setMessage] = useState({
@@ -68,6 +69,7 @@ const EditCourseInformationForm = ({ courseInformation, setOnOpenChange }) => {
           technologies: "",
           overview: "",
           url: "",
+          is_private: false,
         },
   });
 
@@ -80,11 +82,13 @@ const EditCourseInformationForm = ({ courseInformation, setOnOpenChange }) => {
       technologies,
       overview,
       url,
+      is_private,
     } = data;
 
     const formData = new FormData();
     formData.append("title", courseTitle);
     formData.append("overview", overview);
+    formData.append("is_private", is_private);
 
     // Helper to append arrays
     const appendArray = (key, stringVal) => {
@@ -148,6 +152,22 @@ const EditCourseInformationForm = ({ courseInformation, setOnOpenChange }) => {
                   : 0}
                 /160
               </p>
+            </div>
+
+            {/* Course Visibility */}
+            <div className="mb-6">
+              <p className="mb-2 font-[500] text-[#475367]">
+                Course Visibility: <span className="text-[#CC1747]">*</span>
+              </p>
+              <select
+                {...form.register("is_private", {
+                  setValueAs: (v) => v === "true" || v === true,
+                })}
+                className="h-[56px] w-full rounded border border-gray-300 bg-white p-2 outline-none"
+              >
+                <option value="false">Public (Appears in catalog and search)</option>
+                <option value="true">Non-Public (Hidden from catalog, accessible via direct link)</option>
+              </select>
             </div>
 
             <div className="mb-6">

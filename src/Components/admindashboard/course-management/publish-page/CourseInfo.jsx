@@ -67,6 +67,14 @@ const CourseInfo = ({ editButton = false, courseId }) => {
           </article>
           <article>
             <h3 className="mb-[14px] text-xl font-medium text-[#475367]">
+              Course Visibility
+            </h3>
+            <p className="text-justify text-xl text-[#667185]">
+              {data?.data?.data.course.is_private ? "Non-Public (Hidden from catalog)" : "Public (Appears in catalog and search)"}
+            </p>
+          </article>
+          <article>
+            <h3 className="mb-[14px] text-xl font-medium text-[#475367]">
               Overview
             </h3>
             <p className="text-justify capitalize text-[#667185] break-words">
