@@ -1,10 +1,10 @@
 import { getAllVideos } from "@/services/api";
 import { useQuery } from "@tanstack/react-query";
 
-export const useGetAllVideos = (page = 1, limit = 20, enabled = true) => {
+export const useGetAllVideos = (page = 1, limit = 20, search = "", enabled = true) => {
   return useQuery({
-    queryKey: ["get-all-videos", { page, limit }],
-    queryFn: () => getAllVideos(page, limit),
+    queryKey: ["get-all-videos", { page, limit, search }],
+    queryFn: () => getAllVideos(page, limit, search),
     enabled,
   });
 };

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createVideo } from "@/services/api";
 import toast from "react-hot-toast";
@@ -47,16 +47,19 @@ export function AddVideoModal({ children, sectionId, courseId, cohortId }) {
     courseId,
     cohortId,
   );
-  const { data: videosData, isLoading } = useGetAllVideos(page, 20, open);
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
+
+  const { data: videosData, isLoading } = useGetAllVideos(page, 20, debouncedSearchQuery, open);
 
   const allVideos = videosData?.data?.data || [];
-  const meta = videosData?.data?.meta || {};
-
-  const filteredVideos = useMemo(() => {
-    if (!searchQuery) return allVideos;
-    const lowerQuery = searchQuery.toLowerCase();
-    return allVideos.filter((v) => v.title?.toLowerCase().includes(lowerQuery));
-  }, [allVideos, searchQuery]);
+  const meta = videosData?.data?.pagination || videosData?.data?.meta || {};
 
   const toggleVideoSelection = (videoId) => {
     setSelectedVideos((prev) =>
@@ -114,7 +117,10 @@ export function AddVideoModal({ children, sectionId, courseId, cohortId }) {
               placeholder="Search videos..."
               className="pl-8"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setPage(1); // Reset page on search
+              }}
             />
           </div>
 
@@ -123,12 +129,12 @@ export function AddVideoModal({ children, sectionId, courseId, cohortId }) {
               <div className="flex h-full items-center justify-center">
                 <ClipLoader color="#cc1747" size={30} />
               </div>
-            ) : filteredVideos.length === 0 ? (
+            ) : allVideos.length === 0 ? (
               <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
                 No videos found.
               </div>
             ) : (
-              filteredVideos.map((video) => {
+              allVideos.map((video) => {
                 const isSelected = selectedVideos.includes(video.id);
                 return (
                   <div

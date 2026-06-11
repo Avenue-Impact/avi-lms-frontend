@@ -264,8 +264,10 @@ export const deleteRecordedSessionVideo = async ({
   );
 };
 
-export const getAllVideos = async (page = 1, limit = 20) => {
-  return await axiosAdmin.get(`/courses/videos?page=${page}&limit=${limit}`);
+export const getAllVideos = async (page = 1, limit = 20, search = "") => {
+  const query = new URLSearchParams({ page, limit });
+  if (search) query.append("search", search);
+  return await axiosAdmin.get(`/courses/videos?${query.toString()}`);
 };
 
 export const getSectionVideos = async (courseId, cohortId, sectionId) => {
