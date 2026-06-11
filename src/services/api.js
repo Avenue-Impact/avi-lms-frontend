@@ -47,11 +47,17 @@ axiosAdmin.interceptors.response.use(
       try {
         // Attempt Silent Refresh
         // We use a separate instance or raw axios to avoid infinite loop with interceptors
-        await axios.post(
+        const response = await axios.post(
           `${BASE_URL}/auth/refresh`,
-          {},
+          { refreshToken: Cookies.get("adminRefreshToken") },
           { withCredentials: true }, // Ensure cookies are sent
         );
+
+        const newAccessToken = response.data?.data?.token;
+        const newRefreshToken = response.data?.data?.refreshToken;
+        
+        if (newAccessToken) Cookies.set("adminToken", newAccessToken);
+        if (newRefreshToken) Cookies.set("adminRefreshToken", newRefreshToken);
 
         // If successful, retry original request
         return axiosAdmin(originalRequest);
@@ -59,6 +65,7 @@ axiosAdmin.interceptors.response.use(
         // Refresh failed (token expired or invalid)
         Cookies.remove("adminSession"); // Clear session flag
         Cookies.remove("adminToken"); // Clear token
+        Cookies.remove("adminRefreshToken");
         if (!window.location.pathname.includes("/admin/login")) {
           window.location.href = "/admin/login";
         }
