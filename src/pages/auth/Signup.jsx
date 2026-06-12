@@ -22,7 +22,22 @@ import { route } from "@/lib/route-checker";
 
 const loginSchema = z
   .object({
-    email: z.string().email({ message: "Please enter a valid email address." }),
+    email: z.string().superRefine((val, ctx) => {
+      if (!val) { ctx.addIssue({ code: z.ZodIssueCode.custom, message: "This field is required" }); return; }
+      if (/\\s/.test(val)) { ctx.addIssue({ code: z.ZodIssueCode.custom, message: "⚠ Please enter a valid email address - You have entered a blank space" }); return; }
+      if (!val.includes("@")) { ctx.addIssue({ code: z.ZodIssueCode.custom, message: "⚠ Please enter a valid email address - You have missed out the @ symbol" }); return; }
+      const [username, ...rest] = val.split("@");
+      if (!username) { ctx.addIssue({ code: z.ZodIssueCode.custom, message: "⚠ Please enter a valid email address - You have missed out the username" }); return; }
+      const domainPart = rest.join("@");
+      if (!domainPart || rest.length > 1) { 
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: !domainPart ? "⚠ Please enter a valid email address - You have missed out the domain" : "⚠ Please enter a valid email address" }); return; 
+      }
+      if (!domainPart.includes(".")) { ctx.addIssue({ code: z.ZodIssueCode.custom, message: '⚠ Please enter a valid email address - You have missed out the a "."' }); return; }
+      const domainParts = domainPart.split(".");
+      const tld = domainParts[domainParts.length - 1];
+      if (!tld || tld.length < 2) { ctx.addIssue({ code: z.ZodIssueCode.custom, message: "⚠ Please enter a valid email address - You have missed out the Top Leve Domain" }); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) { ctx.addIssue({ code: z.ZodIssueCode.custom, message: "⚠ Please enter a valid email address" }); return; }
+    }),
     phoneNumber: z
       .string()
       .min(10, { message: "Please enter a valid phone number" })
@@ -97,8 +112,9 @@ const SignUp = ({ isPage = true }) => {
     },
   });
 
-  const { isSubmitting } = form.formState;
+  const { isSubmitting, errors } = form.formState;
   const currentPassword = form.watch("password") || "";
+  const hasErrors = Object.keys(errors).length > 0;
 
   const passwordRequirements = [
     { label: "At least 8 characters", valid: currentPassword.length >= 8 },
@@ -507,7 +523,7 @@ const SignUp = ({ isPage = true }) => {
             <CommonButton
               className="mt-4 w-full rounded-lg bg-[#C41E3A] py-3 font-poppins text-base font-semibold capitalize text-white hover:bg-[#a8103a]"
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || hasErrors}
             >
               {isSubmitting ? "loading..." : "Submit Application"}
             </CommonButton>

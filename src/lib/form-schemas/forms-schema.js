@@ -1,5 +1,42 @@
 import { z } from 'zod'
 
+export const getEmailErrorMessage = (email) => {
+  if (!email) return "This field is required";
+  if (/\\s/.test(email)) return "⚠ Please enter a valid email address - You have entered a blank space";
+  if (!email.includes("@")) return "⚠ Please enter a valid email address - You have missed out the @ symbol";
+  
+  const [username, ...rest] = email.split("@");
+  if (!username) return "⚠ Please enter a valid email address - You have missed out the username";
+  
+  const domainPart = rest.join("@");
+  if (!domainPart || rest.length > 1) {
+    if (!domainPart) return "⚠ Please enter a valid email address - You have missed out the domain";
+    return "⚠ Please enter a valid email address"; // multiple @ fallback
+  }
+
+  if (!domainPart.includes(".")) return '⚠ Please enter a valid email address - You have missed out the a "."';
+  
+  const domainParts = domainPart.split(".");
+  const tld = domainParts[domainParts.length - 1];
+  if (!tld || tld.length < 2) return "⚠ Please enter a valid email address - You have missed out the Top Leve Domain";
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return "⚠ Please enter a valid email address";
+  }
+
+  return null;
+};
+
+export const customEmailSchema = z.string().superRefine((val, ctx) => {
+  const errorMsg = getEmailErrorMessage(val);
+  if (errorMsg) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: errorMsg,
+    });
+  }
+});
+
 export const RecordedSessionSchema = z.object({
   title: z
     .string()
@@ -124,7 +161,7 @@ export const courseInformationSchema = z.object({
 export const instructorInvitationSchema = z.object({
   first_name: z.string().min(1, { message: "First name is required" }),
   last_name: z.string().min(1, { message: "Last name is required" }),
-  email: z.string().email({ message: "Invalid email address" }),
+  email: customEmailSchema,
   role: z.literal("Instructor"),
 });
 

@@ -5,7 +5,8 @@ import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/format-date";
 import { useState, useEffect } from "react";
 import { useToggleCohortLive } from "@/hooks/course-management/use-toggle-cohort-live";
-import { Loader2, AlertTriangle, RotateCcw } from "lucide-react";
+import { useToggleCohortMentorship } from "@/hooks/course-management/use-toggle-cohort-mentorship";
+import { Loader2, AlertTriangle, RotateCcw, Users } from "lucide-react";
 import liveSession from "../../../../assets/images/dashboard/live-session.png";
 import EditLiveSessionForm from "../live-session/EditLiveSession";
 import EditLiveSession from "../live-session/EditLiveSession";
@@ -105,6 +106,7 @@ const LiveContent = ({ data }) => {
   const cohortId = queryString.get("cohortId");
   const queryClient = useQueryClient();
   const { toggleLive, isToggling } = useToggleCohortLive(courseId, cohortId);
+  const { toggleMentorship, isTogglingMentorship } = useToggleCohortMentorship(courseId, cohortId);
 
   // 1. Clean Destructuring
   const {
@@ -112,7 +114,7 @@ const LiveContent = ({ data }) => {
     subtitle = "",
     class_date = "",
   } = data?.data?.session ?? {};
-  const {instructor = null, is_live = false,} = data?.data?.data ?? {};
+  const {instructor = null, is_live = false, mentorship_enabled = false} = data?.data?.data ?? {};
 
   // 2. Derive Instructor Name
   const instructorName = instructor
@@ -242,6 +244,50 @@ const LiveContent = ({ data }) => {
                 </div>
               </div>
             </div>
+
+            {/* Toggle Mentorship Access Card */}
+            {/* 
+            <div className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-6">
+              <div className="mb-4 flex items-center justify-between">
+                <div className="max-w-[70%]">
+                  <h3 className="flex items-center gap-2 text-lg font-semibold text-blue-800">
+                    <Users className="h-5 w-5" />
+                    Mentorship Access
+                  </h3>
+                  <p className="mt-1 text-sm text-blue-700">
+                    Enable or disable mentorship access for students enrolled in this cohort.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <span
+                    className={cn(
+                      "text-sm font-bold",
+                      mentorship_enabled ? "text-green-600" : "text-gray-600",
+                    )}
+                  >
+                    {mentorship_enabled ? "ENABLED" : "DISABLED"}
+                  </span>
+                  <button
+                    onClick={() => toggleMentorship(!mentorship_enabled)}
+                    disabled={isTogglingMentorship}
+                    className={cn(
+                      "relative inline-flex h-6 w-11 items-center rounded-full transition-colors",
+                      mentorship_enabled ? "bg-primary-color-600" : "bg-gray-300",
+                      isTogglingMentorship && "cursor-not-allowed opacity-50",
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200",
+                        mentorship_enabled ? "translate-x-6" : "translate-x-1",
+                      )}
+                    />
+                  </button>
+                </div>
+              </div>
+            </div>
+            */}
           </section>
         </div>
       )}

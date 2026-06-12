@@ -2,6 +2,7 @@ import { CommonButton } from "@/Components/ui/button";
 import { Form } from "@/Components/ui/form";
 import FormInput from "@/Components/ui/form-input";
 import { useAddStudentToLive } from "@/hooks/course-management/live-session/use-add-student";
+import { customEmailSchema } from "@/lib/form-schemas/forms-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useParams, useSearchParams } from "react-router-dom";
@@ -9,7 +10,7 @@ import { ClipLoader } from "react-spinners";
 import { z } from "zod";
 
 const addStudentSchema = z.object({
-  email: z.string().email(),
+  email: customEmailSchema,
 });
 const AddStudentToLiveForm = ({ setOpen }) => {
   const { addStudent, isPending } = useAddStudentToLive();

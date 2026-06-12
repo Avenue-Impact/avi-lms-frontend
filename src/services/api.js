@@ -47,11 +47,17 @@ axiosAdmin.interceptors.response.use(
       try {
         // Attempt Silent Refresh
         // We use a separate instance or raw axios to avoid infinite loop with interceptors
-        await axios.post(
+        const response = await axios.post(
           `${BASE_URL}/auth/refresh`,
-          {},
+          { refreshToken: Cookies.get("adminRefreshToken") },
           { withCredentials: true }, // Ensure cookies are sent
         );
+
+        const newAccessToken = response.data?.data?.token;
+        const newRefreshToken = response.data?.data?.refreshToken;
+        
+        if (newAccessToken) Cookies.set("adminToken", newAccessToken);
+        if (newRefreshToken) Cookies.set("adminRefreshToken", newRefreshToken);
 
         // If successful, retry original request
         return axiosAdmin(originalRequest);
@@ -59,6 +65,7 @@ axiosAdmin.interceptors.response.use(
         // Refresh failed (token expired or invalid)
         Cookies.remove("adminSession"); // Clear session flag
         Cookies.remove("adminToken"); // Clear token
+        Cookies.remove("adminRefreshToken");
         if (!window.location.pathname.includes("/admin/login")) {
           window.location.href = "/admin/login";
         }
@@ -113,6 +120,11 @@ export const axiosStudent = axios.create({
   withCredentials: true,
 });
 
+export const axiosMentorship = axios.create({
+  baseURL: `${STUDENT_BASE_URL}/mentorship`,
+  withCredentials: true,
+});
+
 axiosStudent.interceptors.request.use(
   (config) => {
     const token = Cookies.get("token");
@@ -126,7 +138,27 @@ axiosStudent.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
+axiosMentorship.interceptors.request.use(
+  (config) => {
+    const token = Cookies.get("token");
+    if (token && token !== "undefined") {
+      config.headers.Authorization = `Bearer ${token}`;
+    } else if (token === "undefined") {
+      Cookies.remove("token");
+    }
+    return config;
+  },
+  (error) => Promise.reject(error),
+);
+
 axiosStudent.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    return Promise.reject(error);
+  },
+);
+
+axiosMentorship.interceptors.response.use(
   (response) => response,
   async (error) => {
     return Promise.reject(error);
@@ -294,6 +326,32 @@ export const toggleCohortLive = async ({ courseId, cohortId, is_live }) => {
   return await axiosAdmin.patch(`/courses/${courseId}/cohorts/${cohortId}`, {
     is_live,
   });
+};
+
+export const toggleCohortMentorship = async ({ courseId, cohortId, enabled }) => {
+  return await axiosAdmin.patch(`/courses/${courseId}/cohorts/${cohortId}/mentorship`, {
+    enabled,
+  });
+};
+
+export const checkMentorshipAccess = async () => {
+  return await axiosMentorship.get("/access");
+};
+
+export const fetchMentors = async () => {
+  return await axiosMentorship.get("/mentors");
+};
+
+export const getMentorAvailability = async (mentorId) => {
+  return await axiosMentorship.get(`/mentors/${mentorId}/availability`);
+};
+
+export const bookMentorshipSession = async (data) => {
+  return await axiosMentorship.post("/bookings", data);
+};
+
+export const getMentorshipBookings = async () => {
+  return await axiosMentorship.get("/bookings");
 };
 
 export const fetchAdmins = async (page = 1, perPage = 100) => {

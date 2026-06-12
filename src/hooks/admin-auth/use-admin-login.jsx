@@ -18,12 +18,17 @@ export const useLoginAdmin = () => {
     onSuccess({ data }) {
       console.log("Login Response Data:", data);
       const token = data.data?.token || data.token;
+      const refreshToken = data.data?.refreshToken || data.refreshToken;
       
       // Strict check to prevent "undefined" string
       if (token && token !== "undefined") {
         Cookies.set('adminToken', token);
       } else {
         console.error("Token not found or is undefined");
+      }
+      
+      if (refreshToken && refreshToken !== "undefined") {
+        Cookies.set('adminRefreshToken', refreshToken);
       }
       toast.success("admin logged in successfully");
       // Cookies are now handled by the backend (HttpOnly)
