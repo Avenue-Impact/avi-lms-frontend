@@ -249,7 +249,7 @@ const GetInTouch = () => {
           </Swiper>
         </div>
         
-        <h4 className="text-2xl font-light 2xl:text-[40px] 2xl:leading-[40px]">
+        <h4 className="text-2xl font-light 2xl:text-[40px] 2xl:leading-[40px] text-center">
           Elevate Your Business with Avenue Impact
         </h4>
         
