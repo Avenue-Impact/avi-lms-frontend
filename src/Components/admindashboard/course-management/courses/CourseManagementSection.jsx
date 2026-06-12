@@ -243,6 +243,7 @@ const LiveContent = ({ data }) => {
             </div>
 
             {/* Toggle Mentorship Access Card */}
+            {/* 
             <div className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-6">
               <div className="mb-4 flex items-center justify-between">
                 <div className="max-w-[70%]">
@@ -283,6 +284,7 @@ const LiveContent = ({ data }) => {
                 </div>
               </div>
             </div>
+            */}
           </section>
         </div>
       )}
