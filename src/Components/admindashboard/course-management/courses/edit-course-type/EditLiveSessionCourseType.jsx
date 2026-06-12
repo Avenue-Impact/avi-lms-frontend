@@ -108,7 +108,7 @@ const EditLiveSessionCourseType = ({
         currency_symbol: "£",
         discount_type: data.discountType,
         discount_value: Number(data.discountValue),
-        zoom_account_id: data.zoom_account_id && data.zoom_account_id !== "none" ? data.zoom_account_id : undefined,
+        zoom_account_id: data.zoom_account_id && data.zoom_account_id !== "none" ? data.zoom_account_id : null,
       },
     };
 
@@ -147,7 +147,7 @@ const EditLiveSessionCourseType = ({
       startDate: existingStartDate,
       discountType: existingCohorts?.[0]?.discounted_price?.discount_type || priceInfo?.discount_type || "None",
       discountValue: existingCohorts?.[0]?.discounted_price?.discount_value ?? priceInfo?.discount_value ?? 0,
-      zoom_account_id: existingCohorts?.[0]?.zoom_account_id || "none",
+      zoom_account_id: existingCohorts?.[0]?.zoom_account_id?.id || existingCohorts?.[0]?.zoom_account_id?._id || existingCohorts?.[0]?.zoom_account_id || "none",
     },
   });
 
