@@ -135,24 +135,42 @@ const ZoomSetupPage = () => {
                 <h3 className="mb-3 font-semibold text-gray-800">Step 1: Create the Meeting SDK App</h3>
                 <ol className="list-decimal list-inside space-y-2 text-sm text-gray-600 ml-2">
                   <li>Go back to <strong>Develop</strong> &gt; <strong>Build App</strong>.</li>
-                  <li>Locate <strong>Meeting SDK</strong> and click <strong>Create</strong>.</li>
+                  <li>Select <strong>General App</strong>.</li>
+                  <li>Under the embedded section, select <strong>Zoom Meetings</strong> as the product under the General App.</li>
                   <li>Enter an <strong>App Name</strong> (e.g., <code className="bg-gray-100 px-1 rounded">Meeting SDK</code>) and click <strong>Create</strong>.</li>
+                  <li>Continue by filling out the required information details on the subsequent pages.</li>
                 </ol>
               </div>
 
               <div>
                 <h3 className="mb-3 font-semibold text-gray-800">Step 2: Note the SDK Credentials</h3>
-                <p className="mb-3 text-sm text-gray-600 ml-2">On the <strong>App Credentials</strong> tab, find the <strong>SDK Credentials</strong> section:</p>
+                <p className="mb-3 text-sm text-gray-600 ml-2">On the <strong>Basic Information</strong> page, locate the App credentials section:</p>
                 <ul className="list-disc list-inside space-y-1 text-sm text-gray-600 ml-6 font-medium">
-                  <li>Client ID (SDK Key)</li>
-                  <li>Client Secret (SDK Secret)</li>
+                  <li>Client ID (This is your SDK Key)</li>
+                  <li>Client Secret (This is your SDK Secret)</li>
                 </ul>
               </div>
 
               <div>
-                <h3 className="mb-3 font-semibold text-gray-800">Step 3: Activate</h3>
+                <h3 className="mb-3 font-semibold text-gray-800">Step 3: Enable Meeting SDK</h3>
                 <p className="text-sm text-gray-600 ml-2">
-                  Fill out the <strong>Information</strong> tab and ensure the app is activated.
+                  On the <strong>Features</strong> page, go to the <strong>Embed</strong> tab, and toggle <strong>Meeting SDK</strong> on to enable it.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="mb-3 font-semibold text-gray-800">Step 4: Select Scopes</h3>
+                <ol className="list-decimal list-inside space-y-2 text-sm text-gray-600 ml-2">
+                  <li>Go to the <strong>Scopes</strong> page and select <strong>Add Scopes</strong>.</li>
+                  <li>Select <strong>User</strong> and check the box for <strong>View all user information</strong> (or <strong>View a user's zak token</strong>).</li>
+                  <li>Select <strong>Done</strong>.</li>
+                </ol>
+              </div>
+
+              <div>
+                <h3 className="mb-3 font-semibold text-gray-800">Step 5: Activate</h3>
+                <p className="text-sm text-gray-600 ml-2">
+                  Complete any remaining required fields in the setup process and ensure the app is fully activated on your account.
                 </p>
               </div>
             </div>
