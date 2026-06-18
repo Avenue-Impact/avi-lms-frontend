@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchMentors, getMentorshipBookings } from "@/services/api";
 import { Skeleton } from "@/Components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
-import CommonButton from "@/Components/ui/button";
 import BookMentorshipModal from "@/Components/dashboard/BookMentorshipModal";
 
 const MentorshipList = () => {
@@ -12,20 +11,20 @@ const MentorshipList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <div className="p-6 lg:p-10">
+    <div className="border-white-300 my-6 rounded-lg border-2 bg-white p-6 lg:p-10">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 md:text-3xl">Mentorship</h1>
+        <h1 className="text-2xl font-semibold text-gray-800 md:text-3xl">Mentorship</h1>
         <p className="mt-2 text-gray-600">
           Book a 1-on-1 session with our industry experts to guide your learning journey.
         </p>
       </div>
 
-      <div className="mb-6 flex gap-4 border-b border-gray-200">
+      <div className="mb-8 flex gap-6 border-b border-gray-200">
         <button
           onClick={() => setActiveTab("mentors")}
-          className={`border-b-2 px-1 pb-4 text-sm font-medium ${
+          className={`border-b-2 px-2 pb-4 text-sm font-medium transition-colors ${
             activeTab === "mentors"
-              ? "border-primary-color-600 text-primary-color-600"
+              ? "border-[#E11D48] text-[#E11D48]"
               : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
           }`}
         >
@@ -33,9 +32,9 @@ const MentorshipList = () => {
         </button>
         <button
           onClick={() => setActiveTab("bookings")}
-          className={`border-b-2 px-1 pb-4 text-sm font-medium ${
+          className={`border-b-2 px-2 pb-4 text-sm font-medium transition-colors ${
             activeTab === "bookings"
-              ? "border-primary-color-600 text-primary-color-600"
+              ? "border-[#E11D48] text-[#E11D48]"
               : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
           }`}
         >
@@ -79,7 +78,7 @@ const MentorsTab = ({ setSelectedMentor, setIsModalOpen }) => {
     return (
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {[1, 2, 3].map((i) => (
-          <Skeleton key={i} className="h-48 w-full rounded-xl" />
+          <Skeleton key={i} className="h-[300px] w-full rounded-xl" />
         ))}
       </div>
     );
@@ -105,43 +104,50 @@ const MentorsTab = ({ setSelectedMentor, setIsModalOpen }) => {
   }
 
   return (
-    <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {mentors.map((mentor) => (
         <div
           key={mentor.id}
-          className="flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md"
+          className="bg-white shadow-md rounded-lg overflow-hidden flex flex-col border border-gray-100 transition-all hover:shadow-lg"
         >
-          <div className="flex items-center gap-4 border-b border-gray-100 bg-gray-50/50 p-5">
-            <Avatar className="h-14 w-14 border-2 border-white shadow-sm">
-              <AvatarImage src={mentor.avatar} />
-              <AvatarFallback className="bg-primary-color-100 text-lg font-semibold text-primary-color-700">
-                {mentor.name.charAt(0)}
+          <div className="flex flex-col items-center p-6 border-b border-gray-50">
+            <Avatar className="h-24 w-24 border-4 border-white shadow-md">
+              <AvatarImage src={mentor.profile_photo_url || mentor.avatar} />
+              <AvatarFallback className="bg-rose-100 text-2xl font-bold text-rose-700">
+                {(mentor.first_name || mentor.name)?.charAt(0)}
               </AvatarFallback>
             </Avatar>
-            <div>
-              <h3 className="font-semibold text-gray-900">{mentor.name}</h3>
-              <p className="text-sm font-medium text-primary-color-600">{mentor.role}</p>
-            </div>
+            <h3 className="mt-4 font-semibold text-lg text-gray-800 text-center">
+              {mentor.first_name} {mentor.last_name}
+            </h3>
+            {mentor.services?.[0] && (
+              <p className="text-sm font-medium text-[#E11D48] mt-1 text-center">
+                {mentor.services[0].name}
+              </p>
+            )}
           </div>
-          <div className="flex flex-1 flex-col p-5">
-            <p className="line-clamp-3 flex-1 text-sm text-gray-600">{mentor.bio}</p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {mentor.expertise?.map((skill, idx) => (
-                <span key={idx} className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700">
-                  {skill}
+          
+          <div className="flex flex-1 flex-col p-6 bg-gray-50/30">
+            <p className="line-clamp-3 flex-1 text-sm text-gray-600 text-center">{mentor.bio}</p>
+            
+            <div className="mt-5 flex flex-wrap gap-2 justify-center">
+              {mentor.specialties?.map((specialty) => (
+                <span key={specialty.id} className="rounded-md bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-600 border border-gray-200">
+                  {specialty.name}
                 </span>
               ))}
             </div>
-            <div className="mt-6 border-t border-gray-100 pt-4">
-              <CommonButton 
-                className="w-full justify-center"
+            
+            <div className="mt-6 pt-2">
+              <button 
+                className="w-full bg-[#E11D48] text-white py-2.5 rounded-md font-medium text-sm hover:bg-rose-700 transition-colors shadow-sm"
                 onClick={() => {
                   setSelectedMentor(mentor);
                   setIsModalOpen(true);
                 }}
               >
                 View Availability
-              </CommonButton>
+              </button>
             </div>
           </div>
         </div>
@@ -163,7 +169,7 @@ const BookingsTab = () => {
     return (
       <div className="space-y-4">
         {[1, 2].map((i) => (
-          <Skeleton key={i} className="h-24 w-full rounded-xl" />
+          <Skeleton key={i} className="h-28 w-full rounded-xl" />
         ))}
       </div>
     );
@@ -188,25 +194,67 @@ const BookingsTab = () => {
     );
   }
 
+  const formatSlotTime = (start) => {
+    if (start === undefined || start === null) return "";
+    const hr = Math.floor(start);
+    const min = (start % 1) * 60;
+    const period = hr >= 12 ? "PM" : "AM";
+    const displayHr = hr % 12 || 12;
+    const displayMin = min === 0 ? "00" : min;
+    return `${displayHr}:${displayMin.toString().padStart(2, '0')} ${period}`;
+  };
+
   return (
-    <div className="space-y-4">
+    <div className="grid gap-4 md:grid-cols-2">
       {bookings.map((booking) => (
-        <div key={booking.id} className="flex flex-col gap-4 rounded-xl border border-gray-200 bg-white p-5 sm:flex-row sm:items-center sm:justify-between shadow-sm">
-          <div>
-            <h4 className="font-semibold text-gray-900">Session with {booking.mentorName}</h4>
-            <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-600">
-              <div className="flex items-center gap-1">
-                <span className="font-medium">Date:</span> {booking.date}
+        <div key={booking.id} className="bg-white shadow-md rounded-lg overflow-hidden border border-gray-100 flex flex-col transition-all hover:shadow-lg">
+          <div className="border-b border-gray-50 p-5 pb-4 flex justify-between items-start">
+            <div>
+              <h4 className="font-semibold text-lg text-gray-800">
+                {booking.service_name || booking.mentorName || "Mentorship Session"}
+              </h4>
+              <p className="text-sm font-medium text-[#E11D48] mt-1">
+                {booking.specialty_name || "Mentorship"}
+              </p>
+            </div>
+            <span className="rounded-md bg-green-50 px-2.5 py-1 text-xs font-semibold text-green-700 border border-green-200 uppercase tracking-wider">
+              {booking.status?.toUpperCase() || "CONFIRMED"}
+            </span>
+          </div>
+          
+          <div className="p-5 flex-1 bg-gray-50/30 flex flex-col justify-between">
+            <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
+              <div className="flex flex-col">
+                <span className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">Date</span>
+                <span className="font-medium text-gray-800">{booking.booking_date || booking.date}</span>
               </div>
-              <div className="flex items-center gap-1">
-                <span className="font-medium">Time:</span> {booking.time}
+              <div className="flex flex-col">
+                <span className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">Time</span>
+                <span className="font-medium text-gray-800">{booking.slots?.[0] ? formatSlotTime(booking.slots[0].start) : booking.time}</span>
               </div>
             </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700 border border-green-200">
-              Confirmed
-            </span>
+            
+            {booking.meeting_links?.length > 0 ? (
+              <div className="mt-6 pt-4 border-t border-gray-100">
+                <a 
+                  href={booking.meeting_links[0].url} 
+                  target="_blank" 
+                  rel="noreferrer"
+                  className="w-full flex items-center justify-center bg-[#E11D48] text-white py-2 rounded-md font-medium text-sm hover:bg-rose-700 transition-colors shadow-sm"
+                >
+                  Join Meeting ({booking.meeting_links[0].provider})
+                </a>
+              </div>
+            ) : (
+              <div className="mt-6 pt-4 border-t border-gray-100">
+                <button 
+                  disabled
+                  className="w-full bg-gray-100 text-gray-400 py-2 rounded-md font-medium text-sm cursor-not-allowed"
+                >
+                  Meeting Link Pending...
+                </button>
+              </div>
+            )}
           </div>
         </div>
       ))}

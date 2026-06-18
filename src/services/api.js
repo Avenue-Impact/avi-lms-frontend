@@ -121,7 +121,7 @@ export const axiosStudent = axios.create({
 });
 
 export const axiosMentorship = axios.create({
-  baseURL: `${STUDENT_BASE_URL}/mentorship`,
+  baseURL: `${STUDENT_BASE_URL}/student/mentorship`,
   withCredentials: true,
 });
 
