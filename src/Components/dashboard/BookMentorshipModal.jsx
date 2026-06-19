@@ -11,6 +11,7 @@ import { getMentorAvailability, bookMentorshipSession } from "@/services/api";
 import { Skeleton } from "@/Components/ui/skeleton";
 import CommonButton from "@/Components/ui/button";
 import toast from "react-hot-toast";
+import { liveSessionDetailQuery } from "@/loaders/student/home-page-loader";
 
 const getNext14Days = () => {
   const dates = [];
@@ -28,6 +29,25 @@ const BookMentorshipModal = ({ mentor, open, onClose }) => {
   const [selectedTime, setSelectedTime] = useState("");
   const [selectedService, setSelectedService] = useState("");
   const [selectedSpecialty, setSelectedSpecialty] = useState("");
+  const [selectedCohortId, setSelectedCohortId] = useState("");
+
+  const { data: liveData, isLoading: isLoadingCohorts } = useQuery(liveSessionDetailQuery());
+  const enrolledCohorts = liveData?.data?.data?.courses || [];
+
+  const { data: bookingsData, isLoading: isLoadingBookings } = useQuery({
+    queryKey: ["mentorship-bookings"],
+    queryFn: async () => {
+      const res = await getMentorshipBookings();
+      return res.data;
+    },
+    enabled: open,
+  });
+
+  const allBookings = bookingsData?.bookings || [];
+  const selectedCohortBookings = allBookings.filter(
+    (b) => String(b.metadata?.cohort_id) === String(selectedCohortId)
+  );
+  const hasReachedLimit = selectedCohortBookings.length >= 5;
 
   const { data: availabilityData, isLoading } = useQuery({
     queryKey: ["mentor-availability", mentor?.id],
@@ -50,6 +70,10 @@ const BookMentorshipModal = ({ mentor, open, onClose }) => {
   });
 
   const handleBooking = () => {
+    if (!selectedCohortId) {
+      toast.error("Please select a course/cohort");
+      return;
+    }
     if (!selectedService) {
       toast.error("Please select a service");
       return;
@@ -69,6 +93,7 @@ const BookMentorshipModal = ({ mentor, open, onClose }) => {
       time: selectedTime,
       service_id: selectedService,
       specialty_id: selectedSpecialty,
+      cohort_id: selectedCohortId,
     });
   };
 
@@ -136,7 +161,47 @@ const BookMentorshipModal = ({ mentor, open, onClose }) => {
               </div>
             ) : (
               <div className="space-y-6">
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    Select Course / Cohort
+                  </label>
+                  {isLoadingCohorts ? (
+                    <Skeleton className="h-10 w-full" />
+                  ) : (
+                    <select
+                      value={selectedCohortId}
+                      onChange={(e) => setSelectedCohortId(e.target.value)}
+                      className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:border-[#E11D48] focus:outline-none focus:ring-1 focus:ring-[#E11D48]"
+                    >
+                      <option value="" disabled>Select your enrolled cohort...</option>
+                      {enrolledCohorts.map(c => (
+                        <option key={c.id || c.courseId} value={c.cohort_id || c.id || c.courseId}>
+                          {c.title}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                </div>
+
+                {selectedCohortId && hasReachedLimit && (
+                  <div className="rounded-md bg-rose-50 border border-rose-200 p-4 animate-in fade-in">
+                    <h4 className="text-sm font-semibold text-rose-800">Booking Limit Reached</h4>
+                    <p className="mt-1 text-sm text-rose-700">
+                      You have reached the maximum limit of 5 free mentorship sessions for this cohort.
+                    </p>
+                    <a
+                      href="https://mentiiv.com"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-3 inline-flex w-full justify-center items-center rounded-md bg-[#E11D48] px-3 py-2 text-sm font-medium text-white hover:bg-rose-700 transition-colors"
+                    >
+                      Visit Mentiiv to Book More Sessions
+                    </a>
+                  </div>
+                )}
+
+                <div className={hasReachedLimit ? "opacity-50 pointer-events-none" : ""}>
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mb-6">
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-700">
                       Select Service
@@ -222,6 +287,7 @@ const BookMentorshipModal = ({ mentor, open, onClose }) => {
                     </div>
                   </div>
                 )}
+                </div>
               </div>
             )}
 
@@ -235,7 +301,7 @@ const BookMentorshipModal = ({ mentor, open, onClose }) => {
               </CommonButton>
               <CommonButton
                 onClick={handleBooking}
-                disabled={!selectedService || !selectedSpecialty || !selectedDate || !selectedTime || isBooking}
+                disabled={!selectedCohortId || !selectedService || !selectedSpecialty || !selectedDate || !selectedTime || isBooking || hasReachedLimit}
                 className="bg-[#E11D48] text-white hover:bg-rose-700 disabled:opacity-50"
               >
                 {isBooking ? "Booking..." : "Confirm Booking"}
