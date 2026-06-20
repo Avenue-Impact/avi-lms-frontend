@@ -53,13 +53,13 @@ export default function PhoneInput({
       name={name}
       render={({ field }) => {
         // field.value represents the full phone number string e.g. "+2348136969006"
-        const [countryCode, setCountryCode] = useState("+234");
+        const [countryCode, setCountryCode] = useState("+44");
         const [localNumber, setLocalNumber] = useState("");
 
         // Parse initial value from form state
         useEffect(() => {
           if (field.value) {
-            let matchedCode = "+234";
+            let matchedCode = "+44";
             let rest = field.value;
             // Sort codes by length descending so +234 matches before +2
             const sortedCodes = [...COUNTRY_CODES].sort(
