@@ -337,6 +337,7 @@ const LiveSessionMentoringCourseType = () => {
 
           <div className="flex items-center justify-between gap-6 pt-10">
             <CommonButton
+              type="button"
               onClick={() => setActiveTab((prev) => prev - 1)}
               className="ml-auto bg-gray-500 text-white hover:bg-gray-700"
             >

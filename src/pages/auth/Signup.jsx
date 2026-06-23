@@ -482,7 +482,7 @@ const SignUp = ({ isPage = true }) => {
               </div>
 
               <FormInput
-                label="AVI Reference Code"
+                label="Referral Code"
                 name="referralCode"
                 control={form.control}
                 type="text"
