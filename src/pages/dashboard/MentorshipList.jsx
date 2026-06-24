@@ -157,7 +157,7 @@ const MentorsTab = ({ setSelectedMentor, setIsModalOpen }) => {
 };
 
 const BookingsTab = () => {
-  const { data, isLoading, error } = useQuery({
+  const { data: bookingsData, isLoading: isLoadingBookings, error } = useQuery({
     queryKey: ["mentorship-bookings"],
     queryFn: async () => {
       const res = await getMentorshipBookings();
@@ -165,7 +165,15 @@ const BookingsTab = () => {
     },
   });
 
-  if (isLoading) {
+  const { data: mentorsData } = useQuery({
+    queryKey: ["mentors"],
+    queryFn: async () => {
+      const res = await fetchMentors();
+      return res.data;
+    },
+  });
+
+  if (isLoadingBookings) {
     return (
       <div className="space-y-4">
         {[1, 2].map((i) => (
@@ -183,7 +191,14 @@ const BookingsTab = () => {
     );
   }
 
-  const bookings = data?.bookings || [];
+  const rawBookings = bookingsData?.bookings || [];
+  const mentors = mentorsData?.mentors || [];
+  
+  // Enrich bookings with mentor data from the mentors query
+  const bookings = rawBookings.map(b => {
+    const mentorMatch = mentors.find(m => m.id === b.mentor_id) || b.mentor;
+    return { ...b, mentor: mentorMatch };
+  });
 
   if (bookings.length === 0) {
     return (
@@ -205,57 +220,100 @@ const BookingsTab = () => {
   };
 
   return (
-    <div className="grid gap-4 md:grid-cols-2">
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {bookings.map((booking) => (
-        <div key={booking.id} className="bg-white shadow-md rounded-lg overflow-hidden border border-gray-100 flex flex-col transition-all hover:shadow-lg">
-          <div className="border-b border-gray-50 p-5 pb-4 flex justify-between items-start">
-            <div>
-              <h4 className="font-semibold text-lg text-gray-800">
-                {booking.service_name || booking.mentorName || "Mentorship Session"}
-              </h4>
-              <p className="text-sm font-medium text-[#E11D48] mt-1">
-                {booking.specialty_name || "Mentorship"}
-              </p>
-            </div>
-            <span className="rounded-md bg-green-50 px-2.5 py-1 text-xs font-semibold text-green-700 border border-green-200 uppercase tracking-wider">
-              {booking.status?.toUpperCase() || "CONFIRMED"}
-            </span>
-          </div>
-          
-          <div className="p-5 flex-1 bg-gray-50/30 flex flex-col justify-between">
-            <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
-              <div className="flex flex-col">
-                <span className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">Date</span>
-                <span className="font-medium text-gray-800">{booking.booking_date || booking.date}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">Time</span>
-                <span className="font-medium text-gray-800">{booking.slots?.[0] ? formatSlotTime(booking.slots[0].start) : booking.time}</span>
+        <div key={booking.id} className="bg-white shadow-md rounded-xl overflow-hidden border border-gray-200 flex flex-col transition-all hover:shadow-lg">
+          <div className="border-b border-gray-100 p-5 flex justify-between items-start gap-4">
+            <div className="flex gap-4 items-center">
+              <Avatar className="h-14 w-14 border-2 border-rose-100 shadow-sm shrink-0">
+                <AvatarImage src={booking.mentor?.profile_photo_url || booking.mentor?.avatar || booking.mentor_avatar} />
+                <AvatarFallback className="bg-rose-100 text-xl font-bold text-rose-700">
+                  {(booking.mentor?.first_name || booking.mentor_name || booking.mentorName || "M").charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+              
+              <div className="min-w-0">
+                <h4 className="font-bold text-lg text-gray-900 truncate">
+                  {booking.mentor?.first_name ? `${booking.mentor.first_name} ${booking.mentor.last_name || ""}` : (booking.mentor?.name || booking.mentor_name || booking.mentorName || "Mentor")}
+                </h4>
+                <p className="text-sm font-medium text-[#E11D48] mt-0.5 truncate">
+                  {booking.service_name || booking.service?.name || "Mentorship Session"}
+                </p>
+                <p className="text-xs text-gray-500 mt-1 truncate">
+                  Specialty: {booking.specialty_name || booking.specialty?.name || "None specified"}
+                </p>
               </div>
             </div>
             
-            {booking.meeting_links?.length > 0 ? (
-              <div className="mt-6 pt-4 border-t border-gray-100">
-                <a 
-                  href={booking.meeting_links[0].url} 
-                  target="_blank" 
-                  rel="noreferrer"
-                  className="w-full flex items-center justify-center bg-[#E11D48] text-white py-2 rounded-md font-medium text-sm hover:bg-rose-700 transition-colors shadow-sm"
-                >
-                  Join Meeting ({booking.meeting_links[0].provider})
-                </a>
+            <span className={`shrink-0 rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider ${
+              booking.status === 'CONFIRMED' || booking.status === 'paid for' ? 'bg-green-100 text-green-700 border border-green-200' :
+              booking.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700 border border-yellow-200' :
+              booking.status === 'CANCELLED' ? 'bg-red-100 text-red-700 border border-red-200' :
+              'bg-gray-100 text-gray-700 border border-gray-200'
+            }`}>
+              {booking.status}
+            </span>
+          </div>
+          
+          <div className="p-6 flex-1 bg-gray-50/50 flex flex-col justify-between">
+            <div className="grid grid-cols-2 gap-y-5 gap-x-4 text-sm text-gray-700">
+              <div className="flex flex-col">
+                <span className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-1">Date</span>
+                <span className="font-semibold text-gray-900">{booking.booking_date || booking.date}</span>
               </div>
-            ) : (
-              <div className="mt-6 pt-4 border-t border-gray-100">
-                <button 
-                  disabled
-                  className="w-full bg-gray-100 text-gray-400 py-2 rounded-md font-medium text-sm cursor-not-allowed"
-                >
-                  Meeting Link Pending...
-                </button>
+              <div className="flex flex-col">
+                <span className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-1">Time</span>
+                <span className="font-semibold text-gray-900">{booking.slots?.[0] ? formatSlotTime(booking.slots[0].start) : booking.time}</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-1">Duration</span>
+                <span className="font-semibold text-gray-900">{booking.duration_minutes || booking.duration || "60"} mins</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-1">Cohort Name</span>
+                <span className="font-semibold text-gray-900 truncate" title={booking.metadata?.cohort_name || booking.cohort_name || "N/A"}>
+                  {booking.metadata?.cohort_name || booking.cohort_name || "N/A"}
+                </span>
+              </div>
+            </div>
+            
+            {booking.notes && (
+              <div className="mt-5 pt-5 border-t border-gray-200">
+                <span className="text-gray-400 text-xs font-bold uppercase tracking-wider block mb-2">Notes</span>
+                <p className="text-sm text-gray-600 bg-white p-3 rounded-md border border-gray-100 italic">"{booking.notes}"</p>
               </div>
             )}
+            
+            <div className="mt-6 pt-5 border-t border-gray-200">
+              {(booking.meeting_links?.length > 0 || booking.join_url) ? (
+                booking.can_join !== false ? (
+                  <a 
+                    href={booking.meeting_links?.[0]?.url || booking.join_url} 
+                    target="_blank" 
+                    rel="noreferrer"
+                    className="w-full flex items-center justify-center bg-[#E11D48] text-white py-2.5 rounded-lg font-semibold text-sm hover:bg-rose-700 transition-colors shadow-sm"
+                  >
+                    Join Meeting {booking.meeting_links?.[0]?.provider ? `(${booking.meeting_links[0].provider})` : ''}
+                  </a>
+                ) : (
+                  <button 
+                    disabled
+                    className="w-full bg-gray-100 text-gray-400 py-2.5 rounded-lg font-semibold text-sm cursor-not-allowed border border-gray-200"
+                  >
+                    Meeting opens 20 mins before start
+                  </button>
+                )
+              ) : (
+                <button 
+                  disabled
+                  className="w-full bg-gray-100 text-gray-400 py-2.5 rounded-lg font-semibold text-sm cursor-not-allowed border border-gray-200"
+                >
+                  Meeting Link Pending
+                </button>
+              )}
+            </div>
           </div>
+          
         </div>
       ))}
     </div>
