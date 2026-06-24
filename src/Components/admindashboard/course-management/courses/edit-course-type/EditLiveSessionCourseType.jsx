@@ -305,7 +305,6 @@ const EditLiveSessionCourseType = ({
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent className="max-h-[300px]">
-                            <SelectItem value="UTC">UTC (GMT)</SelectItem>
                             <SelectItem value="Europe/London">
                               London (GMT/BST)
                             </SelectItem>
@@ -336,6 +335,7 @@ const EditLiveSessionCourseType = ({
                             <SelectItem value="Australia/Sydney">
                               Sydney (AEST/AEDT)
                             </SelectItem>
+                            <SelectItem value="UTC">UTC (GMT)</SelectItem>
                             {/* Feel free to add more static commonly supported IANA timezones here */}
                           </SelectContent>
                         </Select>
