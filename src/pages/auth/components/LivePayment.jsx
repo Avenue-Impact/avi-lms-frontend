@@ -64,6 +64,28 @@ const LivePayment = ({ courseData }) => {
        toast.error("Please select a cohort.");
        return;
     }
+    
+    if (Math.round(discounted_price) <= 0) {
+        // Enrol directly without payment method modal
+        payment({
+            data: {
+                access_type: ["live class"],
+                live_class_cohort: selectedCohort?.cohort,
+                gateway: "free",
+                payment_plan: "full",
+                ...(appliedPromo && { promocode: appliedPromo.promo.code })
+            },
+            courseId,
+        }, {
+            onSuccess: (data) => {
+                if (data?.data?.url) {
+                    window.location.href = data.data.url;
+                }
+            }
+        });
+        return;
+    }
+    
     setShowPlanModal(true);
   };
 
@@ -253,7 +275,7 @@ const LivePayment = ({ courseData }) => {
             onClick={handleStartPayment}
             disabled={paymentPending}
           >
-            {paymentPending ? "Processing..." : "Make Payment"}
+            {paymentPending ? "Processing..." : (Math.round(discounted_price) <= 0 ? "Complete Enrollment" : "Make Payment")}
           </DashButton>
         </div>
 

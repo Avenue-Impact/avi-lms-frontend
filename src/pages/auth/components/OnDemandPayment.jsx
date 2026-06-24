@@ -51,6 +51,26 @@ const OnDemandPayment = ({ courseData }) => {
       toast.error("Please select a subscription plan.");
       return;
     }
+    if (Math.round(amountToPay) <= 0) {
+      // Enrol directly without payment method modal
+      payment({
+        data: {
+          access_type: ["on demand"],
+          subscription_limit: selectedOption,
+          gateway: "free",
+          payment_plan: "full",
+          ...(appliedPromo && { promocode: appliedPromo.promo.code })
+        },
+        courseId,
+      }, {
+          onSuccess: (data) => {
+              if (data?.data?.url) {
+                  window.location.href = data.data.url;
+              }
+          }
+      });
+      return;
+    }
     setShowPaymentPlanModal(true);
   };
 
@@ -249,7 +269,7 @@ const OnDemandPayment = ({ courseData }) => {
           onClick={handleStartPayment}
           disabled={paymentPending}
         >
-          {paymentPending ? "Processing..." : "Make Payment"}
+          {paymentPending ? "Processing..." : (Math.round(amountToPay) <= 0 ? "Complete Enrollment" : "Make Payment")}
         </DashButton>
       </div>
 

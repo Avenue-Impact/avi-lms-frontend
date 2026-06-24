@@ -35,14 +35,15 @@ const AviNav = ({ showNav: propShowNav, setShowNav: propSetShowNav }) => {
     { label: "Self-Paced Learning", to: "/self-pace" },
   ];
 
+  const location = useLocation();
+  const isPreviewCourse = location.pathname.startsWith("/preview-course");
   const isAuthenticated = !!Cookies.get("token");
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated && !isPreviewCourse) {
     navLinks.push({ label: "Login", to: "/login" });
   }
 
   const navigate = useNavigate();
-  const location = useLocation();
   return (
     <div className="relative z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <nav className="flex w-[95%] items-center justify-between px-6 pb-6 pt-4">
@@ -105,7 +106,7 @@ const AviNav = ({ showNav: propShowNav, setShowNav: propSetShowNav }) => {
             >
               Dashboard
             </button>
-          ) : (
+          ) : !isPreviewCourse ? (
             <button
               onClick={() => {
                 navigate("/signup");
@@ -115,7 +116,7 @@ const AviNav = ({ showNav: propShowNav, setShowNav: propSetShowNav }) => {
             >
               Register
             </button>
-          )}
+          ) : null}
         </div>
         </div>
         <div className="mt-8 w-full md:mt-0 md:w-auto max-md:hidden">
@@ -129,7 +130,7 @@ const AviNav = ({ showNav: propShowNav, setShowNav: propSetShowNav }) => {
             >
               Dashboard
             </button>
-          ) : (
+          ) : !isPreviewCourse ? (
             <button
               onClick={() => {
                 navigate("/signup");
@@ -139,7 +140,7 @@ const AviNav = ({ showNav: propShowNav, setShowNav: propSetShowNav }) => {
             >
               Register
             </button>
-          )}
+          ) : null}
         </div>
       </nav>
     </div>
