@@ -103,11 +103,11 @@ export function AddVideoModal({ children, sectionId, courseId, cohortId }) {
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="max-w-[90%] sm:max-w-[1020px]">
-        <DialogHeader className="flex flex-row items-center justify-between pr-8">
+        <DialogHeader className="flex flex-col sm:flex-row sm:items-center justify-between pr-8 gap-4">
           <DialogTitle>Add Videos to Section</DialogTitle>
           <CommonButton
             type="button"
-            className="bg-[#cc1747] text-white hover:bg-[#a6133a]"
+            className="bg-[#cc1747] text-white hover:bg-[#a6133a] w-full sm:w-auto"
             onClick={() => setIsCreateVideoOpen(true)}
           >
             Create Video
@@ -151,9 +151,9 @@ export function AddVideoModal({ children, sectionId, courseId, cohortId }) {
                         : "hover:bg-slate-50",
                     )}
                   >
-                    <div className="flex flex-col gap-1 truncate pr-4">
+                    <div className="flex flex-col gap-1 min-w-0 pr-4">
                       <span
-                        className="truncate text-sm font-medium"
+                        className="truncate text-sm font-medium block"
                         title={video.title}
                       >
                         {video.title}
@@ -173,21 +173,21 @@ export function AddVideoModal({ children, sectionId, courseId, cohortId }) {
             )}
           </div>
 
-          <div className="flex items-center justify-between text-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between text-sm gap-4 mt-2">
             <button
               type="button"
-              className="rounded bg-gray-100 px-2 py-1 font-medium text-gray-700 hover:bg-gray-200 disabled:opacity-50"
+              className="rounded bg-gray-100 px-2 py-1 font-medium text-gray-700 hover:bg-gray-200 disabled:opacity-50 w-full sm:w-auto"
               disabled={page <= 1}
               onClick={() => setPage((prev) => prev - 1)}
             >
               Previous
             </button>
-            <span className="font-medium text-muted-foreground">
+            <span className="font-medium text-muted-foreground text-center">
               Page {page} of {meta.totalPages || 1}
             </span>
             <button
               type="button"
-              className="rounded bg-gray-100 px-2 py-1 font-medium text-gray-700 hover:bg-gray-200 disabled:opacity-50"
+              className="rounded bg-gray-100 px-2 py-1 font-medium text-gray-700 hover:bg-gray-200 disabled:opacity-50 w-full sm:w-auto"
               disabled={page >= (meta.totalPages || 1)}
               onClick={() => setPage((prev) => prev + 1)}
             >
@@ -195,15 +195,14 @@ export function AddVideoModal({ children, sectionId, courseId, cohortId }) {
             </button>
           </div>
 
-          <div className="mt-2 flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">
-              {selectedVideos.length} video
-              {selectedVideos.length !== 1 ? "s" : ""} selected
+          <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <span className="text-sm text-muted-foreground text-center sm:text-left">
+              {selectedVideos.length} video{selectedVideos.length !== 1 ? "s" : ""} selected
             </span>
-            <DialogFooter>
+            <DialogFooter className="w-full sm:w-auto flex flex-col sm:flex-row gap-2">
               <CommonButton
                 type="submit"
-                className="bg-[#cc1747] text-white hover:bg-[#a6133a]"
+                className="bg-[#cc1747] text-white hover:bg-[#a6133a] w-full sm:w-auto"
                 disabled={isAdding || selectedVideos.length === 0}
               >
                 Add{" "}
@@ -214,6 +213,7 @@ export function AddVideoModal({ children, sectionId, courseId, cohortId }) {
                 type="button"
                 variant="outline"
                 onClick={() => handleOpenChange(false)}
+                className="w-full sm:w-auto"
               >
                 Cancel
               </CommonButton>
