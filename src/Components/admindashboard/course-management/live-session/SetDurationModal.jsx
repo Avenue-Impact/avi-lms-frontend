@@ -2,25 +2,48 @@ import React, { useState } from "react";
 import Modal from "@/pages/auth/components/Modal";
 import CommonButton from "@/Components/ui/button";
 
-const SetDurationModal = ({ open, setOpen, onSetDuration, isPending }) => {
+const SetDurationModal = ({ open, setOpen, onSetDuration, isPending, students }) => {
   const [months, setMonths] = useState("");
+  const [studentId, setStudentId] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (months && !isNaN(months)) {
-      onSetDuration(Number(months));
+    if (months && !isNaN(months) && studentId) {
+      onSetDuration(studentId, Number(months));
     }
   };
 
+  if (!open) return null;
+
   return (
-    <Modal open={open} setOpen={setOpen}>
-      <div className="w-[400px] p-6">
+    <Modal>
+      <div className="w-[400px] p-6 bg-white rounded-lg">
         <h3 className="text-lg font-semibold text-gray-900 mb-2">Set Duration Access</h3>
         <p className="text-sm text-gray-500 mb-6">
           Set the number of months the student has access to this cohort and its recorded sessions.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label htmlFor="student" className="block text-sm font-medium text-gray-700 mb-1">
+              Select Student
+            </label>
+            <select
+              id="student"
+              value={studentId}
+              onChange={(e) => setStudentId(e.target.value)}
+              required
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary-color-600 focus:outline-none focus:ring-1 focus:ring-primary-color-600"
+            >
+              <option value="" disabled>Select a student</option>
+              {students?.map((s) => (
+                <option key={s.student_id} value={s.student_id}>
+                  {s.first_name} {s.last_name} ({s.email})
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div>
             <label htmlFor="months" className="block text-sm font-medium text-gray-700 mb-1">
               Duration (Months)
@@ -48,7 +71,7 @@ const SetDurationModal = ({ open, setOpen, onSetDuration, isPending }) => {
             </CommonButton>
             <CommonButton
               type="submit"
-              disabled={isPending || !months}
+              disabled={isPending || !months || !studentId}
               className="bg-primary-color-600 px-4 py-2 text-white"
             >
               {isPending ? "Saving..." : "Save Duration"}

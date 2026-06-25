@@ -53,7 +53,7 @@ const CourseTable = ({ data }) => {
               <span className="text-[14px] text-[#344054]">{formatDate(student.created_at)}</span>
               <span className="text-[14px] text-[#344054]">{cohortName || "---"}</span>
               <div className="flex justify-center">
-                <LiveSessionStudentDeletePopover id={student.id}>
+                <LiveSessionStudentDeletePopover id={student.id} studentId={student.student_id}>
                   <button className="flex h-8 w-8 items-center justify-center rounded border border-[#E4E7EC] hover:bg-gray-50">
                     <EllipsisVertical className="w-4" />
                   </button>
