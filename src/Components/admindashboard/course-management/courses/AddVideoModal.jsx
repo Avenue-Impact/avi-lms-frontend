@@ -60,7 +60,7 @@ export function AddVideoModal({ children, sectionId, courseId, cohortId }) {
     return () => clearTimeout(handler);
   }, [searchQuery]);
 
-  const { data: videosData, isLoading } = useGetAllVideos(page, 20, debouncedSearchQuery, courseTitle, open && !!courseTitle);
+  const { data: videosData, isLoading } = useGetAllVideos(page, 20, debouncedSearchQuery, courseId, open && !!courseId);
 
   const allVideos = videosData?.data?.data || [];
   const meta = videosData?.data?.pagination || videosData?.data?.meta || {};

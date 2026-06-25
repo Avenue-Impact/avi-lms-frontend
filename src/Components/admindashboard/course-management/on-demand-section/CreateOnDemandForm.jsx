@@ -31,7 +31,7 @@ const CreateOndemandForm = ({ courseId, initialSection }) => {
 
   const { data: courseData } = useFetchCourseInfo(courseId);
   const courseTitle = courseData?.data?.data?.course?.title || courseData?.data?.data?.title || courseData?.data?.title || "";
-  const { data: videosData } = useGetAllVideos(1, 100, "", courseTitle);
+  const { data: videosData } = useGetAllVideos(1, 100, "", courseId);
   const videoRef = useRef();
   const documentRef = useRef();
 
