@@ -51,7 +51,9 @@ const CourseTable = ({ data }) => {
               </span>
 
               <span className="text-[14px] text-[#344054]">{formatDate(student.created_at)}</span>
-              <span className="text-[14px] text-[#344054]">{cohortName || "---"}</span>
+              <span className="text-[14px] text-[#344054]">
+                {student.access_duration_months ? `${student.access_duration_months} Months` : "---"}
+              </span>
               <div className="flex justify-center">
                 <LiveSessionStudentDeletePopover id={student.id} studentId={student.student_id}>
                   <button className="flex h-8 w-8 items-center justify-center rounded border border-[#E4E7EC] hover:bg-gray-50">
