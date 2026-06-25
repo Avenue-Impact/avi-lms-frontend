@@ -120,11 +120,21 @@ const MentorsTab = ({ setSelectedMentor, setIsModalOpen }) => {
             <h3 className="mt-4 font-semibold text-lg text-gray-800 text-center">
               {mentor.first_name} {mentor.last_name}
             </h3>
-            {mentor.services?.[0] && (
-              <p className="text-sm font-medium text-[#E11D48] mt-1 text-center">
-                {mentor.services[0].name}
-              </p>
-            )}
+            <div className="mt-2 flex flex-wrap justify-center gap-1">
+              {mentor.services?.slice(0, 3).map((service) => (
+                <span
+                  key={service.id}
+                  className="text-xs font-medium text-[#E11D48] bg-rose-50 px-2 py-0.5 rounded-full border border-rose-100"
+                >
+                  {service.name}
+                </span>
+              ))}
+              {mentor.services?.length > 3 && (
+                <span className="text-xs font-medium text-[#E11D48] bg-rose-50 px-2 py-0.5 rounded-full border border-rose-100">
+                  +{mentor.services.length - 3} more
+                </span>
+              )}
+            </div>
           </div>
           
           <div className="flex flex-1 flex-col p-6 bg-gray-50/30">

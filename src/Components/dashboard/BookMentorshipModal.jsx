@@ -32,7 +32,9 @@ const BookMentorshipModal = ({ mentor, open, onClose }) => {
   const [selectedCohortId, setSelectedCohortId] = useState("");
 
   const { data: liveData, isLoading: isLoadingCohorts } = useQuery(liveSessionDetailQuery());
-  const enrolledCohorts = liveData?.data?.data?.courses || [];
+  const enrolledCohorts = (liveData?.data?.data?.courses || []).filter(
+    (c) => c.cohort_details?.mentorship_enabled === true
+  );
 
   const { data: bookingsData, isLoading: isLoadingBookings } = useQuery({
     queryKey: ["mentorship-bookings"],
