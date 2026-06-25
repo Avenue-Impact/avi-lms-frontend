@@ -102,7 +102,7 @@ export function AddVideoModal({ children, sectionId, courseId, cohortId }) {
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="max-w-[90%] sm:max-w-[1020px]">
+      <DialogContent className="max-w-[90%] lg:max-w-[1020px]">
         <DialogHeader className="flex flex-col sm:flex-row sm:items-center justify-between pr-8 gap-4">
           <DialogTitle>Add Videos to Section</DialogTitle>
           <CommonButton
