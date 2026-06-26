@@ -75,13 +75,13 @@ const LiveSessionStudentManagement = () => {
   return (
     <div className="p-4">
       <div className="grid grid-cols-12 py-6">
-        <div className="font-[500]text-[#344054] col-span-4 text-[24px]">
+        <div className="font-[500] text-[#344054] col-span-3 text-[20px]">
           <p>Course Management</p>
         </div>
 
-        <div className="col-span-8">
-          <div className="flex items-center justify-between">
-            <div className="relative w-3/5">
+        <div className="col-span-9">
+          <div className="flex items-center justify-between gap-3">
+            <div className="relative w-1/2">
               <input
                 type="text"
                 className="w-full rounded-md border bg-gray-50 px-1 py-2 pl-10 text-[14px] focus:outline-none"
@@ -124,9 +124,9 @@ const LiveSessionStudentManagement = () => {
             <div className="flex items-center gap-2">
               <DashButton 
                 onClick={() => setIsDurationModalOpen(true)}
-                className="rounded p-2 bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 flex items-center gap-2"
+                className="rounded p-2 bg-white text-gray-700 text-sm border border-gray-300 hover:text-white flex items-center gap-2"
               >
-                <Clock className="w-4 h-4" /> Set Duration Access
+                <Clock className="w-4 h-4" /> Set Duration
               </DashButton>
 
               <EditModal
