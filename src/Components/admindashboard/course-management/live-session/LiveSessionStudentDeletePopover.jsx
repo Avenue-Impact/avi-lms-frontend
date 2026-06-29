@@ -47,7 +47,7 @@ const LiveSessionStudentDeletePopover = ({ children, studentId }) => {
     <>
       <Popover>
         <PopoverTrigger>{children}</PopoverTrigger>
-        <PopoverContent className="rounded border flex flex-col items-start w-48 p-2 -translate-x-[13px] bg-white">
+        <PopoverContent className="rounded border flex flex-col items-start w-48 p-2 -ml-[13px] bg-white">
           <CommonButton
             variant={"ghost"}
             className="flex w-full !justify-start gap-2 text-sm text-[#475367] hover:bg-gray-100 px-2 py-1.5 font-normal"
