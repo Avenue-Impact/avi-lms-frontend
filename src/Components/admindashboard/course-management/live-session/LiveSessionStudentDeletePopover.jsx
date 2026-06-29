@@ -50,7 +50,7 @@ const LiveSessionStudentDeletePopover = ({ children, studentId }) => {
         <PopoverContent className="rounded border flex flex-col items-start w-48 p-2">
           <CommonButton
             variant={"ghost"}
-            className="flex w-full justify-start gap-2 text-sm text-gray-700 hover:bg-gray-100"
+            className="flex w-full !justify-start gap-2 text-sm text-[#475367] hover:bg-gray-100 px-2 py-1.5 font-normal"
             onClick={() => setIsModalOpen(true)}
           >
             <Clock className={"h-4 w-4"} />
@@ -58,7 +58,7 @@ const LiveSessionStudentDeletePopover = ({ children, studentId }) => {
           </CommonButton>
           <CommonButton
             variant={"ghost"}
-            className="flex w-full justify-start gap-2 text-sm text-primary-color-600 hover:bg-red-50"
+            className="flex w-full !justify-start gap-2 text-sm text-primary-color-600 hover:bg-red-50 px-2 py-1.5 font-normal"
             disabled={isDeleting}
             onClick={handleDelete}
           >

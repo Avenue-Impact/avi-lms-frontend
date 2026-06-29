@@ -58,9 +58,9 @@ export function EditSectionModal({
         <DialogHeader>
           <DialogTitle>Edit Section {sectionData?.section}</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="grid gap-4 py-4">
-          <div className="grid gap-2">
-            <label htmlFor="title" className="text-sm font-medium">
+        <form onSubmit={handleSubmit} className="grid gap-6 py-6 px-4">
+          <div className="grid gap-3">
+            <label htmlFor="title" className="text-base font-medium">
               Section Title
             </label>
             <Input
@@ -68,11 +68,12 @@ export function EditSectionModal({
               placeholder="e.g. Introduction to React"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              className="py-6 text-base"
               required
             />
           </div>
-          <div className="grid gap-2">
-            <label htmlFor="overview" className="text-sm font-medium">
+          <div className="grid gap-3">
+            <label htmlFor="overview" className="text-base font-medium">
               Section Overview
             </label>
             <Textarea
@@ -80,6 +81,8 @@ export function EditSectionModal({
               placeholder="Brief description of this section"
               value={overview}
               onChange={(e) => setOverview(e.target.value)}
+              rows={6}
+              className="text-base"
             />
           </div>
           <DialogFooter className={`mt-12`}>
