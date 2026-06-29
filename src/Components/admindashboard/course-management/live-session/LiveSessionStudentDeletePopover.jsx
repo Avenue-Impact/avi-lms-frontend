@@ -54,7 +54,7 @@ const LiveSessionStudentDeletePopover = ({ children, studentId }) => {
             onClick={() => setIsModalOpen(true)}
           >
             <Clock className={"h-4 w-4"} />
-            <span>Set Duration Access</span>
+            <span>Set Duration</span>
           </CommonButton>
           <CommonButton
             variant={"ghost"}
@@ -63,7 +63,7 @@ const LiveSessionStudentDeletePopover = ({ children, studentId }) => {
             onClick={handleDelete}
           >
             <TrashCan className={"h-4 w-4 text-primary-color-600"} />
-            <span>Unenroll Student</span>
+            <span>Unenroll</span>
           </CommonButton>
         </PopoverContent>
       </Popover>
