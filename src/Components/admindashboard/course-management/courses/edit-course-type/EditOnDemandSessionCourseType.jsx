@@ -147,12 +147,6 @@ const EditOnDemandSessionCourseType = ({ dataToEdit }) => {
 
   return (
     <>
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="mb-2 mt-5 text-[24px] font-[500] text-[#344054]">
-          Course Type
-        </h2>
-      </div>
-
       <div>
         {/* On-Demand Session */}
         <div className="mb-4 mt-5 grid grid-cols-12 gap-10 rounded border border-gray-300 p-10 md:mb-0">
