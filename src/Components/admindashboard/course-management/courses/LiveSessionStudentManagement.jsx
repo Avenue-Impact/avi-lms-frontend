@@ -58,13 +58,13 @@ const LiveSessionStudentManagement = () => {
   return (
     <div className="p-4">
       <div className="grid grid-cols-12 py-6">
-        <div className="font-[500]text-[#344054] col-span-4 text-[24px]">
+        <div className="font-[500] text-[#344054] col-span-3 text-[20px]">
           <p>Course Management</p>
         </div>
 
-        <div className="col-span-8">
-          <div className="flex items-center justify-between">
-            <div className="relative w-3/5">
+        <div className="col-span-9">
+          <div className="flex items-center justify-between gap-3">
+            <div className="relative w-1/2">
               <input
                 type="text"
                 className="w-full rounded-md border bg-gray-50 px-1 py-2 pl-10 text-[14px] focus:outline-none"
@@ -104,7 +104,7 @@ const LiveSessionStudentManagement = () => {
               <span>Filter </span>
             </div>
 
-            <div>
+            <div className="flex items-center gap-2">
               <EditModal
                 header={
                   <>
@@ -118,7 +118,7 @@ const LiveSessionStudentManagement = () => {
                 setOpen={setOpen}
                 form={<AddStudentToLiveForm setOpen={setOpen} />}
               >
-                <DashButton className="rounded p-2 text-white">
+                <DashButton className="rounded p-2 text-white flex items-center gap-2">
                   <FontAwesomeIcon icon={faPlus} /> Add Student
                 </DashButton>
               </EditModal>

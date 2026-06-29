@@ -6,7 +6,14 @@ import { formatDate } from "@/lib/format-date";
 import { useState, useEffect } from "react";
 import { useToggleCohortLive } from "@/hooks/course-management/use-toggle-cohort-live";
 import { useToggleCohortMentorship } from "@/hooks/course-management/use-toggle-cohort-mentorship";
-import { Loader2, AlertTriangle, RotateCcw, Users } from "lucide-react";
+import { Loader2, Video, RotateCcw, Users, Settings } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/Components/ui/dialog";
 import liveSession from "../../../../assets/images/dashboard/live-session.png";
 import EditLiveSessionForm from "../live-session/EditLiveSession";
 import EditLiveSession from "../live-session/EditLiveSession";
@@ -98,6 +105,8 @@ function CourseManagementSection() {
 
 const LiveContent = ({ data }) => {
   const [meeting, setMeeting] = useState(false);
+  const [isLiveSessionModalOpen, setIsLiveSessionModalOpen] = useState(false);
+  const [isMentorshipModalOpen, setIsMentorshipModalOpen] = useState(false);
 
   const [queryString] = useSearchParams();
   const { courseId } = useParams();
@@ -202,92 +211,122 @@ const LiveContent = ({ data }) => {
               </button>
             </div>
 
-            {/* Toggle Live Session Card */}
-            <div className="mt-10 rounded-lg border border-yellow-200 bg-yellow-50 p-6">
-              <div className="mb-4 flex items-center justify-between">
-                <div className="max-w-[70%]">
-                  <h3 className="flex items-center gap-2 text-lg font-semibold text-yellow-800">
-                    <AlertTriangle className="h-5 w-5" />
-                    Toggle Live Session Status
-                  </h3>
-                  <p className="mt-1 text-sm text-yellow-700">
-                    If toggled off, automatic Zoom meeting creation and
-                    reminders will be ended for this cohort.
-                  </p>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <span
-                    className={cn(
-                      "text-sm font-bold",
-                      is_live ? "text-green-600" : "text-red-600",
-                    )}
-                  >
-                    {is_live ? "LIVE ON" : "LIVE OFF"}
-                  </span>
-                  <button
-                    onClick={() => toggleLive(!is_live)}
-                    disabled={isToggling}
-                    className={cn(
-                      "relative inline-flex h-6 w-11 items-center rounded-full transition-colors",
-                      is_live ? "bg-primary-color-600" : "bg-gray-300",
-                      isToggling && "cursor-not-allowed opacity-50",
-                    )}
-                  >
-                    <span
-                      className={cn(
-                        "inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200",
-                        is_live ? "translate-x-6" : "translate-x-1",
-                      )}
-                    />
-                  </button>
-                </div>
-              </div>
+            {/* Action Buttons for Modals */}
+            <div className="mt-10 flex flex-wrap items-center gap-4 border-t border-[#E4E7EC] pt-8">
+              <button
+                onClick={() => setIsLiveSessionModalOpen(true)}
+                className="flex items-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-color-600 focus:ring-offset-2"
+              >
+                <Video className="h-4 w-4 text-yellow-600" />
+                Live Session Settings
+              </button>
+              <button
+                onClick={() => setIsMentorshipModalOpen(true)}
+                className="flex items-center gap-2 rounded-md border border-primary-color-600 bg-primary-color-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-color-700 focus:outline-none focus:ring-2 focus:ring-primary-color-600 focus:ring-offset-2"
+              >
+                <Users className="h-4 w-4" />
+                Mentorship Access
+              </button>
             </div>
 
-            {/* Toggle Mentorship Access Card */}
-            {/* 
-            <div className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-6">
-              <div className="mb-4 flex items-center justify-between">
-                <div className="max-w-[70%]">
-                  <h3 className="flex items-center gap-2 text-lg font-semibold text-blue-800">
-                    <Users className="h-5 w-5" />
+            {/* Live Session Settings Modal */}
+            <Dialog open={isLiveSessionModalOpen} onOpenChange={setIsLiveSessionModalOpen}>
+              <DialogContent className="sm:max-w-xl">
+                <DialogHeader>
+                  <DialogTitle className="flex items-center gap-2">
+                    <Video className="h-5 w-5 text-yellow-600" />
+                    Live Session Settings
+                  </DialogTitle>
+                  <DialogDescription>
+                    If toggled off, automatic Zoom meeting creation and reminders will be ended for this cohort.
+                  </DialogDescription>
+                </DialogHeader>
+
+                <div className="mt-4 rounded-lg border border-gray-200 bg-gray-50 p-6 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="text-lg font-semibold text-gray-900">Live Session Status</h4>
+                      <p className="mt-1 text-sm text-gray-500">
+                        Toggle the active state of this cohort's live session.
+                      </p>
+                    </div>
+
+                    <div className="flex flex-col items-end gap-2">
+                      <button
+                        onClick={() => toggleLive(!is_live)}
+                        disabled={isToggling}
+                        className={cn(
+                          "relative inline-flex h-6 w-11 items-center rounded-full transition-colors",
+                          is_live ? "bg-primary-color-600" : "bg-gray-300",
+                          isToggling && "cursor-not-allowed opacity-50"
+                        )}
+                      >
+                        <span
+                          className={cn(
+                            "inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200",
+                            is_live ? "translate-x-6" : "translate-x-1"
+                          )}
+                        />
+                      </button>
+                      <span className={cn(
+                        "text-xs font-bold uppercase tracking-wider",
+                        is_live ? "text-primary-color-600" : "text-gray-500"
+                      )}>
+                        {is_live ? "Live On" : "Live Off"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+
+            {/* Mentorship Access Modal */}
+            <Dialog open={isMentorshipModalOpen} onOpenChange={setIsMentorshipModalOpen}>
+              <DialogContent className="sm:max-w-xl">
+                <DialogHeader>
+                  <DialogTitle className="flex items-center gap-2">
+                    <Users className="h-5 w-5 text-primary-color-600" />
                     Mentorship Access
-                  </h3>
-                  <p className="mt-1 text-sm text-blue-700">
+                  </DialogTitle>
+                  <DialogDescription>
                     Enable or disable mentorship access for students enrolled in this cohort.
-                  </p>
-                </div>
+                  </DialogDescription>
+                </DialogHeader>
 
-                <div className="flex items-center gap-3">
-                  <span
-                    className={cn(
-                      "text-sm font-bold",
-                      mentorship_enabled ? "text-green-600" : "text-gray-600",
-                    )}
-                  >
-                    {mentorship_enabled ? "ENABLED" : "DISABLED"}
-                  </span>
-                  <button
-                    onClick={() => toggleMentorship(!mentorship_enabled)}
-                    disabled={isTogglingMentorship}
-                    className={cn(
-                      "relative inline-flex h-6 w-11 items-center rounded-full transition-colors",
-                      mentorship_enabled ? "bg-primary-color-600" : "bg-gray-300",
-                      isTogglingMentorship && "cursor-not-allowed opacity-50",
-                    )}
-                  >
-                    <span
-                      className={cn(
-                        "inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200",
-                        mentorship_enabled ? "translate-x-6" : "translate-x-1",
-                      )}
-                    />
-                  </button>
+                <div className="mt-4 rounded-lg bg-primary-color-600 p-6 text-white shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="text-lg font-semibold">Mentorship Status</h4>
+                      <p className="mt-1 text-sm text-primary-color-100">
+                        When enabled, students can book sessions with approved mentors.
+                      </p>
+                    </div>
+
+                    <div className="flex flex-col items-end gap-2">
+                      <button
+                        onClick={() => toggleMentorship(!mentorship_enabled)}
+                        disabled={isTogglingMentorship}
+                        className={cn(
+                          "relative inline-flex h-6 w-11 items-center rounded-full transition-colors border border-white/20",
+                          mentorship_enabled ? "bg-white" : "bg-primary-color-800",
+                          isTogglingMentorship && "cursor-not-allowed opacity-50"
+                        )}
+                      >
+                        <span
+                          className={cn(
+                            "inline-block h-4 w-4 transform rounded-full transition-transform duration-200",
+                            mentorship_enabled ? "translate-x-6 bg-primary-color-600" : "translate-x-1 bg-gray-300"
+                          )}
+                        />
+                      </button>
+                      <span className="text-xs font-bold uppercase tracking-wider text-white">
+                        {mentorship_enabled ? "Enabled" : "Disabled"}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            */}
+              </DialogContent>
+            </Dialog>
           </section>
         </div>
       )}

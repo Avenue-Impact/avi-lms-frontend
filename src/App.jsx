@@ -17,7 +17,7 @@ import ThanksPage from "./pages/thanksPage";
 import LandingPage from "./pages/courses/landingPage";
 
 import Contact from "./pages/Contact";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
+import SitePrivacy from "./pages/SitePrivacy";
 import TermsOfService from "./pages/TermsOfService";
 // import BusinessAnalysis from "./pages/courses/businessAnalysis";
 // import DataAnalytics from "./pages/courses/dataAnalytics";
@@ -199,7 +199,7 @@ function App() {
             },
             {
               path: "/privacy-policy",
-              element: <PrivacyPolicy />,
+              element: <SitePrivacy />,
             },
             {
               path: "/terms-of-service",

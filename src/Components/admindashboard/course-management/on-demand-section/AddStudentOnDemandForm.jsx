@@ -5,6 +5,7 @@ import { useAddOndemandStudent } from "@/hooks/course-management/on-demand-secti
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
+import { useFetchCourseInfo } from "@/hooks/course-management/use-fetch-course-information";
 import { z } from "zod";
 import { useState } from "react";
 import {
@@ -46,6 +47,14 @@ const AddStudentOnDemandForm = ({ setOpen }) => {
     },
   });
 
+  const { data: courseInfo, isLoading: isCourseLoading } = useFetchCourseInfo(courseId);
+
+  // Extract available durations from the course
+  const courseDurations = courseInfo?.data?.course_type?.on_demand_session?.map(session => session.duration) || [];
+
+  // Filter the static list to only include durations available in the course
+  const availableDurations = onDemandDurations.filter(d => courseDurations.includes(d.label));
+
   const onSubmit = (data) => {
     if (!duration) return setDurationErr("Input duration");
     addStudent(
@@ -78,21 +87,25 @@ const AddStudentOnDemandForm = ({ setOpen }) => {
 
           <Select onValueChange={setDuration}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select a duration" />
+              <SelectValue placeholder={isCourseLoading ? "Loading durations..." : "Select a duration"} />
             </SelectTrigger>
             <SelectContent className="pb-8 capitalize">
               <SelectGroup>
                 <SelectLabel>select duration</SelectLabel>
-                {onDemandDurations.map(
-                  (duration) => (
-                    <SelectItem
-                      key={duration.value}
-                      value={duration.value}
-                      className="capitalize"
-                    >
-                      {`${duration.label} `}
-                    </SelectItem>
-                  ),
+                {availableDurations.length === 0 && !isCourseLoading ? (
+                  <SelectItem value="none" disabled>No durations available</SelectItem>
+                ) : (
+                  availableDurations.map(
+                    (duration) => (
+                      <SelectItem
+                        key={duration.value}
+                        value={duration.value}
+                        className="capitalize"
+                      >
+                        {`${duration.label} `}
+                      </SelectItem>
+                    ),
+                  )
                 )}
               </SelectGroup>
             </SelectContent>

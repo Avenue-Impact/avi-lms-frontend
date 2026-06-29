@@ -54,6 +54,7 @@ const EditOnDemandSessionCourseType = ({ dataToEdit }) => {
   const [discountType, setDiscountType] = useState("None");
   const [discountValue, setDiscountValue] = useState("");
   const [discountedAmount, setDiscountedAmount] = useState("");
+  const [editIndex, setEditIndex] = useState(null);
 
   const [durationPrice, setDurationPrice] = useState(() =>
     dataToEdit.map((data) => ({
@@ -101,26 +102,29 @@ const EditOnDemandSessionCourseType = ({ dataToEdit }) => {
   const handleAddPrice = () => {
     if (!amount || !duration) return;
 
-    setDurationPrice((prev) => {
-      return [
-        ...prev,
+    const newPriceItem = {
+      original_price: {
+          amount: Number(amount),
+          currency: "Pounds",
+          currency_symbol: "£",
+      },
+      discounted_price: {
+          amount: Number(discountedAmount),
+          currency: "Pounds",
+          currency_symbol: "£",
+      },
+      discount_type: discountType,
+      discount_value: Number(discountValue),
+      duration,
+    };
 
-        {
-            original_price: {
-                amount: Number(amount),
-                currency: "Pounds",
-                currency_symbol: "£",
-            },
-            discounted_price: {
-                amount: Number(discountedAmount),
-                currency: "Pounds",
-                currency_symbol: "£",
-            },
-            discount_type: discountType,
-            discount_value: Number(discountValue),
-            duration,
-        },
-      ];
+    setDurationPrice((prev) => {
+      if (editIndex !== null) {
+        const updated = [...prev];
+        updated[editIndex] = newPriceItem;
+        return updated;
+      }
+      return [...prev, newPriceItem];
     });
 
     setAmount("");
@@ -128,16 +132,21 @@ const EditOnDemandSessionCourseType = ({ dataToEdit }) => {
     setDiscountType("None");
     setDiscountValue("");
     setDiscountedAmount("");
+    setEditIndex(null);
+  };
+
+  const handleEdit = (index) => {
+    const item = durationPrice[index];
+    setDuration(item.duration);
+    setAmount(item.original_price.amount.toString());
+    setDiscountType(item.discount_type);
+    setDiscountValue(item.discount_value.toString());
+    // discountedAmount will auto-calculate in useEffect
+    setEditIndex(index);
   };
 
   return (
     <>
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="mb-2 mt-5 text-[24px] font-[500] text-[#344054]">
-          Course Type
-        </h2>
-      </div>
-
       <div>
         {/* On-Demand Session */}
         <div className="mb-4 mt-5 grid grid-cols-12 gap-10 rounded border border-gray-300 p-10 md:mb-0">
@@ -155,7 +164,7 @@ const EditOnDemandSessionCourseType = ({ dataToEdit }) => {
               <div>
                 <p className="font-[600] text-gray-600">Duration</p>
 
-                <Select onValueChange={setDuration}>
+                <Select onValueChange={setDuration} value={duration}>
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select a duration" />
                   </SelectTrigger>
@@ -242,7 +251,7 @@ const EditOnDemandSessionCourseType = ({ dataToEdit }) => {
                 className="block w-full rounded bg-primary-color-600 px-4 py-2"
                 onClick={handleAddPrice}
               >
-                Add
+                {editIndex !== null ? "Update" : "Add"}
               </CommonButton>
             </div>
 
@@ -257,17 +266,34 @@ const EditOnDemandSessionCourseType = ({ dataToEdit }) => {
                       <span className="text-red-600">{`${item.duration} - ${
                         item.discounted_price.currency_symbol
                       }${item.discounted_price.amount} (Org: ${item.original_price.currency_symbol}${item.original_price.amount})`}</span>
-                      <CommonButton
-                        className="h-8 rounded bg-white text-red-600 hover:bg-white"
-                        type="button"
-                        onClick={() => {
-                          setDurationPrice((prev) =>
-                            prev.filter((_, i) => i !== index),
-                          );
-                        }}
-                      >
-                        <FaTrash />
-                      </CommonButton>
+                      
+                      <div className="flex items-center gap-2">
+                        <CommonButton
+                          className="h-8 rounded bg-white text-blue-600 hover:bg-white"
+                          type="button"
+                          onClick={() => handleEdit(index)}
+                        >
+                          Edit
+                        </CommonButton>
+                        <CommonButton
+                          className="h-8 rounded bg-white text-red-600 hover:bg-white"
+                          type="button"
+                          onClick={() => {
+                            if (editIndex === index) {
+                              setEditIndex(null);
+                              setAmount("");
+                              setDuration("");
+                              setDiscountType("None");
+                              setDiscountValue("");
+                            }
+                            setDurationPrice((prev) =>
+                              prev.filter((_, i) => i !== index),
+                            );
+                          }}
+                        >
+                          <FaTrash />
+                        </CommonButton>
+                      </div>
                     </li>
                   ))}
                 </ul>

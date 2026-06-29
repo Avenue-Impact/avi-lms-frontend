@@ -111,7 +111,7 @@ function CourseType({ editButton = false, courseId }) {
                 {calcDiscountPercentage(
                   activeCohorts?.original_price?.amount,
                   activeCohorts?.discounted_price?.amount,
-                )}
+                ) || 0}
                 % off
               </span>
             </div>
@@ -124,6 +124,8 @@ function CourseType({ editButton = false, courseId }) {
               </span>
               {" • "}
               <span className="uppercase">{activeCohorts?.time ?? "TBA"}</span>
+              {" • "}
+              <span className="uppercase">{activeCohorts?.timezone ?? "TBA"}</span>
             </p>
 
             {/* COHORT SELECT */}
