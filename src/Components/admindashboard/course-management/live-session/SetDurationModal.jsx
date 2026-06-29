@@ -2,14 +2,13 @@ import React, { useState } from "react";
 import Modal from "@/pages/auth/components/Modal";
 import CommonButton from "@/Components/ui/button";
 
-const SetDurationModal = ({ open, setOpen, onSetDuration, isPending, students }) => {
+const SetDurationModal = ({ open, setOpen, onSetDuration, isPending }) => {
   const [months, setMonths] = useState("");
-  const [studentId, setStudentId] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (months && !isNaN(months) && studentId) {
-      onSetDuration(studentId, Number(months));
+    if (months && !isNaN(months)) {
+      onSetDuration(Number(months));
     }
   };
 
@@ -24,26 +23,6 @@ const SetDurationModal = ({ open, setOpen, onSetDuration, isPending, students })
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label htmlFor="student" className="block text-sm font-medium text-gray-700 mb-1">
-              Select Student
-            </label>
-            <select
-              id="student"
-              value={studentId}
-              onChange={(e) => setStudentId(e.target.value)}
-              required
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary-color-600 focus:outline-none focus:ring-1 focus:ring-primary-color-600"
-            >
-              <option value="" disabled>Select a student</option>
-              {students?.map((s) => (
-                <option key={s.student_id} value={s.student_id}>
-                  {s.first_name} {s.last_name} ({s.email})
-                </option>
-              ))}
-            </select>
-          </div>
-
           <div>
             <label htmlFor="months" className="block text-sm font-medium text-gray-700 mb-1">
               Duration (Months)
@@ -71,7 +50,7 @@ const SetDurationModal = ({ open, setOpen, onSetDuration, isPending, students })
             </CommonButton>
             <CommonButton
               type="submit"
-              disabled={isPending || !months || !studentId}
+              disabled={isPending || !months}
               className="bg-primary-color-600 px-4 py-2 text-white"
             >
               {isPending ? "Saving..." : "Save Duration"}

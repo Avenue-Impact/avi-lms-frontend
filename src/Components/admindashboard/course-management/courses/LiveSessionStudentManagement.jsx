@@ -10,13 +10,9 @@ import { ClipLoader } from "react-spinners";
 import AddStudentToLiveForm from "../live-session/AddStudentToLiveForm";
 import NoStudentEnroll from "../NoStudentEnroll";
 import EditModal from "../on-demand-section/EditModal";
-import { Clock } from "lucide-react";
-import SetDurationModal from "../live-session/SetDurationModal";
-import { useUpdateDuration } from "@/hooks/course-management/live-session/useUpdateDuration";
 
 const LiveSessionStudentManagement = () => {
   const [open, setOpen] = useState(false);
-  const [isDurationModalOpen, setIsDurationModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
   const { courseId } = useParams();
@@ -29,19 +25,6 @@ const LiveSessionStudentManagement = () => {
     courseId,
     cohortId,
   );
-
-  const { updateDuration, isPending: isUpdating } = useUpdateDuration();
-
-  const handleSetDuration = (studentId, months) => {
-    updateDuration({
-      cohortId,
-      courseId,
-      studentId,
-      months,
-    }, {
-      onSuccess: () => setIsDurationModalOpen(false)
-    });
-  };
 
   if (isLoading)
     return (
@@ -122,13 +105,6 @@ const LiveSessionStudentManagement = () => {
             </div>
 
             <div className="flex items-center gap-2">
-              <DashButton 
-                onClick={() => setIsDurationModalOpen(true)}
-                className="rounded p-2 bg-white text-gray-700 text-sm border border-gray-300 hover:text-white flex items-center gap-2"
-              >
-                <Clock className="w-4 h-4" /> Set Duration
-              </DashButton>
-
               <EditModal
                 header={
                   <>
@@ -157,14 +133,6 @@ const LiveSessionStudentManagement = () => {
       ) : (
         <CourseTable data={filteredData} />
       )}
-
-      <SetDurationModal
-        open={isDurationModalOpen}
-        setOpen={setIsDurationModalOpen}
-        onSetDuration={handleSetDuration}
-        isPending={isUpdating}
-        students={filteredData}
-      />
     </div>
   );
 };
