@@ -32,12 +32,12 @@ const LiveSessionStudentDeletePopover = ({ children, studentId }) => {
     });
   };
 
-  const handleSetDuration = (months) => {
+  const handleSetDuration = (access_expires_at) => {
     updateDuration({
       cohortId,
       courseId,
       studentId,
-      months,
+      access_expires_at,
     }, {
       onSuccess: () => setIsModalOpen(false)
     });

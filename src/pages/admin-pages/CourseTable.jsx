@@ -3,12 +3,12 @@ import Table from "@/Components/Table";
 import { EllipsisVertical } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 
-const formatDate = (dateString) => {
+const formatDate = (dateString, justDate=false) => {
   if (!dateString) return "---";
   const date = new Date(dateString);
   const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   const formattedTime = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }).replace(' ', '');
-  return `${formattedDate} | ${formattedTime}`;
+  return justDate ? formattedDate : `${formattedDate} | ${formattedTime}`;
 };
 
 const CourseTable = ({ data }) => {
@@ -52,7 +52,7 @@ const CourseTable = ({ data }) => {
 
               <span className="text-[14px] text-[#344054]">{formatDate(student.created_at)}</span>
               <span className="text-[14px] text-[#344054]">
-                {student.access_duration_months ? `${student.access_duration_months} Months` : "---"}
+                {student.access_expires_at ? formatDate(student.access_expires_at, true) : "---"}
               </span>
               <div className="flex justify-center">
                 <LiveSessionStudentDeletePopover id={student.id} studentId={student.student_id}>

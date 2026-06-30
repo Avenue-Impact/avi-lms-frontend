@@ -1,7 +1,11 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import SEOHead from "@/Components/SEOHead";
 
 export default function TermsOfService() {
+  const navigate = useNavigate();
+
   return (
     <>
       <SEOHead
@@ -13,6 +17,15 @@ export default function TermsOfService() {
         
         {/* HERO HEADER */}
         <div className="bg-[#030d22] text-white py-16 px-6 md:px-12 lg:px-20 text-center relative overflow-hidden border-b border-[#00d0ff]/10">
+          {/* Back Button */}
+          <button 
+            onClick={() => navigate(-1)} 
+            className="absolute top-6 left-6 md:top-8 md:left-8 z-10 flex items-center gap-2 text-sm font-medium text-gray-300 hover:text-white transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back
+          </button>
+
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(0,208,255,0.05),transparent)] pointer-events-none" />
           <div className="max-w-3xl mx-auto space-y-4">
             <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20">
