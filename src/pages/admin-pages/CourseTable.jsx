@@ -2,6 +2,7 @@ import LiveSessionStudentDeletePopover from "@/Components/admindashboard/course-
 import Table from "@/Components/Table";
 import { EllipsisVertical } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
+import ToggleAccessRevoke from "@/Components/admindashboard/course-management/live-session/ToggleAccessRevoke";
 
 const formatDate = (dateString, justDate=false) => {
   if (!dateString) return "---";
@@ -18,7 +19,7 @@ const CourseTable = ({ data }) => {
   const cohortName = queryString.get("cohort");
   return (
     <div className="overflow-x-auto">
-      <Table cols={"0.5fr 1.5fr 1.6fr 0.8fr 1.4fr 1.2fr 0.4fr"}>
+      <Table cols={"0.5fr 1.5fr 1.6fr 0.8fr 1.4fr 1.2fr 1.0fr 0.4fr"}>
         <Table.Header className={"gap-1 *:text-sm *:font-medium *:capitalize"}>
           <div>S/N</div>
           <div>Name</div>
@@ -26,6 +27,7 @@ const CourseTable = ({ data }) => {
           <div>Course Type</div>
           <div>Enrollment Date</div>
           <div>Course Duration</div>
+          <div className="text-center">Access Revoked</div>
           <div className="text-center">Action</div>
         </Table.Header>
         <div className="divide-y">
@@ -54,7 +56,13 @@ const CourseTable = ({ data }) => {
               <span className="text-[14px] text-[#344054]">
                 {student.access_expires_at ? formatDate(student.access_expires_at, true) : "---"}
               </span>
-              <div className="flex justify-center">
+              <div className="flex justify-center items-center">
+                <ToggleAccessRevoke 
+                  studentId={student.student_id} 
+                  initialIsRevoked={student.is_access_revoked} 
+                />
+              </div>
+              <div className="flex justify-center items-center">
                 <LiveSessionStudentDeletePopover id={student.id} studentId={student.student_id}>
                   <button className="flex h-8 w-8 items-center justify-center rounded border border-[#E4E7EC] hover:bg-gray-50">
                     <EllipsisVertical className="w-4" />
