@@ -28,16 +28,22 @@ const CreateAssignmentModal = ({ onClose }) => {
   const handlePublish = () => {
     if (!title || !selectedCohort || !dueDate) return;
 
+    const courseId = selectedCohortObj?.course_id?.id || selectedCohortObj?.course_id?._id || selectedCohortObj?.course_id;
+
+    const formData = new FormData();
+    formData.append("title", title);
+    if (description) formData.append("description", description);
+    formData.append("course_id", courseId);
+    formData.append("cohort_id", selectedCohort);
+    formData.append("due_date", dueDate);
+    formData.append("submission_type", submissionType);
+
+    if (file) {
+      formData.append("resources", file);
+    }
+
     createTask(
-      {
-        title,
-        description,
-        course_id:
-          selectedCohortObj?.course_id?.id || selectedCohortObj?.course_id?._id || selectedCohortObj?.course_id,
-        cohort_id: selectedCohort,
-        due_date: dueDate,
-        submission_type: submissionType,
-      },
+      formData,
       {
         onSuccess: () => onClose(),
       },
