@@ -60,7 +60,7 @@ const OndemandStudentManagementTable = ({ data }) => {
               </span>
 
               <span className="text-[14px] text-[#344054]">{formatDate(student.created_at)}</span>
-              <span className="text-[14px] text-[#344054]">{durationMap[student.subscription_limit] || "---"}</span>
+              <span className="text-[14px] text-[#344054]">{durationMap[student.subscription_limit] || student.subscription_limit || "---"}</span>
               <div className="flex justify-center">
                 <StudentPopover studentId={student.id}>
                   <button className="flex h-8 w-8 items-center justify-center rounded border border-[#E4E7EC] hover:bg-gray-50">

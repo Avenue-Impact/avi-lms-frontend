@@ -97,7 +97,7 @@ const AddStudentOnDemandForm = ({ setOpen }) => {
                     (duration) => (
                       <SelectItem
                         key={duration.value}
-                        value={duration.value}
+                        value={duration.label}
                         className="capitalize"
                       >
                         {`${duration.label} `}
