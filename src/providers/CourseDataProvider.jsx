@@ -1,5 +1,5 @@
 import { useViewEnrolledCourse } from "@/hooks/students/use-view-enrolled-course";
-import { createContext } from "react";
+import { createContext, useState, useEffect } from "react";
 import { useParams, useSearchParams, useLocation } from "react-router-dom";
 
 export const CourseDataContext = createContext();
@@ -8,7 +8,23 @@ export const CourseDataProvider = ({ children }) => {
   const { courseId } = useParams();
   const [searchParams] = useSearchParams();
   const location = useLocation();
-  const type = location.pathname.includes('/live') ? 'live class' : 'on demand';
+  
+  // Use a state to persist the access_type across sub-routes (e.g. /projects, /certificate)
+  const [type, setType] = useState(() => {
+    return searchParams.get('access_type') || (location.pathname.includes('/live') ? 'live class' : 'on demand');
+  });
+
+  useEffect(() => {
+    // If the user navigates explicitly to a live or recorded route, update the type
+    if (location.pathname.includes('/live')) {
+      setType('live class');
+    } else if (location.pathname.includes('/recorded')) {
+      setType('on demand');
+    } else if (searchParams.get('access_type')) {
+      setType(searchParams.get('access_type'));
+    }
+  }, [location.pathname, searchParams]);
+
   const { data, isLoading, error } = useViewEnrolledCourse(courseId, type);
 
   if (isLoading) return <p className="p-4 text-gray-500">Loading...</p>;
