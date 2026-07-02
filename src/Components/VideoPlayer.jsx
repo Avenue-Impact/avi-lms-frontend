@@ -248,8 +248,7 @@ const VideoPlayer = ({
         onPause={handlePause}
         onContextMenu={(e) => e.preventDefault()}
         controlsList="nodownload"
-        className="max-h-[699px] w-full object-contain"
-        style={{ minHeight: "300px" }}
+        className="h-full w-full object-contain"
       />
 
       {/* Center Big Play Button (shows only when paused) */}

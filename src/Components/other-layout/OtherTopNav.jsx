@@ -1,6 +1,7 @@
+import { useState } from "react";
 import { useCourseData } from "@/hooks/use-course-data";
 import { cn } from "@/lib/utils";
-import { FaLongArrowAltLeft, FaRegHeart } from "react-icons/fa";
+import { FaLongArrowAltLeft, FaRegHeart, FaBars, FaTimes } from "react-icons/fa";
 import { LiaTrophySolid } from "react-icons/lia";
 import { TiGroupOutline } from "react-icons/ti";
 import { BsGrid } from "react-icons/bs";
@@ -15,6 +16,7 @@ import {
 import { useSafeBack } from "@/hooks/use-safe-back";
 
 const OtherTopNav = ({ setShowModal, setIsQuestionDrawerOpen }) => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [queryString] = useSearchParams();
   const { courseId } = useParams();
 
@@ -66,6 +68,72 @@ const OtherTopNav = ({ setShowModal, setIsQuestionDrawerOpen }) => {
           >
             ?
           </button>
+          <button
+            onClick={() => setIsMobileMenuOpen(true)}
+            className="text-[#E11D48] hover:text-rose-700 ml-1"
+          >
+            <FaBars size={24} />
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Right Drawer Menu */}
+      <div
+        className={`fixed inset-0 z-50 transform transition-transform duration-300 ease-in-out lg:hidden ${
+          isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        <div 
+          className={`absolute inset-0 bg-black/50 transition-opacity duration-300 ${
+            isMobileMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`}
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+        
+        <div className="absolute right-0 top-0 bottom-0 w-[280px] bg-white shadow-xl flex flex-col">
+          <div className="flex justify-end p-4 border-b border-gray-100">
+            <button 
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="p-2 text-gray-500 hover:text-gray-800"
+            >
+              <FaTimes size={24} />
+            </button>
+          </div>
+          
+          <ul className="flex flex-col p-4 gap-4">
+            <li>
+              <Link
+                to={`/dashboard/${courseId}/projects?title=${queryString.get("title") ?? ""}`}
+                className="flex items-center gap-3 text-tertiary-color-700 hover:text-primary-color-600 transition-colors p-2 rounded hover:bg-gray-50"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <span className="text-[22px]"><TiGroupOutline /></span>
+                <span className="text-base capitalize font-medium">project area</span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                to={`/dashboard/${courseId}/certificate?cohortId=${cohortId}&title=${queryString.get("title") ?? ""}`}
+                className="flex items-center gap-3 text-tertiary-color-700 hover:text-primary-color-600 transition-colors p-2 rounded hover:bg-gray-50"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <span className="text-[22px]"><LiaTrophySolid /></span>
+                <span className="text-base capitalize font-medium">get certificate</span>
+              </Link>
+            </li>
+            <li>
+              <button
+                className="flex items-center gap-3 text-tertiary-color-700 hover:text-primary-color-600 transition-colors w-full text-left p-2 rounded hover:bg-gray-50"
+                onClick={() => {
+                  handleModal();
+                  setIsMobileMenuOpen(false);
+                }}
+              >
+                <span className="text-[22px]"><FaRegHeart /></span>
+                <span className="text-base capitalize font-medium">leave a review</span>
+              </button>
+            </li>
+          </ul>
         </div>
       </div>
       <div className="hidden lg:block">
