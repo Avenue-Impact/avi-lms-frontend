@@ -145,136 +145,143 @@ const OnDemandSessionCourseType = () => {
 
       <div>
         {/* On-Demand Session */}
-        <div className="mb-4 mt-5 grid grid-cols-12 gap-10 rounded border border-gray-300 p-10 md:mb-0">
-          <div className="col-span-5">
+        <div className="mb-4 mt-5 grid grid-cols-1 xl:grid-cols-12 gap-8 rounded border border-gray-300 p-6 md:p-10 md:mb-0">
+          <div className="xl:col-span-3">
             <h3 className="text-[20px] font-[500] text-[#344054] lg:text-[24px]">
               On-Demand Session
             </h3>
-            <p>Add Multiple Durations and Prices</p>
+            <p className="text-sm text-gray-500 mt-1">Add Multiple Durations and Prices</p>
           </div>
 
-          <div className="col-span-7 space-y-4">
-            {/* Course Original Price and Discounted Price */}
-            <div className="grid grid-cols-[1.5fr_1fr_1fr_1fr_1fr_0.5fr] gap-4 items-end">
-              {/* Duration */}
-              <div>
-                <p className="font-[600] text-gray-600">Duration</p>
+          <div className="xl:col-span-9">
+            <div className="w-full space-y-6">
+              {/* Course Original Price and Discounted Price */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr_1fr_auto] gap-4 items-end">
+                {/* Duration */}
+                <div>
+                  <p className="font-[600] text-gray-600 mb-1 text-sm">Duration</p>
 
-                <Select onValueChange={setDuration} value={duration}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select" />
-                  </SelectTrigger>
-                  <SelectContent className="pb-8 capitalize">
-                    <SelectGroup>
-                      <SelectLabel>duration</SelectLabel>
-                      {access.map((duration) => (
-                        <SelectItem
-                          key={duration.id}
-                          value={duration.access}
-                          className="capitalize"
-                        >
-                          {`${duration.access} `}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <label htmlFor="price" className="text-base font-medium">
-                  Original Price
-                </label>
-                <input
-                  type="number"
-                  name="price"
-                  id="price"
-                  className="w-full rounded border border-gray-300 p-2"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  placeholder="£"
-                />
-              </div>
-
-              <div>
-                  <p className="font-[600] text-gray-600">Type</p>
-                  <Select onValueChange={setDiscountType} value={discountType}>
+                  <Select onValueChange={setDuration} value={duration}>
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Type" />
+                      <SelectValue placeholder="Select" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="None">None</SelectItem>
-                      <SelectItem value="Percentage">%</SelectItem>
-                      <SelectItem value="Fiat">Fiat</SelectItem>
+                    <SelectContent className="pb-8 capitalize">
+                      <SelectGroup>
+                        <SelectLabel>duration</SelectLabel>
+                        {access.map((duration) => (
+                          <SelectItem
+                            key={duration.id}
+                            value={duration.access}
+                            className="capitalize"
+                          >
+                            {`${duration.access} `}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
                     </SelectContent>
                   </Select>
-              </div>
+                </div>
 
-              <div>
-                <label htmlFor="discountValue" className="text-base font-medium">
-                  Value
-                </label>
-                <input
-                  type="number"
-                  name="discountValue"
-                  id="discountValue"
-                  className="w-full rounded border border-gray-300 p-2"
-                  value={discountValue}
-                  onChange={(e) => setDiscountValue(e.target.value)}
-                  placeholder="0"
-                />
-              </div>
+                <div>
+                  <label htmlFor="price" className="text-sm font-[600] text-gray-600 mb-1 block">
+                    Original Price
+                  </label>
+                  <input
+                    type="number"
+                    name="price"
+                    id="price"
+                    className="w-full rounded border border-gray-300 p-2 text-sm"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    placeholder="£"
+                  />
+                </div>
 
-              <div>
-                <label htmlFor="discountedAmount" className="text-base font-medium">
-                  Final
-                </label>
-                <input
-                  type="number"
-                  name="discountedAmount"
-                  id="discountedAmount"
-                  className="w-full rounded border border-gray-300 p-2 bg-gray-100"
-                  value={discountedAmount}
-                  readOnly
-                  placeholder="£"
-                />
-              </div>
+                <div>
+                    <p className="font-[600] text-gray-600 mb-1 text-sm">Type</p>
+                    <Select onValueChange={setDiscountType} value={discountType}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="None">None</SelectItem>
+                        <SelectItem value="Percentage">%</SelectItem>
+                        <SelectItem value="Fiat">Fiat</SelectItem>
+                      </SelectContent>
+                    </Select>
+                </div>
 
-              <CommonButton
-                type="button"
-                className="block w-full rounded bg-primary-color-600 px-4 py-2"
-                onClick={handleAddPrice}
-              >
-                Add
-              </CommonButton>
+                <div>
+                  <label htmlFor="discountValue" className="text-sm font-[600] text-gray-600 mb-1 block">
+                    Value
+                  </label>
+                  <input
+                    type="number"
+                    name="discountValue"
+                    id="discountValue"
+                    className="w-full rounded border border-gray-300 p-2 text-sm"
+                    value={discountValue}
+                    onChange={(e) => setDiscountValue(e.target.value)}
+                    placeholder="0"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="discountedAmount" className="text-sm font-[600] text-gray-600 mb-1 block">
+                    Final
+                  </label>
+                  <input
+                    type="number"
+                    name="discountedAmount"
+                    id="discountedAmount"
+                    className="w-full rounded border border-gray-300 p-2 bg-gray-100 text-sm"
+                    value={discountedAmount}
+                    readOnly
+                    placeholder="£"
+                  />
+                </div>
+
+                <div className="w-full sm:col-span-2 lg:col-span-1">
+                  <CommonButton
+                    type="button"
+                    className="block w-full rounded bg-primary-color-600 px-4 py-2 text-sm"
+                    onClick={handleAddPrice}
+                  >
+                    Add
+                  </CommonButton>
+                </div>
+              </div>
             </div>
 
-            <div>
-              {durationPrice.length > 0 && (
-                <ul>
+            <div className="w-full mt-6">
+              {
+                <ul className="space-y-2">
                   {durationPrice.map((item, index) => (
                     <li
                       key={index}
-                      className="flex items-center justify-between border-b py-2"
+                      className="flex flex-col sm:flex-row sm:items-center justify-between border rounded p-3 bg-gray-50 gap-4 sm:gap-0"
                     >
-                      <span className="text-red-600">{`${item.duration} - £${formatCurrency(item.discounted_price.amount)} (Org: £${formatCurrency(item.original_price.amount)})`}</span>
-                      <CommonButton
-                        className="h-8 rounded bg-white text-red-600 hover:bg-white"
-                        type="button"
-                        onClick={() => {
-                          setDurationPrice((prev) =>
-                            prev.filter((_, i) => i !== index),
-                          );
-                        }}
-                      >
-                        <FaTrash />
-                      </CommonButton>
+                      <span className="text-sm font-medium text-gray-700">{`${item.duration} - ${item.discounted_price.currency_symbol}${item.discounted_price.amount} (Org: ${item.original_price.currency_symbol}${item.original_price.amount})`}</span>
+          
+                      <div className="flex items-center gap-2">
+                        <CommonButton
+                          className="h-8 rounded bg-white text-red-600 hover:bg-red-50 border border-red-200 px-3"
+                          type="button"
+                          onClick={() => {
+                            setDurationPrice((prev) =>
+                              prev.filter((_, i) => i !== index),
+                            );
+                          }}
+                        >
+                          <FaTrash size={14} />
+                        </CommonButton>
+                      </div>
                     </li>
                   ))}
                 </ul>
-              )}
+              }
               {durationErr && (
-                <span className="mt-2 text-red-600">{durationErr}</span>
+                <span className="mt-2 block text-sm text-red-600">{durationErr}</span>
               )}
             </div>
           </div>
