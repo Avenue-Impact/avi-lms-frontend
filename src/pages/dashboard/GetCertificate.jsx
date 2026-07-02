@@ -95,6 +95,7 @@ export const GetCertificate = () => {
     </div>
   );
 };
+import { useState, useEffect } from "react";
 
 const Cert = () => {
   const { courseId } = useParams();
@@ -107,9 +108,28 @@ const Cert = () => {
     data: certificateHTML,
   } = useGetCertificate(courseId, cohortId);
 
+  const [errorMsg, setErrorMsg] = useState(null);
+
+  useEffect(() => {
+    if (error) {
+      if (error?.response?.data instanceof Blob) {
+        error.response.data.text().then(text => {
+          try {
+            const json = JSON.parse(text);
+            setErrorMsg(json.message || "Failed to load certificate preview.");
+          } catch(e) {
+            setErrorMsg("Failed to load certificate preview.");
+          }
+        });
+      } else {
+        setErrorMsg(error?.response?.data?.message || "Failed to load certificate preview.");
+      }
+    }
+  }, [error]);
+
   if (isLoading) return <Skeleton className="h-[300px] w-[500px] max-w-full rounded-lg" />;
   if (error)
-    return <p className="text-red-500">{error?.response?.data?.message ?? "Failed to load certificate preview."}</p>;
+    return <div className="text-center p-6"><p className="text-[#CC1747] font-medium">{errorMsg || "Failed to load certificate preview."}</p></div>;
   if (certificateHTML) {
     const blob = URL.createObjectURL(certificateHTML?.data);
     return <img src={blob} className="w-full max-w-2xl shadow-sm rounded border border-gray-200" alt="Certificate Preview" />;
