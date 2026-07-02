@@ -93,7 +93,7 @@ function ProjectWithGroup({ data }) {
                 <a
                   href={project.link}
                   target="_blank"
-                  className="mt-2 h-[40px] w-[177px] cursor-pointer rounded bg-[#CC1747] px-4 py-2 text-white transition duration-300 hover:bg-[#b30e3b] disabled:hover:bg-slate-200 lg:hover:bg-[#B3123F]"
+                  className="mt-2 inline-flex h-[40px] w-[177px] items-center justify-center cursor-pointer rounded bg-[#CC1747] px-4 py-2 text-white transition duration-300 hover:bg-[#b30e3b] disabled:hover:bg-slate-200 lg:hover:bg-[#B3123F]"
                 >
                   {project.button_text}
                 </a>
@@ -169,7 +169,7 @@ function ToolsAndResources({ data }) {
                 <a
                   href={tools.link}
                   target="_blank"
-                  className="mt-2 h-[40px] w-[177px] cursor-pointer rounded bg-[#CC1747] px-4 py-2 text-white transition duration-300 hover:bg-[#b30e3b] disabled:hover:bg-slate-200 lg:hover:bg-[#B3123F]"
+                  className="mt-2 inline-flex h-[40px] w-[177px] items-center justify-center cursor-pointer rounded bg-[#CC1747] px-4 py-2 text-white transition duration-300 hover:bg-[#b30e3b] disabled:hover:bg-slate-200 lg:hover:bg-[#B3123F]"
                 >
                   {tools.button_text}
                 </a>

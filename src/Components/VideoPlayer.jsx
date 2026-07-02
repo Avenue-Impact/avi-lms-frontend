@@ -37,6 +37,8 @@ const VideoPlayer = ({
   const [duration, setDuration] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
   const [showControls, setShowControls] = useState(true);
+  const [playbackRate, setPlaybackRate] = useState(1);
+  const playbackRates = [0.5, 1, 1.25, 1.5, 2];
 
   const { data: progressData } = useFetchVideoProgress(courseId, videoId);
   const { mutate: updateProgress } = useAddVideoProgress();
@@ -198,6 +200,17 @@ const VideoPlayer = ({
     }
   };
 
+  const cyclePlaybackRate = (e) => {
+    e.stopPropagation();
+    const currentIndex = playbackRates.indexOf(playbackRate);
+    const nextIndex = (currentIndex + 1) % playbackRates.length;
+    const nextRate = playbackRates[nextIndex];
+    setPlaybackRate(nextRate);
+    if (videoRef.current) {
+      videoRef.current.playbackRate = nextRate;
+    }
+  };
+
   const toggleFullScreen = (e) => {
     e.stopPropagation();
     if (containerRef.current) {
@@ -299,6 +312,14 @@ const VideoPlayer = ({
                 ) : (
                   <FaVolumeUp size={20} />
                 )}
+              </button>
+
+              {/* Playback Speed */}
+              <button
+                onClick={cyclePlaybackRate}
+                className="text-white text-sm font-semibold transition-colors hover:text-[#CC1747] focus:outline-none w-8"
+              >
+                {playbackRate}x
               </button>
             </div>
 
