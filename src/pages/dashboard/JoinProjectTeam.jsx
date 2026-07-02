@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import DashButton from "../auth/ButtonDash";
 import { useFetchProjectArea } from "@/hooks/students/use-fetch-project-area";
 import NoCoursesImg from "../../assets/images/no_courses.png";
-// import styles from "../pages.module.css";
+import { HiOutlineUserGroup, HiOutlineVideoCamera, HiOutlineWrenchScrewdriver } from "react-icons/hi2";
 
 const JoinProjectTeam = () => {
   const { courseId } = useParams();
@@ -34,32 +34,31 @@ const JoinProjectTeam = () => {
 
 function NoProject() {
   return (
-    <div className="my-6 rounded-lg border-2 border-gray-100 bg-white p-6 lg:h-[425px]">
-      <div className="mb-4 flex-1 md:mb-0">
-        <h3 className="text-[18px] font-semibold text-gray-800">
+    <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8">
+      <div className="mb-6 border-b border-gray-100 pb-4">
+        <h3 className="text-xl font-semibold text-gray-900">
           Project Area
         </h3>
+        <p className="mt-1 text-sm text-gray-500">Collaborate with your team and join project meetings.</p>
       </div>
 
-      <div className="mt-6 flex w-full max-w-5xl flex-col space-y-6 rounded-lg md:flex-row md:space-x-6 md:space-y-0">
-        <div className="mb-4 w-full text-justify md:mb-0 md:w-2/4">
-          <h3 className="mb-2 text-[24px] font-semibold text-gray-800">
-            Whatsapp Group
-          </h3>
-          <div className="px-8 py-10">
-            <h3 className="text-[20px] font-[600]">No WhatsApp Group</h3>
+      <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2">
+        {/* WhatsApp Group Empty State */}
+        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-gray-200 bg-gray-50 p-8 text-center transition-colors hover:bg-gray-100/50">
+          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+            <HiOutlineUserGroup className="h-8 w-8" />
           </div>
+          <h4 className="mb-2 text-lg font-medium text-gray-800">Whatsapp Group</h4>
+          <p className="text-sm text-gray-500">No WhatsApp group has been assigned yet.</p>
         </div>
 
-        <div className="mb-4 w-full text-justify md:mb-0 md:w-2/4">
-          <h3 className="mb-2 text-[24px] font-semibold text-gray-800">
-            Join Project Meeting (Google Meet)
-          </h3>
-          <div className="px-8 py-10">
-            <h3 className="text-[20px] font-[600]">
-              No Project Meeting link yet
-            </h3>
+        {/* Google Meet Empty State */}
+        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-gray-200 bg-gray-50 p-8 text-center transition-colors hover:bg-gray-100/50">
+          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+            <HiOutlineVideoCamera className="h-8 w-8" />
           </div>
+          <h4 className="mb-2 text-lg font-medium text-gray-800">Project Meeting</h4>
+          <p className="text-sm text-gray-500">No Google Meet link has been created yet.</p>
         </div>
       </div>
     </div>
@@ -123,25 +122,25 @@ function ProjectWithGroup({ data }) {
 
 function EmptyToolsAndResources() {
   return (
-    <div className="my-6 rounded-lg border-2 border-gray-100 bg-white p-6 lg:h-[425px]">
-      <div className="mb-4 flex-1 md:mb-0">
-        <h3 className="text-[18px] font-semibold text-gray-800">
-          Tools & resources
+    <div className="my-6 rounded-xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8">
+      <div className="mb-6 border-b border-gray-100 pb-4">
+        <h3 className="text-xl font-semibold text-gray-900">
+          Tools & Resources
         </h3>
+        <p className="mt-1 text-sm text-gray-500">Essential tools and resources for your project.</p>
       </div>
 
-      <div className="mt-10 flex w-full items-center justify-center space-y-6 rounded-lg text-center md:space-x-6 md:space-y-0">
-        <div className="mx-auto mb-4 text-justify md:mb-0">
-          <div className="border-2 border-gray-100 p-10">
-            <img
-              src={NoCoursesImg}
-              alt="No Courses"
-              className="mb-4 h-32 w-32 rounded-full"
-            />
-            <h3 className="mb-2 text-2xl font-semibold text-gray-800">
-              No Courses
-            </h3>
+      <div className="flex w-full items-center justify-center rounded-xl border border-dashed border-gray-200 bg-gray-50 py-16 px-4 transition-colors hover:bg-gray-100/50">
+        <div className="flex flex-col items-center text-center">
+          <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-purple-100 text-purple-600">
+            <HiOutlineWrenchScrewdriver className="h-10 w-10" />
           </div>
+          <h3 className="mb-2 text-xl font-medium text-gray-800">
+            No Tools Available
+          </h3>
+          <p className="max-w-sm text-sm text-gray-500">
+            There are currently no tools or resources added to this project area.
+          </p>
         </div>
       </div>
     </div>
