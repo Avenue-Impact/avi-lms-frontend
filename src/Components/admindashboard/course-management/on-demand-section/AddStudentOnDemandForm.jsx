@@ -50,7 +50,7 @@ const AddStudentOnDemandForm = ({ setOpen }) => {
   const { data: courseInfo, isLoading: isCourseLoading } = useFetchCourseInfo(courseId);
 
   // Extract available durations from the course
-  const courseDurations = courseInfo?.data?.course_type?.on_demand_session?.map(session => session.duration) || [];
+  const courseDurations = courseInfo?.data?.pricing?.on_demand?.map(session => session.duration) || [];
 
   // Filter the static list to only include durations available in the course
   const availableDurations = onDemandDurations.filter(d => courseDurations.includes(d.label));
