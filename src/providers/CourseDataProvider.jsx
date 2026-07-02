@@ -66,7 +66,7 @@ export const CourseDataProvider = ({ children }) => {
   };
 
   return (
-    <CourseDataContext.Provider value={{ data: courseData }}>
+    <CourseDataContext.Provider value={{ data: courseData, type }}>
       {error && (
         <div className="bg-red-50 text-red-600 p-2 text-center text-sm border-b border-red-200">
           Backend error: {error?.response?.data?.message || "Not Enrolled"}. Rendering mock data for UI preview.

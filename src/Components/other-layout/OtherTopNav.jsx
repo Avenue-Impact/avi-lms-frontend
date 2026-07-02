@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { FaLongArrowAltLeft, FaRegHeart, FaBars, FaTimes } from "react-icons/fa";
 import { LiaTrophySolid } from "react-icons/lia";
 import { TiGroupOutline } from "react-icons/ti";
-import { BsGrid } from "react-icons/bs";
+import { BsGrid, BsPlayCircle } from "react-icons/bs";
 import { useViewCourseSections } from "@/hooks/students/use-course-secion-view";
 import {
   Link,
@@ -20,7 +20,10 @@ const OtherTopNav = ({ setShowModal, setIsQuestionDrawerOpen }) => {
   const [queryString] = useSearchParams();
   const { courseId } = useParams();
 
-  const { data } = useCourseData();
+  const { data, type } = useCourseData();
+  const previewPath = type === "live class" 
+    ? `/dashboard/${courseId}/live?title=${queryString.get("title") ?? ""}&cohortId=${data?.data?.data?.cohort_id ?? ""}` 
+    : `/dashboard/${courseId}/recorded?title=${queryString.get("title") ?? ""}`;
 
   const cohortId = data?.data?.data?.cohort_id ?? "";
 
@@ -103,6 +106,16 @@ const OtherTopNav = ({ setShowModal, setIsQuestionDrawerOpen }) => {
           <ul className="flex flex-col p-4 gap-4">
             <li>
               <Link
+                to={previewPath}
+                className="flex items-center gap-3 text-tertiary-color-700 hover:text-primary-color-600 transition-colors p-2 rounded hover:bg-gray-50"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <span className="text-[22px]"><BsPlayCircle /></span>
+                <span className="text-base capitalize font-medium">course preview</span>
+              </Link>
+            </li>
+            <li>
+              <Link
                 to={`/dashboard/${courseId}/projects?title=${queryString.get("title") ?? ""}`}
                 className="flex items-center gap-3 text-tertiary-color-700 hover:text-primary-color-600 transition-colors p-2 rounded hover:bg-gray-50"
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -138,6 +151,24 @@ const OtherTopNav = ({ setShowModal, setIsQuestionDrawerOpen }) => {
       </div>
       <div className="hidden lg:block">
         <ul className="flex items-center gap-3 *:text-nowrap">
+          <li
+            className={cn(
+              "after:contents-[''] relative cursor-pointer capitalize text-tertiary-color-700 transition-colors duration-300 ease-linear after:absolute after:-bottom-2 after:left-0 after:block after:h-px after:w-0 after:bg-[#CC1747] hover:text-primary-color-600 hover:after:w-full",
+              location.pathname.endsWith("live") || location.pathname.endsWith("recorded")
+                ? "text-primary-color-600 after:w-full"
+                : "",
+            )}
+          >
+            <Link
+              to={previewPath}
+              className="flex gap-2 2xl:gap-[13px]"
+            >
+              <span className="text-[22px]">
+                <BsPlayCircle />
+              </span>
+              <span className="text-sm">course preview</span>
+            </Link>
+          </li>
           <li
             className={cn(
               "after:contents-[''] relative cursor-pointer capitalize text-tertiary-color-700 transition-colors duration-300 ease-linear after:absolute after:-bottom-2 after:left-0 after:block after:h-px after:w-0 after:bg-[#CC1747] hover:text-primary-color-600 hover:after:w-full",
