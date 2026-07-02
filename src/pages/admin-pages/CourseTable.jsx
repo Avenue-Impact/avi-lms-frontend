@@ -26,7 +26,7 @@ const CourseTable = ({ data }) => {
           <div>Course Title</div>
           <div>Course Type</div>
           <div>Enrollment Date</div>
-          <div>Course Duration</div>
+          <div>Access Expiry-Date</div>
           <div className="text-center">Access Revoked</div>
           <div className="text-center">Action</div>
         </Table.Header>
