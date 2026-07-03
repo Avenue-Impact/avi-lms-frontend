@@ -13,7 +13,6 @@ const slides = [
     primaryPath: "/digital-transformation",
     secondaryCta: "Learn More",
     secondaryPath: "/about",
-    bg: "/images/hero_slides/949c66affbee9d68a65e7bb9867c2d24fc674670.jpg",
   },
   {
     badge: "Workforce Transformation Platform",
@@ -24,7 +23,6 @@ const slides = [
     primaryPath: "/digital-learning-hub",
     secondaryCta: "Learn More",
     secondaryPath: "/about",
-    bg: "/images/hero_slides/3b30bfd0b967ba2adf58f62ed66d07fd7aeefdb9.jpg",
   },
   {
     badge: "Delivery & Talent Solutions",
@@ -35,7 +33,6 @@ const slides = [
     primaryPath: "/about",
     secondaryCta: "Learn More",
     secondaryPath: "/digital-transformation",
-    bg: "/images/hero_slides/142fa83a58b6083bebc6a397f5f6a827d2cc44c0.jpg",
   },
   {
     badge: "Customer Operations & Managed Services",
@@ -46,7 +43,6 @@ const slides = [
     primaryPath: "/contact",
     secondaryCta: "Learn More",
     secondaryPath: "/about",
-    bg: "/images/hero_slides/de997b2d61b9bfae2bb8644382486e7a2d3d3415.jpg",
   },
 ];
 
@@ -94,26 +90,21 @@ export function HeroSection() {
       className="relative flex min-h-[79vh] w-full flex-col justify-end overflow-hidden bg-[#0d0d0d]"
       aria-label="Hero slider"
     >
-      {/* ── Background images (crossfade) ── */}
-      {slides.map((s, i) => (
-        <div
-          key={i}
-          className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-            i === current ? "opacity-100" : "opacity-0"
-          }`}
-          aria-hidden="true"
-        >
-          <img
-            src={s.bg}
-            alt=""
-            className="h-full w-full object-cover object-center"
-            loading={i === 0 ? "eager" : "lazy"}
-          />
-          {/* Very dark overlay — matches the deep dark look in the design */}
-          {/* Gradient overlay — darker so text is readable */}
-          <div className="via-[#0d0d0d]/85 absolute inset-0 bg-gradient-to-r from-[#0d0d0d] to-[#0d0d0d]/40" />
-        </div>
-      ))}
+      {/* ── Background video ── */}
+      <div className="absolute inset-0" aria-hidden="true">
+        <video
+          src="/assets/18494126-uhd_2160_3840_60fps.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="h-full w-full object-cover"
+          style={{ objectPosition: 'top center' }}
+        />
+        {/* Very dark overlay — matches the deep dark look in the design */}
+        {/* Gradient overlay — darker so text is readable */}
+        <div className="via-[#0d0d0d]/85 absolute inset-0 bg-gradient-to-r from-[#0d0d0d] to-[#0d0d0d]/40" />
+      </div>
 
       {/* ── Slide content — left-aligned ── */}
       <div
