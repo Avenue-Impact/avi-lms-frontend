@@ -34,12 +34,12 @@ const LiveSessionCourseCard = ({
     >
       {is_access_revoked && (
         <div className="absolute right-2 top-2 z-10 flex items-center gap-1 rounded bg-white/90 px-2 py-1 text-xs font-bold text-red-600 shadow-sm">
-          🔒 Access paused due to unpaid installment.
+           Access paused due to unpaid installment.
         </div>
       )}
       {!is_access_revoked && isExpired && (
         <div className="absolute right-2 top-2 z-10 flex items-center gap-1 rounded bg-white/90 px-2 py-1 text-xs font-bold text-red-600 shadow-sm">
-          🔒 Course access has expired.
+          Course access has expired.
         </div>
       )}
       <div className="h-[90px] w-full overflow-hidden rounded-t-lg md:h-[120px] lg:h-[190px] xl:h-[206px]">
