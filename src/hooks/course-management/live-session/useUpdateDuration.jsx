@@ -15,7 +15,7 @@ export const useUpdateDuration = () => {
     mutationFn: updateDurationApi,
     onSuccess: ({ data }) => {
       toast.success(data.message || "Duration updated successfully");
-      queryClient.invalidateQueries(["fetch-all-live-student"]);
+      queryClient.invalidateQueries({ queryKey: ["fetch-all-live-student"] });
     },
     onError: (error) => {
       toast.error(error.response?.data?.message || "Something went wrong");
