@@ -93,7 +93,7 @@ export function HeroSection() {
       {/* ── Background video ── */}
       <div className="absolute inset-0" aria-hidden="true">
         <video
-          src="/assets/18494126-uhd_2160_3840_60fps.mp4"
+          src="/assets/output_final.webm"
           autoPlay
           loop
           muted
