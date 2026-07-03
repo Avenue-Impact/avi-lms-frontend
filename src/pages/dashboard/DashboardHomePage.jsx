@@ -218,6 +218,7 @@ const LiveSessionCourses = () => {
               courseId={course?.id || course?.courseId}
               is_access_revoked={course?.is_access_revoked}
               last_watched_video_id={course?.last_watched_video_id}
+              access_expires_at={course?.access_expires_at}
             />
           );
         })}
