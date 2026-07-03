@@ -239,7 +239,6 @@ const LiveSessionCourses = () => {
   if (isLoading) return <p>Loading ...</p>;
   if (error) return <p>Error ...</p>;
   if (data) {
-    console.log(data);
 
     return (
       <div
