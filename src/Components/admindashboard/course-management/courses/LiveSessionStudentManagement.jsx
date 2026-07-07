@@ -65,7 +65,7 @@ const LiveSessionStudentManagement = () => {
         <div className="col-span-9">
           <div className="flex items-center justify-between">
             <div className="flex itemss-center justify-start gap-2">
-              <div className="relative w-1/2">
+              <div className="relative w-[70%]">
                 <input
                   type="text"
                   className="w-full rounded-md border bg-gray-50 px-1 py-2 pl-10 text-[14px] focus:outline-none"
