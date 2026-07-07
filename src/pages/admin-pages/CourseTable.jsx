@@ -1,8 +1,15 @@
 import LiveSessionStudentDeletePopover from "@/Components/admindashboard/course-management/live-session/LiveSessionStudentDeletePopover";
 import Table from "@/Components/Table";
 import { EllipsisVertical } from "lucide-react";
-import { useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import ToggleAccessRevoke from "@/Components/admindashboard/course-management/live-session/ToggleAccessRevoke";
+import { useState } from "react";
+import { useBulkDeleteStudents } from "@/hooks/course-management/live-session/use-bulk-delete-students";
+import { useBulkUpdateDuration } from "@/hooks/course-management/live-session/use-bulk-update-duration";
+import SetDurationModal from "@/Components/admindashboard/course-management/live-session/SetDurationModal";
+import CommonButton from "@/Components/ui/button";
+import { TrashCan } from "@/Components/Icon";
+import { Clock } from "lucide-react";
 
 const formatDate = (dateString, justDate=false) => {
   if (!dateString) return "---";
@@ -14,13 +21,110 @@ const formatDate = (dateString, justDate=false) => {
 
 const CourseTable = ({ data }) => {
   const [queryString] = useSearchParams();
+  const { courseId } = useParams();
 
   const courseTitle = queryString.get("title");
   const cohortName = queryString.get("cohort");
+  const cohortId = queryString.get("cohortId");
+
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [isDurationModalOpen, setIsDurationModalOpen] = useState(false);
+
+  const { bulkDeleteStudents, isPending: isDeleting } = useBulkDeleteStudents();
+  const { bulkUpdateDuration, isPending: isUpdating } = useBulkUpdateDuration();
+
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      const allIds = data?.map(student => student.student_id) || [];
+      setSelectedIds(allIds);
+    } else {
+      setSelectedIds([]);
+    }
+  };
+
+  const handleSelectOne = (studentId) => {
+    setSelectedIds(prev => 
+      prev.includes(studentId) 
+        ? prev.filter(id => id !== studentId) 
+        : [...prev, studentId]
+    );
+  };
+
+  const handleBulkDelete = () => {
+    if (window.confirm(`Are you sure you want to remove ${selectedIds.length} students from this cohort?`)) {
+      bulkDeleteStudents({
+        courseId,
+        cohortId,
+        data: { student_ids: selectedIds }
+      }, {
+        onSuccess: () => setSelectedIds([])
+      });
+    }
+  };
+
+  const handleBulkSetDuration = (access_expires_at) => {
+    bulkUpdateDuration({
+      courseId,
+      cohortId,
+      student_ids: selectedIds,
+      access_expires_at
+    }, {
+      onSuccess: () => {
+        setIsDurationModalOpen(false);
+        setSelectedIds([]);
+      }
+    });
+  };
+
+  const allSelected = data?.length > 0 && selectedIds.length === data?.length;
+  const someSelected = selectedIds.length > 0 && selectedIds.length < data?.length;
+
   return (
-    <div className="overflow-x-auto">
-      <Table cols={"0.5fr 1.5fr 1.6fr 0.8fr 1.4fr 1.2fr 1.0fr 0.4fr"}>
+    <div className="overflow-x-auto relative">
+      {selectedIds.length > 0 && (
+        <div className="sticky top-0 z-10 flex items-center justify-between bg-blue-50 px-4 py-3 border-b border-blue-200 rounded-t-md mb-2">
+          <span className="text-sm font-medium text-blue-700">
+            {selectedIds.length} student{selectedIds.length > 1 ? 's' : ''} selected
+          </span>
+          <div className="flex gap-2">
+            <CommonButton 
+              variant="outline" 
+              className="text-sm h-8 bg-white"
+              onClick={() => setIsDurationModalOpen(true)}
+            >
+              <Clock className="w-4 h-4 mr-1" />
+              Set Duration
+            </CommonButton>
+            <CommonButton 
+              className="text-sm h-8 bg-red-600 text-white hover:bg-red-700 border-none"
+              onClick={handleBulkDelete}
+              disabled={isDeleting}
+            >
+              <TrashCan className="w-4 h-4 mr-1 stroke-white" />
+              {isDeleting ? "Removing..." : "Remove"}
+            </CommonButton>
+          </div>
+        </div>
+      )}
+
+      <SetDurationModal 
+        open={isDurationModalOpen} 
+        setOpen={setIsDurationModalOpen} 
+        onSetDuration={handleBulkSetDuration} 
+        isPending={isUpdating} 
+      />
+
+      <Table cols={"0.2fr 0.5fr 1.5fr 1.6fr 0.8fr 1.4fr 1.2fr 1.0fr 0.4fr"}>
         <Table.Header className={"gap-1 *:text-sm *:font-medium *:capitalize"}>
+          <div className="flex items-center justify-center">
+            <input 
+              type="checkbox" 
+              className="w-4 h-4 rounded border-gray-300 text-primary-color-600 focus:ring-primary-color-600 cursor-pointer"
+              checked={allSelected}
+              ref={input => { if (input) input.indeterminate = someSelected }}
+              onChange={handleSelectAll}
+            />
+          </div>
           <div>S/N</div>
           <div>Name</div>
           <div>Course Title</div>
@@ -33,6 +137,14 @@ const CourseTable = ({ data }) => {
         <div className="divide-y">
           {data?.map((student, i) => (
             <Table.Row className={"gap-x-2 *:truncate"} key={student.id}>
+              <div className="flex items-center justify-center">
+                <input 
+                  type="checkbox" 
+                  className="w-4 h-4 rounded border-gray-300 text-primary-color-600 focus:ring-primary-color-600 cursor-pointer"
+                  checked={selectedIds.includes(student.student_id)}
+                  onChange={() => handleSelectOne(student.student_id)}
+                />
+              </div>
               <span className="font-poppins text-sm text-[#344054]">
                 {i + 1 < 10 ? `0${i + 1}` : i + 1}
               </span>
