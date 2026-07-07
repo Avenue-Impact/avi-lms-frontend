@@ -82,8 +82,8 @@ const CourseTable = ({ data }) => {
   return (
     <div className="overflow-x-auto relative">
       {selectedIds.length > 0 && (
-        <div className="sticky top-0 z-10 flex items-center justify-between bg-blue-50 px-4 py-3 border-b border-blue-200 rounded-t-md mb-2">
-          <span className="text-sm font-medium text-blue-700">
+        <div className="sticky top-0 z-10 flex items-center justify-between bg-primary-color-100 px-4 py-3 border-b border-primary-color-300 rounded-t-md mb-2">
+          <span className="text-sm font-medium text-primary-color-600">
             {selectedIds.length} student{selectedIds.length > 1 ? 's' : ''} selected
           </span>
           <div className="flex gap-2">
@@ -115,7 +115,7 @@ const CourseTable = ({ data }) => {
       />
 
       <Table cols={"0.2fr 0.5fr 1.5fr 1.6fr 0.8fr 1.4fr 1.2fr 1.0fr 0.4fr"}>
-        <Table.Header className={"gap-1 *:text-sm *:font-medium *:capitalize"}>
+        <Table.Header className={"gap-x-2 *:text-sm *:font-medium *:capitalize pl-4"}>
           <div className="flex items-center justify-center">
             <input 
               type="checkbox" 
@@ -130,13 +130,13 @@ const CourseTable = ({ data }) => {
           <div>Course Title</div>
           <div>Course Type</div>
           <div>Enrollment Date</div>
-          <div>Access Expiry-Date</div>
+          <div>Access Exp</div>
           <div className="text-center">Access Revoked</div>
           <div className="text-center">Action</div>
         </Table.Header>
         <div className="divide-y">
           {data?.map((student, i) => (
-            <Table.Row className={"gap-x-2 *:truncate"} key={student.id}>
+            <Table.Row className={"gap-x-2 *:truncate items-center"} key={student.id}>
               <div className="flex items-center justify-center">
                 <input 
                   type="checkbox" 
@@ -145,7 +145,7 @@ const CourseTable = ({ data }) => {
                   onChange={() => handleSelectOne(student.student_id)}
                 />
               </div>
-              <span className="font-poppins text-sm text-[#344054]">
+              <span className="font-poppins text-sm text-[#344054] text-center">
                 {i + 1 < 10 ? `0${i + 1}` : i + 1}
               </span>
               <span className="font-poppins text-sm text-[#344054]">
