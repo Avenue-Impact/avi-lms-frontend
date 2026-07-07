@@ -101,7 +101,7 @@ const CourseTable = ({ data }) => {
               disabled={isDeleting}
             >
               <TrashCan className="w-4 h-4 mr-1 stroke-white" />
-              {isDeleting ? "Removing..." : "Remove"}
+              {isDeleting ? "Removing..." : "Unenroll"}
             </CommonButton>
           </div>
         </div>
