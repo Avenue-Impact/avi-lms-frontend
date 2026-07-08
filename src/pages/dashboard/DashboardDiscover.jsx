@@ -11,6 +11,7 @@ import joinTeam from "../../assets/images/join_team.png";
 import Modal from "../auth/components/Modal";
 import ModalContent from "../lms-pages/ReminderModalContent";
 import { useFetchEnrolledLiveSessionCourse } from "@/hooks/students/use-fetch-enroll-live-session-course";
+import { useFetchEnrolledPreRecordedCourse } from "@/hooks/students/use-fetch-enroll-ondemand-courses";
 
 // import ReminderModal from '../auth/components/ReminderModal';
 
@@ -90,132 +91,7 @@ const Dashboard_Discover = () => {
           </div>
         </div>
 
-        <div>
-          {/* Preview this Course */}
-          <div
-            className={`grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-6 lg:grid-cols-4`}
-          >
-            <DashboardDiscover
-              imgSrc={joinTeam}
-              altText="joinTeam"
-              title={
-                <>
-                  {" "}
-                  Project Consultant <br /> Training Programme (Bundle)
-                </>
-              }
-              rating="4.3"
-              numRatings="45,345"
-              courseProgress="100% completed"
-              leaveRating="Leaving a rating"
-            />
-
-            <DashboardDiscover
-              imgSrc={joinTeam}
-              altText="joinTeam"
-              title={
-                <>
-                  {" "}
-                  Project Consultant <br /> Training Programme (Bundle)
-                </>
-              }
-              rating="4.3"
-              numRatings="45,345"
-              courseProgress="20% completed"
-              continueLearning="Continue"
-            />
-
-            <DashboardDiscover
-              imgSrc={joinTeam}
-              altText="joinTeam"
-              title={
-                <>
-                  {" "}
-                  Project Consultant <br /> Training Programme (Bundle)
-                </>
-              }
-              rating="4.3"
-              numRatings="45,345"
-              courseProgress="100% completed"
-              leaveRating="Leaving a rating"
-            />
-
-            <DashboardDiscover
-              imgSrc={joinTeam}
-              altText="joinTeam"
-              title={
-                <>
-                  {" "}
-                  Project Consultant <br /> Training Programme (Bundle)
-                </>
-              }
-              rating="4.3"
-              numRatings="45,345"
-              courseProgress="20% completed"
-              leaveRating="Leaving a rating"
-            />
-
-            <DashboardDiscover
-              imgSrc={joinTeam}
-              altText="joinTeam"
-              title={
-                <>
-                  {" "}
-                  Project Consultant <br /> Training Programme (Bundle)
-                </>
-              }
-              rating="4.3"
-              numRatings="45,345"
-              courseProgress="20% completed"
-              leaveRating="Leaving a rating"
-            />
-
-            <DashboardDiscover
-              imgSrc={joinTeam}
-              altText="joinTeam"
-              title={
-                <>
-                  {" "}
-                  Project Consultant <br /> Training Programme (Bundle)
-                </>
-              }
-              rating="4.3"
-              numRatings="45,345"
-              courseProgress="20% completed"
-              leaveRating="Leaving a rating"
-            />
-
-            <DashboardDiscover
-              imgSrc={joinTeam}
-              altText="joinTeam"
-              title={
-                <>
-                  {" "}
-                  Project Consultant <br /> Training Programme (Bundle)
-                </>
-              }
-              rating="4.3"
-              numRatings="45,345"
-              courseProgress="20% completed"
-              leaveRating="Leaving a rating"
-            />
-
-            <DashboardDiscover
-              imgSrc={joinTeam}
-              altText="joinTeam"
-              title={
-                <>
-                  {" "}
-                  Project Consultant <br /> Training Programme (Bundle)
-                </>
-              }
-              rating="4.3"
-              numRatings="45,345"
-              courseProgress="20% completed"
-              leaveRating="Leaving a rating"
-            />
-          </div>
-        </div>
+        <OnDemandCourses />
       </div>
 
       {modal && (
@@ -253,8 +129,37 @@ const LiveSessionCourses = () => {
               title={course.title}
               rating={course.average_rating}
               numRatings="45,345"
-              courseProgress="0% in progress"
-              review={"200"}
+              courseProgress={course.progress}
+              review={course.total_reviews}
+              courseId={course.id}
+            />
+          );
+        }) : <p>No courses found</p>}
+      </div>
+    );
+  }
+};
+
+const OnDemandCourses = () => {
+  const { data, isLoading, error } = useFetchEnrolledPreRecordedCourse();
+
+  if (isLoading) return <p>Loading ...</p>;
+  if (error) return <p>Error ...</p>;
+  if (data) {
+    return (
+      <div
+        className={`grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-6 lg:grid-cols-4`}
+      >
+        {data?.data?.data?.courses.length > 0 ? data?.data?.data?.courses.map((course) => {
+          return (
+            <DashboardDiscover
+              key={course.id}
+              imgSrc={course.cover_image}
+              altText={course.title}
+              title={course.title}
+              rating={course.average_rating}
+              review={course.total_reviews}
+              courseProgress={course.progress}
               courseId={course.id}
             />
           );
