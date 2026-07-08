@@ -16,12 +16,12 @@ import { useFetchAllAdminCourses } from "@/hooks/course-management/use-fetch-all
 import { X } from "lucide-react";
 
 const schema = z.object({
-  videoTitle: z.string().min(1, { message: "Video title is required" }),
-  s3Url: z
+  title: z.string().min(1, { message: "Video title is required" }),
+  video_url: z
     .string()
     .url({ message: "A valid S3 URL is required" })
     .or(z.literal("")),
-  fileExtension: z.string().optional(),
+  extension: z.string().optional(),
   issue_date: z.date().optional(),
 });
 
@@ -49,9 +49,9 @@ export default function VideoForm({
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-      videoTitle: "",
-      s3Url: "",
-      fileExtension: "",
+      title: "",
+      video_url: "",
+      extension: "",
       issue_date: new Date(),
     },
   });
@@ -60,9 +60,9 @@ export default function VideoForm({
     if (open) {
       if (initialData && isEdit) {
         reset({
-          videoTitle: initialData.videoTitle || initialData.title || "",
-          s3Url: initialData.s3Url || "https://example.com/s3.mp4",
-          fileExtension: initialData.fileExtension || "",
+          title: initialData.title || initialData.videoTitle || "",
+          video_url: initialData.video_url || initialData.s3Url || "",
+          extension: initialData.extension || initialData.fileExtension || "",
           issue_date: initialData.issue_date
             ? new Date(initialData.issue_date)
             : new Date(),
@@ -70,9 +70,9 @@ export default function VideoForm({
         setTags(initialData.tags || []);
       } else {
         reset({
-          videoTitle: "",
-          s3Url: "",
-          fileExtension: "",
+          title: "",
+          video_url: "",
+          extension: "",
           issue_date: new Date(),
         });
         setTags([]);
@@ -105,12 +105,12 @@ export default function VideoForm({
           <div className="flex flex-col gap-2">
             <label className="text-sm font-medium">Video name</label>
             <Input
-              {...register("videoTitle")}
+              {...register("title")}
               placeholder="Introduction to Project Consulting Recordings"
             />
-            {errors.videoTitle && (
+            {errors.title && (
               <span className="text-xs text-red-500">
-                {errors.videoTitle.message}
+                {errors.title.message}
               </span>
             )}
           </div>
@@ -182,10 +182,10 @@ export default function VideoForm({
           {!isEdit && (
             <div className="flex flex-col gap-2">
               <label className="text-sm font-medium">S3 URL</label>
-              <Input {...register("s3Url")} placeholder="https://..." />
-              {errors.s3Url && (
+              <Input {...register("video_url")} placeholder="https://..." />
+              {errors.video_url && (
                 <span className="text-xs text-red-500">
-                  {errors.s3Url.message}
+                  {errors.video_url.message}
                 </span>
               )}
             </div>
@@ -215,7 +215,7 @@ export default function VideoForm({
             <div className="flex flex-col gap-2">
               <label className="text-sm font-medium">Extension</label>
               <select
-                {...register("fileExtension")}
+                {...register("extension")}
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <option value="">Select Extension (Optional)</option>

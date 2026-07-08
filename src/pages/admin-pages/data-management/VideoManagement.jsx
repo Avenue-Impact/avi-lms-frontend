@@ -26,10 +26,11 @@ export default function VideoManagement() {
   const [editingVideo, setEditingVideo] = useState(null);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [viewingVideo, setViewingVideo] = useState(null);
+  const [selectedTag, setSelectedTag] = useState("");
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["get-all-videos", { page, limit: perPage, search: searchQuery }],
-    queryFn: () => getAllVideos(page, perPage, searchQuery),
+    queryKey: ["get-all-videos", { page, limit: perPage, search: searchQuery, course: selectedTag }],
+    queryFn: () => getAllVideos(page, perPage, searchQuery, selectedTag),
   });
 
   const createMutation = useMutation({
@@ -70,6 +71,7 @@ export default function VideoManagement() {
   const handleSearch = useCallback(
     _.debounce((query) => {
       setSearchQuery(query);
+      setPage(1);
     }, 500),
     [],
   );
@@ -100,7 +102,7 @@ export default function VideoManagement() {
       updateMutation.mutate({
         id: editingVideo.id || editingVideo._id,
         data: {
-          videoTitle: formData.videoTitle,
+          title: formData.title,
           issue_date: formData.issue_date,
           tags: formData.tags,
         },
@@ -146,6 +148,11 @@ export default function VideoManagement() {
             onView={handleView}
             onEdit={handleEdit}
             onDelete={handleDelete}
+            onFilterTag={(tag) => {
+              setSelectedTag(tag);
+              setPage(1);
+            }}
+            selectedTag={selectedTag}
           />
         )}
         {!isLoading && !error && data?.data?.pagination && (
