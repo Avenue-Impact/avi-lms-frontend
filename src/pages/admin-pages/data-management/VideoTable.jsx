@@ -118,7 +118,7 @@ export default function VideoTable({
           {videos.map((video, i) => {
             const videoIdVal = video.id || video._id;
             return (
-              <Table.Row key={videoIdVal} className="items-center">
+              <Table.Row key={videoIdVal} className="items-center py-2">
                 <div className="flex items-center justify-start">
                   <input
                     type="checkbox"
@@ -170,7 +170,7 @@ export default function VideoTable({
                     className="hover:bg-primary-color-700 h-auto bg-primary-color-600 px-3 py-1 text-xs text-white"
                     onClick={() => onEdit(video)}
                   >
-                    Edit Video
+                    Edit
                   </CommonButton>
                   <button
                     className="rounded-md p-2 text-[#CC1747] transition-colors hover:bg-[#CC1747]/10"

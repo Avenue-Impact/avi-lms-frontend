@@ -68,14 +68,6 @@ const OnDemandRecordedSection = ({
 
   const sectionsList = data?.data?.data || [];
 
-  // useEffect(() => {
-  //   if (sectionsList.length > 0 && !activeSection) {
-  //     const firstSection = sectionsList[0];
-  //     const firstId = firstSection.id || firstSection._id;
-  //     setActiveSection(firstId);
-  //   }
-  // }, [sectionsList, activeSection]);
-
   if (isLoading) return <p className="p-4 text-sm text-gray-500">Loading sections...</p>;
 
   if (error || !data) {
