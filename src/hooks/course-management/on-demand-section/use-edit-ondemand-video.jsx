@@ -20,7 +20,7 @@ export const useEditOnDemandVideo = () => {
     mutationFn: editVideo,
     onSuccess: ({ data }) => {
       toast.success(data.message);
-      queryClient.invalidateQueries("get-single-cohort");
+      queryClient.invalidateQueries({ queryKey: ["get-demand-course"] });
     },
     onError: (err) =>
       toast.error(err.response.data.message || "something went wrong"),

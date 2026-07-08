@@ -32,13 +32,13 @@ const addStudentSchema = z.object({
     .min(1, { message: "This field has to be filled." })
     .email("This is not a valid email."),
 });
-const AddStudentOnDemandForm = ({ setOpen }) => {
+const AddStudentOnDemandForm = ({ setOpen, refetch }) => {
   const [duration, setDuration] = useState("");
   const [durationErr, setDurationErr] = useState("");
 
   const { courseId } = useParams();
 
-  const { addStudent, isPending } = useAddOndemandStudent();
+  const { addStudent, isPending, error } = useAddOndemandStudent();
 
   const form = useForm({
     resolver: zodResolver(addStudentSchema),
@@ -61,7 +61,10 @@ const AddStudentOnDemandForm = ({ setOpen }) => {
         courseId,
       },
       {
-        onSuccess: () => setOpen(false),
+        onSuccess: () => {
+          setOpen(false);
+          if (refetch) refetch();
+        },
       },
     );
   };
@@ -112,6 +115,12 @@ const AddStudentOnDemandForm = ({ setOpen }) => {
             {!duration ? durationErr : ""}
           </p>
         </div>
+
+        {error && (
+          <p className="mt-4 text-xs text-red-500 font-medium bg-red-50 border border-red-200 p-2.5 rounded text-center">
+            {error?.response?.data?.message || "Failed to add student"}
+          </p>
+        )}
 
         <CommonButton
           className="mt-6 w-full bg-primary-color-600"

@@ -40,7 +40,7 @@ function RecordedCourseSection({ editButton, data }) {
     }
 
     if (targetSection && targetLesson) {
-      setActive(targetSection._id);
+      setActive(targetSection.id || targetSection._id);
       setSectionActive(targetSection.section);
       setSectionDetails((prev) => ({
         ...prev,
@@ -59,7 +59,7 @@ function RecordedCourseSection({ editButton, data }) {
         // Only set default if no video is currently selected
         // Or if we specifically want to default to the first one
         // Wait, if urlVideoId is not present, we can just default to the first
-        setActive(firstSection._id);
+        setActive(firstSection.id || firstSection._id);
         setSectionActive(firstSection.section);
         setSectionDetails((prev) => ({
           ...prev,
@@ -110,12 +110,13 @@ function RecordedCourseSection({ editButton, data }) {
           <Accordion type="single" collapsible value={active} onValueChange={setActive} className="w-full space-y-4">
             {data?.data?.data?.recorded_sessions?.map((section, index) => {
               // Check if this section is currently active (contains the active video or is selected)
-              const isSectionActive = active === section._id;
+              const sectionIdVal = section.id || section._id;
+              const isSectionActive = active === sectionIdVal;
 
               return (
                 <AccordionItem
-                  value={section._id}
-                  key={section._id}
+                  value={sectionIdVal}
+                  key={sectionIdVal}
                   className="border-none"
                 >
                   <div className="mb-2">
@@ -130,7 +131,7 @@ function RecordedCourseSection({ editButton, data }) {
                           : "text-gray-900",
                       )}
                       onClick={() => {
-                        setActive(section._id);
+                        setActive(sectionIdVal);
                         setSectionActive(section.section);
                       }}
                     >

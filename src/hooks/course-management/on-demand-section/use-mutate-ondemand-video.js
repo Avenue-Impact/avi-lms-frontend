@@ -26,9 +26,8 @@ export const useDeleteOndemandVideo = () => {
   const { mutate: deleteVideo, isPending: isDeleting } = useMutation({
     mutationFn: mutateVideo,
     onSuccess: (data) => {
-      toast.success(data.data.message)
-      queryClient.invalidateQueries("get-demand-course")
-
+      toast.success(data.data.message);
+      queryClient.invalidateQueries({ queryKey: ["get-demand-course"] });
     },
     onError: (err) => toast.error(err.response.data.message || 'something went wrong')
 

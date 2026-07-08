@@ -30,7 +30,7 @@ export const useMoveDown = () => {
     onSuccess: (data) => {
       toast.success(data.data.message)
 
-      queryClient.invalidateQueries("get-demand-course")
+      queryClient.invalidateQueries({ queryKey: ["get-demand-course"] });
     },
     onError: (e) => toast.error(e.response.data.message || 'something went wrong'),
 
@@ -47,7 +47,7 @@ export const useMoveUP = () => {
     onSuccess: (data) => {
       toast.success(data.data.message)
 
-      queryClient.invalidateQueries("get-demand-course")
+      queryClient.invalidateQueries({ queryKey: ["get-demand-course"] });
     },
     onError: (e) => toast.error(e.response.data.message || 'something went wrong'),
 
@@ -67,7 +67,7 @@ export const useMoveTop = () => {
     onSuccess: (data) => {
       toast.success(data.data.message)
 
-      queryClient.invalidateQueries("get-demand-course")
+      queryClient.invalidateQueries({ queryKey: ["get-demand-course"] });
     },
     onError: (e) => toast.error(e.response.data.message || 'something went wrong'),
 
@@ -85,10 +85,37 @@ export const useMoveBottom = () => {
     onSuccess: (data) => {
       toast.success(data.data.message)
 
-      queryClient.invalidateQueries("get-demand-course")
+      queryClient.invalidateQueries({ queryKey: ["get-demand-course"] });
     },
     onError: (e) => toast.error(e.response.data.message || 'something went wrong'),
 
   })
   return { moveToBottom, moveBottomStatus }
 }
+
+export const useReorderOndemandVideos = () => {
+  const queryClient = useQueryClient();
+
+  const { mutate: reorderVideos, isPending: isReordering } = useMutation({
+    mutationFn: async ({ courseId, section, videoIds }) => {
+      const token = Cookies.get("adminToken");
+      const url = `${BASE_URL}/courses/${courseId}/on-demand/sections/${section}/reorder-recordings`;
+      return await axios.patch(
+        url,
+        { videoIds },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+    },
+    onSuccess: (data) => {
+      toast.success(data.data.message);
+      queryClient.invalidateQueries({ queryKey: ["get-demand-course"] });
+    },
+    onError: (e) => toast.error(e.response?.data?.message || "something went wrong"),
+  });
+
+  return { reorderVideos, isReordering };
+};

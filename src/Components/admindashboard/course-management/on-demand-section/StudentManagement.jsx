@@ -98,7 +98,7 @@ const StudentManagement = () => {
 
             <div>
               <EditModal
-                form={<AddStudentOnDemandForm setOpen={setOpen} />}
+                form={<AddStudentOnDemandForm setOpen={setOpen} refetch={refetch} />}
                 header={
                   <>
                     <p className="text-sm font-light text-[#475367]">

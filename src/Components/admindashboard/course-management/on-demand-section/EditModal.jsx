@@ -7,6 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/Components/ui/dialog";
+import { cn } from "@/lib/utils";
 
 const EditModal = ({
   children,
@@ -14,6 +15,7 @@ const EditModal = ({
   header = "Edit on-demand section",
   open,
   setOpen,
+  className,
 }) => {
   return (
     <div>
@@ -26,12 +28,12 @@ const EditModal = ({
             {children}
           </CommonButton>
         </DialogTrigger>
-        <DialogContent className="w-max">
+        <DialogContent className={cn("w-max max-w-[95vw]", className)}>
           <DialogHeader>
             <DialogTitle>{header}</DialogTitle>
             <DialogDescription></DialogDescription>
           </DialogHeader>
-          <div className="baby max-h-[90vh] overflow-y-scroll">{form}</div>
+          <div className="baby max-h-[90vh] overflow-y-auto w-full">{form}</div>
         </DialogContent>
       </Dialog>
     </div>
