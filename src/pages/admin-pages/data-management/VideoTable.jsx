@@ -119,7 +119,7 @@ export default function VideoTable({
             const videoIdVal = video.id || video._id;
             return (
               <Table.Row key={videoIdVal} className="items-center">
-                <div className="flex items-center justify-center">
+                <div className="flex items-center justify-start">
                   <input
                     type="checkbox"
                     className="w-4 h-4 rounded border-gray-300 text-primary-color-600 focus:ring-primary-color-600 cursor-pointer"
