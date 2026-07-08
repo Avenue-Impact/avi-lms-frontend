@@ -1,6 +1,7 @@
 import { BASE_URL } from "@/constant";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { axiosAdmin } from "@/services/api";
+import toast from "react-hot-toast";
 
 const deleteStudentApi = async ({ data, courseId }) => {
   return await axiosAdmin.delete(
@@ -17,7 +18,7 @@ export const useDeleteOndemandStudent = () => {
     mutationFn: deleteStudentApi,
     onSuccess: ({ data }) => {
       toast.success(data.message);
-      queryClient.invalidateQueries("get-ondemand-student");
+      queryClient.invalidateQueries({ queryKey: ["get-ondemand-student"] });
     },
     onError: (error) =>
       toast.error(error.response.data.message || "something went wrong"),

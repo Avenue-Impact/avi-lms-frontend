@@ -8,7 +8,7 @@ export function useCreateOnDemandCourse() {
     mutationFn: addDemandSection,
     onSuccess: ({ data }) => {
       toast.success(data.message);
-      queryClient.invalidateQueries("get-demand-course");
+      queryClient.invalidateQueries({ queryKey: ["get-demand-course"] });
     },
     onError: (err) =>
       toast.error(err.response?.data?.message || "something went wrong"),
@@ -23,7 +23,7 @@ export function useCreateEmptyOnDemandCourse() {
     mutationFn: addDemandSectionEmpty,
     onSuccess: ({ data }) => {
       toast.success(data?.message || "Section created");
-      queryClient.invalidateQueries("get-demand-course");
+      queryClient.invalidateQueries({ queryKey: ["get-demand-course"] });
     },
     onError: (err) =>
       toast.error(err.response?.data?.message || "something went wrong"),

@@ -4,7 +4,7 @@ import OnDemandAdminSection from "@/Components/admindashboard/course-management/
 import { useFetchondemandCourse } from "@/hooks/course-management/on-demand-section/use-fetch-ondemand-course";
 import { useParams, useSearchParams } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import EditOndemandCourseSectionForm from "@/Components/admindashboard/course-management/on-demand-section/EditOndemandCourseSectionForm";
 
 import { Skeleton } from "@/Components/ui/skeleton";
@@ -22,6 +22,22 @@ function OndemandSection() {
   });
 
   const { data, isLoading, error } = useFetchondemandCourse(courseId);
+
+  useEffect(() => {
+    const sections = data?.data?.data || [];
+    if (sections.length > 0 && !sectionDetails.topic) {
+      const firstSection = sections[0];
+      const firstLesson = firstSection?.lessons?.[0];
+      if (firstSection && firstLesson) {
+        setSectionDetails({
+          section: firstSection.section,
+          topic: firstSection.title,
+          videoTitle: firstLesson.video_title,
+        });
+        setVideoUrl(firstLesson.video_url?.link || firstLesson.video_url);
+      }
+    }
+  }, [data, sectionDetails.topic]);
   console.log(data);
 
   if (isLoading)

@@ -30,7 +30,7 @@ export const useMoveDown = () => {
     onSuccess: (data) => {
       toast.success(data.data.message)
 
-      queryClient.invalidateQueries("get-demand-course")
+      queryClient.invalidateQueries({ queryKey: ["get-demand-course"] });
     },
     onError: (e) => toast.error(e.response.data.message || 'something went wrong'),
 
@@ -47,7 +47,7 @@ export const useMoveUP = () => {
     onSuccess: (data) => {
       toast.success(data.data.message)
 
-      queryClient.invalidateQueries("get-demand-course")
+      queryClient.invalidateQueries({ queryKey: ["get-demand-course"] });
     },
     onError: (e) => toast.error(e.response.data.message || 'something went wrong'),
 
@@ -67,7 +67,7 @@ export const useMoveTop = () => {
     onSuccess: (data) => {
       toast.success(data.data.message)
 
-      queryClient.invalidateQueries("get-demand-course")
+      queryClient.invalidateQueries({ queryKey: ["get-demand-course"] });
     },
     onError: (e) => toast.error(e.response.data.message || 'something went wrong'),
 
@@ -85,7 +85,7 @@ export const useMoveBottom = () => {
     onSuccess: (data) => {
       toast.success(data.data.message)
 
-      queryClient.invalidateQueries("get-demand-course")
+      queryClient.invalidateQueries({ queryKey: ["get-demand-course"] });
     },
     onError: (e) => toast.error(e.response.data.message || 'something went wrong'),
 

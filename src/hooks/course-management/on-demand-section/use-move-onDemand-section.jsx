@@ -23,7 +23,7 @@ export const useMoveSectionUP = () => {
     onSuccess: (data) => {
       toast.success(data.data.message);
 
-      queryClient.invalidateQueries("get-demand-course");
+      queryClient.invalidateQueries({ queryKey: ["get-demand-course"] });
     },
     onError: (e) =>
       toast.error(e.response.data.message || "something went wrong"),
@@ -41,7 +41,7 @@ export const useMoveSectionDown = () => {
     onSuccess: (data) => {
       toast.success(data.data.message);
 
-      queryClient.invalidateQueries("get-demand-course");
+      queryClient.invalidateQueries({ queryKey: ["get-demand-course"] });
     },
     onError: (e) =>
       toast.error(e.response.data.message || "something went wrong"),
@@ -57,7 +57,7 @@ export const useMoveSectionToTop = () => {
     onSuccess: (data) => {
       toast.success(data.data.message);
 
-      queryClient.invalidateQueries("get-demand-course");
+      queryClient.invalidateQueries({ queryKey: ["get-demand-course"] });
     },
     onError: (e) =>
       toast.error(e.response.data.message || "something went wrong"),
@@ -73,7 +73,7 @@ export const useMoveSectionToBotton = () => {
     onSuccess: (data) => {
       toast.success(data.data.message);
 
-      queryClient.invalidateQueries("get-demand-course");
+      queryClient.invalidateQueries({ queryKey: ["get-demand-course"] });
     },
     onError: (e) =>
       toast.error(e.response.data.message || "something went wrong"),
