@@ -18,13 +18,13 @@ const UnpublishedCourseCard = ({
     <div className="relative mt-2 rounded-lg bg-[rgb(252,252,252)] shadow-md">
       <button
         onClick={onLaunch}
-        className="absolute right-3 top-3 text-gray-500 hover:text-blue-600"
+        className="absolute right-3 top-3 bg-black/50 hover:bg-[#CC1747] text-white rounded-full w-8 h-8 flex items-center justify-center transition-colors shadow-md"
         title="Launch Course"
       >
         {isPending ? (
-          <FaSpinner className="animate-spin text-lg text-white hover:text-red-300" />
+          <FaSpinner className="animate-spin text-sm" />
         ) : (
-          <FaRocket className="text-lg text-white hover:text-red-300" />
+          <FaRocket className="text-sm" />
         )}
       </button>
 

@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 const NoCourses = () => {
   return (
     <div className="flex items-center justify-center p-4">
-      <div className=":w-full flex flex-col items-center justify-center rounded-lg p-6">
+      <div className="w-full flex flex-col items-center justify-center rounded-lg p-6">
         <img
           src={NoCoursesImg}
           alt="No Courses"

@@ -82,6 +82,7 @@ import AdminLogin from "./pages/admin-pages/AdminLogin";
 import AdminPayment from "./pages/admin-pages/AdminPayment";
 import AdminBankTransfers from "./pages/admin-pages/AdminBankTransfers";
 import CreatedCourse from "./pages/admin-pages/course-management/CreatedCourse";
+import UnpublishedCourse from "./pages/admin-pages/course-management/UnpublishedCourse";
 import EditCourse from "./pages/admin-pages/course-management/EditCourse";
 import CourseManagement from "./pages/admin-pages/CourseManagement";
 import CreateCoupon from "./pages/admin-pages/financial-aid/CreateCoupon";
@@ -522,6 +523,10 @@ function App() {
                         {
                           path: "courses",
                           element: <CreatedCourse />,
+                        },
+                        {
+                          path: "unpublished",
+                          element: <UnpublishedCourse />,
                         },
                         {
                           path: "preview/:courseId",
