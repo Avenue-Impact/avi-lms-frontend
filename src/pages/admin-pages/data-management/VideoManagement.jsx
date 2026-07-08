@@ -5,6 +5,7 @@ import {
   createVideo,
   updateVideo,
   deleteVideo,
+  bulkDeleteVideos,
 } from "@/services/api";
 import { CommonButton } from "@/Components/ui/button";
 import { IoSearch } from "react-icons/io5";
@@ -75,6 +76,17 @@ export default function VideoManagement() {
     },
     onError: (err) => {
       toast.error(err?.response?.data?.message || "Failed to delete video");
+    },
+  });
+
+  const bulkDeleteMutation = useMutation({
+    mutationFn: bulkDeleteVideos,
+    onSuccess: (res) => {
+      queryClient.invalidateQueries(["get-all-videos"]);
+      toast.success(res?.data?.message || "Videos deleted successfully");
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message || "Failed to bulk delete videos");
     },
   });
 
@@ -158,6 +170,8 @@ export default function VideoManagement() {
             onView={handleView}
             onEdit={handleEdit}
             onDelete={handleDelete}
+            onBulkDelete={bulkDeleteMutation.mutate}
+            isBulkDeleting={bulkDeleteMutation.isPending}
             onOpenFilterModal={() => {
               setTempSelectedCourses(selectedCourses);
               setIsFilterModalOpen(true);

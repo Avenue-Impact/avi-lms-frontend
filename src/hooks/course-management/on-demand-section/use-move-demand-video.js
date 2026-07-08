@@ -92,3 +92,30 @@ export const useMoveBottom = () => {
   })
   return { moveToBottom, moveBottomStatus }
 }
+
+export const useReorderOndemandVideos = () => {
+  const queryClient = useQueryClient();
+
+  const { mutate: reorderVideos, isPending: isReordering } = useMutation({
+    mutationFn: async ({ courseId, section, videoIds }) => {
+      const token = Cookies.get("adminToken");
+      const url = `${BASE_URL}/courses/${courseId}/on-demand/sections/${section}/reorder-recordings`;
+      return await axios.patch(
+        url,
+        { videoIds },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+    },
+    onSuccess: (data) => {
+      toast.success(data.data.message);
+      queryClient.invalidateQueries({ queryKey: ["get-demand-course"] });
+    },
+    onError: (e) => toast.error(e.response?.data?.message || "something went wrong"),
+  });
+
+  return { reorderVideos, isReordering };
+};

@@ -322,6 +322,10 @@ export const deleteVideo = async (id) => {
   return await axiosAdmin.delete(`/video/${id}`);
 };
 
+export const bulkDeleteVideos = async (videoIds) => {
+  return await axiosAdmin.post("/video/bulk-delete", { videoIds });
+};
+
 export const toggleCohortLive = async ({ courseId, cohortId, is_live }) => {
   return await axiosAdmin.patch(`/courses/${courseId}/cohorts/${cohortId}`, {
     is_live,
