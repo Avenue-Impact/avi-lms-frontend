@@ -38,7 +38,7 @@ const AddStudentOnDemandForm = ({ setOpen, refetch }) => {
 
   const { courseId } = useParams();
 
-  const { addStudent, isPending } = useAddOndemandStudent();
+  const { addStudent, isPending, error } = useAddOndemandStudent();
 
   const form = useForm({
     resolver: zodResolver(addStudentSchema),
@@ -115,6 +115,12 @@ const AddStudentOnDemandForm = ({ setOpen, refetch }) => {
             {!duration ? durationErr : ""}
           </p>
         </div>
+
+        {error && (
+          <p className="mt-4 text-xs text-red-500 font-medium bg-red-50 border border-red-200 p-2.5 rounded text-center">
+            {error?.response?.data?.message || "Failed to add student"}
+          </p>
+        )}
 
         <CommonButton
           className="mt-6 w-full bg-primary-color-600"

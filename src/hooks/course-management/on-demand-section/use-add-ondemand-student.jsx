@@ -12,16 +12,20 @@ const addStudentApi = async ({ data, courseId }) => {
 
 export const useAddOndemandStudent = () => {
   const queryClient = useQueryClient();
-  const { mutate: addStudent, isPending } = useMutation({
+  const { mutate: addStudent, isPending, error } = useMutation({
     mutationFn: addStudentApi,
     onSuccess: ({ data }) => {
       toast.success(data.message);
       queryClient.invalidateQueries({ queryKey: ["get-ondemand-student"] });
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message || "Failed to add student");
     },
   });
 
   return {
     addStudent,
     isPending,
+    error,
   };
 };
