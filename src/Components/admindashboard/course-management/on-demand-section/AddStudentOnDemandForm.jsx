@@ -32,7 +32,7 @@ const addStudentSchema = z.object({
     .min(1, { message: "This field has to be filled." })
     .email("This is not a valid email."),
 });
-const AddStudentOnDemandForm = ({ setOpen }) => {
+const AddStudentOnDemandForm = ({ setOpen, refetch }) => {
   const [duration, setDuration] = useState("");
   const [durationErr, setDurationErr] = useState("");
 
@@ -61,7 +61,10 @@ const AddStudentOnDemandForm = ({ setOpen }) => {
         courseId,
       },
       {
-        onSuccess: () => setOpen(false),
+        onSuccess: () => {
+          setOpen(false);
+          if (refetch) refetch();
+        },
       },
     );
   };

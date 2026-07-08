@@ -16,6 +16,8 @@ import VideoForm from "./VideoForm";
 import VideoPlayer from "@/Components/VideoPlayer";
 import GlobalPagination from "@/Components/ui/GlobalPagination";
 import joinTeamImage from "@/assets/images/join_team.png";
+import { useFetchAllAdminCourses } from "@/hooks/course-management/use-fetch-all-courses";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/Components/ui/dialog";
 
 export default function VideoManagement() {
   const [page, setPage] = useState(1);
@@ -26,11 +28,19 @@ export default function VideoManagement() {
   const [editingVideo, setEditingVideo] = useState(null);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [viewingVideo, setViewingVideo] = useState(null);
-  const [selectedTag, setSelectedTag] = useState("");
+  
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [selectedCourses, setSelectedCourses] = useState([]);
+  const [tempSelectedCourses, setTempSelectedCourses] = useState([]);
+
+  const { data: coursesData, isLoading: coursesLoading } = useFetchAllAdminCourses(1, 100);
+  const allCourses = coursesData?.data?.data?.courses || [];
+
+  const courseFilterStr = selectedCourses.join(",");
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["get-all-videos", { page, limit: perPage, search: searchQuery, course: selectedTag }],
-    queryFn: () => getAllVideos(page, perPage, searchQuery, selectedTag),
+    queryKey: ["get-all-videos", { page, limit: perPage, search: searchQuery, course: courseFilterStr }],
+    queryFn: () => getAllVideos(page, perPage, searchQuery, courseFilterStr),
   });
 
   const createMutation = useMutation({
@@ -148,11 +158,16 @@ export default function VideoManagement() {
             onView={handleView}
             onEdit={handleEdit}
             onDelete={handleDelete}
-            onFilterTag={(tag) => {
-              setSelectedTag(tag);
+            onOpenFilterModal={() => {
+              setTempSelectedCourses(selectedCourses);
+              setIsFilterModalOpen(true);
+            }}
+            hasActiveFilters={selectedCourses.length > 0}
+            onClearFilters={() => {
+              setSelectedCourses([]);
+              setTempSelectedCourses([]);
               setPage(1);
             }}
-            selectedTag={selectedTag}
           />
         )}
         {!isLoading && !error && data?.data?.pagination && (
@@ -193,6 +208,82 @@ export default function VideoManagement() {
             />
           </div>
         </div>
+      )}
+
+      {isFilterModalOpen && (
+        <Dialog open={isFilterModalOpen} onOpenChange={setIsFilterModalOpen}>
+          <DialogContent className="max-w-[700px] w-[90vw] p-6 bg-white rounded-lg">
+            <DialogHeader>
+              <DialogTitle className="text-lg font-semibold text-gray-900">
+                Filter Videos by Course Tags
+              </DialogTitle>
+              <DialogDescription className="text-sm text-gray-500">
+                Select one or multiple courses to filter the videos list. Unselected courses will be excluded. Videos with empty course tags will remain visible by default.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="my-6 max-h-[350px] overflow-y-auto border border-gray-200 rounded-md p-4 divide-y divide-gray-100 bg-gray-50/30">
+              {coursesLoading ? (
+                <p className="text-center py-8 text-sm text-gray-500">Loading courses...</p>
+              ) : allCourses.length === 0 ? (
+                <p className="text-center py-8 text-sm text-gray-500">No courses found.</p>
+              ) : (
+                allCourses.map((course) => {
+                  const courseIdVal = course.id || course._id;
+                  const isChecked = tempSelectedCourses.includes(courseIdVal);
+                  return (
+                    <label
+                      key={courseIdVal}
+                      className="flex items-center gap-3 py-3 cursor-pointer hover:bg-slate-50 px-2 rounded-md transition-colors"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={() => {
+                          if (isChecked) {
+                            setTempSelectedCourses(
+                              tempSelectedCourses.filter((id) => id !== courseIdVal)
+                            );
+                          } else {
+                            setTempSelectedCourses([...tempSelectedCourses, courseIdVal]);
+                          }
+                        }}
+                        className="h-4.5 w-4.5 rounded border-gray-300 text-[#CC1747] focus:ring-[#CC1747] accent-[#CC1747] cursor-pointer"
+                      />
+                      <span className="text-sm font-medium text-gray-750 capitalize select-none">
+                        {course.title}
+                      </span>
+                    </label>
+                  );
+                })
+              )}
+            </div>
+
+            <div className="flex justify-between gap-3 mt-4">
+              <CommonButton
+                type="button"
+                variant="outline"
+                className="w-full text-gray-650 border-gray-350 hover:bg-gray-100"
+                onClick={() => {
+                  setTempSelectedCourses([]);
+                }}
+              >
+                Clear Selections
+              </CommonButton>
+              <CommonButton
+                type="button"
+                className="w-full bg-[#CC1747] hover:bg-[#a6133a] text-white"
+                onClick={() => {
+                  setSelectedCourses(tempSelectedCourses);
+                  setIsFilterModalOpen(false);
+                  setPage(1);
+                }}
+              >
+                Apply Filters ({tempSelectedCourses.length})
+              </CommonButton>
+            </div>
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   );

@@ -1,6 +1,7 @@
 import { BASE_URL } from "@/constant";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { axiosAdmin } from "@/services/api";
+import { toast } from "react-hot-toast";
 
 const addStudentApi = async ({ data, courseId }) => {
   return await axiosAdmin.post(
@@ -15,7 +16,7 @@ export const useAddOndemandStudent = () => {
     mutationFn: addStudentApi,
     onSuccess: ({ data }) => {
       toast.success(data.message);
-      queryClient.invalidateQueries("get-ondemand-student");
+      queryClient.invalidateQueries({ queryKey: ["get-ondemand-student"] });
     },
   });
 
