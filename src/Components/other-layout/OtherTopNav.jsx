@@ -25,7 +25,7 @@ const OtherTopNav = ({ setShowModal, setIsQuestionDrawerOpen }) => {
     ? `/dashboard/${courseId}/live?title=${queryString.get("title") ?? ""}&cohortId=${data?.data?.data?.cohort_id ?? ""}` 
     : `/dashboard/${courseId}/recorded?title=${queryString.get("title") ?? ""}`;
 
-  const cohortId = data?.data?.data?.cohort_id ?? "";
+  const cohortId = data?.data?.data?.cohort_id || (type === "on demand" ? "on-demand" : "");
 
   const handleModal = () => setShowModal((prev) => !prev);
   const { setSections } = useViewCourseSections();

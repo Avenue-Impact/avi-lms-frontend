@@ -16,7 +16,7 @@ const getCertificate = (courseId, cohortId) =>
 
 export const useGetCertificate = (courseId, cohortId) => {
   return useQuery({
-    queryKey: ["get-certificate"],
+    queryKey: ["get-certificate", courseId, cohortId],
     queryFn: () => getCertificate(courseId, cohortId),
     enabled: !!courseId && !!cohortId,
     refetchOnMount: true,

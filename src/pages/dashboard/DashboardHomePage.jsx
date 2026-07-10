@@ -216,6 +216,7 @@ const LiveSessionCourses = () => {
               progress={course.progress}
               review={course?.total_reviews || 0}
               courseId={course?.id || course?.courseId}
+              cohortId={course.cohort_details?.id || course.cohort_details?._id}
               is_access_revoked={course?.is_access_revoked}
               last_watched_video_id={course?.last_watched_video_id}
               access_expires_at={course?.access_expires_at}

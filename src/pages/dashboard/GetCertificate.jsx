@@ -1,15 +1,18 @@
-// import DashButton from '../auth/ButtonDash';
 import { Skeleton } from "@/Components/ui/skeleton";
 import { useProfile } from "@/hooks/students/use-fetch-student-profile";
 import { useGetCertificate } from "@/hooks/students/use-get-certificate";
 import { useViewEnrolledCourse } from "@/hooks/students/use-view-enrolled-course";
 import { useLoaderData, useParams, useSearchParams } from "react-router-dom";
 import DashButton from "../auth/ButtonDash";
+import { STUDENT_BASE_URL } from "@/constant";
+import axios from "axios";
+import Cookies from "js-cookie";
+import toast from "react-hot-toast";
 
 export const GetCertificate = () => {
   const { courseId } = useParams();
   const [queryString] = useSearchParams();
-  const cohortId = queryString.get("cohortId");
+  const cohortId = queryString.get("cohortId") || "on-demand";
 
   const {
     isLoading,
@@ -17,17 +20,34 @@ export const GetCertificate = () => {
     data: certificateHTML,
   } = useGetCertificate(courseId, cohortId);
 
-  const handleDownload = () => {
-    if (!certificateHTML) return;
-    const blob = new Blob([certificateHTML.data], { type: "text/html" });
-    const url = URL.createObjectURL(blob);
+  const handleDownload = async () => {
+    try {
+      toast.loading("Preparing download...", { id: "cert-download" });
+      const response = await axios.get(
+        `${STUDENT_BASE_URL}/courses/${courseId}/cohorts/${cohortId}/certificate/download`,
+        {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+          responseType: "blob",
+        }
+      );
 
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "certificate.html";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `certificate-${queryString.get("title") || "course"}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      toast.success("Download started successfully!", { id: "cert-download" });
+    } catch (e) {
+      toast.error("Failed to download PDF certificate.", { id: "cert-download" });
+    }
   };
 
   return (
@@ -100,7 +120,7 @@ import { useState, useEffect } from "react";
 const Cert = () => {
   const { courseId } = useParams();
   const [queryString] = useSearchParams();
-  const cohortId = queryString.get("cohortId");
+  const cohortId = queryString.get("cohortId") || "on-demand";
 
   const {
     isLoading,

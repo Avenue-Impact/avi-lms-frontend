@@ -7,7 +7,6 @@ import {
   FaExpand,
 } from "react-icons/fa";
 import { useAddVideoProgress } from "@/hooks/students/use-add-video-progress";
-import { useFetchVideoProgress } from "@/hooks/students/use-fetch-video-progress";
 
 const formatTime = (timeInSeconds) => {
   if (isNaN(timeInSeconds)) return "00:00";
@@ -27,6 +26,7 @@ const VideoPlayer = ({
   courseId,
   videoId,
   cohortId,
+  initialProgress = { current_time: 0, progress_percentage: 0, is_completed: false },
 }) => {
   const videoRef = useRef(null);
   const containerRef = useRef(null);
@@ -40,7 +40,6 @@ const VideoPlayer = ({
   const [playbackRate, setPlaybackRate] = useState(1);
   const playbackRates = [0.5, 1, 1.25, 1.5, 2];
 
-  const { data: progressData } = useFetchVideoProgress(courseId, videoId);
   const { mutate: updateProgress } = useAddVideoProgress();
 
   const timeoutRef = useRef(null);
@@ -65,6 +64,7 @@ const VideoPlayer = ({
             current_time: isCompleted ? 0 : current,
             progress_percentage: progressPerc,
             is_completed: progressPerc >= 95 || isCompleted,
+            cohort_id: cohortId,
           });
           throttleRef.current.lastPing = currentTimeMs;
         }
@@ -108,13 +108,13 @@ const VideoPlayer = ({
   }, [courseId, videoId]);
 
   useEffect(() => {
-    if (progressData?.data?.current_time && videoRef.current && !hasStarted) {
-      videoRef.current.currentTime = progressData.data.current_time;
-      if (progressData.data.progress_percentage) {
-        setProgress(progressData.data.progress_percentage);
+    if (initialProgress?.current_time && videoRef.current && !hasStarted) {
+      videoRef.current.currentTime = initialProgress.current_time;
+      if (initialProgress.progress_percentage) {
+        setProgress(initialProgress.progress_percentage);
       }
     }
-  }, [progressData, hasStarted]);
+  }, [initialProgress, hasStarted]);
 
   const resetControlsTimeout = () => {
     setShowControls(true);
