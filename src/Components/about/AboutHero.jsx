@@ -3,7 +3,7 @@ import HeroHeading from "../MainContent/HeroHeading";
 
 const AboutHero = () => {
   return (
-    <Hero imgSrc="/images/pexels-amardeep-singh-632735-6829771.jpg" imgOpacity="opacity-60" className={"items-end pb-16 md:pb-24"}>
+    <Hero imgSrc="/images/pexels-amardeep-singh-632735-6829771.jpg" className={"items-end pb-16 md:pb-24"}>
       <div className="mb-6 md:mb-0">
         <HeroHeading>About Us</HeroHeading>
 
