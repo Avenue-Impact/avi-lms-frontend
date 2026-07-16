@@ -88,6 +88,8 @@ const StudentProgressVisualizer = () => {
     });
   });
 
+  const isOnDemand = enrollment.access_type?.toLowerCase() === "on demand" || enrollment.access_type === "onDemand";
+
   // Trust the backend's master enrollment.progress rather than recalculating,
   // to avoid diverging numbers when sections have unequal lesson counts or non-video items.
   const overallProgress = Math.round(enrollment.progress || 0);
