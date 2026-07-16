@@ -3,21 +3,50 @@ import { useParams, Link } from "react-router-dom";
 import { useFetchStudentProgress } from "@/hooks/certificate/use-fetch-student-progress";
 import { useMarkEnrollmentCompleted } from "@/hooks/certificate/use-mark-enrollment-completed";
 import { Skeleton } from "@/Components/ui/skeleton";
-import { ChevronDown, ChevronUp, CheckCircle2, Circle, Clock, FileVideo, User, ArrowLeft } from "lucide-react";
+import { CheckCircle2, Clock, User, ArrowLeft, ChevronDown, ChevronUp } from "lucide-react";
+
+// Duration parser helper
+const parseDurationToSeconds = (durationStr) => {
+  if (!durationStr) return 0;
+  const clean = durationStr.replace(/\s*min/gi, "").trim();
+  if (clean.includes("h") || clean.includes("m")) {
+    let hrs = 0, mins = 0, secs = 0;
+    const hMatch = clean.match(/(\d+)h/i);
+    const mMatch = clean.match(/(\d+)m/i);
+    const sMatch = clean.match(/(\d+)s/i);
+    if (hMatch) hrs = parseInt(hMatch[1], 10);
+    if (mMatch) mins = parseInt(mMatch[1], 10);
+    if (sMatch) secs = parseInt(sMatch[1], 10);
+    return hrs * 3600 + mins * 60 + secs;
+  }
+  
+  const parts = clean.split(":").map(Number);
+  if (parts.length === 3) {
+    return parts[0] * 3600 + parts[1] * 60 + parts[2];
+  } else if (parts.length === 2) {
+    return parts[0] * 60 + parts[1];
+  } else if (parts.length === 1 && !isNaN(parts[0])) {
+    return parts[0];
+  }
+  return 0;
+};
+
+// Seconds formatter helper
+const formatSecondsToHoursMinutes = (totalSeconds) => {
+  if (totalSeconds <= 0) return "0m";
+  const hrs = Math.floor(totalSeconds / 3600);
+  const mins = Math.floor((totalSeconds % 3600) / 60);
+  if (hrs > 0) {
+    return `${hrs}h ${mins}m`;
+  }
+  return `${mins}m`;
+};
 
 const StudentProgressVisualizer = () => {
   const { enrollmentId } = useParams();
-  const [openSections, setOpenSections] = useState({});
-
+  
   const { data, isLoading } = useFetchStudentProgress(enrollmentId);
   const { mutate: markCompleted, isPending: isMarking } = useMarkEnrollmentCompleted();
-
-  const toggleSection = (index) => {
-    setOpenSections((prev) => ({
-      ...prev,
-      [index]: !prev[index],
-    }));
-  };
 
   const handleMarkCompleted = () => {
     if (window.confirm("Are you sure you want to mark this student as completed? This will set progress to 100% and override status checks.")) {
@@ -27,7 +56,7 @@ const StudentProgressVisualizer = () => {
 
   if (isLoading) {
     return (
-      <div className="p-6 max-w-4xl mx-auto space-y-6">
+      <div className="p-6 max-w-7xl mx-auto space-y-6">
         <Skeleton className="h-40 w-full rounded-xl" />
         <Skeleton className="h-64 w-full rounded-xl" />
       </div>
@@ -41,179 +70,298 @@ const StudentProgressVisualizer = () => {
 
   const isCompleted = enrollment.status === "completed" || enrollment.admin_marked_completed;
 
+  // 1. Calculate progress stats dynamically
+  let totalVideos = 0;
+  let completedCount = 0;
+  let inProgressCount = 0;
+  let totalWatchedSeconds = 0;
+
+  sections.forEach((section) => {
+    const lessons = section.lessons || [];
+    totalVideos += lessons.length;
+    lessons.forEach((lesson) => {
+      if (lesson.is_completed) {
+        completedCount++;
+      } else if (lesson.progress_percentage > 0) {
+        inProgressCount++;
+      }
+
+      // Compute watched seconds
+      const durationSeconds = parseDurationToSeconds(lesson.duration);
+      const progressFrac = (lesson.progress_percentage || 0) / 100;
+      totalWatchedSeconds += durationSeconds * progressFrac;
+    });
+  });
+
+  const overallProgress = Math.round(enrollment.progress || 0);
+
+  // SVG Radial Circle configuration
+  const radius = 64;
+  const strokeWidth = 14;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (overallProgress / 100) * circumference;
+
+  // Format dates
+  const formatDate = (dateString) => {
+    if (!dateString) return "---";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
+
+  const formatActivityDate = (dateString) => {
+    if (!dateString) return "---";
+    const date = new Date(dateString);
+    const day = date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+    const time = date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+    return `${day} - ${time}`;
+  };
+
   return (
-    <div className="p-6 max-w-4xl mx-auto space-y-6">
-      {/* Back navigation */}
-      <Link
-        to="/admin/certificate"
-        className="inline-flex items-center gap-1 text-sm font-semibold text-gray-500 hover:text-gray-900 transition-colors"
-      >
-        <ArrowLeft className="w-4 h-4" /> Back to Certificate Panel
-      </Link>
-
-      {/* Student Hero Info Card */}
-      <div className="relative overflow-hidden rounded-xl border border-gray-100 bg-[#1a2340] text-white p-6 md:p-8 shadow-lg">
-        {/* Decorative background element */}
-        <div className="absolute right-0 top-0 w-64 h-64 bg-red-500/10 rounded-full blur-3xl -mr-16 -mt-16" />
-        
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center border border-white/20 shrink-0">
-              {student.avatar ? (
-                <img src={student.avatar} alt={student.name} className="w-full h-full rounded-full object-cover" />
-              ) : (
-                <User className="w-8 h-8 text-white/60" />
-              )}
-            </div>
-            <div>
-              <span className={`inline-block px-2.5 py-0.5 rounded-full text-2xs font-semibold uppercase tracking-wider ${
-                enrollment.access_type === "live class" ? "bg-blue-500/20 text-blue-300" : "bg-purple-500/20 text-purple-300"
-              }`}>
-                {enrollment.access_type === "live class" ? "Live Cohort" : "Self-Paced (On-Demand)"}
-              </span>
-              <h2 className="text-xl md:text-2xl font-bold mt-1">{student.name || "Student"}</h2>
-              <p className="text-sm text-gray-300">{student.email || ""}</p>
-            </div>
-          </div>
-
-          <div className="flex flex-col items-start md:items-end gap-2 shrink-0">
-            <div className="text-xs text-gray-300">Overall Progress</div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-extrabold text-[#CC1747]">
-                {Math.round(enrollment.progress || 0)}%
-              </span>
-            </div>
-            <div className="w-36 bg-white/20 h-1.5 rounded-full overflow-hidden mt-1">
-              <div 
-                className="bg-[#CC1747] h-full rounded-full transition-all duration-500" 
-                style={{ width: `${enrollment.progress || 0}%` }}
-              />
-            </div>
-          </div>
+    <div className="p-6 max-w-7xl mx-auto space-y-6 bg-[#FCFCFD] min-h-screen">
+      {/* Header & Back Action */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 pb-5">
+        <div className="flex items-center gap-4">
+          <Link
+            to="/admin/certificate"
+            className="flex items-center justify-center h-10 px-4 rounded-lg border border-gray-200 bg-white text-sm font-semibold text-gray-600 hover:text-gray-900 shadow-2xs transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4 mr-1.5" /> Back to Student Management
+          </Link>
+          <h1 className="text-2xl font-bold text-gray-900">Student Progress</h1>
         </div>
 
-        <hr className="my-6 border-white/10 relative z-10" />
-
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
-          <div>
-            <p className="text-xs text-gray-400">Course Enrolled</p>
-            <p className="text-base font-semibold text-white">{course.title || "N/A"}</p>
-          </div>
-
-          <div>
-            {isCompleted ? (
-              <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 rounded-lg text-sm font-semibold">
-                <CheckCircle2 className="w-4 h-4" /> Completed
-              </span>
-            ) : (
-              <button
-                onClick={handleMarkCompleted}
-                disabled={isMarking}
-                className="px-5 py-2.5 bg-[#CC1747] hover:bg-[#b8143f] text-white rounded-lg text-sm font-semibold transition-colors duration-200"
-              >
-                {isMarking ? "Updating..." : "Mark Completed"}
-              </button>
-            )}
-          </div>
+        <div>
+          {!isCompleted && (
+            <button
+              onClick={handleMarkCompleted}
+              disabled={isMarking}
+              className="px-5 py-2.5 bg-[#CC1747] hover:bg-[#b8143f] text-white rounded-lg text-sm font-semibold transition-colors duration-200 shadow-sm"
+            >
+              {isMarking ? "Updating..." : "Mark Completed"}
+            </button>
+          )}
         </div>
       </div>
 
-      {/* Sections progress visual lists */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-bold text-gray-900">Course Syllabus & Progress Checklist</h3>
-        <p className="text-sm text-gray-500 -mt-2">Review completed and outstanding lessons per course section.</p>
-        
-        <div className="space-y-3">
-          {sections.map((section, index) => {
-            const isOpen = !!openSections[index];
-            return (
-              <div 
-                key={index} 
-                className="bg-white rounded-xl border border-gray-150 shadow-sm overflow-hidden transition-all duration-200"
-              >
-                {/* Section Header Accordion Trigger */}
-                <button
-                  onClick={() => toggleSection(index)}
-                  className="w-full flex items-center justify-between p-5 hover:bg-gray-50/50 transition-colors"
-                >
-                  <div className="flex items-center gap-4 text-left">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gray-100 font-bold text-gray-700 text-sm">
-                      S{section.sectionNumber}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* Left Column: Student Details & Radial Progress */}
+        <div className="lg:col-span-4 bg-white rounded-2xl border border-gray-150 p-6 shadow-2xs space-y-6">
+          {/* User Profile summary */}
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-full bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-600 font-bold text-xl uppercase">
+              {student.name ? student.name.split(" ").map((n) => n[0]).join("").substring(0, 2) : "ST"}
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-gray-900">{student.name || "Student"}</h2>
+              <p className="text-sm text-gray-500">{student.email || ""}</p>
+            </div>
+          </div>
+
+          {/* Radial progress ring */}
+          <div className="relative flex items-center justify-center w-48 h-48 mx-auto my-4">
+            <svg className="w-full h-full transform -rotate-90">
+              <circle
+                cx="96"
+                cy="96"
+                r={radius}
+                stroke="#F2F4F7"
+                strokeWidth={strokeWidth}
+                fill="transparent"
+              />
+              <circle
+                cx="96"
+                cy="96"
+                r={radius}
+                stroke="#00A854"
+                strokeWidth={strokeWidth}
+                fill="transparent"
+                strokeDasharray={circumference}
+                strokeDashoffset={strokeDashoffset}
+                strokeLinecap="round"
+                className="transition-all duration-500 ease-out"
+              />
+            </svg>
+            <div className="absolute flex flex-col items-center justify-center">
+              <span className="text-3xl font-extrabold text-gray-900">{overallProgress}%</span>
+              <span className="text-2xs text-gray-400 font-bold mt-1 uppercase tracking-wider text-center max-w-[100px]">
+                Course Completed
+              </span>
+            </div>
+          </div>
+
+          {/* Stats boxes 2x2 grid */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="border border-gray-100 rounded-xl p-4 bg-gray-50/50 shadow-3xs">
+              <p className="text-2xl font-bold text-gray-900">{completedCount}/{totalVideos}</p>
+              <p className="text-xs text-gray-500 mt-1 font-medium">Videos watched</p>
+            </div>
+            <div className="border border-gray-100 rounded-xl p-4 bg-gray-50/50 shadow-3xs">
+              <p className="text-2xl font-bold text-gray-900">{formatSecondsToHoursMinutes(totalWatchedSeconds)}</p>
+              <p className="text-xs text-gray-500 mt-1 font-medium">Watch time</p>
+            </div>
+            <div className="border border-gray-100 rounded-xl p-4 bg-gray-50/50 shadow-3xs">
+              <p className="text-2xl font-bold text-gray-900">{completedCount}</p>
+              <p className="text-xs text-gray-500 mt-1 font-medium">Fully completed</p>
+            </div>
+            <div className="border border-gray-100 rounded-xl p-4 bg-gray-50/50 shadow-3xs">
+              <p className="text-2xl font-bold text-gray-900">{inProgressCount}</p>
+              <p className="text-xs text-gray-500 mt-1 font-medium">In progress</p>
+            </div>
+          </div>
+
+          {/* Detail list rows */}
+          <div className="border-t border-gray-100 pt-4 space-y-3.5 text-sm text-gray-600">
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400">Course</span>
+              <span className="font-semibold text-gray-800 text-right max-w-[200px] truncate">{course.title || "N/A"}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400">Course type</span>
+              <span className="font-semibold text-gray-800 capitalize">{enrollment.access_type === "onDemand" ? "On-demand" : enrollment.access_type || "N/A"}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400">Enrolled on</span>
+              <span className="font-semibold text-gray-800">{formatDate(enrollment.created_at)}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400">Last activity</span>
+              <span className="font-semibold text-gray-800">{formatActivityDate(enrollment.updated_at)}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400">Certificate</span>
+              <span className={`font-semibold ${isCompleted ? "text-emerald-600" : "text-amber-600"}`}>
+                {isCompleted ? "Eligible" : "Not yet eligible"}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column: Detailed Modules & Lessons */}
+        <div className="lg:col-span-8 space-y-6">
+          <div>
+            <h3 className="text-lg font-bold text-gray-900">Video-by-video progress</h3>
+            <p className="text-sm text-gray-500 mt-0.5">Every lesson in the course, with individual watch status</p>
+          </div>
+
+          <div className="space-y-4">
+            {sections.map((section, sIdx) => {
+              const lessons = section.lessons || [];
+              const completedLessons = lessons.filter((l) => l.is_completed).length;
+              const rate = lessons.length > 0 ? Math.round((completedLessons / lessons.length) * 100) : 0;
+
+              return (
+                <div key={sIdx} className="bg-white rounded-xl border border-gray-150 shadow-3xs overflow-hidden">
+                  {/* Module section header */}
+                  <div className="bg-gray-50/75 border-b border-gray-100 px-6 py-4 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold text-gray-400 tracking-wider uppercase">Module {section.sectionNumber || sIdx + 1}</span>
+                      <h4 className="font-bold text-gray-800 text-sm md:text-base">{section.title}</h4>
                     </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-800 text-base">{section.title}</h4>
-                      <p className="text-xs text-gray-400 mt-0.5">{section.lessons?.length || 0} recording sessions</p>
+                    <div className="flex items-center gap-3 shrink-0">
+                      <span className="text-xs font-bold text-gray-500">{completedLessons}/{lessons.length}</span>
+                      <div className="w-20 bg-gray-200 h-1.5 rounded-full overflow-hidden">
+                        <div
+                          className="bg-[#00A854] h-full rounded-full transition-all duration-300"
+                          style={{ width: `${rate}%` }}
+                        />
+                      </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-4">
-                    <div className="text-right shrink-0">
-                      <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold ${
-                        section.completionRate === 100 
-                          ? "bg-emerald-50 text-emerald-700" 
-                          : "bg-gray-100 text-gray-600"
-                      }`}>
-                        {section.completionRate}% Done
-                      </span>
-                    </div>
-                    {isOpen ? <ChevronUp className="w-5 h-5 text-gray-400" /> : <ChevronDown className="w-5 h-5 text-gray-400" />}
-                  </div>
-                </button>
-
-                {/* Section Details Accordion Body */}
-                {isOpen && (
-                  <div className="border-t border-gray-100 bg-gray-50/30 p-5 space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
-                    {section.overview && (
-                      <p className="text-xs text-gray-500 italic pb-2">{section.overview}</p>
-                    )}
-                    
-                    {section.lessons?.length === 0 ? (
-                      <p className="text-xs text-gray-400 text-center py-2">No videos added in this section.</p>
+                  {/* Lessons list inside Module */}
+                  <div className="divide-y divide-gray-100">
+                    {lessons.length === 0 ? (
+                      <p className="text-sm text-gray-400 p-6 text-center">No lessons added to this module.</p>
                     ) : (
-                      <div className="space-y-2">
-                        {section.lessons.map((lesson) => (
-                          <div 
-                            key={lesson.id} 
-                            className="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 bg-white rounded-lg border border-gray-100 gap-3 shadow-2xs"
-                          >
-                            <div className="flex items-center gap-3">
-                              <span className="shrink-0">
-                                {lesson.is_completed ? (
-                                  <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                      lessons.map((lesson, lIdx) => {
+                        const status = lesson.is_completed 
+                          ? "completed" 
+                          : lesson.progress_percentage > 0 
+                          ? "progress" 
+                          : "notstarted";
+
+                        return (
+                          <div key={lesson.id || lIdx} className="p-4 md:p-5 flex items-center justify-between gap-4 hover:bg-gray-50/20 transition-colors">
+                            <div className="flex items-center gap-4">
+                              {/* Left icon wrapper */}
+                              <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
+                                status === "completed" 
+                                  ? "bg-[#E6F4EA]" 
+                                  : status === "progress" 
+                                  ? "bg-[#FFF4E5]" 
+                                  : "bg-[#F2F4F7]"
+                              }`}>
+                                <div className={`w-3.5 h-3.5 rounded-full ${
+                                  status === "completed" 
+                                    ? "bg-[#137333]" 
+                                    : status === "progress" 
+                                    ? "bg-[#AD3307]" 
+                                    : "bg-gray-400"
+                                }`} />
+                              </div>
+
+                              <div className="space-y-1">
+                                <p className="font-semibold text-gray-900 text-sm md:text-base">{lesson.title}</p>
+                                
+                                {status === "progress" ? (
+                                  <div className="flex flex-col gap-1">
+                                    <p className="text-xs font-semibold text-orange-700">
+                                      {lesson.duration} - {Math.round(lesson.progress_percentage || 0)}% watched
+                                    </p>
+                                    <div className="w-32 bg-gray-150 h-1 rounded-full overflow-hidden">
+                                      <div
+                                        className="bg-[#AD3307] h-full"
+                                        style={{ width: `${lesson.progress_percentage}%` }}
+                                      />
+                                    </div>
+                                  </div>
                                 ) : (
-                                  <Circle className="w-5 h-5 text-gray-300 shrink-0" />
+                                  <p className="text-xs text-gray-400 font-semibold">
+                                    {lesson.duration} - {status === "completed" ? `Watched ${formatDate(lesson.last_watched)}` : "Not started"}
+                                  </p>
                                 )}
-                              </span>
-                              <div className="flex items-center gap-2">
-                                <FileVideo className="w-4 h-4 text-gray-400 shrink-0" />
-                                <span className="text-sm font-semibold text-gray-800">{lesson.title}</span>
                               </div>
                             </div>
 
-                            <div className="flex flex-wrap items-center gap-4 text-xs font-semibold text-gray-500 sm:justify-end pl-8 sm:pl-0">
-                              <span className="flex items-center gap-1">
-                                <Clock className="w-3.5 h-3.5" /> {lesson.duration}
-                              </span>
-                              <span>
-                                Progress: <span className={lesson.is_completed ? "text-emerald-600 font-bold" : "text-amber-600"}>
-                                  {Math.round(lesson.progress_percentage || 0)}%
+                            {/* Status badge */}
+                            <div className="shrink-0">
+                              {status === "completed" && (
+                                <span className="inline-block px-3 py-1 bg-[#E6F4EA] text-[#137333] border border-[#C2E7C9] rounded-full text-xs font-semibold">
+                                  Completed
                                 </span>
-                              </span>
-                              {lesson.last_watched && (
-                                <span className="text-2xs text-gray-400 font-normal">
-                                  Last watched: {new Date(lesson.last_watched).toLocaleDateString()}
+                              )}
+                              {status === "progress" && (
+                                <span className="inline-block px-3 py-1 bg-[#FEF7E0] text-[#B06000] border border-[#FDE293] rounded-full text-xs font-semibold">
+                                  In progress
+                                </span>
+                              )}
+                              {status === "notstarted" && (
+                                <span className="inline-block px-3 py-1 bg-[#F1F3F4] text-[#5F6368] border border-[#DADCE0] rounded-full text-xs font-semibold">
+                                  Not started
                                 </span>
                               )}
                             </div>
                           </div>
-                        ))}
-                      </div>
+                        );
+                      })
                     )}
                   </div>
-                )}
-              </div>
-            );
-          })}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
