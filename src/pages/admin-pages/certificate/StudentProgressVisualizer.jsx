@@ -94,7 +94,9 @@ const StudentProgressVisualizer = () => {
     });
   });
 
-  const overallProgress = enrollment.access_type === "onDemand" && totalVideos > 0
+  const isOnDemand = enrollment.access_type?.toLowerCase() === "on demand" || enrollment.access_type === "onDemand";
+  
+  const overallProgress = isOnDemand && totalVideos > 0
     ? Math.round((completedCount / totalVideos) * 100)
     : Math.round(enrollment.progress || 0);
 
@@ -232,7 +234,7 @@ const StudentProgressVisualizer = () => {
             </div>
             <div className="flex justify-between items-center">
               <span className="text-gray-400">Course type</span>
-              <span className="font-semibold text-gray-800 capitalize">{enrollment.access_type === "onDemand" ? "On-demand" : enrollment.access_type || "N/A"}</span>
+              <span className="font-semibold text-gray-800 capitalize">{isOnDemand ? "On-demand" : enrollment.access_type || "N/A"}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-gray-400">Enrolled on</span>
