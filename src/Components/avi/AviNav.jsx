@@ -110,7 +110,7 @@ const AviNav = ({ showNav: propShowNav, setShowNav: propSetShowNav }) => {
             <div className="block space-y-3">
               <button
               onClick={() => {
-                navigate("/signup");
+                navigate("/login");
                 setShowNav((prev) => !prev);
               }}
               className="w-full rounded-full border-[#FFEBF0] border px-6 py-3 capitalize text-[#FFEBF0] md:w-auto"

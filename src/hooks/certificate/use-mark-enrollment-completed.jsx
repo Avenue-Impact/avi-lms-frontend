@@ -1,18 +1,11 @@
-import { BASE_URL } from "@/constant";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-import Cookies from "js-cookie";
+import { axiosAdmin } from "@/services/api";
 import toast from "react-hot-toast";
 
 const markEnrollmentCompleted = async (enrollmentId) => {
-  const { data } = await axios.post(
-    `${BASE_URL}/certificates/enrollments/${enrollmentId}/complete`,
-    {},
-    {
-      headers: {
-        Authorization: `Bearer ${Cookies.get("token")}`,
-      },
-    }
+  const { data } = await axiosAdmin.post(
+    `/certificates/enrollments/${enrollmentId}/complete`,
+    {}
   );
   return data;
 };

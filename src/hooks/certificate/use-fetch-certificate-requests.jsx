@@ -1,19 +1,13 @@
-import { BASE_URL } from "@/constant";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import Cookies from "js-cookie";
+import { axiosAdmin } from "@/services/api";
 
 const fetchCertificateRequests = async (status, page, perPage) => {
-  const url = new URL(`${BASE_URL}/certificates/requests`);
-  if (status) url.searchParams.append("status", status);
-  if (page) url.searchParams.append("page", page);
-  if (perPage) url.searchParams.append("perPage", perPage);
+  const params = {};
+  if (status) params.status = status;
+  if (page) params.page = page;
+  if (perPage) params.perPage = perPage;
 
-  const { data } = await axios.get(url.toString(), {
-    headers: {
-      Authorization: `Bearer ${Cookies.get("token")}`,
-    },
-  });
+  const { data } = await axiosAdmin.get("/certificates/requests", { params });
   return data.data;
 };
 
