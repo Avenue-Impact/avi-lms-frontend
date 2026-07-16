@@ -195,8 +195,8 @@ const StudentProgressVisualizer = () => {
               />
             </svg>
             <div className="absolute flex flex-col items-center justify-center">
-              <span className="text-2xl font-extrabold text-gray-900">{overallProgress}%</span>
-              <span className="text-lg text-gray-400 font-bold mt-1 uppercase tracking-wider text-center max-w-[100px]">
+              <span className="text-lg font-extrabold text-gray-900">{overallProgress}%</span>
+              <span className="text-sm text-gray-400 font-bold mt-1 uppercase tracking-wider text-center max-w-[100px]">
                 Course Completed
               </span>
             </div>
