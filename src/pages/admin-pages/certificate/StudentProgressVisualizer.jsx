@@ -75,7 +75,6 @@ const StudentProgressVisualizer = () => {
   let totalVideos = 0;
   let completedCount = 0;
   let inProgressCount = 0;
-  let totalWatchedSeconds = 0;
 
   sections.forEach((section) => {
     const lessons = section.lessons || [];
@@ -86,19 +85,12 @@ const StudentProgressVisualizer = () => {
       } else if (lesson.progress_percentage > 0) {
         inProgressCount++;
       }
-
-      // Compute watched seconds
-      const durationSeconds = parseDurationToSeconds(lesson.duration);
-      const progressFrac = (lesson.progress_percentage || 0) / 100;
-      totalWatchedSeconds += durationSeconds * progressFrac;
     });
   });
 
-  const isOnDemand = enrollment.access_type?.toLowerCase() === "on demand" || enrollment.access_type === "onDemand";
-  
-  const overallProgress = isOnDemand && totalVideos > 0
-    ? Math.round((completedCount / totalVideos) * 100)
-    : Math.round(enrollment.progress || 0);
+  // Trust the backend's master enrollment.progress rather than recalculating,
+  // to avoid diverging numbers when sections have unequal lesson counts or non-video items.
+  const overallProgress = Math.round(enrollment.progress || 0);
 
   // SVG Radial Circle configuration
   const radius = 64;
@@ -213,8 +205,8 @@ const StudentProgressVisualizer = () => {
               <p className="text-xs text-gray-500 mt-1 font-medium">Videos watched</p>
             </div>
             <div className="border border-gray-100 rounded-xl p-4 bg-gray-50/50 shadow-3xs">
-              <p className="text-2xl font-bold text-gray-900">{formatSecondsToHoursMinutes(totalWatchedSeconds)}</p>
-              <p className="text-xs text-gray-500 mt-1 font-medium">Watch time</p>
+              <p className="text-2xl font-bold text-gray-900">N/A</p>
+              <p className="text-xs text-gray-500 mt-1 font-medium">Watch time (Unavailable)</p>
             </div>
             <div className="border border-gray-100 rounded-xl p-4 bg-gray-50/50 shadow-3xs">
               <p className="text-2xl font-bold text-gray-900">{completedCount}</p>
