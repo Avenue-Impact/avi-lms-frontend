@@ -94,7 +94,9 @@ const StudentProgressVisualizer = () => {
     });
   });
 
-  const overallProgress = Math.round(enrollment.progress || 0);
+  const overallProgress = enrollment.access_type === "onDemand" && totalVideos > 0
+    ? Math.round((completedCount / totalVideos) * 100)
+    : Math.round(enrollment.progress || 0);
 
   // SVG Radial Circle configuration
   const radius = 64;
@@ -197,7 +199,7 @@ const StudentProgressVisualizer = () => {
             <div className="absolute flex flex-col items-center justify-center">
               <span className="text-lg font-extrabold text-gray-900">{overallProgress}%</span>
               <span className="text-sm text-gray-400 font-bold mt-1 uppercase tracking-wider text-center max-w-[100px]">
-                Course Completed
+                {overallProgress === 100 ? "Course Completed" : "Overall Progress"}
               </span>
             </div>
           </div>
