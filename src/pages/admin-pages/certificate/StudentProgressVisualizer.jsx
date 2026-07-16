@@ -1,9 +1,8 @@
-import React, { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useFetchStudentProgress } from "@/hooks/certificate/use-fetch-student-progress";
 import { useMarkEnrollmentCompleted } from "@/hooks/certificate/use-mark-enrollment-completed";
 import { Skeleton } from "@/Components/ui/skeleton";
-import { CheckCircle2, Clock, User, ArrowLeft, ChevronDown, ChevronUp } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 // Duration parser helper
 const parseDurationToSeconds = (durationStr) => {
@@ -66,6 +65,7 @@ const StudentProgressVisualizer = () => {
   const enrollment = data?.enrollment || {};
   const student = enrollment.student || {};
   const course = enrollment.course || {};
+  const courseID = course._id || course.id || "";
   const sections = data?.sections || [];
 
   const isCompleted = enrollment.status === "completed" || enrollment.admin_marked_completed;
@@ -129,12 +129,12 @@ const StudentProgressVisualizer = () => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6 bg-[#FCFCFD] min-h-screen">
+    <div className="p-6 mx-auto space-y-6 bg-[#FCFCFD] min-h-screen">
       {/* Header & Back Action */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 pb-5">
         <div className="flex items-center gap-4">
           <Link
-            to="/admin/certificate"
+            to={`/admin/course/management/preview/${courseID}`}
             className="flex items-center justify-center h-10 px-4 rounded-lg border border-gray-200 bg-white text-sm font-semibold text-gray-600 hover:text-gray-900 shadow-2xs transition-colors"
           >
             <ArrowLeft className="w-4 h-4 mr-1.5" /> Back to Student Management
@@ -194,8 +194,8 @@ const StudentProgressVisualizer = () => {
               />
             </svg>
             <div className="absolute flex flex-col items-center justify-center">
-              <span className="text-3xl font-extrabold text-gray-900">{overallProgress}%</span>
-              <span className="text-2xs text-gray-400 font-bold mt-1 uppercase tracking-wider text-center max-w-[100px]">
+              <span className="text-2xl font-extrabold text-gray-900">{overallProgress}%</span>
+              <span className="text-lg text-gray-400 font-bold mt-1 uppercase tracking-wider text-center max-w-[100px]">
                 Course Completed
               </span>
             </div>
