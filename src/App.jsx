@@ -102,6 +102,8 @@ import ReferralsAdmin from "./pages/admin-pages/affiliate/ReferralsAdmin";
 import WithdrawalRequest from "./pages/admin-pages/affiliate/WithdrawalRequest";
 import CertificateIssueHistory from "./pages/admin-pages/certificate/CertificateIssueHistory";
 import CertificateMainPage from "./pages/admin-pages/certificate/CertificateMainPage";
+import CertificateRequests from "./pages/admin-pages/certificate/CertificateRequests";
+import StudentProgressVisualizer from "./pages/admin-pages/certificate/StudentProgressVisualizer";
 
 import ZoomManagementLayout from "./layouts/admin/ZoomManagementLayout";
 import AccountManagLayout from "./layouts/admin/AccountManagLayout";
@@ -677,6 +679,14 @@ function App() {
                     {
                       path: "certificate-issue",
                       element: <CertificateIssueHistory />,
+                    },
+                    {
+                      path: "requests",
+                      element: <CertificateRequests />,
+                    },
+                    {
+                      path: "requests/progress/:enrollmentId",
+                      element: <StudentProgressVisualizer />,
                     },
                   ],
                 },
