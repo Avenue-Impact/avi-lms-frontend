@@ -1,4 +1,4 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useFetchStudentProgress } from "@/hooks/certificate/use-fetch-student-progress";
 import { useMarkEnrollmentCompleted } from "@/hooks/certificate/use-mark-enrollment-completed";
 import { Skeleton } from "@/Components/ui/skeleton";
@@ -43,6 +43,7 @@ const formatSecondsToHoursMinutes = (totalSeconds) => {
 
 const StudentProgressVisualizer = () => {
   const { enrollmentId } = useParams();
+  const navigate = useNavigate();
   
   const { data, isLoading } = useFetchStudentProgress(enrollmentId);
   const { mutate: markCompleted, isPending: isMarking } = useMarkEnrollmentCompleted();
@@ -133,12 +134,12 @@ const StudentProgressVisualizer = () => {
       {/* Header & Back Action */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 pb-5">
         <div className="flex items-center gap-4">
-          <Link
-            to={`/admin/course/management/preview/${courseID}`}
-            className="flex items-center justify-center h-10 px-4 rounded-lg border border-gray-200 bg-white text-sm font-semibold text-gray-600 hover:text-gray-900 shadow-2xs transition-colors"
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center justify-center h-10 px-4 rounded-lg border border-gray-200 bg-white text-sm font-semibold text-gray-600 hover:text-gray-900 shadow-2xs transition-colors cursor-pointer"
           >
-            <ArrowLeft className="w-4 h-4 mr-1.5" /> Back to Student Management
-          </Link>
+            <ArrowLeft className="w-4 h-4 mr-1.5" /> Back
+          </button>
           <h1 className="text-2xl font-bold text-gray-900">Student Progress</h1>
         </div>
 
