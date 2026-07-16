@@ -151,8 +151,8 @@ const SelfPace = () => {
             {/* Static Image Box */}
             <div className="relative aspect-square w-full overflow-hidden rounded-[20px] bg-gray-100 sm:max-h-[calc(100vh-600px)] md:max-h-[calc(100vh-420px)]">
               <img
-                src={heroBg}
-                alt="Young man working on laptop"
+                src="/images/pexels-tima-miroshnichenko-6549593.jpg"
+                alt="Student studying at table with books and laptop in a library setting"
                 className="absolute inset-0 h-full w-full object-cover"
               />
             </div>
