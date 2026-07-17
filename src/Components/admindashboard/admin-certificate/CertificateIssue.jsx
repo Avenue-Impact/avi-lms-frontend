@@ -205,14 +205,14 @@ const CertificateIssue = () => {
                   </SelectTrigger>
                   <SelectContent className="max-h-60 overflow-y-auto">
                     <SelectGroup>
-                      {(courseDetails?.pre_recorded_price?.map(p => p.duration).filter(Boolean).length > 0
-                        ? courseDetails.pre_recorded_price.map(p => p.duration).filter(Boolean)
-                        : ["6 Weeks", "8 Weeks", "12 Weeks", "6 Months", "1 Year"]
-                      ).map((duration) => (
-                        <SelectItem key={duration} value={duration}>
-                          {duration}
-                        </SelectItem>
-                      ))}
+                      {(courseDetails?.pricing?.on_demand ?? courseDetails?.pre_recorded_price ?? [])
+                        .map((p) => p.duration)
+                        .filter(Boolean)
+                        .map((duration) => (
+                          <SelectItem key={duration} value={duration}>
+                            {duration}
+                          </SelectItem>
+                        ))}
                     </SelectGroup>
                   </SelectContent>
                 </Select>
