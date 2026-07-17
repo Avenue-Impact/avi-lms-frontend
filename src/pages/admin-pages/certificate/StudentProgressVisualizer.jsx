@@ -65,6 +65,7 @@ const StudentProgressVisualizer = () => {
 
   const enrollment = data?.enrollment || {};
   const student = enrollment.student || {};
+  const studentName = student.name || `${student.first_name || ""} ${student.last_name || ""}`.trim() || "Student";
   const course = enrollment.course || {};
   const courseID = course._id || course.id || "";
   const sections = data?.sections || [];
@@ -160,10 +161,10 @@ const StudentProgressVisualizer = () => {
           {/* User Profile summary */}
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-full bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-600 font-bold text-xl uppercase">
-              {student.name ? student.name.split(" ").map((n) => n[0]).join("").substring(0, 2) : "ST"}
+              {studentName.split(" ").map((n) => n[0]).join("").substring(0, 2)}
             </div>
             <div>
-              <h2 className="text-lg font-bold text-gray-900">{student.name || "Student"}</h2>
+              <h2 className="text-lg font-bold text-gray-900">{studentName}</h2>
               <p className="text-sm text-gray-500">{student.email || ""}</p>
             </div>
           </div>
