@@ -54,7 +54,7 @@ const CertificateRequests = () => {
 
   // Local filter for search queries
   const filteredRequests = requests.filter((req) => {
-    const studentName = req.student_id?.name || "";
+    const studentName = req.student_id?.name || `${req.student_id?.firstname} ${req.student_id?.lastname}`.trim() || "";
     const studentEmail = req.student_id?.email || "";
     const courseTitle = req.course_id?.title || "";
     const query = searchQuery.toLowerCase();
