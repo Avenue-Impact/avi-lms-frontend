@@ -159,7 +159,7 @@ const CertificateRequests = () => {
                     <tr key={req._id} className="hover:bg-gray-50/50 transition-colors">
                       <td className="px-6 py-4">
                         <div>
-                          <p className="font-semibold text-gray-900">{student.name || "N/A"}</p>
+                          <p className="font-semibold text-gray-900">{studentName || "N/A"}</p>
                           <p className="text-xs text-gray-500">{student.email || "N/A"}</p>
                         </div>
                       </td>
