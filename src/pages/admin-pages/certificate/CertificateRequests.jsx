@@ -200,7 +200,7 @@ const CertificateRequests = () => {
                           {/* View Progress Button - ONLY for On-Demand */}
                           {!isLive && (
                             <Link
-                              to={`/admin/certificate/requests/progress/${enrollment._id}`}
+                              to={`/admin/certificate/requests/progress/${enrollment.id}`}
                               className="p-1.5 rounded-lg border border-gray-200 hover:bg-gray-50 hover:text-blue-600 transition-colors flex items-center gap-1 text-xs font-medium text-gray-600"
                               title="View video logs progress"
                             >
