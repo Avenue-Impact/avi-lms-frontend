@@ -198,7 +198,7 @@ const CertificateRequests = () => {
                       <td className="px-6 py-4 text-right">
                         <div className="flex items-center justify-end gap-2">
                           {/* View Progress Button - ONLY for On-Demand */}
-                          {!isLive && enrollment._id && (
+                          {!isLive && (
                             <Link
                               to={`/admin/certificate/requests/progress/${enrollment._id}`}
                               className="p-1.5 rounded-lg border border-gray-200 hover:bg-gray-50 hover:text-blue-600 transition-colors flex items-center gap-1 text-xs font-medium text-gray-600"
