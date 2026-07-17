@@ -72,6 +72,8 @@ const StudentProgressVisualizer = () => {
 
   const isCompleted = enrollment.status === "completed" || enrollment.admin_marked_completed;
 
+  const totalWatchedSeconds = data?.totalWatchTimeSeconds || 0;
+
   // 1. Calculate progress stats dynamically
   let totalVideos = 0;
   let completedCount = 0;
@@ -208,8 +210,8 @@ const StudentProgressVisualizer = () => {
               <p className="text-xs text-gray-500 mt-1 font-medium">Videos watched</p>
             </div>
             <div className="border border-gray-100 rounded-xl p-4 bg-gray-50/50 shadow-3xs">
-              <p className="text-2xl font-bold text-gray-900">N/A</p>
-              <p className="text-xs text-gray-500 mt-1 font-medium">Watch time (Unavailable)</p>
+              <p className="text-2xl font-bold text-gray-900">{formatSecondsToHoursMinutes(totalWatchedSeconds)}</p>
+              <p className="text-xs text-gray-500 mt-1 font-medium">Watch time</p>
             </div>
             <div className="border border-gray-100 rounded-xl p-4 bg-gray-50/50 shadow-3xs">
               <p className="text-2xl font-bold text-gray-900">{completedCount}</p>
