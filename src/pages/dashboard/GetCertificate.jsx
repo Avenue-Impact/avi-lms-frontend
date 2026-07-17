@@ -16,6 +16,7 @@ export const GetCertificate = () => {
   const { courseId } = useParams();
   const [queryString] = useSearchParams();
   const cohortId = queryString.get("cohortId") || "on-demand";
+  const duration = queryString.get("duration") || "";
 
   // Get request status & eligibility
   const {
@@ -30,8 +31,9 @@ export const GetCertificate = () => {
   const handleDownload = async () => {
     try {
       toast.loading("Preparing download...", { id: "cert-download" });
+      const durationParam = cohortId === "on-demand" && duration ? `?duration=${encodeURIComponent(duration)}` : "";
       const response = await axios.get(
-        `${STUDENT_BASE_URL}/courses/${courseId}/cohorts/${cohortId}/certificate/download`,
+        `${STUDENT_BASE_URL}/courses/${courseId}/cohorts/${cohortId}/certificate/download${durationParam}`,
         {
           headers: {
             Authorization: `Bearer ${Cookies.get("token")}`,
@@ -238,12 +240,13 @@ const Cert = ({ isApproved }) => {
   const { courseId } = useParams();
   const [queryString] = useSearchParams();
   const cohortId = queryString.get("cohortId") || "on-demand";
+  const duration = queryString.get("duration") || "";
 
   const {
     isLoading,
     error,
     data: certificateHTML,
-  } = useGetCertificate(courseId, cohortId);
+  } = useGetCertificate(courseId, cohortId, duration);
 
   const [errorMsg, setErrorMsg] = useState(null);
 

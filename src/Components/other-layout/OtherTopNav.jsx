@@ -26,6 +26,8 @@ const OtherTopNav = ({ setShowModal, setIsQuestionDrawerOpen }) => {
     : `/dashboard/${courseId}/recorded?title=${queryString.get("title") ?? ""}`;
 
   const cohortId = data?.data?.data?.cohort_id || (type === "on demand" ? "on-demand" : "");
+  // For on-demand, the enrolled course includes subscription_limit via the enrollment record
+  const onDemandDuration = type === "on demand" ? (data?.data?.data?.subscription_limit || "") : "";
 
   const handleModal = () => setShowModal((prev) => !prev);
   const { setSections } = useViewCourseSections();
@@ -128,7 +130,7 @@ const OtherTopNav = ({ setShowModal, setIsQuestionDrawerOpen }) => {
             )}
             <li>
               <Link
-                to={`/dashboard/${courseId}/certificate?cohortId=${cohortId}&title=${queryString.get("title") ?? ""}`}
+              to={`/dashboard/${courseId}/certificate?cohortId=${cohortId}&title=${queryString.get("title") ?? ""}${onDemandDuration ? `&duration=${encodeURIComponent(onDemandDuration)}` : ""}`}
                 className="flex items-center gap-3 text-tertiary-color-700 hover:text-primary-color-600 transition-colors p-2 rounded hover:bg-gray-50"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
@@ -200,7 +202,7 @@ const OtherTopNav = ({ setShowModal, setIsQuestionDrawerOpen }) => {
             )}
           >
             <Link
-              to={`/dashboard/${courseId}/certificate?cohortId=${cohortId}&title=${queryString.get("title") ?? ""}`}
+              to={`/dashboard/${courseId}/certificate?cohortId=${cohortId}&title=${queryString.get("title") ?? ""}${onDemandDuration ? `&duration=${encodeURIComponent(onDemandDuration)}` : ""}`}
               className="flex gap-2 2xl:gap-[13px]"
             >
               <span className="text-[22px]">
