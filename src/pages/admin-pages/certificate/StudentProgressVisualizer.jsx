@@ -65,7 +65,7 @@ const StudentProgressVisualizer = () => {
 
   const enrollment = data?.enrollment || {};
   const student = enrollment.student || {};
-  const studentName = student.name || `${student.first_name || ""} ${student.last_name || ""}`.trim() || "Student";
+  const studentName = student.name || `${student.firstname || ""} ${student.lastname || ""}`.trim() || "Student";
   const course = enrollment.course || {};
   const courseID = course._id || course.id || "";
   const sections = data?.sections || [];
