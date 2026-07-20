@@ -130,11 +130,11 @@ const CreateAssignmentModal = ({ onClose }) => {
             <label className="hover:bg-primary-color-50/30 flex cursor-pointer items-center gap-3 rounded-lg border-2 border-dashed border-gray-200 px-4 py-3 transition-all hover:border-primary-color-300">
               <Upload size={20} className="text-gray-400" />
               <span className="text-sm text-gray-500">
-                {file ? file.name : "PDF, Images or Word documents"}
+                {file ? file.name : "PDF, Word, Excel, PPT, CSV, Text or Images"}
               </span>
               <input
                 type="file"
-                accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.webp,.xls,.xlsx,.csv,.txt,.ppt,.pptx"
                 className="hidden"
                 onChange={(e) => setFile(e.target.files?.[0])}
               />

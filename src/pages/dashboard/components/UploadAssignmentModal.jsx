@@ -163,13 +163,13 @@ export const UploadAssignmentModal = ({
                     multiple
                     className="hidden"
                     onChange={handleFileChange}
-                    accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.zip"
+                    accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.webp,.xls,.xlsx,.csv,.txt,.ppt,.pptx,.zip"
                   />
                   <div className="p-2.5 bg-white rounded-full shadow-sm text-rose-500 mb-3 border border-gray-100">
                     <Upload size={22} />
                   </div>
                   <p className="text-sm font-semibold text-gray-700">Click to upload or drag & drop</p>
-                  <p className="text-xs text-gray-400 mt-1">PDF, Word, Images or ZIP · max 5 files</p>
+                  <p className="text-xs text-gray-400 mt-1">PDF, Word, Excel, PPT, CSV, Images or ZIP · max 5 files</p>
                 </div>
 
                 {selectedFiles.length > 0 && (
