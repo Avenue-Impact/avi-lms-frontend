@@ -15,8 +15,10 @@ import { AlertCircle, CheckCircle, Clock, Download, RefreshCw, FileText } from "
 export const GetCertificate = () => {
   const { courseId } = useParams();
   const [queryString] = useSearchParams();
-  const cohortId = queryString.get("cohortId") || "on-demand";
-  const duration = queryString.get("duration") || "";
+  const rawCohortId = queryString.get("cohortId") || "";
+  const rawDuration = queryString.get("duration") || "";
+  const rawCohortName = queryString.get("cohortName") || "";
+  const rawCourseType = queryString.get("course_type") || queryString.get("courseType") || "";
 
   // Get request status & eligibility
   const {
@@ -28,12 +30,30 @@ export const GetCertificate = () => {
   // Mutation to request certificate
   const { mutate: requestCert, isPending: isRequesting } = useRequestCertificate(courseId);
 
+  const courseType = rawCourseType || statusData?.courseType || (rawCohortId === "on-demand" ? "on demand" : "live class");
+  const isOnDemand = String(courseType).toLowerCase().includes("demand");
+  const effectiveDuration = rawDuration || statusData?.subscriptionLimit || "";
+  const effectiveCohortId = rawCohortId !== "on-demand" ? rawCohortId : (statusData?.cohortId || "");
+  const effectiveCohortName = rawCohortName || statusData?.cohort || "";
+  const enrollmentId = statusData?.enrollmentId || "";
+
   const handleDownload = async () => {
     try {
       toast.loading("Preparing download...", { id: "cert-download" });
-      const durationParam = cohortId === "on-demand" && duration ? `?duration=${encodeURIComponent(duration)}` : "";
+
+      const downloadParams = new URLSearchParams();
+      downloadParams.append("course_type", courseType);
+      if (enrollmentId) downloadParams.append("enrollment_id", enrollmentId);
+
+      if (isOnDemand) {
+        if (effectiveDuration) downloadParams.append("duration", effectiveDuration);
+      } else {
+        if (effectiveCohortId) downloadParams.append("cohort_id", effectiveCohortId);
+        if (effectiveCohortName) downloadParams.append("cohort_name", effectiveCohortName);
+      }
+
       const response = await axios.get(
-        `${STUDENT_BASE_URL}/courses/${courseId}/cohorts/${cohortId}/certificate/download${durationParam}`,
+        `${STUDENT_BASE_URL}/courses/${courseId}/certificate/download?${downloadParams.toString()}`,
         {
           headers: {
             Authorization: `Bearer ${Cookies.get("token")}`,
@@ -64,7 +84,6 @@ export const GetCertificate = () => {
   const isApproved = statusData?.status === "approved";
   const requestStatus = statusData?.status || "none";
   const isEligible = statusData?.isEligible || false;
-  const courseType = statusData?.courseType || "none";
 
   return (
     <div className="w-full">
@@ -98,7 +117,7 @@ export const GetCertificate = () => {
               )}
             </div>
             <div className="p-6 bg-gray-100/50 flex items-center justify-center min-h-[300px]">
-              <Cert isApproved={isApproved} />
+              <Cert isApproved={isApproved} statusData={statusData} />
             </div>
           </div>
 
@@ -236,17 +255,34 @@ export const GetCertificate = () => {
   );
 };
 
-const Cert = ({ isApproved }) => {
+const Cert = ({ isApproved, statusData }) => {
   const { courseId } = useParams();
   const [queryString] = useSearchParams();
-  const cohortId = queryString.get("cohortId") || "on-demand";
-  const duration = queryString.get("duration") || "";
+  const rawCohortId = queryString.get("cohortId") || "";
+  const rawDuration = queryString.get("duration") || "";
+  const rawCohortName = queryString.get("cohortName") || "";
+  const rawCourseType = queryString.get("course_type") || queryString.get("courseType") || "";
+
+  const courseType = rawCourseType || statusData?.courseType || (rawCohortId === "on-demand" ? "on demand" : "live class");
+  const isOnDemand = String(courseType).toLowerCase().includes("demand");
+  const effectiveDuration = rawDuration || statusData?.subscriptionLimit || "";
+  const effectiveCohortId = rawCohortId !== "on-demand" ? rawCohortId : (statusData?.cohortId || "");
+  const effectiveCohortName = rawCohortName || statusData?.cohort || "";
+  const enrollmentId = statusData?.enrollmentId || "";
+
+  const certParams = {
+    course_type: courseType,
+    ...(enrollmentId ? { enrollment_id: enrollmentId } : {}),
+    ...(isOnDemand
+      ? { duration: effectiveDuration }
+      : { cohort_id: effectiveCohortId, cohort_name: effectiveCohortName }),
+  };
 
   const {
     isLoading,
     error,
     data: certificateHTML,
-  } = useGetCertificate(courseId, cohortId, duration);
+  } = useGetCertificate(courseId, certParams);
 
   const [errorMsg, setErrorMsg] = useState(null);
 
