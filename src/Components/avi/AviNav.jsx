@@ -145,7 +145,7 @@ const AviNav = ({ showNav: propShowNav, setShowNav: propSetShowNav }) => {
             <div className="flex items-center justify-between gap-3">
               <button
                 onClick={() => {
-                  navigate("/signup");
+                  navigate("/login");
                   setShowNav((prev) => !prev);
                 }}
                 className="w-full rounded-full border-[#CC1747] border hover:bg-[#CC1747] hover:text-[#FFEBF0] px-6 py-2 capitalize text-[#CC1747] md:w-auto"
