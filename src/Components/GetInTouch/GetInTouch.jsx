@@ -125,6 +125,16 @@ const GetInTouch = () => {
             errorMsg = `Phone number is too long (max ${country.maxLen} digits)`;
           }
         }
+      } else if (fieldName === "message") {
+        const msg = value.trim();
+        const hasLetters = /[a-zA-Z]/.test(msg);
+        const alphanumericCount = (msg.match(/[a-zA-Z0-9]/g) || []).length;
+        const ratio = msg.length > 0 ? alphanumericCount / msg.length : 1;
+        const hasExcessiveRepeats = /([^a-zA-Z0-9\s])\1{3,}/.test(msg);
+
+        if (!hasLetters || ratio < 0.3 || hasExcessiveRepeats) {
+          errorMsg = "Please enter a coherent message";
+        }
       }
     }
     
