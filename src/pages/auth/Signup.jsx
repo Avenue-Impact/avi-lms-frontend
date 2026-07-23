@@ -429,10 +429,7 @@ const SignUp = ({ isPage = true }) => {
                   <p className="text-xs text-gray-500 mt-1">Choose how you want to register</p>
                 </div>
 
-                <div className="flex flex-col items-center justify-center p-6 border border-dashed border-gray-300 rounded-xl bg-gray-50 hover:bg-gray-100/50 transition-all">
-                  <span className="text-[11px] font-bold text-[#CC1747] uppercase tracking-wider mb-3">Option A</span>
-                  <GoogleAuthButton onCallback={handleGoogleCallback} text="signup_with" />
-                </div>
+                <GoogleAuthButton onCallback={handleGoogleCallback} text="signup_with" />
 
                 <div className="relative flex py-2 items-center">
                   <div className="flex-grow border-t border-gray-200"></div>
