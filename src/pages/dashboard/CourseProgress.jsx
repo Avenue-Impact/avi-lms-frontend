@@ -1,77 +1,139 @@
 import { useParams, useSearchParams, Link } from "react-router-dom";
 import { CheckIcon, PlayIcon, Clock, Video, Grid2X2, Award } from "lucide-react";
+import { useCourseProgress } from "@/hooks/students/use-course-progress";
+
+// ---- Helpers: map API payload -> view model (layout stays identical) ----
+const formatWatchTime = (seconds) => {
+  const total = Number(seconds) || 0;
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  if (h > 0) return `${h}h ${m}m`;
+  if (m > 0) return `${m}m`;
+  return `${total}s`;
+};
+
+const formatDate = (iso) => {
+  if (!iso) return null;
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return null;
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+};
+
+// lesson.duration is file size in MB (per backend), not playback time
+const formatSize = (mb) => {
+  const n = Number(mb);
+  if (Number.isNaN(n)) return null;
+  return `${n} MB`;
+};
+
+const deriveLessonStatus = (lesson) => {
+  if (lesson.is_completed) return "completed";
+  if ((Number(lesson.progress_percentage) || 0) > 0) return "in-progress";
+  return "not-started";
+};
+
+const lessonMeta = (lesson, status) => {
+  if (status === "completed") {
+    const d = formatDate(lesson.last_watched);
+    return d ? `Completed ${d}` : "Completed";
+  }
+  if (status === "in-progress") {
+    return `${Math.round(Number(lesson.progress_percentage) || 0)}% watched`;
+  }
+  return "Not started";
+};
+
+const mapProgressData = (payload, fallbackTitle) => {
+  if (!payload) return null;
+  const enrollment = payload.enrollment ?? {};
+  const certificate = payload.certificate ?? {};
+  const sections = Array.isArray(payload.sections) ? payload.sections : [];
+
+  const allLessons = sections.flatMap((s) => (Array.isArray(s.lessons) ? s.lessons : []));
+  const videosCompleted = allLessons.filter((l) => l.is_completed).length;
+  const totalVideos = allLessons.length;
+  const modulesCompleted = sections.filter((s) => Number(s.completionRate) === 100).length;
+
+  const lastWatchedIso = allLessons
+    .map((l) => l.last_watched)
+    .filter(Boolean)
+    .sort()
+    .pop();
+
+  const modules = sections.map((section) => {
+    const lessons = Array.isArray(section.lessons) ? section.lessons : [];
+    return {
+      id: section.sectionNumber,
+      title: section.title,
+      completed: lessons.filter((l) => l.is_completed).length,
+      total: lessons.length,
+      lessons: lessons.map((lesson, idx) => {
+        const status = deriveLessonStatus(lesson);
+        return {
+          code: `${section.sectionNumber}.${idx + 1}`,
+          title: lesson.title,
+          duration: formatSize(lesson.duration),
+          meta: lessonMeta(lesson, status),
+          status,
+        };
+      }),
+    };
+  });
+
+  return {
+    course: {
+      title: enrollment.course?.title ?? fallbackTitle,
+      type: enrollment.access_type === "on demand" ? "On-Demand Course" : "Live Class",
+      videosCompleted,
+      totalVideos,
+      totalWatchTime: formatWatchTime(enrollment.totalWatchTimeSeconds),
+      modulesCompleted,
+      totalModules: sections.length,
+      certificateProgress: Math.round(Number(certificate.progress) || 0),
+      overallProgress: Math.round(Number(enrollment.progress) || 0),
+      lastWatched: formatDate(lastWatchedIso),
+    },
+    modules,
+  };
+};
 
 const CourseProgress = () => {
   const { courseId } = useParams();
   const [searchParams] = useSearchParams();
   const courseTitle = searchParams.get("title") ?? "Course Title";
 
-  // ========== MOCK DATA — Replace this block with your API call ==========
-  const mockData = {
-    course: {
-      title: courseTitle,
-      type: "On-Demand Course",
-      videosCompleted: 18,
-      totalVideos: 24,
-      totalWatchTime: "5h 42m",
-      modulesCompleted: 2,
-      totalModules: 6,
-      certificateProgress: 27,
-      overallProgress: 73,
-      lastWatched: "Jul 13, 2026",
-    },
-    modules: [
-      {
-        id: 1,
-        title: "Foundations of Project Management",
-        completed: 4,
-        total: 4,
-        lessons: [
-          { code: "1.1", title: "What is Project Management?", duration: "6:12 min", meta: "Completed Apr 15, 2024", status: "completed" },
-          { code: "1.2", title: "The Project Lifecycle", duration: "8:45 min", meta: "Completed Apr 15, 2024", status: "completed" },
-          { code: "1.3", title: "Roles & Responsibilities", duration: "5:30 min", meta: "Completed Apr 16, 2024", status: "completed" },
-          { code: "1.4", title: "Tools of the Trade", duration: "7:02 min", meta: "Completed Apr 18, 2024", status: "completed" },
-        ],
-      },
-      {
-        id: 2,
-        title: "Stakeholder & Risk Analysis",
-        completed: 2,
-        total: 5,
-        lessons: [
-          { code: "2.1", title: "Identifying Stakeholders", duration: "9:14 min", meta: "Completed May 2, 2024", status: "completed" },
-          { code: "2.2", title: "Power/Interest Mapping", duration: "6:47 min", meta: "Completed May 3, 2024", status: "completed" },
-          { code: "2.3", title: "Risk Register Basics", duration: "11:20 min", meta: "8:40 watched", status: "in-progress" },
-          { code: "2.4", title: "Qualitative vs Quantitative Risk", duration: "8:05 min", meta: "Not started", status: "not-started" },
-          { code: "2.5", title: "Building a Mitigation Plan", duration: "10:12 min", meta: "Not started", status: "not-started" },
-        ],
-      },
-      {
-        id: 3,
-        title: "Budgeting & Resource Planning",
-        completed: 1,
-        total: 2,
-        lessons: [
-          { code: "3.1", title: "Cost Estimation Techniques", duration: "7:58 min", meta: "Completed Jun 20, 2024", status: "completed" },
-          { code: "3.2", title: "Resource Allocation Models", duration: "9:40 min", meta: "Not started", status: "not-started" },
-        ],
-      },
-    ],
-  };
-  // ========== END MOCK DATA ==========
+  const { data, isLoading, error } = useCourseProgress(courseId);
 
-  const { course, modules } = mockData;
+  if (isLoading) {
+    return (
+      <div className="mx-auto max-w-[1000px] py-20 text-center text-[14px] text-desc">
+        Loading course progress...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="mx-auto max-w-[1000px] py-20 text-center text-[14px] text-desc">
+        {error?.response?.data?.message ?? "Unable to load course progress. Please try again."}
+      </div>
+    );
+  }
+
+  const viewModel = mapProgressData(data?.data?.data, courseTitle);
+
+  if (!viewModel) {
+    return (
+      <div className="mx-auto max-w-[1000px] py-20 text-center text-[14px] text-desc">
+        No progress data available for this course yet.
+      </div>
+    );
+  }
+
+  const { course, modules } = viewModel;
 
   return (
-    <div className="mx-auto max-w-[1000px]">
-      {/* Breadcrumb */}
-      <nav className="mb-5 text-[13px] text-desc">
-        <Link to="/dashboard" className="cursor-pointer transition-colors hover:text-heading">
-          My Courses
-        </Link>
-        <span className="mx-2 text-lms-border">/</span>
-        <span className="font-medium text-heading">{course.title}</span>
-      </nav>
+    <div className="mx-auto">
 
       {/* Hero Banner */}
       <section
@@ -86,7 +148,8 @@ const CourseProgress = () => {
           </span>
           <h1 className="mb-2 text-[26px] font-bold leading-tight text-white">{course.title}</h1>
           <p className="text-[13px] text-white/60">
-            {course.videosCompleted} of {course.totalVideos} videos completed · Last watched {course.lastWatched}
+            {course.videosCompleted} of {course.totalVideos} videos completed
+            {course.lastWatched ? ` · Last watched ${course.lastWatched}` : ""}
           </p>
         </div>
 
@@ -198,7 +261,7 @@ const StatCard = ({ icon, iconBg, iconColor, value, label }) => (
 );
 
 const ModuleCard = ({ module }) => {
-  const progress = Math.round((module.completed / module.total) * 100);
+  const progress = module.total > 0 ? Math.round((module.completed / module.total) * 100) : 0;
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
@@ -263,7 +326,7 @@ const LessonRow = ({ lesson }) => {
           {lesson.code} — {lesson.title}
         </div>
         <div className="mt-0.5 text-[11px] text-desc">
-          {lesson.duration} · {lesson.meta}
+          {lesson.duration ? `${lesson.duration} · ` : ""}{lesson.meta}
         </div>
       </div>
       {actionButton[lesson.status]}
