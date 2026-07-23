@@ -10,18 +10,17 @@ import {
   useSearchParams,
   useLocation,
 } from "react-router-dom";
-import { z } from "zod";
-
-import { CommonButton } from "@/Components/ui/button";
-import PasswordInput from "@/Components/ui/password-input";
-import toast from "react-hot-toast";
-
+import axios from "axios";
 import Cookies from "js-cookie";
-
+import GoogleAuthButton from "./components/GoogleAuthButton";
+import { z } from "zod";
 import { useLoginUser } from "@/hooks/students/use-login-user";
 import { ClipLoader } from "react-spinners";
 import Modal from "./components/Modal";
 import ConfirmEmail from "./components/ConfirmEmail";
+import { CommonButton } from "@/Components/ui/button";
+import PasswordInput from "@/Components/ui/password-input";
+import toast from "react-hot-toast";
 
 const loginSchema = z.object({
   username: z.string().min(1, { message: "name is required" }),
@@ -44,6 +43,65 @@ const Login = () => {
   const [user, setUser] = useState();
   const [modal, setModal] = useState(false);
   const [success, setSuccess] = useState("");
+
+  const url = import.meta.env.VITE_AUTH_URL;
+
+  const handleGoogleCallback = async (credential) => {
+    try {
+      const base64Url = credential.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      const jsonPayload = decodeURIComponent(
+        window
+          .atob(base64)
+          .split("")
+          .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+          .join("")
+      );
+      const payload = JSON.parse(jsonPayload);
+      if (!payload || !payload.email) {
+        toast.error("Failed to retrieve user details from Google");
+        return;
+      }
+
+      const response = await axios.post(`${url}/google-check`, {
+        email: payload.email,
+      });
+
+      if (response.data.exists) {
+        const loginResponse = await axios.post(`${url}/google-login`, {
+          credential,
+        });
+
+        if (loginResponse.data.status === "success") {
+          const { token, user: loggedUser } = loginResponse.data.data;
+          
+          Cookies.set("token", token, {
+            expires: 1,
+            secure: true,
+            sameSite: "strict",
+            path: "/",
+          });
+          Cookies.set("userRole", loggedUser.role, {
+            expires: 1,
+            secure: true,
+            sameSite: "strict",
+            path: "/",
+          });
+
+          toast.success("Login successful");
+          navigate(loginResponse.data.forward_url || from);
+        }
+      } else {
+        toast.success("No account found. Redirecting to sign up...");
+        navigate(`/signup${_r ? `?_r=${encodeURIComponent(_r)}` : ""}`, {
+          state: { googleToken: credential },
+        });
+      }
+    } catch (err) {
+      console.error("Google login failed:", err);
+      toast.error(err.response?.data?.message || "Google authentication failed. Please try again.");
+    }
+  };
 
   const handleSubmit = async (values) => {
     const user = {
@@ -176,6 +234,14 @@ const Login = () => {
             </CommonButton>
           </form>
         </Form>
+
+        <div className="my-5 flex items-center gap-3">
+          <div className="flex-1 h-px bg-gray-200" />
+          <span className="text-xs font-semibold text-gray-400">OR</span>
+          <div className="flex-1 h-px bg-gray-200" />
+        </div>
+
+        <GoogleAuthButton onCallback={handleGoogleCallback} text="signin_with" />
 
         <p className="mt-6 flex items-center justify-center gap-4 text-center">
           <span className="text-sm text-[#514A4A]">Don't have an account?</span>

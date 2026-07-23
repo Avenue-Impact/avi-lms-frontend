@@ -62,6 +62,7 @@ import GetCertificate from "./pages/dashboard/GetCertificate";
 import JoinProjectTeam from "./pages/dashboard/JoinProjectTeam";
 import LeaveRating from "./pages/dashboard/LeaveRating";
 import MentorshipList from "./pages/dashboard/MentorshipList";
+import CourseProgress from "./pages/dashboard/CourseProgress";
 
 import { useState } from "react";
 import { Toaster } from "react-hot-toast";
@@ -437,6 +438,10 @@ function App() {
                 {
                   path: ":courseId/projects",
                   element: <JoinProjectTeam />,
+                },
+                {
+                  path: ":courseId/progress",
+                  element: <CourseProgress />,
                 },
               ],
             },

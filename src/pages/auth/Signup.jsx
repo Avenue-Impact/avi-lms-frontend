@@ -1,7 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useSearchParams, useLocation } from "react-router-dom";
+import { Link, useSearchParams, useLocation, useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
+import GoogleAuthButton from "./components/GoogleAuthButton";
 import { z } from "zod";
 import AuthLayout from "./components/AuthLayout";
 import ReferralAuthLayout from "./components/ReferralAuthLayout";
@@ -76,6 +78,8 @@ const loginSchema = z
   });
 
 const SignUp = ({ isPage = true }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [success, setSuccess] = useState("");
   const [title, setTitle] = useState("Sign Up and Start Learning");
   const [confirm, setConfirm] = useState(false);
@@ -85,6 +89,7 @@ const SignUp = ({ isPage = true }) => {
   const _r = queryString.get("_r");
   const from = _r ? decodeURIComponent(_r) : "";
 
+  const [googleToken, setGoogleToken] = useState("");
   const [showReferralReminder, setShowReferralReminder] = useState(false);
   const [pendingSignupValues, setPendingSignupValues] = useState(null);
   const [skipReferralReminder, setSkipReferralReminder] = useState(false);
@@ -128,6 +133,48 @@ const SignUp = ({ isPage = true }) => {
   ];
 
   const url = import.meta.env.VITE_AUTH_URL;
+
+  const handleGoogleCallback = async (credential) => {
+    try {
+      const base64Url = credential.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      const jsonPayload = decodeURIComponent(
+        window
+          .atob(base64)
+          .split("")
+          .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+          .join("")
+      );
+      const payload = JSON.parse(jsonPayload);
+      if (!payload || !payload.email) {
+        toast.error("Failed to retrieve user details from Google");
+        return;
+      }
+
+      const response = await axios.post(`${url}/google-check`, {
+        email: payload.email,
+      });
+
+      if (response.data.exists) {
+        toast.error("Account already exists. Please log in.");
+        navigate(`/login${_r ? `?_r=${encodeURIComponent(_r)}` : ""}`);
+        return;
+      }
+
+      form.setValue("email", payload.email);
+      if (payload.given_name) form.setValue("firstName", payload.given_name);
+      if (payload.family_name) form.setValue("lastName", payload.family_name);
+      
+      const usernamePart = payload.email.split("@")[0].toLowerCase();
+      form.setValue("username", usernamePart);
+
+      setGoogleToken(credential);
+      toast.success("Google account linked. Please complete your password and phone number.");
+    } catch (err) {
+      console.error("Google authentication error:", err);
+      toast.error("Google authentication failed. Please try again.");
+    }
+  };
 
   const handleSubmit = async (values) => {
     try {
@@ -190,6 +237,7 @@ const SignUp = ({ isPage = true }) => {
         referral_code: referralCode,
         phoneNumber,
         source_url: window.location.href,
+        googleToken: googleToken || undefined,
       };
 
       const response = await axios.post(`${url}/signup`, users, {
@@ -208,6 +256,25 @@ const SignUp = ({ isPage = true }) => {
         } else if (from) {
           sessionStorage.setItem("signup_forward_url", from);
         }
+
+        if (response.data.token) {
+          Cookies.set("token", response.data.token, {
+            expires: 1,
+            secure: true,
+            sameSite: "strict",
+            path: "/",
+          });
+          Cookies.set("userRole", response.data.newUser.role || "student", {
+            expires: 1,
+            secure: true,
+            sameSite: "strict",
+            path: "/",
+          });
+          toast.success("Registration successful!");
+          navigate(from || "/dashboard");
+          return;
+        }
+
         setSuccess("success");
         setUser({
           firstName,
@@ -248,6 +315,12 @@ const SignUp = ({ isPage = true }) => {
   if (code) {
     form.setValue("referralCode", code);
   }
+
+  useEffect(() => {
+    if (location.state?.googleToken) {
+      handleGoogleCallback(location.state.googleToken);
+    }
+  }, [location.state]);
 
   // Add viewport meta tag for iOS
   useEffect(() => {
@@ -529,6 +602,14 @@ const SignUp = ({ isPage = true }) => {
             </CommonButton>
           </form>
         </Form>
+
+        <div className="my-5 flex items-center gap-3">
+          <div className="flex-1 h-px bg-gray-200" />
+          <span className="text-xs font-semibold text-gray-400">OR</span>
+          <div className="flex-1 h-px bg-gray-200" />
+        </div>
+
+        <GoogleAuthButton onCallback={handleGoogleCallback} text="signup_with" />
 
         <p className="mt-4 flex items-center justify-center gap-4 text-center">
           <span className="text-sm text-[#514A4A]">
