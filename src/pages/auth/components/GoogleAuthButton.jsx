@@ -11,21 +11,27 @@ const GoogleAuthButton = ({ onCallback, text = "signin_with" }) => {
     }
 
     const initGoogleGSI = () => {
-      if (window.google?.accounts?.id) {
-        window.google.accounts.id.initialize({
-          client_id: clientId,
-          callback: (response) => {
-            onCallback(response.credential);
-          },
-        });
+      if (window.google?.accounts?.id && googleBtnRef.current) {
+        // Use a slight timeout to ensure container layout has been computed
+        setTimeout(() => {
+          if (!googleBtnRef.current) return;
+          const computedWidth = googleBtnRef.current.offsetWidth || 350;
 
-        window.google.accounts.id.renderButton(googleBtnRef.current, {
-          theme: "outline",
-          size: "large",
-          text: text,
-          width: "100%",
-          shape: "rectangular",
-        });
+          window.google.accounts.id.initialize({
+            client_id: clientId,
+            callback: (response) => {
+              onCallback(response.credential);
+            },
+          });
+
+          window.google.accounts.id.renderButton(googleBtnRef.current, {
+            theme: "outline",
+            size: "large",
+            text: text,
+            width: computedWidth,
+            shape: "rectangular",
+          });
+        }, 50);
       }
     };
 
@@ -41,21 +47,33 @@ const GoogleAuthButton = ({ onCallback, text = "signin_with" }) => {
       }, 500);
     }
 
+    let resizeTimer;
+    const handleResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        initGoogleGSI();
+      }, 150);
+    };
+
+    window.addEventListener("resize", handleResize);
+
     return () => {
       if (timer) clearInterval(timer);
+      clearTimeout(resizeTimer);
+      window.removeEventListener("resize", handleResize);
     };
   }, [clientId, onCallback, text]);
 
   if (!clientId) {
     return (
-      <div className="w-full text-center text-xs text-red-500 py-2 border border-red-200 bg-red-50 rounded-lg">
+      <div className="w-full text-center text-xs text-red-500 py-2 border border-red-200 bg-red-50 rounded-lg animate-fade-in">
         Google Client ID is missing in frontend env
       </div>
     );
   }
 
   return (
-    <div className="w-full flex justify-center mt-4">
+    <div className="w-full mt-4">
       <div ref={googleBtnRef} className="w-full" />
     </div>
   );
