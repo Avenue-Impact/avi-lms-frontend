@@ -8,6 +8,7 @@ import { useBulkDeleteStudents } from "@/hooks/course-management/live-session/us
 import { useBulkUpdateDuration } from "@/hooks/course-management/live-session/use-bulk-update-duration";
 import SetDurationModal from "@/Components/admindashboard/course-management/live-session/SetDurationModal";
 import CommonButton from "@/Components/ui/button";
+import ToggleManualComplete from "@/Components/admindashboard/course-management/courses/ToggleManualComplete";
 import { TrashCan } from "@/Components/Icon";
 import { Clock } from "lucide-react";
 
@@ -114,7 +115,7 @@ const CourseTable = ({ data }) => {
         isPending={isUpdating} 
       />
 
-      <Table cols={"0.2fr 0.5fr 1.5fr 1.6fr 0.8fr 1.4fr 1.2fr 1.0fr 0.4fr"}>
+      <Table cols={"0.2fr 0.5fr 1.5fr 1.6fr 0.8fr 1.4fr 1.2fr 0.9fr 0.9fr 0.4fr"}>
         <Table.Header className={"gap-x-2 *:text-sm *:font-medium *:capitalize pl-4"}>
           <div className="flex items-center justify-center">
             <input 
@@ -132,6 +133,7 @@ const CourseTable = ({ data }) => {
           <div>Enrollment Date</div>
           <div>Access Exp</div>
           <div className="text-center">Access Revoked</div>
+          <div className="text-center">Completed</div>
           <div className="text-center">Action</div>
         </Table.Header>
         <div className="divide-y">
@@ -172,6 +174,12 @@ const CourseTable = ({ data }) => {
                 <ToggleAccessRevoke 
                   studentId={student.student_id} 
                   initialIsRevoked={student.is_access_revoked} 
+                />
+              </div>
+              <div className="flex justify-center items-center">
+                <ToggleManualComplete 
+                  enrollmentId={student.id} 
+                  initialIsCompleted={student.admin_marked_completed} 
                 />
               </div>
               <div className="flex justify-center items-center">

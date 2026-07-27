@@ -7,6 +7,7 @@ import CTABanner from "../Components/shared/CTABanner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import SEOHead from "@/Components/SEOHead";
+import { ImArrowUpRight2 } from "react-icons/im";
 
 // Import images
 import heroImg from "../assets/images/selfpace/selfpace_hero_man_1776809512956.png";
@@ -115,14 +116,11 @@ const SelfPace = () => {
       <ScrollRestoration />
 
       {/* Hero Section */}
-      <section
-        className="bg-[#ffffff] bg-none bg-cover bg-no-repeat pb-[60px] font-sans lg:bg-[image:var(--hero-bg)] lg:bg-right"
-        style={{ "--hero-bg": `url(${heroBg})`, backgroundSize: "77vw" }}
-      >
+      <section className="relative block bg-[#ffffff] pb-[18px] font-sans">
         {/* ── Two-column body ── */}
-        <div className="mx-auto grid grid-cols-1 items-center gap-[36px] px-[24px] pt-[40px] md:px-[40px] md:pt-[64px] lg:min-h-[640px] lg:grid-cols-[1.2fr_0.8fr] lg:gap-[48px]">
+        <div className="grid grid-cols-1 items-center gap-[36px] px-[24px] pt-[40px] md:px-[40px] md:pt-[64px] lg:grid-cols-[1.2fr_1.2fr] lg:gap-[40px]">
           {/* Left column */}
-          <div className="flex w-full flex-col items-start lg:py-[60px]">
+          <div className="flex w-full flex-col items-start">
             <h1 className="mb-[20px] text-[clamp(45px,5vw,80px)] font-normal leading-[1.15] tracking-[-0.02em] text-[#1a2340]">
               Learn on Your <br className="hidden md:block" />
               <span className="text-[#CC1747]">Terms</span>
@@ -149,39 +147,40 @@ const SelfPace = () => {
           </div>
 
           {/* Right column */}
-          <div className="relative flex max-h-[600px] w-full flex-col gap-[16px] md:max-h-[500px] lg:h-full lg:justify-center">
-            <img
-              src={heroBg}
-              alt="Young man working on laptop"
-              className="block h-[600px] w-full overflow-hidden rounded-[20px] object-cover object-right md:h-[500px] lg:hidden"
-            />
-
-            {/* Floating Badges */}
-            <div className="absolute -left-8 top-8 z-10 flex items-center gap-3 rounded-xl border border-gray-100 bg-white px-4 py-3 shadow-lg animate-in fade-in zoom-in">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-red-50 text-[#CC1747]">
-                <FontAwesomeIcon icon={faCheckCircle} />
-              </span>
-              <span className="text-sm font-bold text-brand-dark-heading">
-                Interview Support
-              </span>
+          <div className="flex flex-col gap-[16px]">
+            {/* Static Image Box */}
+            <div className="relative aspect-square w-full overflow-hidden rounded-[20px] bg-gray-100 sm:max-h-[calc(100vh-600px)] md:max-h-[calc(100vh-420px)]">
+              <img
+                src="/images/pexels-tima-miroshnichenko-6549593.jpg"
+                alt="Student studying at table with books and laptop in a library setting"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
             </div>
 
-            <div className="absolute -right-6 top-12 z-10 flex items-center gap-3 rounded-xl border border-gray-100 bg-white px-4 py-3 shadow-lg delay-150 animate-in fade-in zoom-in">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-red-50 text-[#CC1747]">
-                <FontAwesomeIcon icon={faCheckCircle} />
-              </span>
-              <span className="text-sm font-bold text-brand-dark-heading">
-                One-2-One Mentorship
-              </span>
-            </div>
-
-            <div className="absolute -right-4 bottom-8 z-10 flex items-center gap-3 rounded-xl border border-gray-100 bg-white px-4 py-3 shadow-lg delay-300 animate-in fade-in zoom-in">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-red-50 text-[#CC1747]">
-                <FontAwesomeIcon icon={faCheckCircle} />
-              </span>
-              <span className="text-sm font-bold text-brand-dark-heading">
-                CV Development
-              </span>
+            {/* Action cards */}
+            <div className="grid grid-cols-1 gap-[12px] sm:grid-cols-2">
+              <Link
+                to="/partner"
+                className="relative flex min-h-[70px] flex-row items-center justify-between overflow-hidden rounded-[12px] bg-[#CC1747] px-[16px] py-[10px] text-white no-underline transition-all duration-200 hover:-translate-y-[2px] hover:bg-[#a8103a]"
+              >
+                <span className="text-[18px] font-semibold leading-[1.3] text-white">
+                  Refer a Friend
+                </span>
+                <span className="text-[28px] font-bold text-white opacity-90">
+                  <ImArrowUpRight2 />
+                </span>
+              </Link>
+              <Link
+                to="/digital-learning-hub"
+                className="relative flex min-h-[70px] flex-row items-center justify-between overflow-hidden rounded-[12px] bg-[#CC1747] px-[16px] py-[10px] text-white no-underline transition-all duration-200 hover:-translate-y-[2px] hover:bg-[#a8103a]"
+              >
+                <span className="text-[18px] font-semibold leading-[1.3] text-white">
+                  Live Classes
+                </span>
+                <span className="text-[28px] font-bold text-white opacity-90">
+                  <ImArrowUpRight2 />
+                </span>
+              </Link>
             </div>
           </div>
         </div>

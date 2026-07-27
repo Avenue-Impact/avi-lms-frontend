@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { FaLongArrowAltLeft, FaRegHeart, FaBars, FaTimes } from "react-icons/fa";
 import { LiaTrophySolid } from "react-icons/lia";
 import { TiGroupOutline } from "react-icons/ti";
-import { BsGrid, BsPlayCircle } from "react-icons/bs";
+import { BsGrid, BsPlayCircle, BsGraphUp } from "react-icons/bs";
 import { useViewCourseSections } from "@/hooks/students/use-course-secion-view";
 import {
   Link,
@@ -25,7 +25,9 @@ const OtherTopNav = ({ setShowModal, setIsQuestionDrawerOpen }) => {
     ? `/dashboard/${courseId}/live?title=${queryString.get("title") ?? ""}&cohortId=${data?.data?.data?.cohort_id ?? ""}` 
     : `/dashboard/${courseId}/recorded?title=${queryString.get("title") ?? ""}`;
 
-  const cohortId = data?.data?.data?.cohort_id ?? "";
+  const cohortId = data?.data?.data?.cohort_id || (type === "on demand" ? "on-demand" : "");
+  // For on-demand, the enrolled course includes subscription_limit via the enrollment record
+  const onDemandDuration = type === "on demand" ? (data?.data?.data?.subscription_limit || "") : "";
 
   const handleModal = () => setShowModal((prev) => !prev);
   const { setSections } = useViewCourseSections();
@@ -114,6 +116,16 @@ const OtherTopNav = ({ setShowModal, setIsQuestionDrawerOpen }) => {
                 <span className="text-base capitalize font-medium">course preview</span>
               </Link>
             </li>
+            <li>
+              <Link
+                to={`/dashboard/${courseId}/progress?title=${queryString.get("title") ?? ""}`}
+                className="flex items-center gap-3 text-tertiary-color-700 hover:text-primary-color-600 transition-colors p-2 rounded hover:bg-gray-50"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <span className="text-[22px]"><BsGraphUp /></span>
+                <span className="text-base capitalize font-medium">course progress</span>
+              </Link>
+            </li>
             {type !== "on demand" && (
               <li>
                 <Link
@@ -128,7 +140,7 @@ const OtherTopNav = ({ setShowModal, setIsQuestionDrawerOpen }) => {
             )}
             <li>
               <Link
-                to={`/dashboard/${courseId}/certificate?cohortId=${cohortId}&title=${queryString.get("title") ?? ""}`}
+              to={`/dashboard/${courseId}/certificate?cohortId=${cohortId}&title=${queryString.get("title") ?? ""}${onDemandDuration ? `&duration=${encodeURIComponent(onDemandDuration)}` : ""}`}
                 className="flex items-center gap-3 text-tertiary-color-700 hover:text-primary-color-600 transition-colors p-2 rounded hover:bg-gray-50"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
@@ -171,6 +183,24 @@ const OtherTopNav = ({ setShowModal, setIsQuestionDrawerOpen }) => {
               <span className="text-sm">course preview</span>
             </Link>
           </li>
+          <li
+            className={cn(
+              "after:contents-[''] relative cursor-pointer capitalize text-tertiary-color-700 transition-colors duration-300 ease-linear after:absolute after:-bottom-2 after:left-0 after:block after:h-px after:w-0 after:bg-[#CC1747] hover:text-primary-color-600 hover:after:w-full",
+              location.pathname.endsWith("progress")
+                ? "text-primary-color-600 after:w-full"
+                : "",
+            )}
+          >
+            <Link
+              to={`/dashboard/${courseId}/progress?title=${queryString.get("title") ?? ""}`}
+              className="flex gap-2 2xl:gap-[13px]"
+            >
+              <span className="text-[22px]">
+                <BsGraphUp />
+              </span>
+              <span className="text-sm">course progress</span>
+            </Link>
+          </li>
           {type !== "on demand" && (
             <li
               className={cn(
@@ -200,7 +230,7 @@ const OtherTopNav = ({ setShowModal, setIsQuestionDrawerOpen }) => {
             )}
           >
             <Link
-              to={`/dashboard/${courseId}/certificate?cohortId=${cohortId}&title=${queryString.get("title") ?? ""}`}
+              to={`/dashboard/${courseId}/certificate?cohortId=${cohortId}&title=${queryString.get("title") ?? ""}${onDemandDuration ? `&duration=${encodeURIComponent(onDemandDuration)}` : ""}`}
               className="flex gap-2 2xl:gap-[13px]"
             >
               <span className="text-[22px]">

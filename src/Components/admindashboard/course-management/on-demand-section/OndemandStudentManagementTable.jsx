@@ -1,7 +1,7 @@
 import Table from "@/Components/Table";
 
 import { EllipsisVertical } from "lucide-react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams, Link } from "react-router-dom";
 import StudentPopover from "./StudentPopover";
 
 const durationMap = {
@@ -27,7 +27,7 @@ const OndemandStudentManagementTable = ({ data }) => {
 
   return (
     <div>
-      <Table cols={"0.5fr 1.5fr 1.6fr 0.8fr 1.4fr 1.2fr 0.4fr"}>
+      <Table cols={"0.5fr 1.5fr 1.6fr 0.8fr 1.4fr 1.2fr 1.0fr 0.4fr"}>
         <Table.Header className={"gap-1 *:text-sm *:font-medium *:capitalize"}>
           <div>S/N</div>
           <div>Name</div>
@@ -35,6 +35,7 @@ const OndemandStudentManagementTable = ({ data }) => {
           <div>Course Type</div>
           <div>Enrollment Date</div>
           <div>Course Duration</div>
+          <div className="text-center">Progress</div>
           <div className="text-center">Action</div>
         </Table.Header>
         <div className="divide-y">
@@ -61,6 +62,14 @@ const OndemandStudentManagementTable = ({ data }) => {
 
               <span className="text-[14px] text-[#344054]">{formatDate(student.created_at)}</span>
               <span className="text-[14px] text-[#344054]">{durationMap[student.subscription_limit] || student.subscription_limit || "---"}</span>
+              <div className="flex justify-center items-center">
+                <Link
+                  to={`/admin/certificate/requests/progress/${student.id}`}
+                  className="px-3 py-1.5 bg-gray-50 border border-gray-250 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-md text-[13px] font-semibold transition-all duration-200 shadow-3xs"
+                >
+                  View Progress
+                </Link>
+              </div>
               <div className="flex justify-center">
                 <StudentPopover studentId={student.id}>
                   <button className="flex h-8 w-8 items-center justify-center rounded border border-[#E4E7EC] hover:bg-gray-50">

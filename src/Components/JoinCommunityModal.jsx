@@ -1,10 +1,76 @@
 import React from 'react';
 import { DarkLogo } from '@/Components/Logo';
 import { User, X, ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import Cookies from 'js-cookie';
+import toast from 'react-hot-toast';
+import GoogleAuthButton from '@/pages/auth/components/GoogleAuthButton';
 
 const JoinCommunityModal = ({ open, onClose }) => {
+  const navigate = useNavigate();
+  const url = import.meta.env.VITE_AUTH_URL;
+
   if (!open) return null;
+
+  const handleGoogleCallback = async (credential) => {
+    try {
+      const base64Url = credential.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      const jsonPayload = decodeURIComponent(
+        window
+          .atob(base64)
+          .split("")
+          .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+          .join("")
+      );
+      const payload = JSON.parse(jsonPayload);
+      if (!payload || !payload.email) {
+        toast.error("Failed to retrieve user details from Google");
+        return;
+      }
+
+      const response = await axios.post(`${url}/google-check`, {
+        email: payload.email,
+      });
+
+      if (response.data.exists) {
+        const loginResponse = await axios.post(`${url}/google-login`, {
+          credential,
+        });
+
+        if (loginResponse.data.status === "success") {
+          const { token, user: loggedUser } = loginResponse.data.data;
+          
+          Cookies.set("token", token, {
+            expires: 1,
+            secure: true,
+            sameSite: "strict",
+            path: "/",
+          });
+          Cookies.set("userRole", loggedUser.role, {
+            expires: 1,
+            secure: true,
+            sameSite: "strict",
+            path: "/",
+          });
+
+          toast.success("Login successful");
+          onClose();
+          window.location.reload();
+        }
+      } else {
+        toast.success("No account found. Redirecting to sign up...");
+        onClose();
+        navigate(`/signup`, {
+          state: { googleToken: credential },
+        });
+      }
+    } catch (err) {
+      console.error("Google auth failed in modal:", err);
+      toast.error(err.response?.data?.message || "Google authentication failed. Please try again.");
+    }
+  };
 
   const handleBackdropClick = (e) => {
     if (e.target === e.currentTarget) {
@@ -28,7 +94,7 @@ const JoinCommunityModal = ({ open, onClose }) => {
         </button>
 
         {/* Left Section */}
-        <div className="flex w-full flex-col justify-center p-8 md:w-1/2 lg:p-12">
+        <div className="flex w-full flex-col justify-center p-8 md:w-1/2 lg:p-12 font-poppins">
           <div className="mb-8">
             <DarkLogo className="!h-12 !w-auto" />
           </div>
@@ -43,8 +109,8 @@ const JoinCommunityModal = ({ open, onClose }) => {
             Access expert-led courses, live mentoring, career pathways and opportunities designed to help you grow and transform.
           </p>
 
-          <Link to="/signup">
-            <button className="flex w-full items-center justify-center gap-2 rounded-md bg-[#CC1747] px-4 py-3.5 text-sm font-medium text-white transition-colors hover:bg-rose-700 shadow-sm">
+          <Link to="/signup" onClick={onClose}>
+            <button className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#CC1747] px-4 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-rose-700 shadow-sm">
               <User className="h-5 w-5" />
               Create Free Account
             </button>
@@ -52,16 +118,20 @@ const JoinCommunityModal = ({ open, onClose }) => {
 
           <div className="my-6 flex items-center justify-center gap-4">
             <div className="h-px flex-1 bg-gray-200"></div>
-            <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">or</span>
+            <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">or</span>
             <div className="h-px flex-1 bg-gray-200"></div>
           </div>
 
-          <div className="flex items-center justify-center border border-gray-300 rounded-md py-3.5 hover:bg-gray-50 transition-colors">
-            <span className="text-sm text-gray-600">Already a Member?</span>
-            <Link to="/login" className="ml-2 flex items-center text-sm font-semibold text-[#CC1747] hover:text-rose-700">
-              Sign In <ArrowRight className="ml-1 h-4 w-4" />
-            </Link>
+          <div className="w-full">
+            <GoogleAuthButton onCallback={handleGoogleCallback} text="continue_with" />
           </div>
+
+          <p className="mt-6 text-center text-sm font-medium text-gray-800 flex items-center justify-center gap-1.5">
+            Already a member?
+            <Link to="/login" onClick={onClose} className="font-bold text-[#CC1747] hover:underline flex items-center gap-0.5">
+              Sign In <ArrowRight className="h-4 w-4" />
+            </Link>
+          </p>
         </div>
 
         {/* Right Section */}

@@ -15,6 +15,17 @@ const XIcon = ({ className }) => (
   </svg>
 );
 
+const TiktokIcon = ({ className }) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className={className}
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.02 1.63 4.18 1.15 1.25 2.75 2.05 4.44 2.24v3.9c-1.52-.06-3.01-.58-4.28-1.44-.75-.52-1.39-1.2-1.89-1.97v6.62c-.06 2.37-.9 4.74-2.58 6.43-1.86 1.83-4.54 2.69-7.1 2.28-2.91-.45-5.46-2.61-6.28-5.43C-.19 12.8 1.48 8.87 4.9 7.64c.96-.34 1.99-.48 3.01-.4v3.91c-.84-.13-1.72.03-2.45.48-1.07.67-1.63 1.98-1.41 3.22.25 1.4 1.51 2.5 2.92 2.47 1.53.03 2.87-1.12 2.97-2.65V.02h2.585z" />
+  </svg>
+);
+
 // Validates full email format with domain check (must have a TLD of 2+ chars)
 const isValidEmailDomain = (email) => {
   // Split on @ — must have exactly one @
@@ -81,6 +92,9 @@ const AVIFooter = () => {
               </a>
               <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white transition-colors" aria-label="Instagram">
                 <Instagram size={20} />
+              </a>
+              <a href={socialLinks.tiktok} target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white transition-colors" aria-label="TikTok">
+                <TiktokIcon className="h-5 w-5" />
               </a>
             </div>
           </div>

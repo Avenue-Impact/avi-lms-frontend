@@ -2,13 +2,15 @@
 
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFacebook, faTwitter, faInstagram, faLinkedin } from '@fortawesome/free-brands-svg-icons'; // 
+import { faFacebook, faTwitter, faInstagram, faLinkedin, faTiktok } from '@fortawesome/free-brands-svg-icons'; 
+import { socialLinks } from '../utils/socialLinks';
 
 export const socialMediaData = [
-    { name: '', url: 'https://facebook.com', icon: faFacebook },
-    { name: '', url: 'https://twitter.com', icon: faTwitter },
-    { name: '', url: 'https://instagram.com', icon: faInstagram },
-    { name: '', url: 'https://linkedin.com', icon: faLinkedin },
+    { name: '', url: socialLinks.facebook, icon: faFacebook },
+    { name: '', url: socialLinks.twitter, icon: faTwitter },
+    { name: '', url: socialLinks.instagram, icon: faInstagram },
+    { name: '', url: socialLinks.linkedin, icon: faLinkedin },
+    { name: '', url: socialLinks.tiktok, icon: faTiktok },
 ];
 
 const SocialMediaLinks = ({ data }) => {

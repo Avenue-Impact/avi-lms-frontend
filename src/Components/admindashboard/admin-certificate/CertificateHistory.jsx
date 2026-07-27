@@ -28,8 +28,15 @@ const CertificateHistory = () => {
     handleSearch(event.target.value);
   };
 
+  const paginationData = data?.data?.data ? {
+    page: data.data.data.page,
+    perPage: data.data.data.perPage,
+    total: data.data.data.total,
+    lastPage: data.data.data.lastPage
+  } : null;
+
   // Filter courses by title
-  const filteredHistories = (data?.data?.data || []).filter((course) =>
+  const filteredHistories = (data?.data?.data?.certificates || []).filter((course) =>
     course.course_title.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
@@ -99,9 +106,9 @@ const CertificateHistory = () => {
             </tbody>
           </table>
         )}
-        {!isLoading && !isError && data?.data?.pagination && (
+        {!isLoading && !isError && paginationData && (
           <GlobalPagination
-            pagination={data.data.pagination}
+            pagination={paginationData}
             onPageChange={setPage}
             onLimitChange={(limit) => {
               setPerPage(limit);

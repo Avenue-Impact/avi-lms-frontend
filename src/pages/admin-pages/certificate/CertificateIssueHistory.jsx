@@ -15,7 +15,7 @@ const CertificateIssueHistory = () => {
     const goBack = useSafeBack();
 
       const [searchParams] = useSearchParams();
-        const title = searchParams.get("title");
+      const title = searchParams.get("title") ? decodeURIComponent(searchParams.get("title")) : "";
 
 
   return (

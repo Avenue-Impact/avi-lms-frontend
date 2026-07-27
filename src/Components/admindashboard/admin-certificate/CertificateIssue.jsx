@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import certificate from "../../../assets/images/certificate.png";
 import AVIbg from "../../../assets/images/live_coaching.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,6 +17,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/Components/ui/form";
 import FormInput from "@/Components/ui/form-input";
 import CertificateCohort from "./CertificateCohort";
+import { useFetchCourseInfo } from "@/hooks/course-management/use-fetch-course-information";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/Components/ui/select";
 
 const issueCertificate = z.object({
   course_title: z.string().min(2, "Course title is required"),
@@ -29,27 +38,58 @@ const CertificateIssue = () => {
   const navigate = useNavigate();
   const goBack = useSafeBack();
 
+  const [selectedCourseType, setSelectedCourseType] = useState("");
   const [selectedCourseId, setSelectedCourseId] = useState(null);
 
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
-  const title = searchParams.get("title");
+  const title = searchParams.get("title") ? decodeURIComponent(searchParams.get("title")) : "";
+  const liveSession = searchParams.get("live_session") === "true";
+  const onDemand = searchParams.get("on_demand") === "true";
 
   const { data, isLoading } = useGetAllCohorts(id);
+  const { data: courseInfo, isLoading: isCourseInfoLoading } = useFetchCourseInfo(id);
+  const courseDetails = courseInfo?.data?.data;
+
+  useEffect(() => {
+    if (courseDetails) {
+      if (courseDetails.available_course_types?.live_session && !courseDetails.available_course_types?.on_demand) {
+        setSelectedCourseType("live class");
+      } else if (courseDetails.available_course_types?.on_demand && !courseDetails.available_course_types?.live_session) {
+        setSelectedCourseType("on demand");
+      }
+    } else {
+      if (liveSession && !onDemand) {
+        setSelectedCourseType("live class");
+      } else if (onDemand && !liveSession) {
+        setSelectedCourseType("on demand");
+      }
+    }
+  }, [courseDetails, liveSession, onDemand]);
 
   const { createCert, isPending } = useIssueCertificate(id);
 
   const form = useForm({
     resolver: zodResolver(issueCertificate),
     defaultValues: {
-      course_title: "",
-      issue_date: "",
+      course_title: title || "",
+      issue_date: new Date().toISOString().split("T")[0],
     },
   });
 
   const onSubmit = async (data) => {
-    if (!selectedCourseId) {
-      alert("Please select a course");
+    if (!selectedCourseType) {
+      alert("Please select a course type");
+      return;
+    }
+
+    if (selectedCourseType === "live class" && !selectedCourseId) {
+      alert("Please select a cohort");
+      return;
+    }
+
+    if (selectedCourseType === "on demand" && !selectedCourseId) {
+      alert("Please select a duration");
       return;
     }
 
@@ -57,6 +97,7 @@ const CertificateIssue = () => {
       cohort: selectedCourseId,
       course_title: data.course_title,
       issue_date: data.issue_date,
+      course_type: selectedCourseType,
     });
   };
 
@@ -107,19 +148,76 @@ const CertificateIssue = () => {
             </p>
           </div>
 
-          {/* Input for cohort  */}
+          {/* Input for course type and cohort/duration */}
           <div className="space-y-5">
-            <div className="">
-              <p className="font-[600] text-gray-600">
-                Select cohort to issue certificate
+            <div>
+              <p className="font-[600] text-gray-600 mb-2">
+                Select Course Type
               </p>
-              <CertificateCohort
-                selectedCourseId={selectedCourseId}
-                setSelectedCourseId={setSelectedCourseId}
-                cohorts={data}
-                isLoading={isLoading}
-              />
+              <Select 
+                value={selectedCourseType} 
+                onValueChange={(value) => {
+                  setSelectedCourseType(value);
+                  setSelectedCourseId(null);
+                }}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select Course Type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {(courseDetails?.available_course_types?.live_session ?? liveSession) && (
+                      <SelectItem value="live class">Live Session</SelectItem>
+                    )}
+                    {(courseDetails?.available_course_types?.on_demand ?? onDemand) && (
+                      <SelectItem value="on demand">On-Demand</SelectItem>
+                    )}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
+
+            {selectedCourseType === "live class" && (
+              <div>
+                <p className="font-[600] text-gray-600 mb-2">
+                  Select cohort to issue certificate
+                </p>
+                <CertificateCohort
+                  selectedCourseId={selectedCourseId}
+                  setSelectedCourseId={setSelectedCourseId}
+                  cohorts={data}
+                  isLoading={isLoading}
+                />
+              </div>
+            )}
+
+            {selectedCourseType === "on demand" && (
+              <div>
+                <p className="font-[600] text-gray-600 mb-2">
+                  Select course duration to print on certificate
+                </p>
+                <Select 
+                  value={selectedCourseId || ""} 
+                  onValueChange={(value) => setSelectedCourseId(value)}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select Duration" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-60 overflow-y-auto">
+                    <SelectGroup>
+                      {(courseDetails?.pricing?.on_demand ?? courseDetails?.pre_recorded_price ?? [])
+                        .map((p) => p.duration)
+                        .filter(Boolean)
+                        .map((duration) => (
+                          <SelectItem key={duration} value={duration}>
+                            {duration}
+                          </SelectItem>
+                        ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
 
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)}>

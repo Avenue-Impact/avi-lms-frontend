@@ -7,15 +7,19 @@ import { Link } from "react-router-dom";
 import joinTeam from "../../../assets/images/join_team.png";
 import { useFetchAllAdminCourses } from "@/hooks/course-management/use-fetch-all-courses";
 import _ from "lodash";
+import GlobalPagination from "@/Components/ui/GlobalPagination";
 
 const CertificatePage = () => {
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(6);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data, isLoading, isError } = useFetchAllAdminCourses();
+  const { data, isLoading, isError } = useFetchAllAdminCourses(page, perPage, true, searchQuery);
 
   const handleSearch = useCallback(
     _.debounce((query) => {
       setSearchQuery(query);
+      setPage(1);
     }, 500),
     [],
   );
@@ -24,10 +28,7 @@ const CertificatePage = () => {
     handleSearch(event.target.value);
   };
 
-  // Filter courses by title
-  const filteredCourses = data?.data?.data?.courses.filter((course) =>
-    course.title.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  const filteredCourses = data?.data?.data?.courses || [];
 
   return (
     <div className="pb-20">
@@ -63,8 +64,9 @@ const CertificatePage = () => {
         ) : (
           <main className="grid grid-cols-3 gap-[18px]">
             {filteredCourses.map((course) => {
-              const path = `/admin/certificate/certificate-issue?id=${course.id}&title=${course.title}&coursetypes=${
-                course.available_course_types.live_session ||
+              const path = `/admin/certificate/certificate-issue?id=${course.id}&title=${encodeURIComponent(course.title)}&live_session=${
+                course.available_course_types.live_session
+              }&on_demand=${
                 course.available_course_types.on_demand
               }`
               return (
@@ -111,6 +113,16 @@ const CertificatePage = () => {
               );
             })}
           </main>
+        )}
+        {!isLoading && !isError && data?.data?.pagination && (
+          <GlobalPagination
+            pagination={data.data.pagination}
+            onPageChange={setPage}
+            onLimitChange={(limit) => {
+              setPerPage(limit);
+              setPage(1);
+            }}
+          />
         )}
       </div>
     </div>

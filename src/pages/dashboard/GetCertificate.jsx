@@ -1,34 +1,89 @@
-// import DashButton from '../auth/ButtonDash';
 import { Skeleton } from "@/Components/ui/skeleton";
 import { useProfile } from "@/hooks/students/use-fetch-student-profile";
 import { useGetCertificate } from "@/hooks/students/use-get-certificate";
+import { useGetCertificateStatus } from "@/hooks/students/use-get-certificate-status";
+import { useRequestCertificate } from "@/hooks/students/use-request-certificate";
 import { useViewEnrolledCourse } from "@/hooks/students/use-view-enrolled-course";
-import { useLoaderData, useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import DashButton from "../auth/ButtonDash";
+import { STUDENT_BASE_URL } from "@/constant";
+import axios from "axios";
+import Cookies from "js-cookie";
+import toast from "react-hot-toast";
+import { AlertCircle, CheckCircle, Clock, Download, RefreshCw, FileText } from "lucide-react";
 
 export const GetCertificate = () => {
   const { courseId } = useParams();
   const [queryString] = useSearchParams();
-  const cohortId = queryString.get("cohortId");
+  const rawCohortId = queryString.get("cohortId") || "";
+  const rawDuration = queryString.get("duration") || "";
+  const rawCohortName = queryString.get("cohortName") || "";
+  const rawCourseType = queryString.get("course_type") || queryString.get("courseType") || "";
 
+  // Get request status & eligibility
   const {
-    isLoading,
-    error,
-    data: certificateHTML,
-  } = useGetCertificate(courseId, cohortId);
+    data: statusData,
+    isLoading: isStatusLoading,
+    refetch: refetchStatus,
+  } = useGetCertificateStatus(courseId);
 
-  const handleDownload = () => {
-    if (!certificateHTML) return;
-    const blob = new Blob([certificateHTML.data], { type: "text/html" });
-    const url = URL.createObjectURL(blob);
+  // Mutation to request certificate
+  const { mutate: requestCert, isPending: isRequesting } = useRequestCertificate(courseId);
 
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "certificate.html";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const courseType = rawCourseType || statusData?.courseType || (rawCohortId === "on-demand" ? "on demand" : "live class");
+  const isOnDemand = String(courseType).toLowerCase().includes("demand");
+  const effectiveDuration = rawDuration || statusData?.subscriptionLimit || "";
+  const effectiveCohortId = rawCohortId !== "on-demand" ? rawCohortId : (statusData?.cohortId || "");
+  const effectiveCohortName = rawCohortName || statusData?.cohort || "";
+  const enrollmentId = statusData?.enrollmentId || "";
+
+  const handleDownload = async () => {
+    try {
+      toast.loading("Preparing download...", { id: "cert-download" });
+
+      const downloadParams = new URLSearchParams();
+      downloadParams.append("course_type", courseType);
+      if (enrollmentId) downloadParams.append("enrollment_id", enrollmentId);
+
+      if (isOnDemand) {
+        if (effectiveDuration) downloadParams.append("duration", effectiveDuration);
+      } else {
+        if (effectiveCohortId) downloadParams.append("cohort_id", effectiveCohortId);
+        if (effectiveCohortName) downloadParams.append("cohort_name", effectiveCohortName);
+      }
+
+      const response = await axios.get(
+        `${STUDENT_BASE_URL}/courses/${courseId}/certificate/download?${downloadParams.toString()}`,
+        {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+          responseType: "blob",
+        }
+      );
+
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `certificate-${queryString.get("title") || "course"}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      toast.success("Download started successfully!", { id: "cert-download" });
+      // Instantly refetch status to flip UI to "downloaded" state
+      refetchStatus();
+    } catch (e) {
+      toast.error("Failed to download PDF certificate.", { id: "cert-download" });
+    }
   };
+
+  const isApproved = statusData?.status === "approved";
+  const requestStatus = statusData?.status || "none";
+  const isEligible = statusData?.isEligible || false;
 
   return (
     <div className="w-full">
@@ -43,10 +98,26 @@ export const GetCertificate = () => {
           <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm transition-shadow hover:shadow-md">
             <div className="bg-gray-50 px-6 py-4 border-b border-gray-100 flex items-center justify-between">
               <h3 className="text-lg font-semibold text-gray-800">Certificate Preview</h3>
-              <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">Completed</span>
+              {isApproved ? (
+                <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full flex items-center gap-1">
+                  <CheckCircle className="w-3.5 h-3.5" /> Approved
+                </span>
+              ) : requestStatus === "pending" ? (
+                <span className="text-xs font-medium text-amber-600 bg-amber-50 px-2.5 py-1 rounded-full flex items-center gap-1">
+                  <Clock className="w-3.5 h-3.5" /> Under Review
+                </span>
+              ) : requestStatus === "rejected" ? (
+                <span className="text-xs font-medium text-rose-600 bg-rose-50 px-2.5 py-1 rounded-full flex items-center gap-1">
+                  <AlertCircle className="w-3.5 h-3.5" /> Rejected
+                </span>
+              ) : (
+                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full">
+                  Locked
+                </span>
+              )}
             </div>
             <div className="p-6 bg-gray-100/50 flex items-center justify-center min-h-[300px]">
-              <Cert />
+              <Cert isApproved={isApproved} statusData={statusData} />
             </div>
           </div>
 
@@ -72,16 +143,104 @@ export const GetCertificate = () => {
           <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm sticky top-6">
             <div className="mb-6">
               <h3 className="text-lg font-semibold text-gray-800 mb-1">Actions</h3>
-              <p className="text-sm text-gray-500">Download your verified certificate.</p>
+              <p className="text-sm text-gray-500">Manage your certificate request.</p>
             </div>
             
-            <DashButton
-              className="h-12 w-full text-base font-medium text-white shadow-sm disabled:bg-slate-300 disabled:cursor-not-allowed bg-[#CC1747] hover:bg-[#B3123F] transition-colors"
-              disabled={isLoading || !certificateHTML}
-              onClick={handleDownload}
-            >
-              Download Certificate
-            </DashButton>
+            {isStatusLoading ? (
+              <Skeleton className="h-12 w-full rounded-lg" />
+            ) : (
+              <>
+                {/* Status-based CTA block */}
+                {requestStatus === "none" && (
+                  <>
+                    {isEligible ? (
+                      <DashButton
+                        className="h-12 w-full text-base font-medium text-white shadow-sm bg-[#CC1747] hover:bg-[#B3123F] transition-colors flex items-center justify-center gap-2"
+                        onClick={() => requestCert()}
+                        disabled={isRequesting}
+                      >
+                        {isRequesting ? "Submitting..." : "Request Certificate"}
+                      </DashButton>
+                    ) : (
+                      <div>
+                        <DashButton
+                          className="h-12 w-full text-base font-medium text-white bg-slate-300 cursor-not-allowed"
+                          disabled={true}
+                        >
+                          Certificate Locked
+                        </DashButton>
+                        <p className="text-xs text-amber-600 mt-2 flex items-start gap-1">
+                          <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                          <span>
+                            {courseType === "on demand"
+                              ? "Please complete all course recording videos (100% progress) to unlock your certificate request."
+                              : "Your certificate is awaiting graduation confirmation from your cohort instructor or administrator."}
+                          </span>
+                        </p>
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {requestStatus === "pending" && (
+                  <div>
+                    <DashButton
+                      className="h-12 w-full text-base font-medium text-amber-700 bg-amber-55 bg-amber-50 cursor-not-allowed border border-amber-200 flex items-center justify-center gap-2"
+                      disabled={true}
+                    >
+                      <Clock className="w-5 h-5 animate-pulse" /> Pending Approval
+                    </DashButton>
+                    <p className="text-xs text-gray-500 mt-2">
+                      Your certificate request is currently under review by our administration. Once approved, you will be notified and the download link will activate.
+                    </p>
+                  </div>
+                )}
+
+                {requestStatus === "rejected" && (
+                  <div className="flex flex-col gap-3">
+                    <div className="rounded-lg bg-rose-50 border border-rose-100 p-4">
+                      <h4 className="text-sm font-semibold text-rose-800 flex items-center gap-1.5">
+                        <AlertCircle className="w-4 h-4" /> Request Denied
+                      </h4>
+                      <p className="text-xs text-rose-700 mt-1">
+                        Reason: {statusData?.rejection_reason || "Admin has rejected the request."}
+                      </p>
+                    </div>
+                    <DashButton
+                      className="h-12 w-full text-base font-medium text-white bg-[#CC1747] hover:bg-[#B3123F] transition-colors"
+                      onClick={() => requestCert()}
+                      disabled={isRequesting}
+                    >
+                      {isRequesting ? "Submitting..." : "Re-submit Request"}
+                    </DashButton>
+                  </div>
+                )}
+
+                {requestStatus === "approved" && (
+                  <DashButton
+                    className="h-12 w-full text-base font-medium text-white shadow-sm bg-emerald-600 hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2"
+                    onClick={handleDownload}
+                  >
+                    <Download className="w-5 h-5" /> Download Certificate
+                  </DashButton>
+                )}
+
+                {requestStatus === "downloaded" && (
+                  <div>
+                    <DashButton
+                      className="h-12 w-full text-base font-medium text-white bg-[#CC1747] hover:bg-[#B3123F] transition-colors flex items-center justify-center gap-2"
+                      onClick={() => requestCert()}
+                      disabled={isRequesting}
+                    >
+                      <RefreshCw className="w-5 h-5" /> Request Re-download
+                    </DashButton>
+                    <p className="text-xs text-gray-500 mt-2">
+                      You have already downloaded your certificate. If you need another copy, please submit a re-download request for admin approval.
+                    </p>
+                  </div>
+                )}
+              </>
+            )}
             
             <hr className="my-6 border-gray-100" />
             
@@ -95,18 +254,35 @@ export const GetCertificate = () => {
     </div>
   );
 };
-import { useState, useEffect } from "react";
 
-const Cert = () => {
+const Cert = ({ isApproved, statusData }) => {
   const { courseId } = useParams();
   const [queryString] = useSearchParams();
-  const cohortId = queryString.get("cohortId");
+  const rawCohortId = queryString.get("cohortId") || "";
+  const rawDuration = queryString.get("duration") || "";
+  const rawCohortName = queryString.get("cohortName") || "";
+  const rawCourseType = queryString.get("course_type") || queryString.get("courseType") || "";
+
+  const courseType = rawCourseType || statusData?.courseType || (rawCohortId === "on-demand" ? "on demand" : "live class");
+  const isOnDemand = String(courseType).toLowerCase().includes("demand");
+  const effectiveDuration = rawDuration || statusData?.subscriptionLimit || "";
+  const effectiveCohortId = rawCohortId !== "on-demand" ? rawCohortId : (statusData?.cohortId || "");
+  const effectiveCohortName = rawCohortName || statusData?.cohort || "";
+  const enrollmentId = statusData?.enrollmentId || "";
+
+  const certParams = {
+    course_type: courseType,
+    ...(enrollmentId ? { enrollment_id: enrollmentId } : {}),
+    ...(isOnDemand
+      ? { duration: effectiveDuration }
+      : { cohort_id: effectiveCohortId, cohort_name: effectiveCohortName }),
+  };
 
   const {
     isLoading,
     error,
     data: certificateHTML,
-  } = useGetCertificate(courseId, cohortId);
+  } = useGetCertificate(courseId, certParams);
 
   const [errorMsg, setErrorMsg] = useState(null);
 
@@ -126,6 +302,18 @@ const Cert = () => {
       }
     }
   }, [error]);
+
+  if (!isApproved) {
+    return (
+      <div className="text-center p-8 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50 flex flex-col items-center justify-center min-h-[250px]">
+        <FileText className="w-12 h-12 text-gray-300 mb-2" />
+        <p className="text-gray-500 font-medium">Certificate Preview Locked</p>
+        <p className="text-xs text-gray-400 mt-1 max-w-xs leading-relaxed">
+          Preview will unlock automatically once your certificate request has been approved by the admin.
+        </p>
+      </div>
+    );
+  }
 
   if (isLoading) return <Skeleton className="h-[300px] w-[500px] max-w-full rounded-lg" />;
   if (error)
@@ -214,4 +402,6 @@ const CourseDetails = () => {
     </>
   );
 };
+
+import { useState, useEffect } from "react";
 export default GetCertificate;

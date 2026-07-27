@@ -40,7 +40,7 @@ const AviNav = ({ showNav: propShowNav, setShowNav: propSetShowNav }) => {
   const isAuthenticated = !!Cookies.get("token");
 
   if (!isAuthenticated && !isPreviewCourse) {
-    navLinks.push({ label: "Login", to: "/login" });
+    // navLinks.push({ label: "Login", to: "/login" });
   }
 
   const navigate = useNavigate();
@@ -107,15 +107,26 @@ const AviNav = ({ showNav: propShowNav, setShowNav: propSetShowNav }) => {
               Dashboard
             </button>
           ) : !isPreviewCourse ? (
-            <button
+            <div className="block space-y-3">
+              <button
               onClick={() => {
-                navigate("/signup");
+                navigate("/login");
                 setShowNav((prev) => !prev);
               }}
-              className="w-full rounded-full bg-[#CC1747] px-6 py-3 capitalize text-[#FFEBF0] md:w-auto"
+              className="w-full rounded-full border-[#FFEBF0] border px-6 py-3 capitalize text-[#FFEBF0] md:w-auto"
             >
-              Register
+              Login
             </button>
+              <button
+                onClick={() => {
+                  navigate("/signup");
+                  setShowNav((prev) => !prev);
+                }}
+                className="w-full rounded-full bg-[#CC1747] px-6 py-3 capitalize text-[#FFEBF0] md:w-auto"
+              >
+                Register
+              </button>
+            </div>
           ) : null}
         </div>
         </div>
@@ -131,15 +142,26 @@ const AviNav = ({ showNav: propShowNav, setShowNav: propSetShowNav }) => {
               Dashboard
             </button>
           ) : !isPreviewCourse ? (
-            <button
-              onClick={() => {
-                navigate("/signup");
-                setShowNav((prev) => !prev);
-              }}
-              className="w-full rounded-full bg-[#CC1747] px-6 py-3 capitalize text-[#FFEBF0] md:w-auto"
-            >
-              Register
-            </button>
+            <div className="flex items-center justify-between gap-3">
+              <button
+                onClick={() => {
+                  navigate("/login");
+                  setShowNav((prev) => !prev);
+                }}
+                className="w-full rounded-full border-[#CC1747] border hover:bg-[#CC1747] hover:text-[#FFEBF0] px-6 py-2 capitalize text-[#CC1747] md:w-auto"
+              >
+                Login
+              </button>
+              <button
+                onClick={() => {
+                  navigate("/signup");
+                  setShowNav((prev) => !prev);
+                }}
+                className="w-full rounded-full bg-[#CC1747] px-6 py-2 capitalize text-[#FFEBF0] md:w-auto"
+              >
+                Register
+              </button>
+            </div>
           ) : null}
         </div>
       </nav>

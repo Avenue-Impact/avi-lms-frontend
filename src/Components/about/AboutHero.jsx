@@ -1,10 +1,9 @@
 import Hero from "../Hero";
 import HeroHeading from "../MainContent/HeroHeading";
-import bgVideo from "../../assets/video/about-bg.mp4";
 
 const AboutHero = () => {
   return (
-    <Hero videoSrc={bgVideo} className={"items-end pb-16 md:pb-24"}>
+    <Hero imgSrc="/images/pexels-amardeep-singh-632735-6829771.jpg" className={"items-end pb-16 md:pb-24"}>
       <div className="mb-6 md:mb-0">
         <HeroHeading>About Us</HeroHeading>
 

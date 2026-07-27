@@ -9,6 +9,18 @@ function CourseVideoSection({ data }) {
   const { courseId } = useParams();
   const [activeTab, setActiveTab] = useState("assignment");
 
+  const activeVideo = data?.data?.course_detail?.recorded_session
+    ?.flatMap((sec) => sec.videos || [])
+    ?.find((v) => (v.id || v._id) === videoId);
+
+  const initialProgress = activeVideo?.progress || {
+    current_time: 0,
+    progress_percentage: 0,
+    is_completed: false,
+  };
+
+  const cohortId = data?.data?.cohort_id || data?.data?.course_detail?.cohort_id || data?.data?.data?.cohort_id;
+
   return (
     <section className="relative flex h-auto flex-col">
       <div className="mb-3 text-center md:text-left">
@@ -27,6 +39,8 @@ function CourseVideoSection({ data }) {
             videoId={videoId}
             courseId={courseId}
             videoUrl={videoUrl}
+            cohortId={cohortId}
+            initialProgress={initialProgress}
             coverImage={data?.data?.course_detail?.cover_image || data?.data?.data?.cover_image || joinTeamImage}
           />
         ) : (

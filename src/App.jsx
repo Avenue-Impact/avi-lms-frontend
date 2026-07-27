@@ -62,6 +62,7 @@ import GetCertificate from "./pages/dashboard/GetCertificate";
 import JoinProjectTeam from "./pages/dashboard/JoinProjectTeam";
 import LeaveRating from "./pages/dashboard/LeaveRating";
 import MentorshipList from "./pages/dashboard/MentorshipList";
+import CourseProgress from "./pages/dashboard/CourseProgress";
 
 import { useState } from "react";
 import { Toaster } from "react-hot-toast";
@@ -102,6 +103,8 @@ import ReferralsAdmin from "./pages/admin-pages/affiliate/ReferralsAdmin";
 import WithdrawalRequest from "./pages/admin-pages/affiliate/WithdrawalRequest";
 import CertificateIssueHistory from "./pages/admin-pages/certificate/CertificateIssueHistory";
 import CertificateMainPage from "./pages/admin-pages/certificate/CertificateMainPage";
+import CertificateRequests from "./pages/admin-pages/certificate/CertificateRequests";
+import StudentProgressVisualizer from "./pages/admin-pages/certificate/StudentProgressVisualizer";
 
 import ZoomManagementLayout from "./layouts/admin/ZoomManagementLayout";
 import AccountManagLayout from "./layouts/admin/AccountManagLayout";
@@ -436,6 +439,10 @@ function App() {
                   path: ":courseId/projects",
                   element: <JoinProjectTeam />,
                 },
+                {
+                  path: ":courseId/progress",
+                  element: <CourseProgress />,
+                },
               ],
             },
           ],
@@ -677,6 +684,14 @@ function App() {
                     {
                       path: "certificate-issue",
                       element: <CertificateIssueHistory />,
+                    },
+                    {
+                      path: "requests",
+                      element: <CertificateRequests />,
+                    },
+                    {
+                      path: "requests/progress/:enrollmentId",
+                      element: <StudentProgressVisualizer />,
                     },
                   ],
                 },

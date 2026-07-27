@@ -1,7 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useSearchParams, useLocation } from "react-router-dom";
+import { Link, useSearchParams, useLocation, useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
+import GoogleAuthButton from "./components/GoogleAuthButton";
 import { z } from "zod";
 import AuthLayout from "./components/AuthLayout";
 import ReferralAuthLayout from "./components/ReferralAuthLayout";
@@ -76,6 +78,8 @@ const loginSchema = z
   });
 
 const SignUp = ({ isPage = true }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [success, setSuccess] = useState("");
   const [title, setTitle] = useState("Sign Up and Start Learning");
   const [confirm, setConfirm] = useState(false);
@@ -85,6 +89,8 @@ const SignUp = ({ isPage = true }) => {
   const _r = queryString.get("_r");
   const from = _r ? decodeURIComponent(_r) : "";
 
+  const [googleToken, setGoogleToken] = useState("");
+  const [step, setStep] = useState(location.state?.googleToken ? "form" : "choice");
   const [showReferralReminder, setShowReferralReminder] = useState(false);
   const [pendingSignupValues, setPendingSignupValues] = useState(null);
   const [skipReferralReminder, setSkipReferralReminder] = useState(false);
@@ -128,6 +134,49 @@ const SignUp = ({ isPage = true }) => {
   ];
 
   const url = import.meta.env.VITE_AUTH_URL;
+
+  const handleGoogleCallback = async (credential) => {
+    try {
+      const base64Url = credential.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      const jsonPayload = decodeURIComponent(
+        window
+          .atob(base64)
+          .split("")
+          .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+          .join("")
+      );
+      const payload = JSON.parse(jsonPayload);
+      if (!payload || !payload.email) {
+        toast.error("Failed to retrieve user details from Google");
+        return;
+      }
+
+      const response = await axios.post(`${url}/google-check`, {
+        email: payload.email,
+      });
+
+      if (response.data.exists) {
+        toast.error("Account already exists. Please log in.");
+        navigate(`/login${_r ? `?_r=${encodeURIComponent(_r)}` : ""}`);
+        return;
+      }
+
+      form.setValue("email", payload.email);
+      if (payload.given_name) form.setValue("firstName", payload.given_name);
+      if (payload.family_name) form.setValue("lastName", payload.family_name);
+      
+      const usernamePart = payload.email.split("@")[0].toLowerCase();
+      form.setValue("username", usernamePart);
+
+      setGoogleToken(credential);
+      setStep("form");
+      toast.success("Google account linked. Please complete your password and phone number.");
+    } catch (err) {
+      console.error("Google authentication error:", err);
+      toast.error("Google authentication failed. Please try again.");
+    }
+  };
 
   const handleSubmit = async (values) => {
     try {
@@ -190,6 +239,7 @@ const SignUp = ({ isPage = true }) => {
         referral_code: referralCode,
         phoneNumber,
         source_url: window.location.href,
+        googleToken: googleToken || undefined,
       };
 
       const response = await axios.post(`${url}/signup`, users, {
@@ -208,6 +258,25 @@ const SignUp = ({ isPage = true }) => {
         } else if (from) {
           sessionStorage.setItem("signup_forward_url", from);
         }
+
+        if (response.data.token) {
+          Cookies.set("token", response.data.token, {
+            expires: 1,
+            secure: true,
+            sameSite: "strict",
+            path: "/",
+          });
+          Cookies.set("userRole", response.data.newUser.role || "student", {
+            expires: 1,
+            secure: true,
+            sameSite: "strict",
+            path: "/",
+          });
+          toast.success("Registration successful!");
+          navigate(from || "/dashboard");
+          return;
+        }
+
         setSuccess("success");
         setUser({
           firstName,
@@ -248,6 +317,12 @@ const SignUp = ({ isPage = true }) => {
   if (code) {
     form.setValue("referralCode", code);
   }
+
+  useEffect(() => {
+    if (location.state?.googleToken) {
+      handleGoogleCallback(location.state.googleToken);
+    }
+  }, [location.state]);
 
   // Add viewport meta tag for iOS
   useEffect(() => {
@@ -338,7 +413,7 @@ const SignUp = ({ isPage = true }) => {
         const LayoutComponent = isPartnerReferral ? ReferralAuthLayout : AuthLayout;
         return (
           <LayoutComponent
-            title="Register Now"
+            title={step === "choice" ? "Choose Registration" : "Register Now"}
             isMobileStacked={true}
             isPage={isPage}
             alignTop={true}
@@ -347,206 +422,287 @@ const SignUp = ({ isPage = true }) => {
               ? "Join learners gaining practical knowledge, career support, and industry-ready experience through Avenue Impact." 
               : "Join learners gaining practical knowledge, career support, and industry-ready experience through "}
           >
-            <Form {...form}>
-          <form ref={formRef} onSubmit={form.handleSubmit(handleSubmit)}>
-            <div className="space-y-4">
-              <div
-                className={`${isPage ? "" : "sm:grid-cols-2"} grid gap-x-3 gap-y-4 sm:grid-cols-2`}
-              >
-                <FormInput
-                  label="First Name"
-                  name="firstName"
-                  control={form.control}
-                  type="text"
-                  id="firstName"
-                  placeholder=""
-                  onFocus={handleInputFocus}
-                  autoComplete="given-name"
-                  autoCapitalize="words"
-                  absoluteError
-                />
-                <FormInput
-                  label="Last Name"
-                  name="lastName"
-                  control={form.control}
-                  type="text"
-                  id="lastName"
-                  placeholder=""
-                  onFocus={handleInputFocus}
-                  autoComplete="family-name"
-                  autoCapitalize="words"
-                  absoluteError
-                />
-              </div>
-              <div
-                className={`${isPage ? "" : "sm:grid-cols-2"} grid gap-x-3 gap-y-4 sm:grid-cols-2`}
-              >
-                <FormInput
-                  label="User Name"
-                  name="username"
-                  control={form.control}
-                  type="text"
-                  id="username"
-                  placeholder=""
-                  onFocus={handleInputFocus}
-                  autoComplete="username"
-                  autoCapitalize="words"
-                  absoluteError
-                />
-                <FormInput
-                  label="Email Address"
-                  name={"email"}
-                  control={form.control}
-                  type="email"
-                  id="email"
-                  placeholder=""
-                  onFocus={handleInputFocus}
-                  autoComplete="email"
-                  autoCapitalize="none"
-                  absoluteError
-                />
-              </div>
-              <PhoneInput
-                label="Phone Number"
-                name="phoneNumber"
-                control={form.control}
-                id="phoneNumber"
-                placeholder="813 696 9006"
-                absoluteError
-              />
-              <div
-                className={`${isPage ? "" : "sm:grid-cols-2"} grid gap-x-3 gap-y-4 sm:grid-cols-2`}
-              >
-                <PasswordInput
-                  id="password"
-                  autoComplete="new-password"
-                  label="Password"
-                  name="password"
-                  control={form.control}
-                  placeholder=""
-                  onFocus={(e) => {
-                    handleInputFocus(e);
-                    setIsPasswordFocused(true);
-                  }}
-                  onBlur={() => {
-                    setIsPasswordFocused(false);
-                  }}
-                  absoluteError
-                />
-                <PasswordInput
-                  id="confirmPassword"
-                  autoComplete="new-password"
-                  label="Confirm Password"
-                  name="confirmPassword"
-                  control={form.control}
-                  placeholder=""
-                  onFocus={(e) => {
-                    handleInputFocus(e);
-                    setIsPasswordFocused(true);
-                  }}
-                  onBlur={() => {
-                    setIsPasswordFocused(false);
-                  }}
-                  absoluteError
-                />
-              </div>
-
-              <div
-                className={`grid transition-all duration-300 ease-in-out ${
-                  isPasswordFocused
-                    ? "mb-4 mt-2 grid-rows-[1fr] opacity-100"
-                    : "mb-0 mt-0 grid-rows-[0fr] opacity-0"
-                }`}
-              >
-                <div className="overflow-hidden">
-                  <div className="flex flex-col gap-2 rounded-md border border-gray-100 bg-gray-50 p-4">
-                    <p className="mb-1 text-xs font-semibold text-gray-700">
-                      Password must contain:
-                    </p>
-                    {passwordRequirements.map((req, idx) => (
-                      <div key={idx} className="flex items-center gap-2">
-                        {req.valid ? (
-                          <CheckCircle2 className="h-4 w-4 text-green-600 transition-colors duration-300" />
-                        ) : (
-                          <Circle className="h-4 w-4 text-gray-300 transition-colors duration-300" />
-                        )}
-                        <span
-                          className={`text-xs transition-colors duration-300 ${req.valid ? "text-green-700" : "text-gray-500"}`}
-                        >
-                          {req.label}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
+            {step === "choice" ? (
+              <div className="flex flex-col gap-6 py-6 font-poppins">
+                <div className="text-center mb-2">
+                  <h2 className="text-xl font-bold text-gray-900">Create your account</h2>
+                  <p className="text-xs text-gray-500 mt-1">Choose how you want to register</p>
                 </div>
+
+                <GoogleAuthButton onCallback={handleGoogleCallback} text="signup_with" />
+
+                <div className="relative flex py-2 items-center">
+                  <div className="flex-grow border-t border-gray-200"></div>
+                  <span className="flex-shrink mx-4 text-xs font-semibold text-gray-400">OR</span>
+                  <div className="flex-grow border-t border-gray-200"></div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setStep("form")}
+                  className="w-full flex items-center justify-center gap-3 px-6 py-3.5 border border-gray-300 hover:border-[#CC1747] hover:bg-gray-50/50 rounded-xl transition-all font-semibold text-gray-700 text-sm hover:text-[#CC1747]"
+                >
+                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                  Register now (with form)
+                </button>
+
+                <p className="mt-4 flex items-center justify-center gap-4 text-center">
+                  <span className="text-sm text-[#514A4A]">
+                    Already have an account?
+                  </span>
+                  <Link
+                    to={
+                      route("/login", courseId, courseTitle) +
+                      (_r
+                        ? (courseId || courseTitle ? "&" : "?") +
+                          `_r=${encodeURIComponent(_r)}`
+                        : "")
+                    }
+                    className="text-sm font-semibold capitalize text-primary-color-600"
+                  >
+                    sign in
+                  </Link>
+                </p>
               </div>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStep("choice");
+                    setGoogleToken("");
+                    form.reset({
+                      email: "",
+                      password: "",
+                      firstName: "",
+                      lastName: "",
+                      username: "",
+                      confirmPassword: "",
+                      referralCode: "",
+                      phoneNumber: "",
+                    });
+                  }}
+                  className="mb-4 flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-[#CC1747] transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                  </svg>
+                  Choose another registration method
+                </button>
 
-              <FormInput
-                label="Referral Code"
-                name="referralCode"
-                control={form.control}
-                type="text"
-                id="referralCode"
-                placeholder=""
-                onFocus={handleInputFocus}
-                autoComplete="off"
-                absoluteError
-              />
-            </div>
-            <div className="mt-[10px] flex items-center gap-4">
-              <input
-                type="checkbox"
-                name=""
-                id=""
-                className="h-6 w-6 accent-[#D0D5DD]"
-              />
-              <p className="text-sm text-label">
-                Send me exclusive offers, tailored recommendations, and
-                educational tips.
-              </p>
-            </div>
+                <Form {...form}>
+                  <form ref={formRef} onSubmit={form.handleSubmit(handleSubmit)}>
+                    {googleToken && (
+                      <div className="mb-6 rounded-lg bg-green-50 border border-green-200 p-4 text-xs text-green-800 font-medium font-poppins flex items-start gap-2.5">
+                        <svg className="w-4 h-4 shrink-0 text-green-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <div>
+                          <strong className="block mb-0.5 text-green-900 font-bold">Google account connected!</strong>
+                          Create password to complete registration
+                        </div>
+                      </div>
+                    )}
+                    <div className="space-y-4">
+                      <div
+                        className={`${isPage ? "" : "sm:grid-cols-2"} grid gap-x-3 gap-y-4 sm:grid-cols-2`}
+                      >
+                        <FormInput
+                          label="First Name"
+                          name="firstName"
+                          control={form.control}
+                          type="text"
+                          id="firstName"
+                          placeholder=""
+                          onFocus={handleInputFocus}
+                          autoComplete="given-name"
+                          autoCapitalize="words"
+                          absoluteError
+                        />
+                        <FormInput
+                          label="Last Name"
+                          name="lastName"
+                          control={form.control}
+                          type="text"
+                          id="lastName"
+                          placeholder=""
+                          onFocus={handleInputFocus}
+                          autoComplete="family-name"
+                          autoCapitalize="words"
+                          absoluteError
+                        />
+                      </div>
+                      <div
+                        className={`${isPage ? "" : "sm:grid-cols-2"} grid gap-x-3 gap-y-4 sm:grid-cols-2`}
+                      >
+                        <FormInput
+                          label="Username"
+                          name="username"
+                          control={form.control}
+                          type="text"
+                          id="username"
+                          placeholder=""
+                          onFocus={handleInputFocus}
+                          autoComplete="username"
+                          absoluteError
+                        />
+                        <FormInput
+                          label="Email"
+                          name="email"
+                          control={form.control}
+                          type="text"
+                          id="email"
+                          placeholder=""
+                          onFocus={handleInputFocus}
+                          autoComplete="email"
+                          absoluteError
+                        />
+                      </div>
+                      <PhoneInput
+                        label="Phone Number"
+                        name="phoneNumber"
+                        control={form.control}
+                        id="phoneNumber"
+                        placeholder="813 696 9006"
+                        absoluteError
+                      />
+                      <div
+                        className={`${isPage ? "" : "sm:grid-cols-2"} grid gap-x-3 gap-y-4 sm:grid-cols-2`}
+                      >
+                        <PasswordInput
+                          id="password"
+                          autoComplete="new-password"
+                          label="Password"
+                          name="password"
+                          control={form.control}
+                          placeholder=""
+                          onFocus={(e) => {
+                            handleInputFocus(e);
+                            setIsPasswordFocused(true);
+                          }}
+                          onBlur={() => {
+                            setIsPasswordFocused(false);
+                          }}
+                          absoluteError
+                        />
+                        <PasswordInput
+                          id="confirmPassword"
+                          autoComplete="new-password"
+                          label="Confirm Password"
+                          name="confirmPassword"
+                          control={form.control}
+                          placeholder=""
+                          onFocus={(e) => {
+                            handleInputFocus(e);
+                            setIsPasswordFocused(true);
+                          }}
+                          onBlur={() => {
+                            setIsPasswordFocused(false);
+                          }}
+                          absoluteError
+                        />
+                      </div>
 
-            <div className="mt-[10px] flex items-center gap-4">
-              <input
-                type="checkbox"
-                name=""
-                id=""
-                className="h-4 w-4 accent-[#D0D5DD]"
-                required
-              />
+                      <div
+                        className={`grid transition-all duration-300 ease-in-out ${
+                          isPasswordFocused
+                            ? "mb-4 mt-2 grid-rows-[1fr] opacity-100"
+                            : "mb-0 mt-0 grid-rows-[0fr] opacity-0"
+                        }`}
+                      >
+                        <div className="overflow-hidden">
+                          <div className="flex flex-col gap-2 rounded-md border border-gray-100 bg-gray-50 p-4">
+                            <p className="mb-1 text-xs font-semibold text-gray-700">
+                              Password must contain:
+                            </p>
+                            {passwordRequirements.map((req, idx) => (
+                              <div key={idx} className="flex items-center gap-2">
+                                {req.valid ? (
+                                  <CheckCircle2 className="h-4 w-4 text-green-600 transition-colors duration-300" />
+                                ) : (
+                                  <Circle className="h-4 w-4 text-gray-300 transition-colors duration-300" />
+                                )}
+                                <span
+                                  className={`text-xs transition-colors duration-300 ${req.valid ? "text-green-700" : "text-gray-500"}`}
+                                >
+                                  {req.label}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
 
-              <p className="text-sm text-label">
-                I agree to the <Link to="/terms-of-service" className="text-[#C41E3A] hover:underline font-semibold">terms and conditions</Link>
-              </p>
-            </div>
+                      <FormInput
+                        label="Referral Code"
+                        name="referralCode"
+                        control={form.control}
+                        type="text"
+                        id="referralCode"
+                        placeholder=""
+                        onFocus={handleInputFocus}
+                        autoComplete="off"
+                        absoluteError
+                      />
+                    </div>
+                    <div className="mt-[10px] flex items-center gap-4">
+                      <input
+                        type="checkbox"
+                        name=""
+                        id=""
+                        className="h-6 w-6 accent-[#D0D5DD]"
+                      />
+                      <p className="text-sm text-label">
+                        Send me exclusive offers, tailored recommendations, and
+                        educational tips.
+                      </p>
+                    </div>
 
-            <CommonButton
-              className="mt-4 w-full rounded-lg bg-[#C41E3A] py-3 font-poppins text-base font-semibold capitalize text-white hover:bg-[#a8103a]"
-              type="submit"
-              disabled={isSubmitting || hasErrors}
-            >
-              {isSubmitting ? "loading..." : "Submit Application"}
-            </CommonButton>
-          </form>
-        </Form>
+                    <div className="mt-[10px] flex items-center gap-4">
+                      <input
+                        type="checkbox"
+                        name=""
+                        id=""
+                        className="h-4 w-4 accent-[#D0D5DD]"
+                        required
+                      />
 
-        <p className="mt-4 flex items-center justify-center gap-4 text-center">
-          <span className="text-sm text-[#514A4A]">
-            Already have an account?
-          </span>
-          <Link
-            to={
-              route("/login", courseId, courseTitle) +
-              (_r
-                ? (courseId || courseTitle ? "&" : "?") +
-                  `_r=${encodeURIComponent(_r)}`
-                : "")
-            }
-            className="text-sm font-semibold capitalize text-primary-color-600"
-          >
-            sign in
-          </Link>
-        </p>
+                      <p className="text-sm text-label">
+                        I agree to the <Link to="/terms-of-service" className="text-[#C41E3A] hover:underline font-semibold">terms and conditions</Link>
+                      </p>
+                    </div>
+
+                    <CommonButton
+                      className="mt-4 w-full rounded-lg bg-[#C41E3A] py-3 font-poppins text-base font-semibold capitalize text-white hover:bg-[#a8103a]"
+                      type="submit"
+                      disabled={isSubmitting || hasErrors}
+                    >
+                      {isSubmitting ? "loading..." : "Submit Application"}
+                    </CommonButton>
+                  </form>
+                </Form>
+
+                <p className="mt-4 flex items-center justify-center gap-4 text-center">
+                  <span className="text-sm text-[#514A4A]">
+                    Already have an account?
+                  </span>
+                  <Link
+                    to={
+                      route("/login", courseId, courseTitle) +
+                      (_r
+                        ? (courseId || courseTitle ? "&" : "?") +
+                          `_r=${encodeURIComponent(_r)}`
+                        : "")
+                    }
+                    className="text-sm font-semibold capitalize text-primary-color-600"
+                  >
+                    sign in
+                  </Link>
+                </p>
+              </>
+            )}
           </LayoutComponent>
         );
       })()}
