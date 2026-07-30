@@ -109,16 +109,7 @@ const PayInstallmentPage = () => {
   const total = installments.length;
 
   return (
-    <div className="mx-auto px-4 py-8">
-      {/* Back */}
-      <Link
-        to="/dashboard"
-        className="mb-6 inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800"
-      >
-        <FontAwesomeIcon icon={faArrowLeft} />
-        Back to Dashboard
-      </Link>
-
+    <div className="mx-auto px-4 pt-4 pb-8">
       <h1 className="mb-1 text-2xl font-bold text-[#23314A]">Installment Payment</h1>
       <p className="mb-6 text-sm text-gray-500">
         {paidCount} of {total} installments paid
