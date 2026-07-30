@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useSearchParams, Link } from "react-router-dom";
 import { useFetchInstallments } from "@/hooks/students/use-fetch-installments";
 import { usePayInstallment } from "@/hooks/students/use-pay-installment";
@@ -20,18 +20,12 @@ const statusConfig = {
   overdue: { icon: faExclamationTriangle, color: "text-red-500", label: "Overdue" },
 };
 
-const GATEWAYS = [
-  { id: "stripe", label: "Credit / Debit Card", icon: faCreditCard },
-  { id: "paystack", label: "Paystack", icon: faCreditCard },
-  { id: "bank_transfer", label: "Bank Transfer", icon: faUniversity },
-];
-
 const PayInstallmentPage = () => {
   const { enrollmentId } = useParams();
   const [searchParams] = useSearchParams();
   const courseId = searchParams.get("courseId");
 
-  const [selectedGateway, setSelectedGateway] = useState("stripe");
+  const [selectedGateway, setSelectedGateway] = useState("");
   const [showBankModal, setShowBankModal] = useState(false);
   const [bankTransferData, setBankTransferData] = useState(null);
 
@@ -41,6 +35,25 @@ const PayInstallmentPage = () => {
   const installmentData = data?.data?.data;
   const installments = installmentData?.installments || [];
   const nextDue = installmentData?.nextDue;
+
+  const userLocation = installmentData?.userLocation;
+  const currencySymbol = userLocation?.currency === "NGN" || userLocation?.currency === "Naira" ? "₦" : "£";
+
+  const gateways = userLocation?.GATEWAYS?.map((g) => {
+    if (g === "stripe") return { id: "stripe", label: "Credit / Debit Card", icon: faCreditCard };
+    if (g === "paystack") return { id: "paystack", label: "Paystack", icon: faCreditCard };
+    if (g === "bank_transfer") return { id: "bank_transfer", label: "Bank Transfer", icon: faUniversity };
+    return { id: g, label: g.replace("_", " "), icon: faCreditCard };
+  }) || [
+    { id: "stripe", label: "Credit / Debit Card", icon: faCreditCard },
+    { id: "bank_transfer", label: "Bank Transfer", icon: faUniversity },
+  ];
+
+  useEffect(() => {
+    if (gateways.length > 0 && (!selectedGateway || !gateways.some((g) => g.id === selectedGateway))) {
+      setSelectedGateway(gateways[0].id);
+    }
+  }, [installmentData, gateways, selectedGateway]);
 
   const handlePay = () => {
     if (!selectedGateway) {
@@ -93,7 +106,7 @@ const PayInstallmentPage = () => {
   const total = installments.length;
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-8">
+    <div className="mx-auto px-4 py-8">
       {/* Back */}
       <Link
         to="/dashboard"
@@ -148,7 +161,7 @@ const PayInstallmentPage = () => {
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-semibold text-[#23314A]">
-                    £{inst.amount?.toLocaleString()}
+                    {currencySymbol}{inst.amount?.toLocaleString()}
                   </p>
                   <p className={`text-xs font-medium ${cfg.color}`}>{cfg.label}</p>
                 </div>
@@ -164,13 +177,13 @@ const PayInstallmentPage = () => {
           <h2 className="mb-1 text-lg font-semibold text-[#23314A]">Pay Next Installment</h2>
           <p className="mb-5 text-sm text-gray-500">
             Amount due:{" "}
-            <span className="font-bold text-[#CC1747]">£{nextDue.amount?.toLocaleString()}</span>
+            <span className="font-bold text-[#CC1747]">{currencySymbol}{nextDue.amount?.toLocaleString()}</span>
           </p>
 
           {/* Gateway selector */}
           <div className="mb-5 space-y-3">
             <p className="text-sm font-medium text-gray-700">Select payment method</p>
-            {GATEWAYS.map((gw) => (
+            {gateways.map((gw) => (
               <label
                 key={gw.id}
                 className={`flex cursor-pointer items-center gap-3 rounded-lg border px-4 py-3 transition-all ${
@@ -198,7 +211,7 @@ const PayInstallmentPage = () => {
             disabled={isPending}
             className="w-full rounded-lg bg-[#CC1747] py-3 text-sm font-semibold text-white transition hover:bg-[#B3123F] disabled:opacity-60"
           >
-            {isPending ? "Processing..." : `Pay £${nextDue.amount?.toLocaleString()} Now`}
+            {isPending ? "Processing..." : `Pay ${currencySymbol}${nextDue.amount?.toLocaleString()} Now`}
           </button>
         </div>
       ) : (
