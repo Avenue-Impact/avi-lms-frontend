@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useSearchParams, Link } from "react-router-dom";
+import { useParams, useSearchParams, Link, useNavigate } from "react-router-dom";
 import { useFetchInstallments } from "@/hooks/students/use-fetch-installments";
 import { usePayInstallment } from "@/hooks/students/use-pay-installment";
 import BankTransferModal from "@/Components/BankTransferModal";
@@ -25,6 +25,7 @@ const PayInstallmentPage = () => {
   const { enrollmentId } = useParams();
   const [searchParams] = useSearchParams();
   const courseId = searchParams.get("courseId");
+  const navigate = useNavigate();
 
   const [selectedGateway, setSelectedGateway] = useState("");
   const [showMethodModal, setShowMethodModal] = useState(false);
@@ -74,9 +75,13 @@ const PayInstallmentPage = () => {
           } else if (d?.bankDetails) {
             setBankTransferData(d);
             setShowBankModal(true);
-          } else if (d?.message === "All installments are already paid.") {
-            toast.success("All installments are fully paid! Refreshing...");
-            setTimeout(() => window.location.reload(), 1500);
+          } else if (
+            d?.message === "All installments are already paid." ||
+            d?.message === "All outstanding installments have been processed and paid." ||
+            d?.message?.includes("processed")
+          ) {
+            toast.success(d.message || "All installments processed successfully!");
+            setTimeout(() => navigate("/dashboard"), 1500);
           }
         },
         onError: (err) => {
