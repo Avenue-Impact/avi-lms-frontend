@@ -24,11 +24,7 @@ const PaymentMethodModal = ({ isOpen, onClose, methods, selectedMethod, onSelect
                         <div 
                             key={method.id}
                             onClick={() => {
-                                if (method.id === 'paystack') {
-                                    toast.error("Feature isn't available yet, try other");
-                                } else {
-                                    onSelectMethod(method.id);
-                                }
+                                onSelectMethod(method.id);
                             }}
                             className={`flex cursor-pointer items-center rounded-lg border p-4 transition ${
                                 selectedMethod === method.id 

@@ -3,6 +3,7 @@ import { useParams, useSearchParams, Link } from "react-router-dom";
 import { useFetchInstallments } from "@/hooks/students/use-fetch-installments";
 import { usePayInstallment } from "@/hooks/students/use-pay-installment";
 import BankTransferModal from "@/Components/BankTransferModal";
+import PaymentMethodModal from "@/Components/PaymentMethodModal";
 import toast from "react-hot-toast";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -26,6 +27,7 @@ const PayInstallmentPage = () => {
   const courseId = searchParams.get("courseId");
 
   const [selectedGateway, setSelectedGateway] = useState("");
+  const [showMethodModal, setShowMethodModal] = useState(false);
   const [showBankModal, setShowBankModal] = useState(false);
   const [bankTransferData, setBankTransferData] = useState(null);
 
@@ -66,6 +68,7 @@ const PayInstallmentPage = () => {
       {
         onSuccess: (res) => {
           const d = res?.data;
+          setShowMethodModal(false);
           if (d?.url) {
             window.location.href = d.url;
           } else if (d?.bankDetails) {
@@ -180,38 +183,11 @@ const PayInstallmentPage = () => {
             <span className="font-bold text-[#CC1747]">{currencySymbol}{nextDue.amount?.toLocaleString()}</span>
           </p>
 
-          {/* Gateway selector */}
-          <div className="mb-5 space-y-3">
-            <p className="text-sm font-medium text-gray-700">Select payment method</p>
-            {gateways.map((gw) => (
-              <label
-                key={gw.id}
-                className={`flex cursor-pointer items-center gap-3 rounded-lg border px-4 py-3 transition-all ${
-                  selectedGateway === gw.id
-                    ? "border-[#CC1747] bg-red-50"
-                    : "border-gray-200 hover:border-gray-300"
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="gateway"
-                  value={gw.id}
-                  checked={selectedGateway === gw.id}
-                  onChange={() => setSelectedGateway(gw.id)}
-                  className="accent-[#CC1747]"
-                />
-                <FontAwesomeIcon icon={gw.icon} className="text-gray-500" />
-                <span className="text-sm font-medium text-gray-700">{gw.label}</span>
-              </label>
-            ))}
-          </div>
-
           <button
-            onClick={handlePay}
-            disabled={isPending}
-            className="w-full rounded-lg bg-[#CC1747] py-3 text-sm font-semibold text-white transition hover:bg-[#B3123F] disabled:opacity-60"
+            onClick={() => setShowMethodModal(true)}
+            className="w-full rounded-lg bg-[#CC1747] py-3 text-sm font-semibold text-white transition hover:bg-[#B3123F]"
           >
-            {isPending ? "Processing..." : `Pay ${currencySymbol}${nextDue.amount?.toLocaleString()} Now`}
+            Continue Payment
           </button>
         </div>
       ) : (
@@ -228,12 +204,30 @@ const PayInstallmentPage = () => {
         </div>
       )}
 
+      {/* Payment Method Modal */}
+      {showMethodModal && (
+        <PaymentMethodModal
+          isOpen={showMethodModal}
+          onClose={() => setShowMethodModal(false)}
+          methods={gateways}
+          selectedMethod={selectedGateway}
+          onSelectMethod={setSelectedGateway}
+          onProceed={handlePay}
+          amount={nextDue.amount}
+          currency={userLocation?.currency || "GBP"}
+          currencySymbol={currencySymbol}
+        />
+      )}
+
       {/* Bank Transfer Modal */}
       {showBankModal && bankTransferData && (
         <BankTransferModal
           isOpen={showBankModal}
           onClose={() => setShowBankModal(false)}
-          onBack={() => setShowBankModal(false)}
+          onBack={() => {
+            setShowBankModal(false);
+            setShowMethodModal(true);
+          }}
           transactionId={bankTransferData.transactionId}
           enrollmentId={bankTransferData.enrollmentId}
           bankDetails={bankTransferData.bankDetails}
