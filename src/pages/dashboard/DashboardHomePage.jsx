@@ -177,6 +177,7 @@ const OnDemandSessionCourses = () => {
                 courseId={course.id}
                 is_access_revoked={course.is_access_revoked}
                 last_watched_video_id={course.last_watched_video_id}
+                enrollmentId={course.enrollment_id}
               />
             );
           })}
@@ -220,6 +221,7 @@ const LiveSessionCourses = () => {
               is_access_revoked={course?.is_access_revoked}
               last_watched_video_id={course?.last_watched_video_id}
               access_expires_at={course?.access_expires_at}
+              enrollmentId={course.enrollment_id}
             />
           );
         })}

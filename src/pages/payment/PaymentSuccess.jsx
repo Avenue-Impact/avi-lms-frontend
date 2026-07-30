@@ -1,19 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get('session_id');
   const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
 
-  // You can add an API call here to verify the session if needed in the future
   useEffect(() => {
+    // Invalidate caches to refresh dashboard states
+    queryClient.invalidateQueries(["enrollments"]);
+    queryClient.invalidateQueries(["installments"]);
+
     // Simulate loading/verification
     const timer = setTimeout(() => {
       setLoading(false);
     }, 1000);
     return () => clearTimeout(timer);
-  }, [sessionId]);
+  }, [sessionId, queryClient]);
 
   if (loading) {
     return (

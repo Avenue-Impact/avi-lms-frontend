@@ -63,6 +63,7 @@ import JoinProjectTeam from "./pages/dashboard/JoinProjectTeam";
 import LeaveRating from "./pages/dashboard/LeaveRating";
 import MentorshipList from "./pages/dashboard/MentorshipList";
 import CourseProgress from "./pages/dashboard/CourseProgress";
+import PayInstallmentPage from "./pages/dashboard/PayInstallmentPage";
 
 import { useState } from "react";
 import { Toaster } from "react-hot-toast";
@@ -407,6 +408,10 @@ function App() {
                 {
                   path: "LeaveRating",
                   element: <LeaveRating />,
+                },
+                {
+                  path: "pay-installment/:enrollmentId",
+                  element: <PayInstallmentPage />,
                 },
               ],
             },
