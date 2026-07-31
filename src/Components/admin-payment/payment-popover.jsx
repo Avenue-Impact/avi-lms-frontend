@@ -66,6 +66,16 @@ const PaymentPopover = ({ setData, data }) => {
           <CommonButton
             variant={"ghost"}
             className="flex w-full items-center justify-start gap-2 text-[#667185]"
+            onClick={() => filterStatus("partially_paid")}
+          >
+            <span>
+              <ArrowUpRightIcon className="text-blue-500" />
+            </span>
+            <span>Partially Paid</span>
+          </CommonButton>
+          <CommonButton
+            variant={"ghost"}
+            className="flex w-full items-center justify-start gap-2 text-[#667185]"
             onClick={() => filterStatus("pending")}
           >
             <span>
