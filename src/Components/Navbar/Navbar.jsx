@@ -34,6 +34,10 @@ const Navbar = () => {
       label: "About Us",
     },
     {
+      path: "/success-stories",
+      label: "Success Stories",
+    },
+    {
       path: "/digital-learning-hub",
       label: "Learning Hub",
     },

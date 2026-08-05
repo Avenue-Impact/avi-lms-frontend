@@ -4,6 +4,7 @@ import "./App.css";
 
 import AppLayout from "./layouts/AppLayout";
 import About from "./pages/About";
+import SuccessStories from "./pages/SuccessStories";
 import AvenueImpactDevelopment from "./pages/AvenueImpactDevelopment";
 import AVI from "./pages/AVI";
 import Partner from "./pages/Partner";
@@ -197,6 +198,10 @@ function App() {
              {
               path: "/about",
               element: <About />,
+            },
+            {
+              path: "/success-stories",
+              element: <SuccessStories />,
             },
             {
               path: "/contact",
