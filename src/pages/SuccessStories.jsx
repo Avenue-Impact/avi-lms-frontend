@@ -204,10 +204,10 @@ const SuccessStories = () => {
       <div className="w-full bg-[#FAFBFC] overflow-x-hidden font-poppins">
 
         {/* ─── HERO SECTION ─── */}
-        <section className="mx-auto w-[90%] max-w-[1440px] pt-10 pb-4 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-0 items-center">
+        <section className="mx-auto w-[90%] max-w-[1440px] pt-8 pb-0 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-0 items-center">
 
-          {/* LEFT: Text */}
-          <div className="space-y-5 lg:pr-8">
+          {/* LEFT: Text — 5/12 cols */}
+          <div className="lg:col-span-5 space-y-5 lg:pr-6 pb-6 lg:pb-0">
             <span className="text-xs font-bold tracking-[0.15em] text-[#CC1747] uppercase">
               Success Stories
             </span>
@@ -216,49 +216,50 @@ const SuccessStories = () => {
               <span className="text-[#CC1747]">Real Impact.</span><br />
               Real Success.
             </h1>
-            <p className="text-[#667185] text-sm sm:text-base leading-relaxed max-w-sm">
+            <div className="w-12 h-[3px] bg-[#CC1747] rounded-full" />
+            <p className="text-[#667185] text-sm sm:text-base leading-relaxed max-w-xs">
               Listen to inspiring journeys from our learners who upskilled, took action, and transformed their careers with Avenue Impact.
             </p>
           </div>
 
-          {/* RIGHT: Visual */}
-          <div className="flex justify-center lg:justify-end items-center py-6">
-            {/* Fixed 520×420 container — all elements are absolutely positioned inside */}
-            <div style={{ position: 'relative', width: '520px', height: '420px', flexShrink: 0 }}>
+          {/* RIGHT: Visual — 7/12 cols */}
+          <div className="lg:col-span-7 flex justify-start items-center overflow-visible">
+            {/* Fixed 580×415px container with precise pixel positions */}
+            <div style={{ position: 'relative', width: '580px', height: '415px', flexShrink: 0, overflow: 'visible' }}>
 
               {/* Dot grid — top right */}
               <div style={{
                 position: 'absolute', top: 0, right: 0,
-                width: '80px', height: '80px',
+                width: '90px', height: '90px',
                 backgroundImage: 'radial-gradient(#B0BAC9 2px, transparent 2px)',
-                backgroundSize: '10px 10px',
+                backgroundSize: '11px 11px',
                 zIndex: 0,
               }} />
 
-              {/* Grey skewed shape — right side, peeks ~130px right of woman */}
+              {/* Grey shape — right side, peeks ~155px right of woman */}
               <div style={{
                 position: 'absolute',
-                top: '14px', right: '-16px',
-                width: '260px', height: '376px',
+                top: '18px', right: '-18px',
+                width: '255px', height: '360px',
                 background: '#E2E8F0',
-                borderRadius: '20px',
-                transform: 'skewX(-7deg)',
+                borderRadius: '22px',
+                transform: 'skewX(-6deg)',
                 zIndex: 1,
               }} />
 
-              {/* Red skewed shape — peeks only ~37px left of woman */}
+              {/* Red shape — prominent left, peeks ~110px left of woman */}
+              {/* Woman is centered at x=290 in 580px → x=135–445; Red left=25 → x=25–265, peeks x=25–135 (110px) */}
               <div style={{
                 position: 'absolute',
-                top: '6px', left: '78px',
-                width: '200px', height: '388px',
+                top: 0, left: '25px',
+                width: '240px', height: '400px',
                 background: '#CC1747',
-                borderRadius: '20px',
-                transform: 'skewX(-7deg)',
+                borderRadius: '22px',
+                transform: 'skewX(-6deg)',
                 zIndex: 2,
               }} />
 
-              {/* Woman portrait — 290px wide, centered at x=260; covers x=115–405
-                  Red peeks at x=78–115 (~37px left), Grey peeks at x=405–520+ (~130px right) */}
+              {/* Woman portrait — dominant, 310px wide, centered */}
               <img
                 src={successHeroImg}
                 alt="Avenue Impact success story learner"
@@ -267,35 +268,35 @@ const SuccessStories = () => {
                   bottom: 0,
                   left: '50%',
                   transform: 'translateX(-50%)',
-                  height: '100%',
-                  width: '290px',
+                  height: '105%',
+                  width: '310px',
                   objectFit: 'cover',
                   objectPosition: 'top center',
                   zIndex: 3,
                 }}
               />
 
-              {/* Floating testimonial card — sits over grey area, bottom right */}
+              {/* Quote card — mid-height right, over grey area */}
               <div style={{
                 position: 'absolute',
-                bottom: '16px', right: '-8px',
-                width: '208px',
+                bottom: '60px', right: '-12px',
+                width: '215px',
                 background: 'white',
                 borderRadius: '16px',
                 padding: '14px',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.13)',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.14)',
                 zIndex: 4,
               }}>
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
                   <div style={{
-                    flexShrink: 0, width: '28px', height: '28px', borderRadius: '50%',
+                    flexShrink: 0, width: '26px', height: '26px', borderRadius: '50%',
                     background: '#CC1747', display: 'flex', alignItems: 'center',
-                    justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: '14px',
+                    justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: '13px',
                   }}>
                     &#8220;
                   </div>
                   <div>
-                    <div style={{ display: 'flex', gap: '2px', color: '#F59E0B', marginBottom: '6px' }}>
+                    <div style={{ display: 'flex', gap: '2px', color: '#F59E0B', marginBottom: '5px' }}>
                       {[...Array(5)].map((_, i) => (
                         <Star key={i} size={11} fill="currentColor" strokeWidth={0} />
                       ))}
