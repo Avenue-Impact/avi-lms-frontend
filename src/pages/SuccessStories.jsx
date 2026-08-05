@@ -202,70 +202,116 @@ const SuccessStories = () => {
       />
 
       <div className="w-full bg-[#FAFBFC] overflow-x-hidden font-poppins">
-        {/* HERO SECTION */}
-        <section className="mx-auto w-[90%] max-w-[1440px] pt-12 pb-16 md:py-20 lg:py-24 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-          {/* Left Hero Text Column */}
-          <div className="lg:col-span-6 space-y-6">
-            <span className="text-xs sm:text-sm font-semibold tracking-wider text-[#CC1747] uppercase block">
+
+        {/* ─── HERO SECTION ─── */}
+        <section className="mx-auto w-[90%] max-w-[1440px] pt-10 pb-4 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-0 items-center">
+
+          {/* LEFT: Text */}
+          <div className="space-y-5 lg:pr-8">
+            <span className="text-xs font-bold tracking-[0.15em] text-[#CC1747] uppercase">
               Success Stories
             </span>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#23314A] leading-[1.15]">
-              Real People. <br />
-              <span className="text-[#CC1747]">Real Impact.</span> <br />
+            <h1 className="text-4xl sm:text-5xl font-extrabold text-[#0D1B35] leading-tight">
+              Real People.<br />
+              <span className="text-[#CC1747]">Real Impact.</span><br />
               Real Success.
             </h1>
-            <p className="text-[#667185] text-base sm:text-lg max-w-xl font-light leading-relaxed">
+            <p className="text-[#667185] text-sm sm:text-base leading-relaxed max-w-sm">
               Listen to inspiring journeys from our learners who upskilled, took action, and transformed their careers with Avenue Impact.
             </p>
           </div>
 
-          {/* Right Hero Visual Column with Testimonial Card */}
-          <div className="lg:col-span-6 relative flex justify-center lg:justify-end pr-8 lg:pr-12">
-            <div className="relative w-[340px] sm:w-[380px] h-[480px] sm:h-[520px]">
-              {/* Layer 1: Floating Grid Dot Patterns */}
-              <div className="absolute -top-6 -right-6 w-32 h-32 bg-[radial-gradient(#E4E7EC_3px,transparent_3px)] [background-size:16px_16px] opacity-75 z-0" />
-              
-              {/* Layer 2: Light Grey Slanted Pill Backdrop */}
-              <div className="absolute top-8 -right-8 w-[200px] sm:w-[220px] h-[340px] sm:h-[380px] bg-[#E4E7EC] rounded-[100px] transform -rotate-[12deg] skew-x-[-4deg] z-10 opacity-90" />
-              
-              {/* Layer 3: Solid Red Slanted Pill Backdrop */}
-              <div className="absolute top-2 -left-4 w-[210px] sm:w-[230px] h-[360px] sm:h-[400px] bg-[#CC1747] rounded-[110px] transform -rotate-[12deg] skew-x-[-4deg] z-20" />
-              
-              {/* Layer 4: Premium Hero Portrait in Slanted Pill Frame */}
-              <div className="absolute top-0 left-4 w-[220px] sm:w-[240px] h-[380px] sm:h-[420px] rounded-[120px] overflow-hidden border-8 border-white shadow-2xl transform -rotate-[12deg] skew-x-[-4deg] z-30 bg-[#FAFBFC]">
-                <img
-                  src={successHeroImg}
-                  alt="Avenue Impact Success Story Leader holding a tablet"
-                  className="absolute w-[150%] h-[140%] -top-[15%] -left-[25%] object-cover transform rotate-[12deg] skew-x-[4deg] origin-center scale-110 hover:scale-115 transition-transform duration-700 ease-out"
-                />
-              </div>
+          {/* RIGHT: Visual */}
+          <div className="flex justify-center lg:justify-end items-center py-6">
+            {/* Fixed 520×420 container — all elements are absolutely positioned inside */}
+            <div style={{ position: 'relative', width: '520px', height: '420px', flexShrink: 0 }}>
 
-              {/* Layer 5: Floating Mary A. Testimonial Card */}
-              <div className="absolute bottom-16 -right-8 bg-white p-5 rounded-2xl shadow-2xl border border-gray-100 max-w-[260px] sm:max-w-[280px] transition-all duration-300 hover:-translate-y-1 z-40">
-                <div className="flex items-start gap-3">
-                  {/* Quote Icon circle */}
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#CC1747] flex items-center justify-center text-white text-base font-bold">
-                    “
+              {/* Dot grid — top right */}
+              <div style={{
+                position: 'absolute', top: 0, right: 0,
+                width: '80px', height: '80px',
+                backgroundImage: 'radial-gradient(#B0BAC9 2px, transparent 2px)',
+                backgroundSize: '10px 10px',
+                zIndex: 0,
+              }} />
+
+              {/* Grey skewed shape — right side, peeks ~130px right of woman */}
+              <div style={{
+                position: 'absolute',
+                top: '14px', right: '-16px',
+                width: '260px', height: '376px',
+                background: '#E2E8F0',
+                borderRadius: '20px',
+                transform: 'skewX(-7deg)',
+                zIndex: 1,
+              }} />
+
+              {/* Red skewed shape — peeks only ~37px left of woman */}
+              <div style={{
+                position: 'absolute',
+                top: '6px', left: '78px',
+                width: '200px', height: '388px',
+                background: '#CC1747',
+                borderRadius: '20px',
+                transform: 'skewX(-7deg)',
+                zIndex: 2,
+              }} />
+
+              {/* Woman portrait — 290px wide, centered at x=260; covers x=115–405
+                  Red peeks at x=78–115 (~37px left), Grey peeks at x=405–520+ (~130px right) */}
+              <img
+                src={successHeroImg}
+                alt="Avenue Impact success story learner"
+                style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  height: '100%',
+                  width: '290px',
+                  objectFit: 'cover',
+                  objectPosition: 'top center',
+                  zIndex: 3,
+                }}
+              />
+
+              {/* Floating testimonial card — sits over grey area, bottom right */}
+              <div style={{
+                position: 'absolute',
+                bottom: '16px', right: '-8px',
+                width: '208px',
+                background: 'white',
+                borderRadius: '16px',
+                padding: '14px',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.13)',
+                zIndex: 4,
+              }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                  <div style={{
+                    flexShrink: 0, width: '28px', height: '28px', borderRadius: '50%',
+                    background: '#CC1747', display: 'flex', alignItems: 'center',
+                    justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: '14px',
+                  }}>
+                    &#8220;
                   </div>
-                  <div className="space-y-2">
-                    {/* Golden Stars */}
-                    <div className="flex gap-1 text-amber-400">
+                  <div>
+                    <div style={{ display: 'flex', gap: '2px', color: '#F59E0B', marginBottom: '6px' }}>
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} size={14} fill="currentColor" />
+                        <Star key={i} size={11} fill="currentColor" strokeWidth={0} />
                       ))}
                     </div>
-                    <p className="text-xs sm:text-sm text-[#23314A] leading-relaxed font-semibold">
-                      Avenue Impact didn't just teach me skills, they changed my entire future.
+                    <p style={{ color: '#23314A', fontSize: '11px', lineHeight: 1.5, fontWeight: 500, margin: '0 0 4px' }}>
+                      Avenue Impact didn&apos;t just teach me skills, they changed my entire future.
                     </p>
-                    <span className="text-[#CC1747] text-xs font-bold block">
-                      — Mary A.
-                    </span>
+                    <span style={{ color: '#CC1747', fontSize: '11px', fontWeight: 700 }}>— Mary A.</span>
                   </div>
                 </div>
               </div>
+
             </div>
           </div>
         </section>
+
 
         {/* STATS DASHBOARD BAR */}
         <section className="mx-auto w-[90%] max-w-[1440px] mb-20">
