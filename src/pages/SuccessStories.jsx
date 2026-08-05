@@ -220,26 +220,29 @@ const SuccessStories = () => {
           </div>
 
           {/* Right Hero Visual Column with Testimonial Card */}
-          <div className="lg:col-span-6 relative flex justify-center lg:justify-end">
-            <div className="relative w-full max-w-[500px]">
-              {/* Floating Grid Dot Patterns */}
-              <div className="absolute -top-4 -right-4 w-20 h-20 bg-[radial-gradient(#E4E7EC_2px,transparent_2px)] [background-size:12px_12px] opacity-75 z-0" />
+          <div className="lg:col-span-6 relative flex justify-center lg:justify-end pr-8 lg:pr-12">
+            <div className="relative w-[340px] sm:w-[380px] h-[480px] sm:h-[520px]">
+              {/* Layer 1: Floating Grid Dot Patterns */}
+              <div className="absolute -top-6 -right-6 w-32 h-32 bg-[radial-gradient(#E4E7EC_3px,transparent_3px)] [background-size:16px_16px] opacity-75 z-0" />
               
-              {/* Red Abstract Shape Backdrop */}
-              <div className="absolute inset-0 bg-[#CC1747] rounded-[40px] rotate-3 scale-95 opacity-90 blur-[2px] z-0" />
+              {/* Layer 2: Light Grey Slanted Pill Backdrop */}
+              <div className="absolute top-8 -right-8 w-[200px] sm:w-[220px] h-[340px] sm:h-[380px] bg-[#E4E7EC] rounded-[100px] transform -rotate-[12deg] skew-x-[-4deg] z-10 opacity-90" />
               
-              {/* Premium Hero Portrait */}
-              <div className="relative rounded-[40px] overflow-hidden border-4 border-white shadow-xl z-10 aspect-square">
+              {/* Layer 3: Solid Red Slanted Pill Backdrop */}
+              <div className="absolute top-2 -left-4 w-[210px] sm:w-[230px] h-[360px] sm:h-[400px] bg-[#CC1747] rounded-[110px] transform -rotate-[12deg] skew-x-[-4deg] z-20" />
+              
+              {/* Layer 4: Premium Hero Portrait in Slanted Pill Frame */}
+              <div className="absolute top-0 left-4 w-[220px] sm:w-[240px] h-[380px] sm:h-[420px] rounded-[120px] overflow-hidden border-8 border-white shadow-2xl transform -rotate-[12deg] skew-x-[-4deg] z-30 bg-[#FAFBFC]">
                 <img
                   src={successHeroImg}
                   alt="Avenue Impact Success Story Leader holding a tablet"
-                  className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700 ease-out"
+                  className="absolute w-[150%] h-[140%] -top-[15%] -left-[25%] object-cover transform rotate-[12deg] skew-x-[4deg] origin-center scale-110 hover:scale-115 transition-transform duration-700 ease-out"
                 />
               </div>
 
-              {/* Floating Mary A. Testimonial Card */}
-              <div className="absolute bottom-6 -right-4 md:-right-8 bg-white p-5 rounded-2xl shadow-2xl border border-gray-100 max-w-[280px] sm:max-w-[320px] transition-all duration-300 hover:-translate-y-1 z-20">
-                <div className="flex items-start gap-4">
+              {/* Layer 5: Floating Mary A. Testimonial Card */}
+              <div className="absolute bottom-16 -right-8 bg-white p-5 rounded-2xl shadow-2xl border border-gray-100 max-w-[260px] sm:max-w-[280px] transition-all duration-300 hover:-translate-y-1 z-40">
+                <div className="flex items-start gap-3">
                   {/* Quote Icon circle */}
                   <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#CC1747] flex items-center justify-center text-white text-base font-bold">
                     “
@@ -251,10 +254,10 @@ const SuccessStories = () => {
                         <Star key={i} size={14} fill="currentColor" />
                       ))}
                     </div>
-                    <p className="text-xs sm:text-sm text-[#23314A] leading-relaxed font-medium">
+                    <p className="text-xs sm:text-sm text-[#23314A] leading-relaxed font-semibold">
                       Avenue Impact didn't just teach me skills, they changed my entire future.
                     </p>
-                    <span className="text-[#CC1747] text-xs font-semibold block">
+                    <span className="text-[#CC1747] text-xs font-bold block">
                       — Mary A.
                     </span>
                   </div>
