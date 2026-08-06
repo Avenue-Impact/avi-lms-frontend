@@ -204,7 +204,7 @@ const SuccessStories = () => {
       <div className="w-full bg-[#FAFBFC] overflow-x-hidden font-poppins">
 
         {/* ─── HERO SECTION ─── */}
-        <section className="mx-auto w-[90%] max-w-[1440px] pt-8 pb-0 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-0 items-center">
+        <section className="mx-auto w-[90%] max-w-[1440px] pt-12 pb-16 md:py-20 lg:py-24 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-0 items-center">
 
           {/* LEFT: Text — 5/12 cols */}
           <div className="lg:col-span-5 space-y-5 lg:pr-6 pb-6 lg:pb-0">
