@@ -204,138 +204,119 @@ const SuccessStories = () => {
       <div className="w-full bg-[#FAFBFC] overflow-x-hidden font-poppins">
 
         {/* ─── HERO SECTION ─── */}
-        <section className="w-full bg-[#FAFBFC] pt-16 md:pt-20 lg:pt-24 pb-12 lg:pb-0 overflow-hidden">
+        <section className="w-full bg-[#FAFBFC] p-6 sm:p-10 overflow-hidden">
           <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-0 items-center">
 
-            {/* LEFT: Text — 5/12 cols */}
-            <div className="lg:col-span-5 space-y-5 px-6 md:px-12 lg:pl-20 lg:pr-10 lg:pb-24">
-              <span className="text-xs font-bold tracking-[0.15em] text-[#CC1747] uppercase">
-                Success Stories
-              </span>
-              <h1 className="text-4xl sm:text-5xl font-extrabold text-[#0D1B35] leading-tight">
+            {/* LEFT: Text */}
+            <div className="lg:col-span-5 space-y-5 px-6 md:px-12 lg:pl-20 lg:pr-10 lg:pb-24 text-center lg:text-left">
+              <span className="text-xs sm:text-sm font-bold tracking-[0.15em] text-[#CC1747] uppercase">Success Stories</span>
+              <h1 className="text-4xl sm:text-6xl font-bold text-[#14345F] leading-tight">
                 Real People.<br />
                 <span className="text-[#CC1747]">Real Impact.</span><br />
                 Real Success.
               </h1>
-              <div className="w-12 h-[3px] bg-[#CC1747] rounded-full" />
-              <p className="text-[#667185] text-sm sm:text-base leading-relaxed max-w-sm">
+              <div className="w-12 h-[3px] bg-[#CC1747] rounded-full mx-auto lg:mx-0" />
+              <p className="text-[#667185] text-sm sm:text-base leading-relaxed max-w-sm mx-auto lg:mx-0">
                 Listen to inspiring journeys from our learners who upskilled, took action, and transformed their careers with Avenue Impact.
               </p>
             </div>
 
-            {/* RIGHT: Visual — 7/12 cols */}
-            <div className="lg:col-span-7 relative h-[400px] sm:h-[500px] lg:h-[600px] w-full flex justify-end items-end">
-              
-              {/* Dot grid — top right */}
-              <div className="absolute top-10 right-10 w-24 h-24 z-0" style={{
-                backgroundImage: 'radial-gradient(#B0BAC9 2px, transparent 2px)',
-                backgroundSize: '12px 12px',
-              }} />
+            {/* RIGHT: Visual — aspect-locked stage that scales as one unit */}
+            <div className="lg:col-span-7 flex justify-center lg:justify-end">
+              <div
+                className="relative w-full max-h-[700px] aspect-[5/4]"
+                style={{ containerType: 'inline-size' }}   /* makes cqw units below resolve to THIS width */
+              >
+                {/* Dot grid */}
+                <div className="absolute top-[7%] right-[7%] w-[20%] aspect-square z-0" style={{
+                  backgroundImage: 'radial-gradient(#B0BAC9 0.3cqw, transparent 0.3cqw)',
+                  backgroundSize: '1.7cqw 1.7cqw',
+                }} />
 
-              {/* Grey shape — bleeds off right */}
-              <div style={{
-                position: 'absolute',
-                bottom: 0, right: '-5%',
-                width: '85%', height: '85%',
-                background: '#E2E8F0',
-                borderTopLeftRadius: '32px',
-                transform: 'skewX(-6deg)',
-                zIndex: 1,
-              }} />
+                {/* Grey shape */}
+                <div className="absolute z-[1]" style={{
+                  bottom: '2%', right: '20%', width: '45%', height: '75%',
+                  background: '#E2E8F0', borderRadius: '4.5cqw', transform: 'skewX(-6deg)',
+                }} />
 
-              {/* Red shape — overlaps grey */}
-              <div style={{
-                position: 'absolute',
-                bottom: 0, right: '15%',
-                width: '65%', height: '95%',
-                background: '#CC1747',
-                borderTopLeftRadius: '32px',
-                borderTopRightRadius: '32px',
-                transform: 'skewX(-6deg)',
-                zIndex: 2,
-              }} />
+                {/* Red shape */}
+                <div className="absolute z-[2]" style={{
+                  bottom: '8%', right: '42%', width: '38%', height: '75%',
+                  background: '#CC1747', borderRadius: '4.5cqw', transform: 'skewX(-6deg)',
+                }} />
 
-              {/* Woman portrait — NOT skewed */}
-              <img
-                src={successHeroImg}
-                alt="Avenue Impact success story learner"
-                className="absolute bottom-0 right-[22%] z-10 w-auto h-[105%] max-w-[65%] object-contain object-bottom"
-              />
+                {/* Woman — % height keeps her proportional to the shapes */}
+                <img
+                  src={successHeroImg}
+                  alt="Avenue Impact success story learner"
+                  className="absolute bottom-0 right-[30%] z-10 h-[90%] w-auto max-w-[65%] object-contain object-bottom"
+                />
 
-              {/* Quote card — overlaps the edge */}
-              <div className="absolute bottom-16 right-4 sm:right-12 z-20 w-[240px] bg-white rounded-2xl p-4 shadow-[0_8px_32px_rgba(0,0,0,0.12)]">
-                <div className="flex items-start gap-3">
-                  <div className="shrink-0 w-8 h-8 rounded-full bg-[#CC1747] flex items-center justify-center text-white font-serif font-bold text-lg leading-none pt-1">
-                    “
+                {/* Quote card — container units so it scales, clamped so text stays readable */}
+                <div
+                  className="absolute !bottom-[4%] z-20 bg-white shadow-[0_8px_32px_rgba(0,0,0,0.12)]"
+                  style={{
+                    bottom: '12%', right: '10%',
+                    maxWidth: 'clamp(130px, 34cqw, 240px)',
+                    padding: 'clamp(12px, 2.3cqw, 16px)',
+                    borderRadius: 'clamp(12px, 2.3cqw, 16px)',
+                  }}
+                >
+                  <div className="flex items-start" style={{ gap: 'clamp(8px, 1.7cqw, 12px)' }}>
+                    <div
+                      className="shrink-0 rounded-full bg-[#CC1747] flex items-center justify-center text-white font-serif font-bold leading-none"
+                      style={{ width: 'clamp(26px, 4.6cqw, 32px)', height: 'clamp(26px, 4.6cqw, 32px)', fontSize: 'clamp(15px, 2.6cqw, 18px)' }}
+                    >
+                      &ldquo;
+                    </div>
+                    <div>
+                      <div className="flex text-[#F59E0B]" style={{ gap: 'clamp(3px, 0.6cqw, 4px)', marginBottom: 'clamp(4px, 0.9cqw, 6px)' }}>
+                        {[...Array(5)].map((_, i) => (
+                          <Star key={i} style={{ width: 'clamp(8px, 1.7cqw, 10px)', height: 'clamp(8px, 1.7cqw, 10px)' }} fill="currentColor" strokeWidth={0} />
+                        ))}
+                      </div>
+                      <p className="text-[#23314A] font-medium text-[5px] sm:text-sm" style={{ lineHeight: 1.5, marginBottom: 'clamp(3px, 0.6cqw, 4px)' }}>
+                        Avenue Impact didn&apos;t just teach me skills, they changed my entire future.
+                      </p>
+                      <span className="text-[#CC1747] font-bold text-[5px] sm:text-sm">— Mary A.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* STATS DASHBOARD BAR */}
+          <div className="mx-5 mt-10 lg:mt-0">
+            <div
+              className="bg-[#0B1930] rounded-2xl md:rounded-[24px] p-8 md:py-10 text-white
+               grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4
+               gap-8 lg:gap-0
+               divide-y-2 sm:divide-y-0 lg:divide-x-2 divide-[#1E2E4A]"
+            >
+              {[
+                { icon: Users, value: '1,250+', label: 'Success Stories', stroke: 3 },
+                { icon: Headphones, value: '15,000+', label: 'Learners Impacted', stroke: 2.5 },
+                { icon: Briefcase, value: '4,800+', label: 'Career Transitions', stroke: 2.5 },
+                { icon: Trophy, value: '95%', label: 'Success Rate', stroke: 2.5 },
+              ].map(({ icon: Icon, value, label, stroke }) => (
+                <div
+                  key={label}
+                  className="flex items-center gap-4 justify-center sm:justify-start lg:justify-center lg:px-6"
+                >
+                  <div className="shrink-0 w-12 h-12 rounded-full bg-[#CC1747] border border-[#CC1747]/30 flex items-center justify-center text-white">
+                    <Icon size={22} strokeWidth={stroke} />
                   </div>
                   <div>
-                    <div className="flex gap-1 text-[#F59E0B] mb-1.5">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} size={12} fill="currentColor" strokeWidth={0} />
-                      ))}
-                    </div>
-                    <p className="text-[#23314A] text-xs leading-relaxed font-medium mb-1">
-                      Avenue Impact didn&apos;t just teach me skills, they changed my entire future.
-                    </p>
-                    <span className="text-[#CC1747] text-xs font-bold">— Mary A.</span>
+                    <h3 className="text-2xl lg:text-3xl font-bold tracking-tight">{value}</h3>
+                    <p className="text-xs sm:text-sm text-[#98A2B3] font-light">{label}</p>
                   </div>
                 </div>
-              </div>
-
+              ))}
             </div>
           </div>
         </section>
 
-        {/* STATS DASHBOARD BAR */}
-        <section className="w-full bg-[#FAFBFC] pb-20">
-          <div className="mx-auto px-6 md:px-12 lg:px-20">
-            <div className="bg-[#0B1930] rounded-2xl md:rounded-[24px] p-8 md:py-10 grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-y-12 lg:gap-y-0 text-white divide-y-2 divide-x-0 lg:divide-y-0 lg:divide-x divide-[#1E2E4A]">
-              {/* Stat Item 1 */}
-              <div className="flex items-center gap-4 lg:justify-center pt-6 lg:pt-0">
-                <div className="w-12 h-12 rounded-full bg-[#CC1747]/10 border border-[#CC1747]/30 flex items-center justify-center text-[#CC1747]">
-                  <Users size={22} className="stroke-[2.5]" />
-                </div>
-                <div>
-                  <h3 className="text-2xl sm:text-3xl font-bold tracking-tight">1,250+</h3>
-                  <p className="text-xs sm:text-sm text-[#98A2B3] font-light">Success Stories</p>
-                </div>
-              </div>
-
-              {/* Stat Item 2 */}
-              <div className="flex items-center gap-4 lg:justify-center pt-6 lg:pt-0 lg:pl-6">
-                <div className="w-12 h-12 rounded-full bg-[#CC1747]/10 border border-[#CC1747]/30 flex items-center justify-center text-[#CC1747]">
-                  <Headphones size={22} className="stroke-[2.5]" />
-                </div>
-                <div>
-                  <h3 className="text-2xl sm:text-3xl font-bold tracking-tight">15,000+</h3>
-                  <p className="text-xs sm:text-sm text-[#98A2B3] font-light">Learners Impacted</p>
-                </div>
-              </div>
-
-              {/* Stat Item 3 */}
-              <div className="flex items-center gap-4 lg:justify-center pt-6 lg:pt-0 lg:pl-6">
-                <div className="w-12 h-12 rounded-full bg-[#CC1747]/10 border border-[#CC1747]/30 flex items-center justify-center text-[#CC1747]">
-                  <Briefcase size={22} className="stroke-[2.5]" />
-                </div>
-                <div>
-                  <h3 className="text-2xl sm:text-3xl font-bold tracking-tight">4,800+</h3>
-                  <p className="text-xs sm:text-sm text-[#98A2B3] font-light">Career Transitions</p>
-                </div>
-              </div>
-
-              {/* Stat Item 4 */}
-              <div className="flex items-center gap-4 lg:justify-center pt-6 lg:pt-0 lg:pl-6">
-                <div className="w-12 h-12 rounded-full bg-[#CC1747]/10 border border-[#CC1747]/30 flex items-center justify-center text-[#CC1747]">
-                  <Trophy size={22} className="stroke-[2.5]" />
-                </div>
-                <div>
-                  <h3 className="text-2xl sm:text-3xl font-bold tracking-tight">95%</h3>
-                  <p className="text-xs sm:text-sm text-[#98A2B3] font-light">Success Rate</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* BROWSE STORIES SECTION */}
         <section className="w-full bg-white py-16 md:py-24 border-t border-gray-100">
@@ -387,8 +368,8 @@ const SuccessStories = () => {
                       setVisibleCount(3);
                     }}
                     className={`flex-shrink-0 px-6 py-2.5 rounded-full border text-sm font-medium transition-all duration-200 ${isActive
-                        ? "border-[#CC1747] bg-[#FFEBF0] text-[#CC1747] shadow-sm shadow-[#CC1747]/10"
-                        : "border-gray-200 bg-white text-[#667185] hover:border-gray-300 hover:text-[#23314A]"
+                      ? "border-[#CC1747] bg-[#FFEBF0] text-[#CC1747] shadow-sm shadow-[#CC1747]/10"
+                      : "border-gray-200 bg-white text-[#667185] hover:border-gray-300 hover:text-[#23314A]"
                       }`}
                   >
                     {cat}
