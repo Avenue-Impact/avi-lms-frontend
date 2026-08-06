@@ -204,7 +204,8 @@ const SuccessStories = () => {
       <div className="w-full bg-[#FAFBFC] overflow-x-hidden font-poppins">
 
         {/* ─── HERO SECTION ─── */}
-        <section className="mx-auto w-[90%] max-w-[1440px] pt-12 pb-16 md:py-20 lg:py-24 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-0 items-center">
+        <section className="w-full bg-[#FAFBFC] py-16 md:py-20 lg:py-24">
+          <div className="mx-auto max-w-[1440px] px-6 md:px-12 lg:px-20 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-0 items-center">
 
           {/* LEFT: Text — 5/12 cols */}
           <div className="lg:col-span-5 space-y-5 lg:pr-6 pb-6 lg:pb-0">
@@ -311,12 +312,13 @@ const SuccessStories = () => {
 
             </div>
           </div>
-        </section>
-
+        </div>
+      </section>
 
         {/* STATS DASHBOARD BAR */}
-        <section className="mx-auto w-[90%] max-w-[1440px] mb-20">
-          <div className="bg-[#0B1930] rounded-2xl md:rounded-[24px] p-8 md:py-10 grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-y-12 lg:gap-y-0 text-white divide-y-2 divide-x-0 lg:divide-y-0 lg:divide-x divide-[#1E2E4A]">
+        <section className="w-full bg-[#FAFBFC] pb-20">
+          <div className="mx-auto max-w-[1440px] px-6 md:px-12 lg:px-20">
+            <div className="bg-[#0B1930] rounded-2xl md:rounded-[24px] p-8 md:py-10 grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-y-12 lg:gap-y-0 text-white divide-y-2 divide-x-0 lg:divide-y-0 lg:divide-x divide-[#1E2E4A]">
             {/* Stat Item 1 */}
             <div className="flex items-center gap-4 lg:justify-center pt-6 lg:pt-0">
               <div className="w-12 h-12 rounded-full bg-[#CC1747]/10 border border-[#CC1747]/30 flex items-center justify-center text-[#CC1747]">
@@ -361,10 +363,12 @@ const SuccessStories = () => {
               </div>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
         {/* BROWSE STORIES SECTION */}
-        <section className="mx-auto w-[90%] max-w-[1440px] pb-24">
+        <section className="w-full bg-white py-16 md:py-24 border-t border-gray-100">
+          <div className="mx-auto max-w-[1440px] px-6 md:px-12 lg:px-20">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
             <h2 className="text-3xl font-bold text-[#23314A]">Browse Stories</h2>
             
@@ -545,11 +549,13 @@ const SuccessStories = () => {
               </button>
             </div>
           )}
+          </div>
         </section>
 
         {/* CALL TO ACTION (CTA) BANNER */}
-        <section className="mx-auto w-[90%] max-w-[1440px] pb-24">
-          <div className="bg-[#0B1930] rounded-[24px] md:rounded-[32px] overflow-hidden p-8 md:p-12 lg:p-16 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative">
+        <section className="w-full bg-white py-16 md:py-24 border-t border-gray-100">
+          <div className="mx-auto max-w-[1440px] px-6 md:px-12 lg:px-20">
+            <div className="bg-[#0B1930] rounded-[24px] md:rounded-[32px] overflow-hidden p-8 md:p-12 lg:p-16 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative">
             {/* Dynamic CSS Waveform Background Overlay */}
             <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#1E2E4A_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none z-0" />
             
@@ -598,7 +604,8 @@ const SuccessStories = () => {
               </Link>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
       </div>
     </>
   );
