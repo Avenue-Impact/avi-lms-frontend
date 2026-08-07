@@ -6,6 +6,7 @@ import AppLayout from "./layouts/AppLayout";
 import About from "./pages/About";
 import SuccessStories from "./pages/SuccessStories";
 import AvenueImpactDevelopment from "./pages/AvenueImpactDevelopment";
+import SuccessStoryForm from "./pages/SuccessStoryForm";
 import AVI from "./pages/AVI";
 import Partner from "./pages/Partner";
 import SelfPace from "./pages/SelfPace";
@@ -202,6 +203,10 @@ function App() {
             {
               path: "/success-stories",
               element: <SuccessStories />,
+            },
+            {
+              path: "/share-success-story",
+              element: <SuccessStoryForm />,
             },
             {
               path: "/contact",
