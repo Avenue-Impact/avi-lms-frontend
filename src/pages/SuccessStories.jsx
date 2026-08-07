@@ -520,7 +520,7 @@ const SuccessStories = () => {
                   Keep learning, keep growing, and keep transforming your future with Avenue Impact.
                 </p>
 
-                <Link to="/courses" className="inline-block">
+                <Link to="/digital-learning-hub" className="inline-block">
                   <button className="flex items-center gap-3 rounded-full bg-[#CC1747] hover:bg-[#a10f36] px-8 py-4 capitalize text-white font-semibold transition-all duration-300 transform hover:scale-[1.03] active:scale-95 shadow-lg shadow-[#CC1747]/20 group">
                     <span>Explore Learning Programs</span>
                     <div className="relative h-6 w-6 rounded-full bg-white/20 flex items-center justify-center">
