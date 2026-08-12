@@ -35,7 +35,9 @@ const Login = () => {
   const courseId = queryString.get("id");
   const courseTitle = queryString.get("title");
   const _r = queryString.get("_r");
-  const from = _r ? decodeURIComponent(_r) : "/dashboard";
+  const redirectTo = queryString.get("redirectTo");
+  const redirectTarget = redirectTo || _r;
+  const from = redirectTarget ? decodeURIComponent(redirectTarget) : "/dashboard";
 
   const { mutate, isPending } = useLoginUser();
 
@@ -219,7 +221,7 @@ const Login = () => {
             />
 
             <Link
-              to={"/forgot-password"}
+              to={`/forgot-password${redirectTarget ? `?redirectTo=${encodeURIComponent(redirectTarget)}` : ""}`}
               className="hover:text-primary-color-700 block text-sm font-semibold capitalize text-primary-color-600"
             >
               Forgot password?
@@ -246,7 +248,7 @@ const Login = () => {
         <p className="mt-6 flex items-center justify-center gap-4 text-center">
           <span className="text-sm text-[#514A4A]">Don't have an account?</span>
           <Link
-            to={`/signup${_r ? `?_r=${encodeURIComponent(_r)}` : ""}`}
+            to={`/signup${redirectTarget ? `?redirectTo=${encodeURIComponent(redirectTarget)}` : ""}`}
             className="hover:text-primary-color-700 text-sm font-semibold capitalize text-primary-color-600"
           >
             Sign up

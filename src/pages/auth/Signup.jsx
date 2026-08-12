@@ -87,7 +87,9 @@ const SignUp = ({ isPage = true }) => {
   const [user, setUser] = useState();
   const [queryString] = useSearchParams();
   const _r = queryString.get("_r");
-  const from = _r ? decodeURIComponent(_r) : "";
+  const redirectTo = queryString.get("redirectTo");
+  const redirectTarget = redirectTo || _r;
+  const from = redirectTarget ? decodeURIComponent(redirectTarget) : "";
 
   const [googleToken, setGoogleToken] = useState("");
   const [step, setStep] = useState(location.state?.googleToken ? "form" : "choice");

@@ -7,6 +7,8 @@ import About from "./pages/About";
 import SuccessStories from "./pages/SuccessStories";
 import AvenueImpactDevelopment from "./pages/AvenueImpactDevelopment";
 import SuccessStoryForm from "./pages/SuccessStoryForm";
+import ProtectedSuccessStoryRoute from "./Components/ProtectedSuccessStoryRoute";
+import AdminSuccessStoryManagement from "./pages/admin-pages/AdminSuccessStoryManagement";
 import AVI from "./pages/AVI";
 import Partner from "./pages/Partner";
 import SelfPace from "./pages/SelfPace";
@@ -206,7 +208,11 @@ function App() {
             },
             {
               path: "/share-success-story",
-              element: <SuccessStoryForm />,
+              element: (
+                <ProtectedSuccessStoryRoute>
+                  <SuccessStoryForm />
+                </ProtectedSuccessStoryRoute>
+              ),
             },
             {
               path: "/contact",
@@ -625,6 +631,10 @@ function App() {
                 {
                   path: "/admin/bank-transfers",
                   element: <AdminBankTransfers />,
+                },
+                {
+                  path: "/admin/success-stories",
+                  element: <AdminSuccessStoryManagement />,
                 },
 
                 {
