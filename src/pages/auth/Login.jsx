@@ -79,23 +79,23 @@ const Login = () => {
           
           Cookies.set("token", token, {
             expires: 1,
-            secure: true,
+            secure: window.location.protocol === "https:",
             sameSite: "strict",
             path: "/",
           });
           Cookies.set("userRole", loggedUser.role, {
             expires: 1,
-            secure: true,
+            secure: window.location.protocol === "https:",
             sameSite: "strict",
             path: "/",
           });
 
           toast.success("Login successful");
-          navigate(loginResponse.data.forward_url || from);
+          navigate(redirectTarget ? from : (loginResponse.data.forward_url || "/dashboard"));
         }
       } else {
         toast.success("No account found. Redirecting to sign up...");
-        navigate(`/signup${_r ? `?_r=${encodeURIComponent(_r)}` : ""}`, {
+        navigate(`/signup${redirectTarget ? `?redirectTo=${encodeURIComponent(redirectTarget)}` : ""}`, {
           state: { googleToken: credential },
         });
       }
@@ -123,13 +123,13 @@ const Login = () => {
         }
         Cookies.set("token", data.data.token, {
           expires: 1,
-          secure: true,
+          secure: window.location.protocol === "https:",
           sameSite: "strict",
           path: "/",
         });
         Cookies.set("userRole", data.data.user.role, {
           expires: 1,
-          secure: true,
+          secure: window.location.protocol === "https:",
           sameSite: "strict",
           path: "/",
         });
@@ -142,7 +142,7 @@ const Login = () => {
           const defaultPath = data.data.user.role?.toLowerCase() === "instructor" 
             ? "/instructor/dashboard" 
             : "/dashboard";
-          navigate(data.forward_url || (_r ? from : defaultPath));
+          navigate(redirectTarget ? from : (data.forward_url || defaultPath));
         }
       },
       onError: (err) => {

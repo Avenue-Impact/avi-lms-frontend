@@ -160,7 +160,7 @@ const SignUp = ({ isPage = true }) => {
 
       if (response.data.exists) {
         toast.error("Account already exists. Please log in.");
-        navigate(`/login${_r ? `?_r=${encodeURIComponent(_r)}` : ""}`);
+        navigate(`/login${redirectTarget ? `?redirectTo=${encodeURIComponent(redirectTarget)}` : ""}`);
         return;
       }
 
@@ -264,13 +264,13 @@ const SignUp = ({ isPage = true }) => {
         if (response.data.token) {
           Cookies.set("token", response.data.token, {
             expires: 1,
-            secure: true,
+            secure: window.location.protocol === "https:",
             sameSite: "strict",
             path: "/",
           });
           Cookies.set("userRole", response.data.newUser.role || "student", {
             expires: 1,
-            secure: true,
+            secure: window.location.protocol === "https:",
             sameSite: "strict",
             path: "/",
           });
