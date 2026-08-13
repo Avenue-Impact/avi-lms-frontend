@@ -204,10 +204,11 @@ const LiveSessionCourses = () => {
       <div
         className={`grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-6 lg:grid-cols-4`}
       >
-        {courses.map((course) => {
+        {courses.map((course, index) => {
+          const uniqueKey = course.enrollment_id || `${course.id || course.courseId}-${course.cohort_details?.id || course.cohort_details?._id || index}`;
           return (
             <LiveSessionCourseCard
-              key={course.id || course.courseId}
+              key={uniqueKey}
               imgSrc={course?.cover_image || fallbackCourseImage}
               altText={course?.title}
               title={course?.title}
