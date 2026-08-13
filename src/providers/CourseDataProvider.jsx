@@ -25,7 +25,9 @@ export const CourseDataProvider = ({ children }) => {
     }
   }, [location.pathname, searchParams]);
 
-  const { data, isLoading, error } = useViewEnrolledCourse(courseId, type);
+  const cohortId = searchParams.get('cohortId') || searchParams.get('cohort_id');
+
+  const { data, isLoading, error } = useViewEnrolledCourse(courseId, type, cohortId);
 
   if (isLoading) return <p className="p-4 text-gray-500">Loading...</p>;
 
