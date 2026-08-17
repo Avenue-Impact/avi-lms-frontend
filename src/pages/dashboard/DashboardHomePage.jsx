@@ -288,7 +288,7 @@ const PreviewListCourses = () => {
           return (
             <div key={course.id} className="bg-white shadow-md rounded-lg overflow-hidden flex flex-col">
               <div 
-                onClick={() => navigate(`/preview-course/${course.id}`)}
+                onClick={() => navigate(`/preview-course/${course.slug || course.id}`)}
                 className="cursor-pointer"
               >
                 <img
@@ -302,7 +302,7 @@ const PreviewListCourses = () => {
                   {course.title.length > 40 ? `${course.title.slice(0, 40)}...` : course.title}
                 </p>
                 <button 
-                  onClick={() => navigate(`/preview-course/${course.id}`)}
+                  onClick={() => navigate(`/preview-course/${course.slug || course.id}`)}
                   className="w-full bg-[#E11D48] text-white py-2 rounded-md font-medium text-sm hover:bg-rose-700 transition-colors"
                 >
                   Watch Free Preview

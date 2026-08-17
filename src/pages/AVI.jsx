@@ -89,15 +89,15 @@ const HeroSection = () => {
           </div>
 
           {/* Action cards */}
-          <div className="grid grid-cols-1 gap-[12px] sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-[12px] sm:grid-cols-3">
             <Link
               to="/partner"
               className="relative flex min-h-[70px] flex-row items-center justify-between overflow-hidden rounded-[12px] bg-[#CC1747] px-[16px] py-[10px] text-white no-underline transition-all duration-200 hover:-translate-y-[2px] hover:bg-[#a8103a]"
             >
-              <span className="text-[18px] font-semibold leading-[1.3] text-white">
+              <span className="text-[14px] lg:text-[16px] xl:text-[18px] font-semibold leading-[1.3] text-white">
                 Refer a Friend
               </span>
-              <span className="text-[28px] font-bold text-white opacity-90">
+              <span className="text-[20px] lg:text-[24px] xl:text-[28px] font-bold text-white opacity-90">
                 <ImArrowUpRight2 />
               </span>
             </Link>
@@ -105,10 +105,21 @@ const HeroSection = () => {
               to="/self-pace"
               className="relative flex min-h-[70px] flex-row items-center justify-between overflow-hidden rounded-[12px] bg-[#CC1747] px-[16px] py-[10px] text-white no-underline transition-all duration-200 hover:-translate-y-[2px] hover:bg-[#a8103a]"
             >
-              <span className="text-[18px] font-semibold leading-[1.3] text-white">
+              <span className="text-[14px] lg:text-[16px] xl:text-[18px] font-semibold leading-[1.3] text-white">
                 Self-Paced Learning
               </span>
-              <span className="text-[28px] font-bold text-white opacity-90">
+              <span className="text-[20px] lg:text-[24px] xl:text-[28px] font-bold text-white opacity-90">
+                <ImArrowUpRight2 />
+              </span>
+            </Link>
+            <Link
+              to="/success-stories"
+              className="relative flex min-h-[70px] flex-row items-center justify-between overflow-hidden rounded-[12px] bg-[#CC1747] px-[16px] py-[10px] text-white no-underline transition-all duration-200 hover:-translate-y-[2px] hover:bg-[#a8103a]"
+            >
+              <span className="text-[14px] lg:text-[16px] xl:text-[18px] font-semibold leading-[1.3] text-white">
+                Success Stories
+              </span>
+              <span className="text-[20px] lg:text-[24px] xl:text-[28px] font-bold text-white opacity-90">
                 <ImArrowUpRight2 />
               </span>
             </Link>
@@ -326,7 +337,7 @@ const AllCourses = ({ searchQuery = "" }) => {
           title={course.title}
           rating={course.average_rating ?? 0}
           review={course.total_reviews}
-          path={`/preview-course/${course.id}`}
+          path={`/preview-course/${course.slug || course.id}`}
           // path={`/courses/landing-page/c/${course.id}`}
         />
       ))}
