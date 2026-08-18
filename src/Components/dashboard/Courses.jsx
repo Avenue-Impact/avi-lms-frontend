@@ -7,14 +7,14 @@ import { FaTrash } from "react-icons/fa";
 import fallbackCourseImage from "@/assets/images/join_team.png";
 
 function Courses({ wishlist, handleWishlist }) {
-  const { title, average_rating, total_reviews, id } = wishlist;
+  const { title, average_rating, total_reviews, id, slug } = wishlist;
   const navigate = useNavigate();
   const { isPending, mutate } = useDeleteWishlist();
   return (
     <div className="overflow-hidden rounded-lg">
       <div
         onClick={() => {
-          navigate(`/preview-course/${id}`);
+          navigate(`/preview-course/${slug || id}`);
         }}
         className="cursor-pointer"
       >

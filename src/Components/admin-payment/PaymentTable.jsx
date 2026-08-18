@@ -105,7 +105,9 @@ const PaymentTable = ({ data }) => {
                   course.payment_status === "success" &&
                     "bg-[#F3FFF7] text-[#00A92F]",
                   course.payment_status === "pending" &&
-                    "bg-[#f0b53563] text-[#f0b535]"
+                    "bg-[#f0b53563] text-[#f0b535]",
+                  course.payment_status === "partially_paid" &&
+                    "bg-[#EBF8FF] text-[#0070F3]"
                 ) }
               >
                 {/* payment_status: "pending" */}

@@ -4,7 +4,11 @@ import "./App.css";
 
 import AppLayout from "./layouts/AppLayout";
 import About from "./pages/About";
+import SuccessStories from "./pages/SuccessStories";
 import AvenueImpactDevelopment from "./pages/AvenueImpactDevelopment";
+import SuccessStoryForm from "./pages/SuccessStoryForm";
+import ProtectedSuccessStoryRoute from "./Components/ProtectedSuccessStoryRoute";
+import AdminSuccessStoryManagement from "./pages/admin-pages/AdminSuccessStoryManagement";
 import AVI from "./pages/AVI";
 import Partner from "./pages/Partner";
 import SelfPace from "./pages/SelfPace";
@@ -63,6 +67,7 @@ import JoinProjectTeam from "./pages/dashboard/JoinProjectTeam";
 import LeaveRating from "./pages/dashboard/LeaveRating";
 import MentorshipList from "./pages/dashboard/MentorshipList";
 import CourseProgress from "./pages/dashboard/CourseProgress";
+import PayInstallmentPage from "./pages/dashboard/PayInstallmentPage";
 
 import { useState } from "react";
 import { Toaster } from "react-hot-toast";
@@ -196,6 +201,18 @@ function App() {
              {
               path: "/about",
               element: <About />,
+            },
+            {
+              path: "/success-stories",
+              element: <SuccessStories />,
+            },
+            {
+              path: "/share-success-story",
+              element: (
+                <ProtectedSuccessStoryRoute>
+                  <SuccessStoryForm />
+                </ProtectedSuccessStoryRoute>
+              ),
             },
             {
               path: "/contact",
@@ -408,6 +425,10 @@ function App() {
                   path: "LeaveRating",
                   element: <LeaveRating />,
                 },
+                {
+                  path: "pay-installment/:enrollmentId",
+                  element: <PayInstallmentPage />,
+                },
               ],
             },
             {
@@ -610,6 +631,10 @@ function App() {
                 {
                   path: "/admin/bank-transfers",
                   element: <AdminBankTransfers />,
+                },
+                {
+                  path: "/admin/success-stories",
+                  element: <AdminSuccessStoryManagement />,
                 },
 
                 {

@@ -177,6 +177,7 @@ const OnDemandSessionCourses = () => {
                 courseId={course.id}
                 is_access_revoked={course.is_access_revoked}
                 last_watched_video_id={course.last_watched_video_id}
+                enrollmentId={course.enrollment_id}
               />
             );
           })}
@@ -203,10 +204,11 @@ const LiveSessionCourses = () => {
       <div
         className={`grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-6 lg:grid-cols-4`}
       >
-        {courses.map((course) => {
+        {courses.map((course, index) => {
+          const uniqueKey = course.enrollment_id || `${course.id || course.courseId}-${course.cohort_details?.id || course.cohort_details?._id || index}`;
           return (
             <LiveSessionCourseCard
-              key={course.id || course.courseId}
+              key={uniqueKey}
               imgSrc={course?.cover_image || fallbackCourseImage}
               altText={course?.title}
               title={course?.title}
@@ -220,6 +222,7 @@ const LiveSessionCourses = () => {
               is_access_revoked={course?.is_access_revoked}
               last_watched_video_id={course?.last_watched_video_id}
               access_expires_at={course?.access_expires_at}
+              enrollmentId={course.enrollment_id}
             />
           );
         })}
@@ -285,7 +288,7 @@ const PreviewListCourses = () => {
           return (
             <div key={course.id} className="bg-white shadow-md rounded-lg overflow-hidden flex flex-col">
               <div 
-                onClick={() => navigate(`/preview-course/${course.id}`)}
+                onClick={() => navigate(`/preview-course/${course.slug || course.id}`)}
                 className="cursor-pointer"
               >
                 <img
@@ -299,7 +302,7 @@ const PreviewListCourses = () => {
                   {course.title.length > 40 ? `${course.title.slice(0, 40)}...` : course.title}
                 </p>
                 <button 
-                  onClick={() => navigate(`/preview-course/${course.id}`)}
+                  onClick={() => navigate(`/preview-course/${course.slug || course.id}`)}
                   className="w-full bg-[#E11D48] text-white py-2 rounded-md font-medium text-sm hover:bg-rose-700 transition-colors"
                 >
                   Watch Free Preview

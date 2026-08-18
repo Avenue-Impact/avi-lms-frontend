@@ -261,7 +261,7 @@ const DiscoverCourses = () => {
                 title={course.title}
                 rating={course.average_rating}
                 review={course.total_reviews}
-                path={`/preview-course/${course.id}`}
+                path={`/preview-course/${course.slug || course.id}`}
               />
             ))
           )}

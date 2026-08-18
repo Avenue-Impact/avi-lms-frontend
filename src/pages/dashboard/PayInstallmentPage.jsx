@@ -1,8 +1,9 @@
-import { useState } from "react";
-import { useParams, useSearchParams, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams, useSearchParams, Link, useNavigate } from "react-router-dom";
 import { useFetchInstallments } from "@/hooks/students/use-fetch-installments";
 import { usePayInstallment } from "@/hooks/students/use-pay-installment";
 import BankTransferModal from "@/Components/BankTransferModal";
+import PaymentMethodModal from "@/Components/PaymentMethodModal";
 import toast from "react-hot-toast";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -20,18 +21,14 @@ const statusConfig = {
   overdue: { icon: faExclamationTriangle, color: "text-red-500", label: "Overdue" },
 };
 
-const GATEWAYS = [
-  { id: "stripe", label: "Credit / Debit Card", icon: faCreditCard },
-  { id: "paystack", label: "Paystack", icon: faCreditCard },
-  { id: "bank_transfer", label: "Bank Transfer", icon: faUniversity },
-];
-
 const PayInstallmentPage = () => {
   const { enrollmentId } = useParams();
   const [searchParams] = useSearchParams();
   const courseId = searchParams.get("courseId");
+  const navigate = useNavigate();
 
-  const [selectedGateway, setSelectedGateway] = useState("stripe");
+  const [selectedGateway, setSelectedGateway] = useState("");
+  const [showMethodModal, setShowMethodModal] = useState(false);
   const [showBankModal, setShowBankModal] = useState(false);
   const [bankTransferData, setBankTransferData] = useState(null);
 
@@ -41,6 +38,25 @@ const PayInstallmentPage = () => {
   const installmentData = data?.data?.data;
   const installments = installmentData?.installments || [];
   const nextDue = installmentData?.nextDue;
+
+  const userLocation = installmentData?.userLocation;
+  const currencySymbol = userLocation?.currency === "NGN" || userLocation?.currency === "Naira" ? "₦" : "£";
+
+  const gateways = userLocation?.GATEWAYS?.map((g) => {
+    if (g === "stripe") return { id: "stripe", label: "Credit / Debit Card", icon: faCreditCard };
+    if (g === "paystack") return { id: "paystack", label: "Paystack", icon: faCreditCard };
+    if (g === "bank_transfer") return { id: "bank_transfer", label: "Bank Transfer", icon: faUniversity };
+    return { id: g, label: g.replace("_", " "), icon: faCreditCard };
+  }) || [
+    { id: "stripe", label: "Credit / Debit Card", icon: faCreditCard },
+    { id: "bank_transfer", label: "Bank Transfer", icon: faUniversity },
+  ];
+
+  useEffect(() => {
+    if (gateways.length > 0 && (!selectedGateway || !gateways.some((g) => g.id === selectedGateway))) {
+      setSelectedGateway(gateways[0].id);
+    }
+  }, [installmentData, gateways, selectedGateway]);
 
   const handlePay = () => {
     if (!selectedGateway) {
@@ -53,14 +69,19 @@ const PayInstallmentPage = () => {
       {
         onSuccess: (res) => {
           const d = res?.data;
+          setShowMethodModal(false);
           if (d?.url) {
             window.location.href = d.url;
           } else if (d?.bankDetails) {
             setBankTransferData(d);
             setShowBankModal(true);
-          } else if (d?.message === "All installments are already paid.") {
-            toast.success("All installments are fully paid! Refreshing...");
-            setTimeout(() => window.location.reload(), 1500);
+          } else if (
+            d?.message === "All installments are already paid." ||
+            d?.message === "All outstanding installments have been processed and paid." ||
+            d?.message?.includes("processed")
+          ) {
+            toast.success(d.message || "All installments processed successfully!");
+            setTimeout(() => navigate("/dashboard"), 1500);
           }
         },
         onError: (err) => {
@@ -93,16 +114,7 @@ const PayInstallmentPage = () => {
   const total = installments.length;
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-8">
-      {/* Back */}
-      <Link
-        to="/dashboard"
-        className="mb-6 inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800"
-      >
-        <FontAwesomeIcon icon={faArrowLeft} />
-        Back to Dashboard
-      </Link>
-
+    <div className="mx-auto px-4 pt-4 pb-8">
       <h1 className="mb-1 text-2xl font-bold text-[#23314A]">Installment Payment</h1>
       <p className="mb-6 text-sm text-gray-500">
         {paidCount} of {total} installments paid
@@ -148,7 +160,7 @@ const PayInstallmentPage = () => {
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-semibold text-[#23314A]">
-                    £{inst.amount?.toLocaleString()}
+                    {currencySymbol}{inst.amount?.toLocaleString()}
                   </p>
                   <p className={`text-xs font-medium ${cfg.color}`}>{cfg.label}</p>
                 </div>
@@ -164,41 +176,14 @@ const PayInstallmentPage = () => {
           <h2 className="mb-1 text-lg font-semibold text-[#23314A]">Pay Next Installment</h2>
           <p className="mb-5 text-sm text-gray-500">
             Amount due:{" "}
-            <span className="font-bold text-[#CC1747]">£{nextDue.amount?.toLocaleString()}</span>
+            <span className="font-bold text-[#CC1747]">{currencySymbol}{nextDue.amount?.toLocaleString()}</span>
           </p>
 
-          {/* Gateway selector */}
-          <div className="mb-5 space-y-3">
-            <p className="text-sm font-medium text-gray-700">Select payment method</p>
-            {GATEWAYS.map((gw) => (
-              <label
-                key={gw.id}
-                className={`flex cursor-pointer items-center gap-3 rounded-lg border px-4 py-3 transition-all ${
-                  selectedGateway === gw.id
-                    ? "border-[#CC1747] bg-red-50"
-                    : "border-gray-200 hover:border-gray-300"
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="gateway"
-                  value={gw.id}
-                  checked={selectedGateway === gw.id}
-                  onChange={() => setSelectedGateway(gw.id)}
-                  className="accent-[#CC1747]"
-                />
-                <FontAwesomeIcon icon={gw.icon} className="text-gray-500" />
-                <span className="text-sm font-medium text-gray-700">{gw.label}</span>
-              </label>
-            ))}
-          </div>
-
           <button
-            onClick={handlePay}
-            disabled={isPending}
-            className="w-full rounded-lg bg-[#CC1747] py-3 text-sm font-semibold text-white transition hover:bg-[#B3123F] disabled:opacity-60"
+            onClick={() => setShowMethodModal(true)}
+            className="w-full rounded-lg bg-[#CC1747] py-3 text-sm font-semibold text-white transition hover:bg-[#B3123F]"
           >
-            {isPending ? "Processing..." : `Pay £${nextDue.amount?.toLocaleString()} Now`}
+            Continue Payment
           </button>
         </div>
       ) : (
@@ -215,12 +200,30 @@ const PayInstallmentPage = () => {
         </div>
       )}
 
+      {/* Payment Method Modal */}
+      {showMethodModal && (
+        <PaymentMethodModal
+          isOpen={showMethodModal}
+          onClose={() => setShowMethodModal(false)}
+          methods={gateways}
+          selectedMethod={selectedGateway}
+          onSelectMethod={setSelectedGateway}
+          onProceed={handlePay}
+          amount={nextDue.amount}
+          currency={userLocation?.currency || "GBP"}
+          currencySymbol={currencySymbol}
+        />
+      )}
+
       {/* Bank Transfer Modal */}
       {showBankModal && bankTransferData && (
         <BankTransferModal
           isOpen={showBankModal}
           onClose={() => setShowBankModal(false)}
-          onBack={() => setShowBankModal(false)}
+          onBack={() => {
+            setShowBankModal(false);
+            setShowMethodModal(true);
+          }}
           transactionId={bankTransferData.transactionId}
           enrollmentId={bankTransferData.enrollmentId}
           bankDetails={bankTransferData.bankDetails}
