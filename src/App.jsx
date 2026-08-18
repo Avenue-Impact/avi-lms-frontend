@@ -6,6 +6,7 @@ import AppLayout from "./layouts/AppLayout";
 import About from "./pages/About";
 import SuccessStories from "./pages/SuccessStories";
 import AvenueImpactDevelopment from "./pages/AvenueImpactDevelopment";
+import AvenueImpactCustomPayment from "./pages/AvenueImpactCustomPayment";
 import SuccessStoryForm from "./pages/SuccessStoryForm";
 import ProtectedSuccessStoryRoute from "./Components/ProtectedSuccessStoryRoute";
 import AdminSuccessStoryManagement from "./pages/admin-pages/AdminSuccessStoryManagement";
@@ -233,6 +234,10 @@ function App() {
             {
               path: "/docs/platform",
               element: <PlatformDocsPage />,
+            },
+            {
+              path: "/payment",
+              element: <AvenueImpactCustomPayment />,
             },
           ],
         },

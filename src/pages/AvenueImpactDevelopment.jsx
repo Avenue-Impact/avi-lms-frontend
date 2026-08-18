@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import Grid2Layout from "../Components/Grid2Layout";
 import H3 from "../Components/H3";
 import ImageHero from "../Components/ImageHero";
@@ -199,7 +200,7 @@ const AvenueImpactDevelopment = () => {
               </li>
               <li>
                 <P className="text-[16px] lg:text-[18px]">
-                  Donate: Please support our efforts by donating or supporting a
+                  <Link to="/avenue-impact-development/payment" className="text-red-600 hover:text-red-700 font-semibold underline">Donate:</Link> Please support our efforts by donating or supporting a
                   young {"person's"} education or training.
                 </P>
               </li>
