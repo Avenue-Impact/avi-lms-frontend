@@ -33,6 +33,7 @@ const AviNav = ({ showNav: propShowNav, setShowNav: propSetShowNav }) => {
     },
     { label: "Refer a Friend", to: "/partner" },
     { label: "Self-Paced Learning", to: "/self-pace" },
+    { label: "Success Stories", to: "/success-stories" },
   ];
 
   const location = useLocation();
