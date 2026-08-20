@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import joinTeam from "../../../assets/images/join_team.png";
 import RenderStars from "@/Components/RenderStars";
 import { StarRating } from "@/Components/star-rating";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClone } from "@fortawesome/free-solid-svg-icons";
 
 const CreatedCourseCard = ({
   imgSrc = joinTeam,
@@ -10,9 +12,23 @@ const CreatedCourseCard = ({
   date = "18/09/2024",
   rating,
   review,
+  onClone,
 }) => {
   return (
-    <div className="rounded-lg bg-[rgb(252,252,252)] shadow-md">
+    <div className="relative rounded-lg bg-[rgb(252,252,252)] shadow-md group">
+      {onClone && (
+        <button
+          className="absolute top-2 right-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 text-[#CC1747] opacity-0 shadow hover:bg-white hover:text-red-700 focus:opacity-100 group-hover:opacity-100 transition-opacity"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onClone();
+          }}
+          title="Clone Course"
+        >
+          <FontAwesomeIcon icon={faClone} />
+        </button>
+      )}
       <div className="h-[90px] w-full overflow-hidden rounded-t-lg md:h-[120px] lg:h-[190px] xl:h-[206px]">
         <img
           className="h-full w-full object-cover"
