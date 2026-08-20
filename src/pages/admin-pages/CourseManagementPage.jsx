@@ -29,7 +29,11 @@ const stringToArray = (str) => {
 };
 
 const CourseManagementPage = () => {
-  const [image, setImage] = useState({ file: null, preview: null });
+  const courseInformation = localStorage.getItem("course-information")
+    ? JSON.parse(localStorage.getItem("course-information"))
+    : {};
+
+  const [image, setImage] = useState({ file: null, preview: courseInformation.cover_image || null });
   const [video, setVideo] = useState({ file: null, preview: null });
 
   const { createCourseInformation, isCreating } = useCreateCourseInformation();
@@ -39,22 +43,20 @@ const CourseManagementPage = () => {
   const btnRef = useRef(null);
 
   const { setActiveTab } = useCourseManagementInfo();
-  const courseInformation = localStorage.getItem("course-information")
-    ? JSON.parse(localStorage.getItem("course-information"))
-    : {};
+  
   const courseId =
     localStorage.getItem("course-information") && courseInformation.id;
 
-  const dataToEdit = localStorage.getItem("course-information") && {
-    courseTitle: courseInformation.title,
-    benefits: courseInformation.benefits.join("\n"),
-    courseIncludes: courseInformation.course_includes.join("\n"),
-    highlight: courseInformation.program_highlights.join("\n"),
-    technologies: courseInformation.tools_and_technologies.join("\n"),
-    overview: courseInformation.overview,
-    url: "",
+  const dataToEdit = (courseInformation && Object.keys(courseInformation).length > 0) ? {
+    courseTitle: courseInformation.title || "",
+    benefits: (courseInformation.benefits || []).join("\n"),
+    courseIncludes: (courseInformation.course_includes || []).join("\n"),
+    highlight: (courseInformation.program_highlights || []).join("\n"),
+    technologies: (courseInformation.tools_and_technologies || []).join("\n"),
+    overview: courseInformation.overview || "",
+    url: courseInformation.upload_from_url || (courseInformation.preview_video?.url) || "",
     is_private: courseInformation.is_private ?? false,
-  };
+  } : null;
 
   const isEdit = Boolean(courseId);
 
@@ -65,7 +67,7 @@ const CourseManagementPage = () => {
 
   const form = useForm({
     resolver: zodResolver(courseInformationSchema),
-    defaultValues: isEdit
+    defaultValues: dataToEdit
       ? dataToEdit
       : {
           courseTitle: "",
@@ -146,7 +148,7 @@ const CourseManagementPage = () => {
       is_private,
     } = data;
 
-    if (!image.file) {
+    if (!image.file && !courseInformation?.cover_image) {
       toast.error("Please insert an image");
 
       return setMessage((prev) => {
@@ -158,7 +160,7 @@ const CourseManagementPage = () => {
       });
     }
 
-    if (!video.file && form.watch("url").length < 1)
+    if (!video.file && form.watch("url").length < 1 && !courseInformation?.upload_from_url && !courseInformation?.preview_video?.url)
       return toast.error("Please insert an taster video or video url");
 
     const courses = {
@@ -168,9 +170,15 @@ const CourseManagementPage = () => {
       program_highlights: stringToArray(highlight),
       course_includes: stringToArray(courseIncludes),
       overview: overview,
-      coverImage: image.file,
       is_private,
     };
+    
+    // Support file uploads, or fallback to existing string URL from clone
+    if (image.file) {
+      courses.coverImage = image.file;
+    } else if (courseInformation?.cover_image) {
+      courses.cover_image = courseInformation.cover_image;
+    }
 
     let courseToUpload;
 

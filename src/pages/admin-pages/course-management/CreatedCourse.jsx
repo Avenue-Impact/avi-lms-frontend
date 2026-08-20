@@ -5,7 +5,7 @@ import { formatDate } from "@/lib/utils";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import GlobalPagination from "@/Components/ui/GlobalPagination";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useCallback, useState } from "react";
 import _ from "lodash";
 
@@ -13,6 +13,7 @@ const CreatedCourse = () => {
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(24);
   const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
 
   const { data, isLoading, error } = useFetchAllAdminCourses(page, perPage, true, searchQuery);
 
@@ -27,6 +28,26 @@ const CreatedCourse = () => {
 
   const handleChange = (event) => {
     handleSearch(event.target.value);
+  };
+
+  const handleClone = (course) => {
+    const clonedCourse = {
+      ...course,
+      title: `${course.title} (Clone)`,
+    };
+    
+    // Remove unique identifiers so it's treated as a new course
+    delete clonedCourse.id;
+    delete clonedCourse._id;
+    delete clonedCourse.slug;
+
+    // Convert preview_video object to upload_from_url string for the form
+    if (clonedCourse.preview_video && clonedCourse.preview_video.url) {
+      clonedCourse.upload_from_url = clonedCourse.preview_video.url;
+    }
+
+    localStorage.setItem("course-information", JSON.stringify(clonedCourse));
+    navigate("/admin/course/management/create-course");
   };
 
   const courses = data?.data?.data?.courses || [];
@@ -74,6 +95,7 @@ const CreatedCourse = () => {
                     title={course.title}
                     rating={course.average_rating}
                     review={course.total_reviews}
+                    onClone={() => handleClone(course)}
                     date={
                       course?.cohorts[0]
                         ? formatDate(course?.cohorts[0].created_at)
