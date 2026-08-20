@@ -21,12 +21,13 @@ import toast from "react-hot-toast";
 import { CheckCircle2, Circle } from "lucide-react";
 import { passwordRegex } from "@/lib/utils";
 import { route } from "@/lib/route-checker";
+import { useOtpGate } from "@/context/OtpGateContext";
 
 const loginSchema = z
   .object({
     email: z.string().superRefine((val, ctx) => {
       if (!val) { ctx.addIssue({ code: z.ZodIssueCode.custom, message: "This field is required" }); return; }
-      if (/\\s/.test(val)) { ctx.addIssue({ code: z.ZodIssueCode.custom, message: "⚠ Please enter a valid email address - You have entered a blank space" }); return; }
+      if (/\s/.test(val)) { ctx.addIssue({ code: z.ZodIssueCode.custom, message: "⚠ Please enter a valid email address - You have entered a blank space" }); return; }
       if (!val.includes("@")) { ctx.addIssue({ code: z.ZodIssueCode.custom, message: "⚠ Please enter a valid email address - You have missed out the @ symbol" }); return; }
       const [username, ...rest] = val.split("@");
       if (!username) { ctx.addIssue({ code: z.ZodIssueCode.custom, message: "⚠ Please enter a valid email address - You have missed out the username" }); return; }
@@ -78,8 +79,11 @@ const loginSchema = z
   });
 
 const SignUp = ({ isPage = true }) => {
+  const { requestOtpVerification } = useOtpGate();
   const navigate = useNavigate();
   const location = useLocation();
+
+
   const [success, setSuccess] = useState("");
   const [title, setTitle] = useState("Sign Up and Start Learning");
   const [confirm, setConfirm] = useState(false);
@@ -244,7 +248,11 @@ const SignUp = ({ isPage = true }) => {
         googleToken: googleToken || undefined,
       };
 
+      const verified = await requestOtpVerification(email);
+      if (!verified) return;
+
       const response = await axios.post(`${url}/signup`, users, {
+
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",

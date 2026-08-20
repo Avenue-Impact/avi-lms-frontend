@@ -22,6 +22,8 @@ import { CommonButton } from "@/Components/ui/button";
 import PasswordInput from "@/Components/ui/password-input";
 import toast from "react-hot-toast";
 
+import { useOtpGate } from "@/context/OtpGateContext";
+
 const loginSchema = z.object({
   username: z.string().min(1, { message: "name is required" }),
   password: z
@@ -31,6 +33,7 @@ const loginSchema = z.object({
 
 const Login = () => {
   const navigate = useNavigate();
+  const { requestOtpVerification } = useOtpGate();
   const [queryString] = useSearchParams();
   const courseId = queryString.get("id");
   const courseTitle = queryString.get("title");
@@ -70,6 +73,9 @@ const Login = () => {
       });
 
       if (response.data.exists) {
+        const verified = await requestOtpVerification(payload.email);
+        if (!verified) return;
+
         const loginResponse = await axios.post(`${url}/google-login`, {
           credential,
         });
@@ -106,11 +112,15 @@ const Login = () => {
   };
 
   const handleSubmit = async (values) => {
+    const verified = await requestOtpVerification(values.username);
+    if (!verified) return;
+
     const user = {
       userid: values.username,
       password: values.password,
     };
     setUser(user);
+
 
     mutate(user, {
       onSuccess: ({ data }) => {

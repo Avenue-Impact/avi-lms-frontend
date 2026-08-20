@@ -48,6 +48,8 @@ import { Heading, Paragraph } from "../auth/components/Text";
 //     "message": "Login successful"
 // }
 
+import { useOtpGate } from "@/context/OtpGateContext";
+
 import { customEmailSchema } from "@/lib/form-schemas/forms-schema";
 
 const loginSchema = z.object({
@@ -59,15 +61,20 @@ const loginSchema = z.object({
 
 const AdminLogin = () => {
   const navigate = useNavigate();
+  const { requestOtpVerification } = useOtpGate();
   // const { dispatch } = useAuth();
 
   const { mutate, isPending, error } = useLoginAdmin();
 
   const handleSubmit = async (values) => {
+    const verified = await requestOtpVerification(values.email);
+    if (!verified) return;
+
     const user = {
       email: values.email,
       password: values.password,
     };
+
     mutate(user, { 
       // onSuccess handled by hook
       onError(err) {

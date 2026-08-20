@@ -1,4 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import "./App.css";
 
@@ -160,11 +162,12 @@ import Dashbaord from "./pages/dashbaord";
 import LoadingPage from "./Components/LoadingPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import InstructorLiveSessions from "./pages/instructor/InstructorLiveSessions";
-
-const queryClient = new QueryClient();
+import { OtpGateProvider } from "./context/OtpGateContext";
 
 function App() {
   const [userInfo, setUserInfo] = useState({});
+  const queryClient = new QueryClient();
+
 
   const routes = createBrowserRouter([
     {
@@ -825,10 +828,12 @@ function App() {
   return (
     <>
       <QueryClientProvider client={queryClient}>
-        <ReactQueryDevtools initialIsOpen={false} />
-        <Toaster />
-        {/* <AnniversarySpotlightBadge /> */}
-        <RouterProvider router={routes} fallbackElement={<LoadingPage />} />
+        <OtpGateProvider>
+          <ReactQueryDevtools initialIsOpen={false} />
+          <Toaster />
+          {/* <AnniversarySpotlightBadge /> */}
+          <RouterProvider router={routes} fallbackElement={<LoadingPage />} />
+        </OtpGateProvider>
       </QueryClientProvider>
     </>
   );
