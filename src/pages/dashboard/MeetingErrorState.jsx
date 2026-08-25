@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { AlertCircle, LogIn, RefreshCcw, ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSafeBack } from "@/hooks/use-safe-back";
+import toast from "react-hot-toast";
 
 const MeetingErrorState = ({ error, onRetry, backUrl }) => {
   const navigate = useNavigate();
@@ -9,6 +10,25 @@ const MeetingErrorState = ({ error, onRetry, backUrl }) => {
   const statusCode = error?.response?.status;
   const message =
     error?.response?.data?.message || error?.message || "Something went wrong.";
+
+  const isSessionNotFound =
+    statusCode === 404 ||
+    message.toLowerCase().includes("session not found");
+
+  useEffect(() => {
+    if (isSessionNotFound) {
+      toast.error(message || "Session not found");
+      if (backUrl) {
+        window.location.href = backUrl;
+      } else {
+        goBack();
+      }
+    }
+  }, [isSessionNotFound, message, backUrl, goBack]);
+
+  if (isSessionNotFound) {
+    return null;
+  }
 
   // Handle Unauthenticated
   if (statusCode === 401 || statusCode === 403) {
