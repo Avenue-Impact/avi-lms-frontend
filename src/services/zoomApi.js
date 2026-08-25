@@ -24,3 +24,7 @@ export const testZoomAccountApi = async (id) => {
 export const assignZoomToCohortApi = async ({ cohortId, zoom_account_id }) => {
   return await axiosAdmin.put(`/zoom/cohorts/${cohortId}/assign`, { zoom_account_id });
 };
+
+export const fetchZoomAccountScheduleApi = async (id) => {
+  return await axiosAdmin.get(`/zoom/${id}/schedule`);
+};

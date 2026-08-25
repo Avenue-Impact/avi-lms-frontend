@@ -6,8 +6,17 @@ import {
   toggleZoomAccountApi,
   testZoomAccountApi,
   assignZoomToCohortApi,
+  fetchZoomAccountScheduleApi,
 } from "@/services/zoomApi";
 import { toast } from "react-hot-toast";
+
+export const useZoomAccountSchedule = (id) => {
+  return useQuery({
+    queryKey: ["zoomAccountSchedule", id],
+    queryFn: () => fetchZoomAccountScheduleApi(id),
+    enabled: !!id,
+  });
+};
 
 export const useZoomAccounts = () => {
   return useQuery({
