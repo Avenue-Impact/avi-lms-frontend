@@ -61,15 +61,11 @@ const loginSchema = z.object({
 
 const AdminLogin = () => {
   const navigate = useNavigate();
-  const { requestOtpVerification } = useOtpGate();
   // const { dispatch } = useAuth();
 
   const { mutate, isPending, error } = useLoginAdmin();
 
   const handleSubmit = async (values) => {
-    const verified = await requestOtpVerification(values.email);
-    if (!verified) return;
-
     const user = {
       email: values.email,
       password: values.password,
