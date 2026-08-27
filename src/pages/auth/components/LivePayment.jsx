@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 import DashButton from "../ButtonDash";
 import { PreviewVideoSelect } from "./DashSelect";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 // import { usePreviewCourses } from "@/hooks/students/use-fetch-all-courses";
 import { useAddPayment } from "@/hooks/students/use-add-payment";
 import { useAddToWishlist } from "@/hooks/students/use-add-to-wishlist";
@@ -19,6 +19,7 @@ import Cookies from "js-cookie";
 
 
 const LivePayment = ({ courseData }) => {
+  const navigate = useNavigate();
   const [showPlanModal, setShowPlanModal] = useState(false);
   const [showInstallmentModal, setShowInstallmentModal] = useState(false);
   const [showMethodModal, setShowMethodModal] = useState(false);
@@ -77,10 +78,9 @@ const LivePayment = ({ courseData }) => {
             },
             courseId,
         }, {
-            onSuccess: (data) => {
-                if (data?.data?.url) {
-                    window.location.href = data.data.url;
-                }
+            onSuccess: () => {
+                toast.success("Enrolled successfully!");
+                navigate("/dashboard");
             }
         });
         return;

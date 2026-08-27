@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import DashButton from "../ButtonDash";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 // import { usePreviewCourses } from "@/hooks/students/use-fetch-all-courses";
 import { useAddPayment } from "@/hooks/students/use-add-payment";
 
@@ -14,6 +14,7 @@ import Cookies from "js-cookie";
 
 
 const OnDemandPayment = ({ courseData }) => {
+  const navigate = useNavigate();
   let { courseId } = useParams();
   const previewCourse = courseData;
   // const { previewCourse, isLoading } = usePreviewCourses(courseId);
@@ -63,10 +64,9 @@ const OnDemandPayment = ({ courseData }) => {
         },
         courseId,
       }, {
-          onSuccess: (data) => {
-              if (data?.data?.url) {
-                  window.location.href = data.data.url;
-              }
+          onSuccess: () => {
+              toast.success("Enrolled successfully!");
+              navigate("/dashboard");
           }
       });
       return;
