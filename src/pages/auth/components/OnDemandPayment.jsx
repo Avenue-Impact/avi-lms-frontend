@@ -139,7 +139,10 @@ const OnDemandPayment = ({ courseData }) => {
     }, {
         onSuccess: (data) => {
             setShowMethodModal(false);
-            if (data?.data?.url) {
+            if (Math.round(amountToPay) <= 0 || data?.data?.isFree) {
+                toast.success("Enrolled successfully!");
+                navigate("/dashboard");
+            } else if (data?.data?.url) {
                 window.location.href = data.data.url;
             } else if (data?.data?.bankDetails) {
                 setBankTransferData(data.data);
