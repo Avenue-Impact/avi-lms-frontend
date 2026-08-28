@@ -116,6 +116,9 @@ const Login = () => {
 
     mutate(user, {
       onSuccess: ({ data }) => {
+        if (data?.data?.user) {
+          setUser(data.data.user);
+        }
         if (
           data.data.user.role?.toLowerCase() !== "instructor" &&
           data.data.user.user_status !== "verified"

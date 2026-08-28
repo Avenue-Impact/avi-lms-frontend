@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 import DashButton from "../ButtonDash";
 import { PreviewVideoSelect } from "./DashSelect";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 // import { usePreviewCourses } from "@/hooks/students/use-fetch-all-courses";
 import { useAddPayment } from "@/hooks/students/use-add-payment";
 import { useAddToWishlist } from "@/hooks/students/use-add-to-wishlist";
@@ -19,17 +19,18 @@ import Cookies from "js-cookie";
 
 
 const LivePayment = ({ courseData }) => {
+  const navigate = useNavigate();
   const [showPlanModal, setShowPlanModal] = useState(false);
   const [showInstallmentModal, setShowInstallmentModal] = useState(false);
   const [showMethodModal, setShowMethodModal] = useState(false);
   const [showBankModal, setShowBankModal] = useState(false);
-  
+
   const [selectedCourseId, setSelectedCourseId] = useState("");
   const [selectedPlan, setSelectedPlan] = useState('full'); // 'full' or 'installment'
   const [installmentData, setInstallmentData] = useState(null);
   const [selectedGateway, setSelectedGateway] = useState("");
   const [bankTransferData, setBankTransferData] = useState(null);
-  
+
   const [promoInput, setPromoInput] = useState("");
   const [appliedPromo, setAppliedPromo] = useState(null);
   const [isApplyingPromo, setIsApplyingPromo] = useState(false);
@@ -47,132 +48,134 @@ const LivePayment = ({ courseData }) => {
 
   const original_price = selectedCohort?.original_price?.amount || 0;
   let discounted_price = selectedCohort?.discounted_price?.amount || 0;
-  
+
   // Override price if promo applied
   if (appliedPromo && appliedPromo.final_price !== undefined) {
-      discounted_price = appliedPromo.final_price;
+    discounted_price = appliedPromo.final_price;
   }
-  
+
   const percentageOff = original_price ? ((original_price - discounted_price) * 100) / original_price : 0;
-  
+
   // Calculate mock installment price for display if not available from backend
   const installmentPrice = Math.round(discounted_price / 5);
 
 
   const handleStartPayment = () => {
     if (!selectedCourseId) {
-       toast.error("Please select a cohort.");
-       return;
+      toast.error("Please select a cohort.");
+      return;
     }
-    
+
     if (Math.round(discounted_price) <= 0) {
-        // Enrol directly without payment method modal
-        payment({
-            data: {
-                access_type: ["live class"],
-                live_class_cohort: selectedCohort?.cohort,
-                gateway: "free",
-                payment_plan: "full",
-                ...(appliedPromo && { promocode: appliedPromo.promo.code })
-            },
-            courseId,
-        }, {
-            onSuccess: (data) => {
-                if (data?.data?.url) {
-                    window.location.href = data.data.url;
-                }
-            }
-        });
-        return;
+      // Enrol directly without payment method modal
+      payment({
+        data: {
+          access_type: ["live class"],
+          live_class_cohort: selectedCohort?.cohort,
+          gateway: "free",
+          payment_plan: "full",
+          ...(appliedPromo && { promocode: appliedPromo.promo.code })
+        },
+        courseId,
+      }, {
+        onSuccess: () => {
+          toast.success("Enrolled successfully!");
+          navigate("/dashboard");
+        }
+      });
+      return;
     }
-    
+
     setShowPlanModal(true);
   };
 
   const handleSelectPlan = (plan) => {
-      setSelectedPlan(plan);
-      setShowPlanModal(false);
-      if (plan === 'installment') {
-          setShowInstallmentModal(true);
-      } else {
-          setShowMethodModal(true);
-      }
+    setSelectedPlan(plan);
+    setShowPlanModal(false);
+    if (plan === 'installment') {
+      setShowInstallmentModal(true);
+    } else {
+      setShowMethodModal(true);
+    }
   };
 
   const handleInstallmentProceed = (data) => {
-      setInstallmentData(data);
-      setShowInstallmentModal(false);
-      setShowMethodModal(true);
+    setInstallmentData(data);
+    setShowInstallmentModal(false);
+    setShowMethodModal(true);
   };
 
   const handleApplyPromo = async () => {
-      if (!promoInput) {
-          toast.error("Please enter a promo code");
-          return;
-      }
-      if (!selectedCourseId) {
-          toast.error("Please select a cohort first");
-          return;
-      }
+    if (!promoInput) {
+      toast.error("Please enter a promo code");
+      return;
+    }
+    if (!selectedCourseId) {
+      toast.error("Please select a cohort first");
+      return;
+    }
 
-      setIsApplyingPromo(true);
-      try {
-          const baseUrl = import.meta.env.VITE_AUTH_URL.replace("/auth", "");
-          const res = await axios.post(`${baseUrl}/courses/apply-promo`, {
-              code: promoInput,
-              courseId,
-              cohortId: selectedCourseId,
-              type: "live"
-          }, {
-              headers: { Authorization: `Bearer ${Cookies.get("token")}` }
-          });
-          
-          if (res.data?.status === "success") {
-              setAppliedPromo(res.data.data);
-              toast.success("Promo code applied successfully!");
-          }
-      } catch (error) {
-          toast.error(error.response?.data?.message || "Failed to apply promo code");
-          setAppliedPromo(null);
-      } finally {
-          setIsApplyingPromo(false);
+    setIsApplyingPromo(true);
+    try {
+      const baseUrl = import.meta.env.VITE_AUTH_URL.replace("/auth", "");
+      const res = await axios.post(`${baseUrl}/courses/apply-promo`, {
+        code: promoInput,
+        courseId,
+        cohortId: selectedCourseId,
+        type: "live"
+      }, {
+        headers: { Authorization: `Bearer ${Cookies.get("token")}` }
+      });
+
+      if (res.data?.status === "success") {
+        setAppliedPromo(res.data.data);
+        toast.success("Promo code applied successfully!");
       }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to apply promo code");
+      setAppliedPromo(null);
+    } finally {
+      setIsApplyingPromo(false);
+    }
   };
 
   const handleProceedPayment = () => {
-        if (!selectedGateway) {
-            toast.error("Please select a payment method.");
-            return;
-        }
-        
-        // Use the selected gateway
-        const gatewayToUse = selectedGateway;
+    if (!selectedGateway) {
+      toast.error("Please select a payment method.");
+      return;
+    }
 
-        payment({
-            data: {
-                access_type: ["live class"],
-                live_class_cohort: selectedCohort?.cohort,
-                gateway: gatewayToUse,
-                payment_plan: selectedPlan,
-                ...(selectedPlan === 'installment' && installmentData ? {
-                    installment_duration: installmentData.duration,
-                    auto_deduct: installmentData.autoDeduct,
-                    first_payment_date: installmentData.startDate
-                } : {}),
-                ...(appliedPromo && { promocode: appliedPromo.promo.code })
-            },
-            courseId,
-        }, {
-            onSuccess: (data) => {
-                setShowMethodModal(false);
-                if (data?.data?.url) {
-                    window.location.href = data.data.url;
-                } else if (data?.data?.bankDetails) {
-                    setBankTransferData(data.data);
-                    setShowBankModal(true);
-                }
-            }
-        });
+    // Use the selected gateway
+    const gatewayToUse = selectedGateway;
+
+    payment({
+      data: {
+        access_type: ["live class"],
+        live_class_cohort: selectedCohort?.cohort,
+        gateway: gatewayToUse,
+        payment_plan: selectedPlan,
+        ...(selectedPlan === 'installment' && installmentData ? {
+          installment_duration: installmentData.duration,
+          auto_deduct: installmentData.autoDeduct,
+          first_payment_date: installmentData.startDate
+        } : {}),
+        ...(appliedPromo && { promocode: appliedPromo.promo.code })
+      },
+      courseId,
+    }, {
+      onSuccess: (data) => {
+        setShowMethodModal(false);
+        if (Math.round(discounted_price) <= 0 || data?.data?.isFree) {
+          toast.success("Enrolled successfully!");
+          navigate("/dashboard");
+        }else if (data?.data?.url) {
+          window.location.href = data.data.url;
+        } else if (data?.data?.bankDetails) {
+          setBankTransferData(data.data);
+          setShowBankModal(true);
+        }
+      }
+    });
   };
 
 
@@ -255,11 +258,11 @@ const LivePayment = ({ courseData }) => {
             onChange={(e) => setPromoInput(e.target.value)}
             disabled={isApplyingPromo || !selectedCourseId}
           />
-          <DashButton 
-             type="button"
-             className="rounded-none outline-none focus:outline-none rounded-r-sm px-4 py-2 text-white bg-black hover:bg-black/90"
-             onClick={handleApplyPromo}
-             disabled={isApplyingPromo || !promoInput || !selectedCourseId}
+          <DashButton
+            type="button"
+            className="rounded-none outline-none focus:outline-none rounded-r-sm px-4 py-2 text-white bg-black hover:bg-black/90"
+            onClick={handleApplyPromo}
+            disabled={isApplyingPromo || !promoInput || !selectedCourseId}
           >
             {isApplyingPromo ? "..." : (appliedPromo ? "Applied" : "Apply")}
           </DashButton>
@@ -297,45 +300,45 @@ const LivePayment = ({ courseData }) => {
       </div>
 
       {/* Modals */}
-      <PaymentPlanModal 
-          isOpen={showPlanModal}
-          onClose={() => setShowPlanModal(false)}
-          onSelectPlan={handleSelectPlan}
-          currencySymbol={currencySymbol}
-          price={Math.round(discounted_price)}
-          installmentPrice={installmentPrice}
+      <PaymentPlanModal
+        isOpen={showPlanModal}
+        onClose={() => setShowPlanModal(false)}
+        onSelectPlan={handleSelectPlan}
+        currencySymbol={currencySymbol}
+        price={Math.round(discounted_price)}
+        installmentPrice={installmentPrice}
       />
 
       <InstallmentModal
-          isOpen={showInstallmentModal}
-          onClose={() => setShowInstallmentModal(false)}
-          onProceed={handleInstallmentProceed}
-          currencySymbol={currencySymbol}
-          price={Math.round(discounted_price)}
+        isOpen={showInstallmentModal}
+        onClose={() => setShowInstallmentModal(false)}
+        onProceed={handleInstallmentProceed}
+        currencySymbol={currencySymbol}
+        price={Math.round(discounted_price)}
       />
 
-      <PaymentMethodModal 
-          isOpen={showMethodModal}
-          onClose={() => setShowMethodModal(false)}
-          methods={gateways}
-          selectedMethod={selectedGateway}
-          onSelectMethod={setSelectedGateway}
-          onProceed={handleProceedPayment}
-          amount={Math.round(discounted_price)} // Use calculated price based on plan if implemented
-          currency={currency}
-          currencySymbol={currencySymbol}
+      <PaymentMethodModal
+        isOpen={showMethodModal}
+        onClose={() => setShowMethodModal(false)}
+        methods={gateways}
+        selectedMethod={selectedGateway}
+        onSelectMethod={setSelectedGateway}
+        onProceed={handleProceedPayment}
+        amount={Math.round(discounted_price)} // Use calculated price based on plan if implemented
+        currency={currency}
+        currencySymbol={currencySymbol}
       />
-      
+
       {showBankModal && bankTransferData && (
         <BankTransferModal
-            isOpen={showBankModal}
-            onClose={() => setShowBankModal(false)}
-            onBack={() => {setShowBankModal(false); setShowMethodModal(true);}}
-            transactionId={bankTransferData.transactionId}
-            enrollmentId={bankTransferData.enrollmentId}
-            bankDetails={bankTransferData.bankDetails}
-            amount={bankTransferData.amount}
-            currency={bankTransferData.currency}
+          isOpen={showBankModal}
+          onClose={() => setShowBankModal(false)}
+          onBack={() => { setShowBankModal(false); setShowMethodModal(true); }}
+          transactionId={bankTransferData.transactionId}
+          enrollmentId={bankTransferData.enrollmentId}
+          bankDetails={bankTransferData.bankDetails}
+          amount={bankTransferData.amount}
+          currency={bankTransferData.currency}
         />
       )}
     </div>

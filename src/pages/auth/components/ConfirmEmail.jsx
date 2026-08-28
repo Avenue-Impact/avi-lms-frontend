@@ -71,8 +71,8 @@ const ConfirmEmail = ({ setConfirm, setModal, setSuccess, user, form }) => {
     setIsLoading(true);
     try {
       const response = await axios.post(`${url}/resend-otp`, {
-        email: user.email,
-        phoneNumber: user.phoneNumber,
+        email: user?.email || user?.userid,
+        phoneNumber: user?.phoneNumber,
         deliveryMethod,
       });
 

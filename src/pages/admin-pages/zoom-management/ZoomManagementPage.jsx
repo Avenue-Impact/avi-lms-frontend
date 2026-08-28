@@ -19,11 +19,14 @@ import {
   XCircle,
   Loader2,
   Video,
+  ChevronRight,
 } from "lucide-react";
+import ZoomAccountScheduleModal from "./ZoomAccountScheduleModal";
 
 const ZoomManagementPage = () => {
   const { showAddModal, setShowAddModal } = useOutletContext();
   const [editingAccount, setEditingAccount] = useState(null);
+  const [scheduleAccountId, setScheduleAccountId] = useState(null);
 
   const { data, isLoading } = useZoomAccounts();
   const accounts = data?.data?.data || [];
@@ -61,6 +64,7 @@ const ZoomManagementPage = () => {
               key={account.id}
               account={account}
               onEdit={() => setEditingAccount(account)}
+              onViewSchedule={() => setScheduleAccountId(account.id)}
             />
           ))}
         </div>
@@ -73,6 +77,13 @@ const ZoomManagementPage = () => {
             setShowAddModal(false);
             setEditingAccount(null);
           }}
+        />
+      )}
+
+      {scheduleAccountId && (
+        <ZoomAccountScheduleModal
+          accountId={scheduleAccountId}
+          onClose={() => setScheduleAccountId(null)}
         />
       )}
     </div>
@@ -90,7 +101,7 @@ function StatCard({ label, value, color }) {
   );
 }
 
-function ZoomAccountCard({ account, onEdit }) {
+function ZoomAccountCard({ account, onEdit, onViewSchedule }) {
   const { mutate: toggle, isPending: isToggling } = useToggleZoomAccount();
   const { mutate: test, isPending: isTesting } = useTestZoomAccount();
 
@@ -109,7 +120,17 @@ function ZoomAccountCard({ account, onEdit }) {
             </p>
           </div>
         </div>
-        <StatusBadge active={account.is_active} />
+
+        <div className="flex items-center gap-2">
+          <button
+            onClick={onViewSchedule}
+            title="View Schedule & Conflicts"
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-600 transition hover:border-blue-500 hover:bg-blue-50 hover:text-blue-600"
+          >
+            <Eye className="h-4 w-4" />
+          </button>
+          <StatusBadge active={account.is_active} />
+        </div>
       </div>
 
       {/* Info */}
