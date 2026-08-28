@@ -22,6 +22,7 @@ import CloudComputing from "./pages/courses/cloudComputing";
 import ProjectManagement from "./pages/courses/projectManagement";
 import ThanksPage from "./pages/thanksPage";
 import LandingPage from "./pages/courses/landingPage";
+import IndividualLandingPage from "./pages/individual/IndividualLandingPage";
 
 import Contact from "./pages/Contact";
 import SitePrivacy from "./pages/SitePrivacy";
@@ -247,6 +248,14 @@ function App() {
         {
           path: "/feedback",
           element: <Feedback />,
+        },
+        {
+          path: "/individual",
+          element: <IndividualLandingPage />,
+        },
+        {
+          path: "/individual-landing-page",
+          element: <IndividualLandingPage />,
         },
         {
           path: "/business-interest-form",

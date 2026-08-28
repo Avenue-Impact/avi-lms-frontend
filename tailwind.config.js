@@ -51,7 +51,9 @@ module.exports = {
         "sml": '450px'
       },
       fontFamily: {
-        poppins: ['Poppins', 'sans-serif']
+        poppins: ['Poppins', 'sans-serif'],
+        space: ["'Space Grotesk'", 'sans-serif'],
+        inter: ['Inter', 'sans-serif'],
       },
       lineHeight: {
         'extra-loose': '2.5',
