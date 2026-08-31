@@ -1,5 +1,4 @@
 import Table from "@/Components/Table";
-
 import { EllipsisVertical } from "lucide-react";
 import { useParams, useSearchParams, Link } from "react-router-dom";
 import StudentPopover from "./StudentPopover";
@@ -9,15 +8,21 @@ const durationMap = {
   "three": "3 Months Access",
   "six": "6 Months Access",
   "twelve": "Annual Subscription",
-  "life time": "Lifetime Access"
+  "life time": "Lifetime Access",
 };
 
-const formatDate = (dateString) => {
+const formatDate = (dateString, justDate = false) => {
   if (!dateString) return "---";
   const date = new Date(dateString);
-  const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  const formattedTime = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }).replace(' ', '');
-  return `${formattedDate} | ${formattedTime}`;
+  const formattedDate = date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+  const formattedTime = date
+    .toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })
+    .replace(" ", "");
+  return justDate ? formattedDate : `${formattedDate} | ${formattedTime}`;
 };
 
 const OndemandStudentManagementTable = ({ data }) => {
@@ -34,7 +39,7 @@ const OndemandStudentManagementTable = ({ data }) => {
           <div>Course Title</div>
           <div>Course Type</div>
           <div>Enrollment Date</div>
-          <div>Course Duration</div>
+          <div>Access Exp</div>
           <div className="text-center">Progress</div>
           <div className="text-center">Action</div>
         </Table.Header>
@@ -60,8 +65,16 @@ const OndemandStudentManagementTable = ({ data }) => {
                 </span>
               </span>
 
-              <span className="text-[14px] text-[#344054]">{formatDate(student.created_at)}</span>
-              <span className="text-[14px] text-[#344054]">{durationMap[student.subscription_limit] || student.subscription_limit || "---"}</span>
+              <span className="text-[14px] text-[#344054]">
+                {formatDate(student.created_at)}
+              </span>
+              <span className="text-[14px] text-[#344054]">
+                {student.subscription_expires
+                  ? formatDate(student.subscription_expires, true)
+                  : durationMap[student.subscription_limit] ||
+                    student.subscription_limit ||
+                    "---"}
+              </span>
               <div className="flex justify-center items-center">
                 <Link
                   to={`/admin/certificate/requests/progress/${student.id}`}
@@ -71,7 +84,7 @@ const OndemandStudentManagementTable = ({ data }) => {
                 </Link>
               </div>
               <div className="flex justify-center">
-                <StudentPopover studentId={student.id}>
+                <StudentPopover studentId={student.student_id}>
                   <button className="flex h-8 w-8 items-center justify-center rounded border border-[#E4E7EC] hover:bg-gray-50">
                     <EllipsisVertical className="w-4" />
                   </button>
