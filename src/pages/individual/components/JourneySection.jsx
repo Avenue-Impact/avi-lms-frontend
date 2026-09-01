@@ -14,7 +14,7 @@ export const JourneySection = () => {
 
   return (
     <section className="w-full bg-[#EFF1F8] py-10 sm:py-14 lg:py-16 font-inter text-[#0A1430]">
-      <div className="mx-6 md:mx-12 px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10">
+      <div className="mx-4 md:mx-12 px-0 sm:px-4 lg:px-8 space-y-8 sm:space-y-10">
         {/* Government Recognition Award Banner */}
         <div className="w-full mx-auto bg-[#FEF9EE] border border-[#FDE68A]/80 rounded-2xl p-4 sm:p-5 flex items-start sm:items-center gap-4 shadow-sm">
           <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#FEF08A]/60 border border-[#FDE047]/60 flex items-center justify-center text-[#B45309] shrink-0">
@@ -34,7 +34,7 @@ export const JourneySection = () => {
         </div>
 
         {/* How It Works / One Journey Map Container */}
-        <div className="w-full mx-auto bg-white rounded-[24px] sm:rounded-[32px] p-6 sm:p-10 lg:p-14 border border-slate-200/60 shadow-sm">
+        <div className="w-full mx-auto bg-white rounded-[24px] sm:rounded-[32px] p-6 lg:p-14 border border-slate-200/60 shadow-sm">
           {/* Section Header */}
           <div className="text-left md:text-center max-w-2xl md:mx-auto">
             <span className="text-[#D7195A] font-space text-[11px] sm:text-[12px] font-bold tracking-[0.18em] uppercase block">
