@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import PropTypes from "prop-types";
 import { Input } from "./input";
 import {
@@ -8,21 +8,27 @@ import {
   FormLabel,
   FormMessage,
 } from "./form";
+import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { cn } from "@/lib/utils";
+import { getCountries, getCountryCallingCode, parsePhoneNumberFromString } from "libphonenumber-js/min";
 
-const COUNTRY_CODES = [
-  { code: "+1", country: "US/CA" },
-  { code: "+44", country: "UK" },
-  { code: "+234", country: "NG" },
-  { code: "+254", country: "KE" },
-  { code: "+27", country: "ZA" },
-  { code: "+91", country: "IN" },
-  { code: "+61", country: "AU" },
-  { code: "+49", country: "DE" },
-  { code: "+33", country: "FR" },
-  { code: "+86", country: "CN" },
-  { code: "+971", country: "AE" },
-];
+// Initialize the display names API for country localized names
+const regionNames = new Intl.DisplayNames(["en"], { type: "region" });
+
+// Generate a static list of all countries supported by libphonenumber
+const ALL_COUNTRIES = getCountries().map((countryCode) => {
+  let countryName = countryCode;
+  try {
+    countryName = regionNames.of(countryCode) || countryCode;
+  } catch (e) {
+    // Fallback if region name parsing fails
+  }
+  return {
+    code: countryCode, // e.g., 'US', 'GB'
+    callingCode: `+${getCountryCallingCode(countryCode)}`, // e.g., '+1', '+44'
+    name: countryName,
+  };
+}).sort((a, b) => a.name.localeCompare(b.name));
 
 PhoneInput.propTypes = {
   label: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
@@ -52,28 +58,55 @@ export default function PhoneInput({
       control={control}
       name={name}
       render={({ field }) => {
-        // field.value represents the full phone number string e.g. "+2348136969006"
-        const [countryCode, setCountryCode] = useState("+44");
+        // Default to UK if no value
+        const [country, setCountry] = useState(ALL_COUNTRIES.find(c => c.code === "GB") || ALL_COUNTRIES[0]);
         const [localNumber, setLocalNumber] = useState("");
+        const [isOpen, setIsOpen] = useState(false);
+        const [searchQuery, setSearchQuery] = useState("");
+
+        const filteredCountries = useMemo(() => {
+          if (!searchQuery) return ALL_COUNTRIES;
+          const lowerQuery = searchQuery.toLowerCase();
+          return ALL_COUNTRIES.filter((c) => 
+            c.name.toLowerCase().includes(lowerQuery) || 
+            c.callingCode.includes(lowerQuery) ||
+            c.code.toLowerCase().includes(lowerQuery)
+          );
+        }, [searchQuery]);
 
         // Parse initial value from form state
         useEffect(() => {
           if (field.value) {
-            let matchedCode = "+44";
-            let rest = field.value;
-            // Sort codes by length descending so +234 matches before +2
-            const sortedCodes = [...COUNTRY_CODES].sort(
-              (a, b) => b.code.length - a.code.length
-            );
-            for (const { code } of sortedCodes) {
-              if (field.value.startsWith(code)) {
-                matchedCode = code;
-                rest = field.value.slice(code.length);
-                break;
+            const parsedNumber = parsePhoneNumberFromString(field.value);
+            if (parsedNumber && parsedNumber.country) {
+              const matchedCountry = ALL_COUNTRIES.find(c => c.code === parsedNumber.country);
+              if (matchedCountry) {
+                setCountry(matchedCountry);
+                // Extract local part of the number without the calling code
+                setLocalNumber(parsedNumber.nationalNumber);
               }
+            } else {
+              // Fallback logic if it couldn't be parsed properly by libphonenumber
+              let matchedCode = "+44";
+              let rest = field.value;
+              
+              // Sort codes by length descending so +234 matches before +2
+              const sortedCodes = [...ALL_COUNTRIES].sort(
+                (a, b) => b.callingCode.length - a.callingCode.length
+              );
+              for (const c of sortedCodes) {
+                if (field.value.startsWith(c.callingCode)) {
+                  matchedCode = c.callingCode;
+                  rest = field.value.slice(c.callingCode.length);
+                  break;
+                }
+              }
+              const matchedCountry = ALL_COUNTRIES.find(c => c.callingCode === matchedCode);
+              if (matchedCountry) {
+                setCountry(matchedCountry);
+              }
+              setLocalNumber(rest);
             }
-            setCountryCode(matchedCode);
-            setLocalNumber(rest);
           }
         }, []);
 
@@ -82,13 +115,13 @@ export default function PhoneInput({
 
           // Auto-detect country code from typed input
           if (val.startsWith("+")) {
-            const sortedCodes = [...COUNTRY_CODES].sort(
-              (a, b) => b.code.length - a.code.length
+            const sortedCodes = [...ALL_COUNTRIES].sort(
+              (a, b) => b.callingCode.length - a.callingCode.length
             );
-            for (const { code } of sortedCodes) {
-              if (val.startsWith(code)) {
-                setCountryCode(code);
-                val = val.slice(code.length); // strip it from local number
+            for (const c of sortedCodes) {
+              if (val.startsWith(c.callingCode)) {
+                setCountry(c);
+                val = val.slice(c.callingCode.length); // strip it from local number
                 break;
               }
             }
@@ -104,13 +137,14 @@ export default function PhoneInput({
 
           setLocalNumber(val);
           // Combine and update react-hook-form
-          field.onChange(countryCode + val.replace(/[\s-]/g, ""));
+          field.onChange(country.callingCode + val.replace(/[\s-]/g, ""));
         };
 
-        const handleCodeChange = (e) => {
-          const newCode = e.target.value;
-          setCountryCode(newCode);
-          field.onChange(newCode + localNumber.replace(/[\s-]/g, ""));
+        const handleCountrySelect = (selectedCountry) => {
+          setCountry(selectedCountry);
+          setIsOpen(false);
+          setSearchQuery("");
+          field.onChange(selectedCountry.callingCode + localNumber.replace(/[\s-]/g, ""));
         };
 
         return (
@@ -127,36 +161,81 @@ export default function PhoneInput({
             )}
             <FormControl>
               <div className="flex gap-3">
-                <div className="relative w-28 shrink-0">
-                  <select
-                    className="mt-0 h-10 w-full rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none"
-                    value={countryCode}
-                    onChange={handleCodeChange}
-                    disabled={disabled}
-                  >
-                    {COUNTRY_CODES.map((c) => (
-                      <option key={c.code} value={c.code}>
-                        {c.code} ({c.country})
-                      </option>
-                    ))}
-                  </select>
-                  {/* Custom dropdown arrow to replace native one */}
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-muted-foreground">
-                    <svg
-                      className="h-4 w-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+                <Popover open={isOpen} onOpenChange={setIsOpen}>
+                  <PopoverTrigger asChild>
+                    <button
+                      type="button"
+                      disabled={disabled}
+                      className={cn(
+                        "mt-0 flex h-10 w-[140px] shrink-0 items-center justify-between rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+                        !country && "text-muted-foreground"
+                      )}
                     >
-                      <path
+                      <span className="truncate flex-1 text-left">
+                        {country ? `${country.code} (${country.callingCode})` : "Select country..."}
+                      </span>
+                      <svg
+                        className="ml-2 h-4 w-4 shrink-0 opacity-50"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[300px] p-0 bg-background" align="start">
+                    <div className="bg-background flex items-center border border-accent px-3">
+                      <svg
+                        className="mr-2 h-4 w-4 shrink-0 opacity-50"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M19 9l-7 7-7-7"
+                      >
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.3-4.3" />
+                      </svg>
+                      <input
+                        placeholder="Search country or code..."
+                        className="flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        autoFocus
                       />
-                    </svg>
-                  </div>
-                </div>
+                    </div>
+                    <div className="max-h-[300px] overflow-y-auto p-1">
+                      {filteredCountries.length === 0 ? (
+                        <p className="p-4 text-center text-sm text-muted-foreground">
+                          No country found.
+                        </p>
+                      ) : (
+                        filteredCountries.map((c) => (
+                          <div
+                            key={c.code}
+                            onClick={() => handleCountrySelect(c)}
+                            className={cn(
+                              "relative flex cursor-pointer bg-background select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+                              country?.code === c.code ? "bg-accent text-accent-foreground font-medium" : ""
+                            )}
+                          >
+                            <span className="flex-1 truncate">{c.name}</span>
+                            <span className="ml-2 text-muted-foreground">{c.callingCode}</span>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+
                 <Input
                   className={cn("flex-1", className)}
                   type="tel"
