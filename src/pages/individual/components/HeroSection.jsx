@@ -74,15 +74,25 @@ export const HeroSection = () => {
             <a href="#pathways" className="hover:text-[#D7195A] transition-colors">
               Pathways & Start Dates
             </a>
-            <a href="#prepnhire" className="hover:text-[#D7195A] transition-colors">
+            <a
+              href="https://prepnhire.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-[#D7195A] transition-colors"
+            >
               PrepnHire
             </a>
-            <a href="#mentiiv" className="hover:text-[#D7195A] transition-colors">
+            <a
+              href="https://mentiiv.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-[#D7195A] transition-colors"
+            >
               Mentiiv
             </a>
-            <a href="#expertsmerge" className="hover:text-[#D7195A] transition-colors">
+            <Link to="/success-stories" className="hover:text-[#D7195A] transition-colors">
               ExpertsMerge
-            </a>
+            </Link>
           </nav>
 
           {/* Auth Action Buttons */}
@@ -123,26 +133,30 @@ export const HeroSection = () => {
               Pathways & Start Dates
             </a>
             <a
-              href="#prepnhire"
+              href="https://prepnhire.com/"
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={() => setMobileMenuOpen(false)}
               className="block py-2 text-[15px] font-medium text-[#0A1430] hover:text-[#D7195A]"
             >
               PrepnHire
             </a>
             <a
-              href="#mentiiv"
+              href="https://mentiiv.com/"
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={() => setMobileMenuOpen(false)}
               className="block py-2 text-[15px] font-medium text-[#0A1430] hover:text-[#D7195A]"
             >
               Mentiiv
             </a>
-            <a
-              href="#expertsmerge"
+            <Link
+              to="/success-stories"
               onClick={() => setMobileMenuOpen(false)}
               className="block py-2 text-[15px] font-medium text-[#0A1430] hover:text-[#D7195A]"
             >
               ExpertsMerge
-            </a>
+            </Link>
             <div className="pt-3 border-t border-slate-100 flex flex-col gap-2.5">
               <Link
                 to="/login"
@@ -163,7 +177,7 @@ export const HeroSection = () => {
 
       {/* Hero Section Container */}
       <section className="w-full bg-[#EFF1F8] pt-12 sm:pt-16 lg:pt-20 pb-12 sm:pb-16">
-        <div className="mx-6 md:mx-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 xl:gap-12 items-center">
             {/* Left Content Column */}
             <div className="lg:col-span-7 flex flex-col justify-center">
@@ -196,10 +210,10 @@ export const HeroSection = () => {
                   Start your journey
                 </Link>
                 <Link
-                  to="/assessment"
+                  to="/contact"
                   className="bg-white hover:bg-slate-50 border border-slate-200/90 text-[#0A1430] font-inter font-semibold text-[15px] px-6 py-3.5 rounded-xl shadow-sm transition-all duration-200 active:scale-[0.98]"
                 >
-                  Take Career Assessment
+                  Contact Us
                 </Link>
               </div>
 

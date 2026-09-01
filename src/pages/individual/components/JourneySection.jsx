@@ -36,28 +36,51 @@ export const JourneySection = () => {
         {/* How It Works / One Journey Map Container */}
         <div className="w-full mx-auto bg-white rounded-[24px] sm:rounded-[32px] p-6 sm:p-10 lg:p-14 border border-slate-200/60 shadow-sm">
           {/* Section Header */}
-          <div className="text-center max-w-2xl mx-auto">
+          <div className="text-left md:text-center max-w-2xl md:mx-auto">
             <span className="text-[#D7195A] font-space text-[11px] sm:text-[12px] font-bold tracking-[0.18em] uppercase block">
               HOW IT WORKS
             </span>
-            <h2 className="font-space font-bold text-[28px] sm:text-[38px] lg:text-[45px] leading-[34px] sm:leading-[44px] lg:leading-[50px] tracking-[-2px] text-[#0A1430] mt-3">
+            <h2 className="font-space font-bold text-[24px] sm:text-[34px] md:text-[38px] lg:text-[45px] leading-[30px] sm:leading-[40px] md:leading-[44px] lg:leading-[50px] tracking-[-1.5px] md:tracking-[-2px] text-[#0A1430] mt-2.5 sm:mt-3">
               One Journey Map, any Career
             </h2>
-            <p className="font-inter text-[14px] sm:text-[15px] leading-[22px] text-slate-500 mt-3 sm:mt-4">
+            <p className="font-inter text-[13.5px] sm:text-[14.5px] md:text-[15px] leading-[22px] sm:leading-[24px] text-slate-500 mt-2.5 sm:mt-4">
               Choose Business Analysis, UX Design, or Project Management — the path is the same shape, tailored to you.
             </p>
           </div>
 
-          {/* Stepper Timeline */}
-          <div className="mt-10 sm:mt-14 lg:mt-16 relative">
-            {/* Horizontal Connecting Line (visible on desktop/tablet) */}
+          {/* Mobile View: Vertical Stepper List */}
+          <div className="flex flex-col gap-4 mt-8 md:hidden">
+            {steps.map((step) => (
+              <div key={step.number} className="flex items-center gap-4">
+                {/* Step Circle */}
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center font-space font-bold text-[14px] shrink-0 transition-all duration-200 ${
+                    step.active
+                      ? "bg-[#D7195A] text-white shadow-md shadow-[#D7195A]/25"
+                      : "bg-white text-[#0A1430] border-2 border-[#0A1430]"
+                  }`}
+                >
+                  {step.number}
+                </div>
+
+                {/* Step Label */}
+                <span className="font-space font-bold text-[14px] text-[#0A1430]">
+                  {step.label}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop & Tablet View: Horizontal Stepper Timeline */}
+          <div className="hidden md:block mt-10 sm:mt-14 lg:mt-16 relative">
+            {/* Horizontal Connecting Line */}
             <div
-              className="hidden sm:block absolute top-[20px] left-[6%] right-[6%] h-[2px] bg-slate-200 -z-0"
+              className="absolute top-[20px] left-[6%] right-[6%] h-[2px] bg-slate-200 -z-0"
               aria-hidden="true"
             />
 
-            {/* Steps Container */}
-            <div className="grid grid-cols-2 sm:grid-cols-7 gap-6 sm:gap-2 relative z-10">
+            {/* Steps Grid */}
+            <div className="grid grid-cols-7 gap-2 relative z-10">
               {steps.map((step) => (
                 <div key={step.number} className="flex flex-col items-center text-center">
                   {/* Step Circle */}

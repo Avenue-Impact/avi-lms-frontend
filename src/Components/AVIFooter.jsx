@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { WhiteLogo } from "./Logo";
+import React from "react";
+import { WhiteLogo, DarkLogo } from "./Logo";
 import { Link } from "react-router-dom";
-import { Linkedin, Facebook, Instagram, Mail, Phone, MapPin, ArrowRight } from "lucide-react";
+import { Linkedin, Facebook, Instagram } from "lucide-react";
 import { socialLinks } from "../utils/socialLinks";
 
 const XIcon = ({ className }) => (
@@ -26,189 +26,271 @@ const TiktokIcon = ({ className }) => (
   </svg>
 );
 
-// Validates full email format with domain check (must have a TLD of 2+ chars)
-const isValidEmailDomain = (email) => {
-  // Split on @ — must have exactly one @
-  const parts = email.split("@");
-  if (parts.length !== 2) return false;
-  const domain = parts[1];
-  // Domain must have at least one dot and a TLD of 2+ chars
-  const domainRegex = /^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$/;
-  return domainRegex.test(domain);
-};
+const AVIFooter = ({ theme = "dark", variant, light = false }) => {
+  const isLight = theme === "light" || variant === "light" || light === true;
 
-const AVIFooter = () => {
-  const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
+  const ecosystemLinks = [
+    { label: "Learning Hub", to: "/digital-learning-hub" },
+    { label: "PrepnHire", href: "https://prepnhire.com/", external: true },
+    { label: "Mentiiv", href: "https://mentiiv.com/", external: true },
+    { label: "ExpertsMerge", to: "/success-stories" },
+  ];
 
-  const handleSubscribe = (e) => {
-    e.preventDefault();
-    setEmailError("");
+  const companyLinks = [
+    { label: "About", to: "/about" },
+    { label: "Careers", to: "/contact" },
+    { label: "Success Stories", to: "/success-stories" },
+  ];
 
-    if (!email.trim()) {
-      setEmailError("Please enter your email address.");
-      return;
-    }
-    // Basic format check
-    if (!/^[^\s@]+@[^\s@]+/.test(email)) {
-      setEmailError("Please enter a valid email address.");
-      return;
-    }
-    // Domain validation
-    if (!isValidEmailDomain(email)) {
-      setEmailError("Email domain appears invalid. Please check and try again.");
-      return;
-    }
-
-    setSubscribed(true);
-    setEmail("");
-    setTimeout(() => setSubscribed(false), 4000);
-  };
+  const supportLinks = [
+    { label: "Help Centre", to: "/contact" },
+    { label: "Contact", to: "/contact" },
+    { label: "Community", to: "/partner" },
+  ];
 
   return (
-    <footer className="relative bg-[#030d22] text-white font-sans">
-      <div className="mx-auto max-w-[1520px] px-6 py-16 md:px-12 lg:px-20">
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-12">
-          
+    <footer
+      className={`relative font-inter transition-colors duration-200 ${
+        isLight
+          ? "bg-[#EFF1F8] text-[#0A1430] border-t border-slate-200/80"
+          : "bg-[#030d22] text-white"
+      }`}
+    >
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+        {/* Main Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-12 items-start">
           {/* Logo & Description */}
-          <div className="lg:col-span-3 space-y-6">
-            <div className="flex items-center">
-              <WhiteLogo className="h-12 w-auto object-contain" />
-            </div>
-            <p className="text-sm leading-relaxed text-gray-300">
-              We partner with governments and enterprises to transform organisations, 
-              empower people and create lasting impact.
-            </p>
-            <div className="flex gap-4 pt-2">
-              <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white transition-colors" aria-label="LinkedIn">
-                <Linkedin size={20} />
-              </a>
-              <a href={socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white transition-colors" aria-label="Twitter">
-                <XIcon className="h-5 w-5" />
-              </a>
-              <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white transition-colors" aria-label="Facebook">
-                <Facebook size={20} />
-              </a>
-              <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white transition-colors" aria-label="Instagram">
-                <Instagram size={20} />
-              </a>
-              <a href={socialLinks.tiktok} target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white transition-colors" aria-label="TikTok">
-                <TiktokIcon className="h-5 w-5" />
-              </a>
-            </div>
-          </div>
-
-          {/* Quick Links */}
-          <div className="lg:col-span-2 space-y-4">
-            <h3 className="text-base font-semibold tracking-wider text-white">Quick Links</h3>
-            <ul className="space-y-3 text-sm text-gray-300">
-              <li>
-                <Link to="/" className="hover:text-white transition-colors">Home</Link>
-              </li>
-              <li>
-                <Link to="/about" className="hover:text-white transition-colors">About Us</Link>
-              </li>
-              <li>
-                <Link to="/" className="hover:text-white transition-colors">Services</Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Services */}
-          <div className="lg:col-span-2 space-y-4">
-            <h3 className="text-base font-semibold tracking-wider text-white">Services</h3>
-            <ul className="space-y-3 text-sm text-gray-300">
-              <li>
-                <Link to="/digital-transformation" className="hover:text-white transition-colors">Digital Transformation</Link>
-              </li>
-              <li>
-                <Link to="/data-solution" className="hover:text-white transition-colors">Data Solution</Link>
-              </li>
-              <li>
-                <Link to="/avenue-impact-development" className="hover:text-white transition-colors">Avenue Impact Development CIC</Link>
-              </li>
-              <li>
-                <Link to="/digital-learning-hub" className="hover:text-white transition-colors">Digital Learning Hub</Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Contact Us */}
-          <div className="lg:col-span-2 space-y-4">
-            <h3 className="text-base font-semibold tracking-wider text-white">Contact Us</h3>
-            <ul className="space-y-3 text-sm text-gray-300">
-              <li className="flex items-center gap-3">
-                <Mail size={16} className="text-gray-300 shrink-0" />
-                <a href="mailto:info@avenueimpact.com" className="hover:text-white transition-colors break-all">info@avenueimpact.com</a>
-              </li>
-              <li className="flex items-center gap-3">
-                <Phone size={16} className="text-gray-300 shrink-0" />
-                <a href="tel:+4480005410720" className="hover:text-white transition-colors">+44 (0)8000 541 0720</a>
-              </li>
-              <li className="flex items-start gap-3">
-                <MapPin size={16} className="text-gray-300 shrink-0 mt-0.5" />
-                <div className="leading-relaxed">
-                  <p>London, United Kingdom</p>
-                  <p>Lagos, Nigeria</p>
-                  <p>Nairobi, Kenya</p>
-                </div>
-              </li>
-            </ul>
-          </div>
-
-          {/* Subscribe to Insights */}
-          {/* <div className="lg:col-span-3 space-y-4">
-            <h3 className="text-base font-semibold tracking-wider text-white">Subscribe to Insights</h3>
-            <p className="text-sm leading-relaxed text-gray-300">
-              Get the latest insights on transformation, workforce and growth.
-            </p>
-            <form onSubmit={handleSubscribe} noValidate>
-              <div className="flex w-full items-center rounded bg-[#0d1e3d] border border-gray-700 focus-within:border-gray-500 overflow-hidden">
-                <input
-                  id="footer-subscribe-email"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => { setEmail(e.target.value); setEmailError(""); }}
-                  aria-describedby={emailError ? "footer-email-error" : undefined}
-                  aria-invalid={!!emailError}
-                  className="w-full bg-transparent px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none"
-                />
-                <button
-                  type="submit"
-                  aria-label="Subscribe"
-                  className="bg-[#D50241] text-white px-4 py-2.5 hover:bg-[#b00235] transition-colors flex items-center justify-center shrink-0"
-                >
-                  <ArrowRight size={18} />
-                </button>
-              </div>
-              
-              {emailError && (
-                <p id="footer-email-error" role="alert" className="mt-2 text-xs text-[#ff6b6b] flex items-center gap-1">
-                  <span aria-hidden="true">⚠</span> {emailError}
-                </p>
+          <div className="md:col-span-4 lg:col-span-5 space-y-4">
+            <Link to="/" className="inline-block">
+              {isLight ? (
+                <DarkLogo className="h-10 sm:h-11 w-auto object-contain" />
+              ) : (
+                <WhiteLogo className="h-10 sm:h-11 w-auto object-contain" />
               )}
-              
-              {subscribed && (
-                <p role="status" className="mt-2 text-xs text-green-400 flex items-center gap-1">
-                  <span aria-hidden="true">✓</span> You've been subscribed!
-                </p>
-              )}
-            </form>
-          </div> */}
+            </Link>
 
+            <p
+              className={`text-sm leading-relaxed max-w-sm font-inter ${
+                isLight ? "text-slate-500" : "text-gray-300"
+              }`}
+            >
+              The career transformation ecosystem — learning, mentoring, interview
+              prep and opportunities in one place.
+            </p>
+
+            {/* Social Links */}
+            <div className="flex items-center gap-4 pt-2">
+              <a
+                href={socialLinks.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`transition-colors ${
+                  isLight ? "text-slate-400 hover:text-[#D7195A]" : "text-gray-400 hover:text-white"
+                }`}
+                aria-label="LinkedIn"
+              >
+                <Linkedin size={18} />
+              </a>
+              <a
+                href={socialLinks.twitter}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`transition-colors ${
+                  isLight ? "text-slate-400 hover:text-[#D7195A]" : "text-gray-400 hover:text-white"
+                }`}
+                aria-label="Twitter"
+              >
+                <XIcon className="h-4 w-4" />
+              </a>
+              <a
+                href={socialLinks.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`transition-colors ${
+                  isLight ? "text-slate-400 hover:text-[#D7195A]" : "text-gray-400 hover:text-white"
+                }`}
+                aria-label="Facebook"
+              >
+                <Facebook size={18} />
+              </a>
+              <a
+                href={socialLinks.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`transition-colors ${
+                  isLight ? "text-slate-400 hover:text-[#D7195A]" : "text-gray-400 hover:text-white"
+                }`}
+                aria-label="Instagram"
+              >
+                <Instagram size={18} />
+              </a>
+              <a
+                href={socialLinks.tiktok}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`transition-colors ${
+                  isLight ? "text-slate-400 hover:text-[#D7195A]" : "text-gray-400 hover:text-white"
+                }`}
+                aria-label="TikTok"
+              >
+                <TiktokIcon className="h-4 w-4" />
+              </a>
+            </div>
+          </div>
+
+          {/* Navigation Links Columns */}
+          <div className="md:col-span-8 lg:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-8">
+            {/* Ecosystem Links */}
+            <div className="space-y-3.5">
+              <h4
+                className={`font-space font-bold text-[14px] sm:text-[15px] tracking-tight ${
+                  isLight ? "text-[#0A1430]" : "text-white"
+                }`}
+              >
+                Ecosystem
+              </h4>
+              <ul className="space-y-2.5 text-sm font-inter">
+                {ecosystemLinks.map((item) => (
+                  <li key={item.label}>
+                    {item.external ? (
+                      <a
+                        href={item.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`transition-colors ${
+                          isLight
+                            ? "text-slate-500 hover:text-[#D7195A]"
+                            : "text-gray-300 hover:text-white"
+                        }`}
+                      >
+                        {item.label}
+                      </a>
+                    ) : item.to?.startsWith("#") ? (
+                      <a
+                        href={item.to}
+                        className={`transition-colors ${
+                          isLight
+                            ? "text-slate-500 hover:text-[#D7195A]"
+                            : "text-gray-300 hover:text-white"
+                        }`}
+                      >
+                        {item.label}
+                      </a>
+                    ) : (
+                      <Link
+                        to={item.to}
+                        className={`transition-colors ${
+                          isLight
+                            ? "text-slate-500 hover:text-[#D7195A]"
+                            : "text-gray-300 hover:text-white"
+                        }`}
+                      >
+                        {item.label}
+                      </Link>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Company Links */}
+            <div className="space-y-3.5">
+              <h4
+                className={`font-space font-bold text-[14px] sm:text-[15px] tracking-tight ${
+                  isLight ? "text-[#0A1430]" : "text-white"
+                }`}
+              >
+                Company
+              </h4>
+              <ul className="space-y-2.5 text-sm font-inter">
+                {companyLinks.map((item) => (
+                  <li key={item.label}>
+                    <Link
+                      to={item.to}
+                      className={`transition-colors ${
+                        isLight
+                          ? "text-slate-500 hover:text-[#D7195A]"
+                          : "text-gray-300 hover:text-white"
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Support Links */}
+            <div className="space-y-3.5">
+              <h4
+                className={`font-space font-bold text-[14px] sm:text-[15px] tracking-tight ${
+                  isLight ? "text-[#0A1430]" : "text-white"
+                }`}
+              >
+                Support
+              </h4>
+              <ul className="space-y-2.5 text-sm font-inter">
+                {supportLinks.map((item) => (
+                  <li key={item.label}>
+                    {item.to.startsWith("#") ? (
+                      <a
+                        href={item.to}
+                        className={`transition-colors ${
+                          isLight
+                            ? "text-slate-500 hover:text-[#D7195A]"
+                            : "text-gray-300 hover:text-white"
+                        }`}
+                      >
+                        {item.label}
+                      </a>
+                    ) : (
+                      <Link
+                        to={item.to}
+                        className={`transition-colors ${
+                          isLight
+                            ? "text-slate-500 hover:text-[#D7195A]"
+                            : "text-gray-300 hover:text-white"
+                        }`}
+                      >
+                        {item.label}
+                      </Link>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </div>
 
-        {/* Divider & Copyright */}
-        <div className="border-t border-[#00d0ff]/20 mt-16 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-gray-400">
-          <p>© 2026 Avenue Impact. All rights reserved.</p>
-          <div className="flex gap-6">
-            <Link to="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
-            <Link to="/terms-of-service" className="hover:text-white transition-colors">Terms of Service</Link>
+        {/* Bottom Sub-footer */}
+        <div
+          className={`mt-12 sm:mt-16 pt-8 border-t flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-inter ${
+            isLight
+              ? "border-slate-200/80 text-slate-400"
+              : "border-slate-800 text-gray-400"
+          }`}
+        >
+          <p>© 2026 Avenue Impact</p>
+          <div className="flex items-center gap-2">
+            <Link
+              to="/privacy-policy"
+              className={`transition-colors ${
+                isLight ? "hover:text-[#D7195A]" : "hover:text-white"
+              }`}
+            >
+              Privacy
+            </Link>
+            <span>·</span>
+            <Link
+              to="/terms-of-service"
+              className={`transition-colors ${
+                isLight ? "hover:text-[#D7195A]" : "hover:text-white"
+              }`}
+            >
+              Terms
+            </Link>
           </div>
         </div>
-
       </div>
     </footer>
   );
