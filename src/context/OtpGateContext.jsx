@@ -17,6 +17,7 @@ export const OtpGateProvider = ({ children }) => {
 		if (!isDevOrTestEnv()) {
 			return true;
 		}
+		console.log("got here")
 
 		const backendBaseUrl =
 			import.meta.env.VITE_AUTH_URL || "http://localhost:3500/api/v1/auth";
@@ -56,11 +57,13 @@ export const OtpGateProvider = ({ children }) => {
 			});
 		} catch (err) {
 			if (err.response?.status === 404) {
+				console.warn("[OTP Gate] Server returned 404, bypassing gate.");
 				return true; // Server gate disabled
 			}
-			// 4. Fail-open strategy for network/local errors in dev: allow proceed with warning
-			console.warn("[OTP Gate] Bypassing OTP due to dev network error:", err.message);
-			return true;
+			// Don't fail-open anymore, block and show error so we can debug why it's failing
+			console.error("[OTP Gate] Error requesting OTP:", err);
+			alert("[OTP Gate Error]: " + (err.response?.data?.message || err.message) + "\nCheck console for details.");
+			return false;
 		}
 	}, []);
 
