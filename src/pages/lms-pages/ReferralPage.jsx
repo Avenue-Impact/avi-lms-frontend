@@ -142,29 +142,44 @@ const ReferralPage = () => {
             every successful referral.
           </p>
 
-          <div className="my-6 mt-4 flex items-center rounded-lg bg-gray-100 p-4 pr-10 lg:my-0">
-            <div className="mr-2 flex flex-col">
-              <p className="text-sm text-gray-600">Your referral link</p>
-              <p className="text-lg font-semibold">
-                {data?.data?.data?.referral_code}
+          <div className="my-6 mt-4 flex flex-col sm:flex-row items-center gap-3 rounded-lg bg-gray-100 p-4 max-w-xl mx-auto w-full">
+            <div className="flex flex-col text-left flex-1 min-w-0">
+              <p className="text-xs text-gray-500 font-medium">Your referral link</p>
+              <p className="text-sm font-semibold text-gray-800 truncate">
+                {referralCode ? `${window.location.origin}/signup?code=${referralCode}` : "Loading..."}
               </p>
             </div>
             <button
-              className="ml-2 text-[#40B869] hover:text-[#48c674]"
+              type="button"
+              className="inline-flex items-center gap-2 bg-[#40B869] hover:bg-[#369e59] text-white px-4 py-2 rounded-md text-xs font-semibold shadow-sm transition-colors shrink-0"
               onClick={() =>
-                copyToClipboard(`${data?.data?.data?.referral_code}`)
+                copyToClipboard(`${window.location.origin}/signup?code=${referralCode}`)
               }
             >
               <FontAwesomeIcon icon={faCopy} />
+              Copy Link
             </button>
           </div>
 
-          <DashButton
-            onClick={handleShare}
-            className="mt-2 w-full bg-[#CC1747] px-32 text-white hover:bg-[#b30e3b] lg:w-2/5"
-          >
-            Share link
-          </DashButton>
+          <div className="flex flex-wrap items-center justify-center gap-3 mt-4 w-full max-w-xl mx-auto">
+            {/* WhatsApp Share */}
+            <a
+              href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`Join me on Avenue Impact! Use my referral link to sign up: ${window.location.origin}/signup?code=${referralCode}`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20ba59] text-white px-5 py-2.5 rounded-lg text-sm font-semibold shadow-sm transition-colors flex-1 min-w-[140px]"
+            >
+              Share on WhatsApp
+            </a>
+
+            {/* Email Share */}
+            <a
+              href={`mailto:?subject=${encodeURIComponent("Join me on Avenue Impact")}&body=${encodeURIComponent(`Hi,\n\nI'm inviting you to join Avenue Impact. Sign up using my referral link to get started:\n${window.location.origin}/signup?code=${referralCode}\n\nBest regards!`)}`}
+              className="inline-flex items-center justify-center gap-2 bg-[#1C2C64] hover:bg-[#15224e] text-white px-5 py-2.5 rounded-lg text-sm font-semibold shadow-sm transition-colors flex-1 min-w-[140px]"
+            >
+              Share via Email
+            </a>
+          </div>
         </div>
       </div>
 

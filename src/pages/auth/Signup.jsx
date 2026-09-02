@@ -72,6 +72,8 @@ const loginSchema = z
       .string()
       .min(1, { message: " username must be at least 4 characters long" }),
     referralCode: z.string().optional(),
+    exclusive_info: z.boolean().optional(),
+    agreeTerms: z.boolean().optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Password don't match",
@@ -82,7 +84,6 @@ const SignUp = ({ isPage = true }) => {
   const { requestOtpVerification } = useOtpGate();
   const navigate = useNavigate();
   const location = useLocation();
-
 
   const [success, setSuccess] = useState("");
   const [title, setTitle] = useState("Sign Up and Start Learning");
@@ -101,6 +102,7 @@ const SignUp = ({ isPage = true }) => {
   const [pendingSignupValues, setPendingSignupValues] = useState(null);
   const [skipReferralReminder, setSkipReferralReminder] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+  const [isReferralLocked, setIsReferralLocked] = useState(false);
   const formRef = useRef(null);
 
   const courseId = queryString.get("id");
@@ -121,6 +123,8 @@ const SignUp = ({ isPage = true }) => {
       confirmPassword: "",
       referralCode: "",
       phoneNumber: "",
+      exclusive_info: false,
+      agreeTerms: false,
     },
   });
 
@@ -242,8 +246,9 @@ const SignUp = ({ isPage = true }) => {
         email,
         password,
         username,
-        referral_code: referralCode,
+        referral_code: referralCode || undefined,
         phoneNumber,
+        exclusive_info: Boolean(values.exclusive_info),
         source_url: window.location.href,
         googleToken: googleToken || undefined,
       };
@@ -323,10 +328,20 @@ const SignUp = ({ isPage = true }) => {
     }
   };
 
-  const code = queryString.get("code");
-  if (code) {
-    form.setValue("referralCode", code);
-  }
+  // Auto-populate referral code from query params and lock it
+  useEffect(() => {
+    const urlReferral =
+      queryString.get("code") ||
+      queryString.get("ref") ||
+      queryString.get("referral_code") ||
+      queryString.get("referralCode");
+
+    if (urlReferral) {
+      const cleanCode = urlReferral.trim();
+      form.setValue("referralCode", cleanCode);
+      setIsReferralLocked(true);
+    }
+  }, [queryString]);
 
   useEffect(() => {
     if (location.state?.googleToken) {
@@ -646,7 +661,7 @@ const SignUp = ({ isPage = true }) => {
                       </div>
 
                       <FormInput
-                        label="Referral Code"
+                        label="AVI Referral Code"
                         name="referralCode"
                         control={form.control}
                         type="text"
@@ -654,34 +669,40 @@ const SignUp = ({ isPage = true }) => {
                         placeholder=""
                         onFocus={handleInputFocus}
                         autoComplete="off"
+                        disabled={isReferralLocked}
+                        className={
+                          isReferralLocked
+                            ? "bg-gray-100 text-gray-600 font-medium border-gray-200 cursor-not-allowed select-none"
+                            : ""
+                        }
                         absoluteError
                       />
                     </div>
                     <div className="mt-[10px] flex items-center gap-4">
                       <input
                         type="checkbox"
-                        name=""
-                        id=""
-                        className="h-6 w-6 accent-[#D0D5DD]"
+                        id="exclusive_info"
+                        {...form.register("exclusive_info")}
+                        className="h-5 w-5 accent-[#C41E3A] cursor-pointer"
                       />
-                      <p className="text-sm text-label">
+                      <label htmlFor="exclusive_info" className="text-sm text-label cursor-pointer select-none">
                         Send me exclusive offers, tailored recommendations, and
                         educational tips.
-                      </p>
+                      </label>
                     </div>
 
                     <div className="mt-[10px] flex items-center gap-4">
                       <input
                         type="checkbox"
-                        name=""
-                        id=""
-                        className="h-4 w-4 accent-[#D0D5DD]"
+                        id="agreeTerms"
+                        {...form.register("agreeTerms")}
+                        className="h-4 w-4 accent-[#C41E3A] cursor-pointer"
                         required
                       />
 
-                      <p className="text-sm text-label">
+                      <label htmlFor="agreeTerms" className="text-sm text-label cursor-pointer select-none">
                         I agree to the <Link to="/terms-of-service" className="text-[#C41E3A] hover:underline font-semibold">terms and conditions</Link>
-                      </p>
+                      </label>
                     </div>
 
                     <CommonButton
