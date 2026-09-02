@@ -164,6 +164,7 @@ import LoadingPage from "./Components/LoadingPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import InstructorLiveSessions from "./pages/instructor/InstructorLiveSessions";
 import { OtpGateProvider } from "./context/OtpGateContext";
+import ActivityLogs from "./pages/admin-pages/ActivityLogs";
 
 function App() {
   const [userInfo, setUserInfo] = useState({});
@@ -652,6 +653,10 @@ function App() {
                 {
                   path: "/admin/success-stories",
                   element: <AdminSuccessStoryManagement />,
+                },
+                {
+                  path: "/admin/logs",
+                  element: <ActivityLogs />,
                 },
 
                 {
