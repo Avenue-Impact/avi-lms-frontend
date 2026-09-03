@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { makeRequest } from "../../utils/axios";
+import { axiosAdmin } from "@/services/api";
 
 export const useGetActivityLogs = (params) => {
 	return useQuery({
@@ -14,7 +14,7 @@ export const useGetActivityLogs = (params) => {
 			if (params.startDate) queryParams.append("startDate", params.startDate);
 			if (params.endDate) queryParams.append("endDate", params.endDate);
 			
-			return makeRequest.get(`/admin/logs?${queryParams.toString()}`);
+			return axiosAdmin.get(`/logs?${queryParams.toString()}`);
 		},
 		keepPreviousData: true,
 	});
