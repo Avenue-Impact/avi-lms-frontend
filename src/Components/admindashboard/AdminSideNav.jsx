@@ -184,7 +184,7 @@ function SideNav() {
               icon={<FileText size={20} />}
             />
           </ul>
-          <div className="px-6 py-10">
+          <div className="px-6 py-5">
             <button className="flex items-center gap-5" onClick={handleSignOut}>
               <span></span>
               <span>
