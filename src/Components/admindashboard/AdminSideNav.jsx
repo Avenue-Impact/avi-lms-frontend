@@ -118,14 +118,14 @@ function SideNav() {
   };
 
   return (
-    <aside className="baby fixed left-0 top-0 h-screen w-[249px] overflow-y-auto border-r border-r-[#E4E7EC] px-2 py-6 2xl:overflow-y-hidden">
+    <aside className="baby fixed left-0 top-0 h-screen w-[249px] overflow-y-auto border-r border-r-[#E4E7EC] px-2 py-5 2xl:overflow-y-hidden">
       <div>
         <DarkLogo />
       </div>
       <div className="flex h-full flex-col justify-between">
-        <ul className="my-5 space-y-4">
+        <ul className="my-4 space-y-3">
           {/* First Group - Buddy Hub, Course Work, Project */}
-          <div className="space-y-1 border-b border-b-[#E4E7EC] pb-3">
+          <div className="space-y-1 border-b border-b-[#E4E7EC] pb-2">
             {navItem.map((item) => {
               return (
                 <SidebarItem
@@ -139,7 +139,7 @@ function SideNav() {
           </div>
           
           {/* Second Group - Management */}
-          <div className="space-y-1 border-b border-b-[#E4E7EC] pb-3">
+          <div className="space-y-1 border-b border-b-[#E4E7EC] pb-2">
             {navitem2.map((item) => {
               return (
                 <SidebarItem
@@ -153,7 +153,7 @@ function SideNav() {
           </div>
           
           {/* Third Group - Financial */}
-          <div className="space-y-1 border-b border-b-[#E4E7EC] pb-3">
+          <div className="space-y-1 border-b border-b-[#E4E7EC] pb-2">
             {navitem3.map((item) => {
               return (
                 <SidebarItem
