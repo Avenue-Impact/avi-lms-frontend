@@ -71,12 +71,6 @@ const navitem2 = [
     icon: <Video />,
     path: "/admin/zoom-management",
   },
-  {
-    id: 6,
-    text: "Activity Logs",
-    icon: <FileText size={20} />,
-    path: "/admin/logs",
-  },
 ];
 
 const navitem3 = [
@@ -183,6 +177,11 @@ function SideNav() {
               text={"notification"}
               path={"/admin/notification"}
               icon={<BellIcon />}
+            />
+            <SidebarItem
+              text={"Activity Logs"}
+              path={"/admin/logs"}
+              icon={<FileText size={20} />}
             />
           </ul>
           <div className="px-6 py-10">

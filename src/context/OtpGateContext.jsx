@@ -15,9 +15,10 @@ export const OtpGateProvider = ({ children }) => {
 	const requestOtpVerification = useCallback(async (email) => {
 		// 1. Client-side short circuit for production
 		if (!isDevOrTestEnv()) {
+			console.log("[OTP Gate] Bypassing gate because isDevOrTestEnv() is false. Env mode:", import.meta.env.MODE, "VITE_ENV:", import.meta.env.VITE_ENV, "DEV:", import.meta.env.DEV);
 			return true;
 		}
-		console.log("got here")
+		console.log("[OTP Gate] Gate active, requesting OTP...");
 
 		const backendBaseUrl =
 			import.meta.env.VITE_AUTH_URL || "http://localhost:3500/api/v1/auth";
@@ -32,6 +33,7 @@ export const OtpGateProvider = ({ children }) => {
 
 			// 2. Server-side environment gate returns 404 (production server)
 			if (response.status === 404) {
+				console.warn("[OTP Gate] Server returned 404 on /otp/generate. Is the backend running locally and updated? Bypassing gate.");
 				return true;
 			}
 
