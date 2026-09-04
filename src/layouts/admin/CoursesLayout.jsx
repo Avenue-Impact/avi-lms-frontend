@@ -14,7 +14,8 @@ const CoursesLayout = () => {
               "after:contents-[''] relative h-full cursor-pointer py-4 text-sm font-medium capitalize text-[#344054] transition-colors duration-150 *:capitalize after:absolute after:-bottom-[14px] after:left-0 after:m-auto after:h-[2px] after:w-0 after:bg-primary-color-600 after:transition-all after:duration-150 hover:text-primary-color-600 hover:after:w-full",
               pathname.includes("/admin/course/management") &&
                 !pathname.includes("/admin/course/management/unpublished") &&
-                !pathname.includes("/admin/course/management/create-course")
+                !pathname.includes("/admin/course/management/create-course") &&
+                !pathname.includes("/admin/course/management/pathways")
                 ? "text-primary-color-600 after:w-full"
                 : "",
             )}
@@ -41,6 +42,18 @@ const CoursesLayout = () => {
           >
             <Link to={"/admin/course/management/create-course"}>
               course creation
+            </Link>
+          </li>
+          <li
+            className={cn(
+              "after:contents-[''] relative h-full cursor-pointer py-4 text-sm font-medium capitalize text-[#344054] transition-colors duration-150 *:capitalize after:absolute after:-bottom-[14px] after:left-0 after:m-auto after:h-[2px] after:w-0 after:bg-primary-color-600 after:transition-all after:duration-150 hover:text-primary-color-600 hover:after:w-full",
+              pathname.includes("/admin/course/management/pathways")
+                ? "text-primary-color-600 after:w-full"
+                : "",
+            )}
+          >
+            <Link to={"/admin/course/management/pathways"}>
+              pathways
             </Link>
           </li>
         </ul>

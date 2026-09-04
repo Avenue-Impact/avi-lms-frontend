@@ -12,6 +12,7 @@ import {
   useCreateCourseInformation,
   useEditCourseInformation,
 } from "@/hooks/course-management/use-create-course-information";
+import { useFetchAdminPathways } from "@/hooks/pathways/use-pathways";
 import toast from "react-hot-toast";
 
 import { ClipLoader } from "react-spinners";
@@ -38,6 +39,8 @@ const CourseManagementPage = () => {
 
   const { createCourseInformation, isCreating } = useCreateCourseInformation();
   const { editCourseInformation, isEditing } = useEditCourseInformation();
+  const { data: pathwayData, isLoading: isLoadingPathways } = useFetchAdminPathways();
+  const dynamicPathways = pathwayData?.data?.data?.pathways || [];
 
   const imageRef = useRef(null);
   const btnRef = useRef(null);
@@ -49,6 +52,7 @@ const CourseManagementPage = () => {
 
   const dataToEdit = (courseInformation && Object.keys(courseInformation).length > 0) ? {
     courseTitle: courseInformation.title || "",
+    pathway: courseInformation.pathway || courseInformation.category || "",
     benefits: (courseInformation.benefits || []).join("\n"),
     courseIncludes: (courseInformation.course_includes || []).join("\n"),
     highlight: (courseInformation.program_highlights || []).join("\n"),
@@ -71,6 +75,7 @@ const CourseManagementPage = () => {
       ? dataToEdit
       : {
           courseTitle: "",
+          pathway: "",
           benefits: "",
           courseIncludes: "",
           highlight: "",
@@ -84,6 +89,7 @@ const CourseManagementPage = () => {
   const editCourse = (data) => {
     const {
       courseTitle,
+      pathway,
       benefits,
       courseIncludes,
       highlight,
@@ -95,6 +101,8 @@ const CourseManagementPage = () => {
 
     const courses = {
       title: courseTitle,
+      pathway,
+      category: pathway,
       tools_and_technologies: stringToArray(technologies),
       benefits: stringToArray(benefits),
       program_highlights: stringToArray(highlight),
@@ -139,6 +147,7 @@ const CourseManagementPage = () => {
   const CreateCourse = async (data) => {
     const {
       courseTitle,
+      pathway,
       benefits,
       courseIncludes,
       highlight,
@@ -165,6 +174,8 @@ const CourseManagementPage = () => {
 
     const courses = {
       title: courseTitle,
+      pathway,
+      category: pathway,
       tools_and_technologies: stringToArray(technologies),
       benefits: stringToArray(benefits),
       program_highlights: stringToArray(highlight),
@@ -263,6 +274,39 @@ const CourseManagementPage = () => {
                 <option value="false">Public (Appears in catalog and search)</option>
                 <option value="true">Non-Public (Hidden from catalog, accessible via direct link)</option>
               </select>
+            </div>
+
+            {/* Course Pathway */}
+            <div className="mb-6">
+              <p className="mb-2 font-[500] text-[#475367]">
+                Course Pathway: <span className="text-[#CC1747]">*</span>
+              </p>
+              <select
+                {...form.register("pathway")}
+                className="h-[56px] w-full rounded border border-gray-300 bg-white p-2 outline-none"
+              >
+                <option value="">Select a Pathway</option>
+                {dynamicPathways.length > 0 ? (
+                  dynamicPathways.map((p) => (
+                    <option key={p._id || p.id} value={p.title}>
+                      {p.title}
+                    </option>
+                  ))
+                ) : (
+                  <>
+                    <option value="Business Analysis">Business Analysis</option>
+                    <option value="Project Management">Project Management</option>
+                    <option value="Data Analytics">Data Analytics</option>
+                    <option value="Cybersecurity">Cybersecurity</option>
+                    <option value="Cloud Computing & DevOps">Cloud Computing & DevOps</option>
+                    <option value="Agile Delivery & Scrum">Agile Delivery & Scrum</option>
+                    <option value="AI & Machine Learning">AI & Machine Learning</option>
+                  </>
+                )}
+              </select>
+              <p className="text-xs text-gray-500 mt-1">
+                Attaching a pathway allows the career assessment and course catalog to dynamically recommend this course.
+              </p>
             </div>
 
             <div className="mb-6">

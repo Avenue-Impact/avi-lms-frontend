@@ -168,10 +168,10 @@ export const PathwaysSection = () => {
             View all pathways & dates
           </Link>
           <Link
-            to="/contact"
+            to="/assessment"
             className="bg-[#D7195A] hover:bg-[#c0154e] text-white font-inter font-semibold text-[14px] sm:text-[15px] px-7 py-3.5 rounded-xl shadow-lg shadow-[#D7195A]/25 transition-all duration-200 active:scale-[0.98]"
           >
-            Contact Us
+            Take career assessment
           </Link>
         </div>
       </div>

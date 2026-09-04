@@ -17,13 +17,13 @@ export const CtaSection = () => {
             Take a free career assessment and get a personalised journey map in under five minutes.
           </p>
 
-          {/* CTA Button (Contact Us as requested) */}
+          {/* CTA Button */}
           <div className="mt-8">
             <Link
-              to="/contact"
+              to="/assessment"
               className="inline-flex items-center justify-center bg-[#D7195A] hover:bg-[#be144e] text-white font-inter font-semibold text-[15px] px-8 py-3.5 rounded-xl shadow-lg shadow-[#D7195A]/30 active:scale-95 transition-all duration-200"
             >
-              Contact Us
+              Take career assessment
             </Link>
           </div>
         </div>

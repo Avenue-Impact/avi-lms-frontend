@@ -210,10 +210,10 @@ export const HeroSection = () => {
                   Start your journey
                 </Link>
                 <Link
-                  to="/contact"
+                  to="/assessment"
                   className="bg-white hover:bg-slate-50 border border-slate-200/90 text-[#0A1430] font-inter font-semibold text-[15px] px-6 py-3.5 rounded-xl shadow-sm transition-all duration-200 active:scale-[0.98]"
                 >
-                  Contact Us
+                  Take career assessment
                 </Link>
               </div>
 

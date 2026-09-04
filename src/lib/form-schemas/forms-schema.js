@@ -154,6 +154,7 @@ export const courseInformationSchema = z.object({
     .string()
     .min(5, { message: "This field must be at least 5 character long" })
     .max(1200, { message: "Highlight  character must not exceed 1200 " }),
+  pathway: z.string().optional(),
   url: z.union([z.literal(""), z.string().trim().url()]),
   is_private: z.boolean().default(false),
 });

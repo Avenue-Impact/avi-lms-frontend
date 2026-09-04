@@ -419,3 +419,24 @@ export const reorderRecordedSessionVideos = async ({
     { videoIds }
   );
 };
+
+// Pathways APIs
+export const fetchAdminPathwaysApi = async () => {
+  return await axiosAdmin.get("/pathways");
+};
+
+export const fetchPublicPathwaysApi = async () => {
+  return await axios.get(`${STUDENT_BASE_URL}/pathways`);
+};
+
+export const createPathwayApi = async (data) => {
+  return await axiosAdmin.post("/pathways", data);
+};
+
+export const deletePathwayApi = async (pathwayId) => {
+  return await axiosAdmin.delete(`/pathways/${pathwayId}`);
+};
+
+export const togglePathwayStatusApi = async (pathwayId) => {
+  return await axiosAdmin.patch(`/pathways/${pathwayId}/toggle`);
+};

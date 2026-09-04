@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 
 import FormInput from "@/Components/ui/form-input";
 import { useEditCourseInformation } from "@/hooks/course-management/use-create-course-information";
+import { useFetchAdminPathways } from "@/hooks/pathways/use-pathways";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
@@ -36,17 +37,19 @@ const EditCourseInformationForm = ({ courseInformation, setOnOpenChange }) => {
   });
 
   const { editCourseInformation, isEditing } = useEditCourseInformation();
+  const { data: pathwayData, isLoading: isLoadingPathways } = useFetchAdminPathways();
+  const dynamicPathways = pathwayData?.data?.data?.pathways || [];
 
   const imageRef = useRef(null);
   const btnRef = useRef(null);
 
-
   const dataToEdit = courseInformation && {
     courseTitle: courseInformation.title,
-    benefits: courseInformation.benefits.join("\n"),
-    courseIncludes: courseInformation.course_includes.join("\n"),
-    highlight: courseInformation.program_highlights.join("\n"),
-    technologies: courseInformation.tools_and_technologies.join("\n"),
+    pathway: courseInformation.pathway || courseInformation.category || "",
+    benefits: courseInformation.benefits ? courseInformation.benefits.join("\n") : "",
+    courseIncludes: courseInformation.course_includes ? courseInformation.course_includes.join("\n") : "",
+    highlight: courseInformation.program_highlights ? courseInformation.program_highlights.join("\n") : "",
+    technologies: courseInformation.tools_and_technologies ? courseInformation.tools_and_technologies.join("\n") : "",
     overview: courseInformation.overview,
     url: "",
     is_private: courseInformation.is_private ?? false,
@@ -63,6 +66,7 @@ const EditCourseInformationForm = ({ courseInformation, setOnOpenChange }) => {
       ? dataToEdit
       : {
           courseTitle: "",
+          pathway: "",
           benefits: "",
           courseIncludes: "",
           highlight: "",
@@ -76,6 +80,7 @@ const EditCourseInformationForm = ({ courseInformation, setOnOpenChange }) => {
   const editCourse = (data) => {
     const {
       courseTitle,
+      pathway,
       benefits,
       courseIncludes,
       highlight,
@@ -87,6 +92,8 @@ const EditCourseInformationForm = ({ courseInformation, setOnOpenChange }) => {
 
     const formData = new FormData();
     formData.append("title", courseTitle);
+    formData.append("pathway", pathway || "");
+    formData.append("category", pathway || "");
     formData.append("overview", overview);
     formData.append("is_private", is_private);
 
@@ -100,7 +107,6 @@ const EditCourseInformationForm = ({ courseInformation, setOnOpenChange }) => {
     appendArray("benefits", benefits);
     appendArray("program_highlights", highlight);
     appendArray("course_includes", courseIncludes);
-
 
     if (image.file) {
       formData.append("coverImage", image.file);
@@ -152,6 +158,36 @@ const EditCourseInformationForm = ({ courseInformation, setOnOpenChange }) => {
                   : 0}
                 /160
               </p>
+            </div>
+
+            {/* Career Pathway */}
+            <div className="mb-6">
+              <p className="mb-2 font-[500] text-[#475367]">
+                Career Pathway / Category: <span className="text-[#CC1747]">*</span>
+              </p>
+              <select
+                {...form.register("pathway")}
+                className="h-[56px] w-full rounded border border-gray-300 bg-white p-2 outline-none"
+              >
+                <option value="">Select Career Pathway</option>
+                {dynamicPathways.length > 0 ? (
+                  dynamicPathways.map((p) => (
+                    <option key={p._id || p.id} value={p.title}>
+                      {p.title}
+                    </option>
+                  ))
+                ) : (
+                  <>
+                    <option value="Business Analysis">Business Analysis</option>
+                    <option value="Project Management">Project Management</option>
+                    <option value="Data Analytics">Data Analytics</option>
+                    <option value="Cybersecurity">Cybersecurity</option>
+                    <option value="Cloud Computing & DevOps">Cloud Computing & DevOps</option>
+                    <option value="Agile Delivery & Scrum">Agile Delivery & Scrum</option>
+                    <option value="AI & Machine Learning">AI & Machine Learning</option>
+                  </>
+                )}
+              </select>
             </div>
 
             {/* Course Visibility */}

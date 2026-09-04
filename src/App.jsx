@@ -23,6 +23,7 @@ import ProjectManagement from "./pages/courses/projectManagement";
 import ThanksPage from "./pages/thanksPage";
 import LandingPage from "./pages/courses/landingPage";
 import IndividualLandingPage from "./pages/individual/IndividualLandingPage";
+import AssessmentPage from "./pages/assessment/AssessmentPage";
 
 import Contact from "./pages/Contact";
 import SitePrivacy from "./pages/SitePrivacy";
@@ -94,6 +95,7 @@ import AdminBankTransfers from "./pages/admin-pages/AdminBankTransfers";
 import CreatedCourse from "./pages/admin-pages/course-management/CreatedCourse";
 import UnpublishedCourse from "./pages/admin-pages/course-management/UnpublishedCourse";
 import EditCourse from "./pages/admin-pages/course-management/EditCourse";
+import PathwaysManagement from "./pages/admin-pages/course-management/PathwaysManagement";
 import CourseManagement from "./pages/admin-pages/CourseManagement";
 import CreateCoupon from "./pages/admin-pages/financial-aid/CreateCoupon";
 import FinancialAidRequest from "./pages/admin-pages/financial-aid/FinancialAidRequest";
@@ -249,6 +251,14 @@ function App() {
         {
           path: "/feedback",
           element: <Feedback />,
+        },
+        {
+          path: "/assessment",
+          element: <AssessmentPage />,
+        },
+        {
+          path: "/career-assessment",
+          element: <AssessmentPage />,
         },
         {
           path: "/individual",
@@ -581,6 +591,10 @@ function App() {
                         {
                           path: "info/:courseId",
                           element: <CourseInfomation />,
+                        },
+                        {
+                          path: "pathways",
+                          element: <PathwaysManagement />,
                         },
                       ],
                     },

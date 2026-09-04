@@ -75,6 +75,14 @@ const CourseInfo = ({ editButton = false, courseId }) => {
           </article>
           <article>
             <h3 className="mb-[14px] text-xl font-medium text-[#475367]">
+              Career Pathway / Category
+            </h3>
+            <p className="text-justify text-xl text-[#CC1747] font-medium">
+              {data?.data?.data.course.pathway || data?.data?.data.course.category || "Unassigned"}
+            </p>
+          </article>
+          <article>
+            <h3 className="mb-[14px] text-xl font-medium text-[#475367]">
               Overview
             </h3>
             <p className="text-justify capitalize text-[#667185] break-words">
