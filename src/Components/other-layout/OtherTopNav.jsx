@@ -1,22 +1,26 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useCourseData } from "@/hooks/use-course-data";
 import { cn } from "@/lib/utils";
-import { FaLongArrowAltLeft, FaRegHeart, FaBars, FaTimes } from "react-icons/fa";
+import { FaLongArrowAltLeft, FaRegHeart, FaBars, FaTimes, FaChevronDown } from "react-icons/fa";
 import { LiaTrophySolid } from "react-icons/lia";
 import { TiGroupOutline } from "react-icons/ti";
-import { BsGrid, BsPlayCircle, BsGraphUp } from "react-icons/bs";
+import { BsGrid, BsPlayCircle, BsGraphUp, BsFolder2 } from "react-icons/bs";
 import { useViewCourseSections } from "@/hooks/students/use-course-secion-view";
 import {
   Link,
   useNavigate,
   useParams,
   useSearchParams,
+  useLocation,
 } from "react-router-dom";
 
 import { useSafeBack } from "@/hooks/use-safe-back";
+import { useFetchUnseenMaterialsCount } from "@/hooks/materials/use-materials";
 
 const OtherTopNav = ({ setShowModal, setIsQuestionDrawerOpen }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
   const [queryString] = useSearchParams();
   const { courseId } = useParams();
 
@@ -29,11 +33,36 @@ const OtherTopNav = ({ setShowModal, setIsQuestionDrawerOpen }) => {
   // For on-demand, the enrolled course includes subscription_limit via the enrollment record
   const onDemandDuration = type === "on demand" ? (data?.data?.data?.subscription_limit || "") : "";
 
+  const materialParams = type === "live class" 
+    ? { cohort_id: data?.data?.data?.cohort_id }
+    : { on_demand_duration: data?.data?.data?.subscription_limit };
+  const { data: unseenCount = 0 } = useFetchUnseenMaterialsCount(courseId, materialParams);
+
   const handleModal = () => setShowModal((prev) => !prev);
   const { setSections } = useViewCourseSections();
-  // const location = useLocation();
+  const location = useLocation();
   const navigate = useNavigate();
   const goBack = useSafeBack();
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    setIsDropdownOpen(false);
+  }, [location.pathname]);
+
+  const isMoreActive =
+    location.pathname.endsWith("projects") ||
+    location.pathname.endsWith("certificate");
 
   const handleBack = () => {
     goBack();
@@ -118,6 +147,23 @@ const OtherTopNav = ({ setShowModal, setIsQuestionDrawerOpen }) => {
             </li>
             <li>
               <Link
+                to={`/dashboard/${courseId}/materials?title=${queryString.get("title") ?? ""}${cohortId ? `&cohortId=${cohortId}` : ""}${onDemandDuration ? `&duration=${encodeURIComponent(onDemandDuration)}` : ""}${type ? `&access_type=${encodeURIComponent(type)}` : ""}`}
+                className="flex items-center justify-between text-tertiary-color-700 hover:text-primary-color-600 transition-colors p-2 rounded hover:bg-gray-50"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-[22px]"><BsFolder2 /></span>
+                  <span className="text-base capitalize font-medium">course materials</span>
+                </div>
+                {Number(unseenCount) > 0 && (
+                  <span className="flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-xs font-bold text-white bg-[#CC1747]">
+                    {unseenCount > 99 ? "99+" : unseenCount}
+                  </span>
+                )}
+              </Link>
+            </li>
+            <li>
+              <Link
                 to={`/dashboard/${courseId}/progress?title=${queryString.get("title") ?? ""}`}
                 className="flex items-center gap-3 text-tertiary-color-700 hover:text-primary-color-600 transition-colors p-2 rounded hover:bg-gray-50"
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -186,6 +232,36 @@ const OtherTopNav = ({ setShowModal, setIsQuestionDrawerOpen }) => {
           <li
             className={cn(
               "after:contents-[''] relative cursor-pointer capitalize text-tertiary-color-700 transition-colors duration-300 ease-linear after:absolute after:-bottom-2 after:left-0 after:block after:h-px after:w-0 after:bg-[#CC1747] hover:text-primary-color-600 hover:after:w-full",
+              location.pathname.endsWith("materials")
+                ? "text-primary-color-600 after:w-full"
+                : "",
+            )}
+          >
+            <Link
+              to={`/dashboard/${courseId}/materials?title=${queryString.get("title") ?? ""}${cohortId ? `&cohortId=${cohortId}` : ""}${onDemandDuration ? `&duration=${encodeURIComponent(onDemandDuration)}` : ""}${type ? `&access_type=${encodeURIComponent(type)}` : ""}`}
+              className="flex items-center gap-2 2xl:gap-[13px] relative"
+            >
+              <span className="text-[22px] relative">
+                <BsFolder2 />
+                {Number(unseenCount) > 0 && (
+                  <span className="absolute -top-1 -right-2 flex items-center justify-center min-w-[17px] h-[17px] px-1 rounded-full text-[10px] font-bold text-white bg-[#CC1747] ring-2 ring-white">
+                    {unseenCount > 99 ? "99+" : unseenCount}
+                  </span>
+                )}
+              </span>
+              <span className="text-sm flex items-center gap-1.5">
+                course materials
+                {Number(unseenCount) > 0 && (
+                  <span className="hidden xl:inline-flex items-center justify-center px-1.5 py-0.2 rounded-full text-[10px] font-semibold text-[#CC1747] bg-[#CC1747]/10">
+                    {unseenCount} new
+                  </span>
+                )}
+              </span>
+            </Link>
+          </li>
+          <li
+            className={cn(
+              "after:contents-[''] relative cursor-pointer capitalize text-tertiary-color-700 transition-colors duration-300 ease-linear after:absolute after:-bottom-2 after:left-0 after:block after:h-px after:w-0 after:bg-[#CC1747] hover:text-primary-color-600 hover:after:w-full",
               location.pathname.endsWith("progress")
                 ? "text-primary-color-600 after:w-full"
                 : "",
@@ -201,52 +277,81 @@ const OtherTopNav = ({ setShowModal, setIsQuestionDrawerOpen }) => {
               <span className="text-sm">course progress</span>
             </Link>
           </li>
-          {type !== "on demand" && (
-            <li
-              className={cn(
-                "after:contents-[''] relative cursor-pointer capitalize text-tertiary-color-700 transition-colors duration-300 ease-linear after:absolute after:-bottom-2 after:left-0 after:block after:h-px after:w-0 after:bg-[#CC1747] hover:text-primary-color-600 hover:after:w-full",
-                location.pathname.endsWith("projects")
-                  ? "text-primary-color-600 after:w-full"
-                  : "",
-              )}
-            >
-              <Link
-                to={`/dashboard/${courseId}/projects?title=${queryString.get("title") ?? ""}`}
-                className="flex gap-2 2xl:gap-[13px]"
-              >
-                <span className="text-[22px]">
-                  <TiGroupOutline />
-                </span>
-                <span className="text-sm">project area</span>
-              </Link>
-            </li>
-          )}
+          {/* 4. More Dropdown (Project Area, Certificate, Leave a Review) */}
           <li
+            ref={dropdownRef}
             className={cn(
               "after:contents-[''] relative cursor-pointer capitalize text-tertiary-color-700 transition-colors duration-300 ease-linear after:absolute after:-bottom-2 after:left-0 after:block after:h-px after:w-0 after:bg-[#CC1747] hover:text-primary-color-600 hover:after:w-full",
-              location.pathname.endsWith("certificate")
+              isMoreActive || isDropdownOpen
                 ? "text-primary-color-600 after:w-full"
                 : "",
             )}
           >
-            <Link
-              to={`/dashboard/${courseId}/certificate?cohortId=${cohortId}&title=${queryString.get("title") ?? ""}${onDemandDuration ? `&duration=${encodeURIComponent(onDemandDuration)}` : ""}`}
-              className="flex gap-2 2xl:gap-[13px]"
+            <button
+              type="button"
+              onClick={() => setIsDropdownOpen((prev) => !prev)}
+              className="flex items-center gap-1.5 2xl:gap-2 text-sm focus:outline-none"
             >
-              <span className="text-[22px]">
-                <LiaTrophySolid />
-              </span>
-              <span className="text-sm">get certificate</span>
-            </Link>
-          </li>
-          <li
-            className="after:contents-[''] relative flex cursor-pointer gap-2 capitalize text-tertiary-color-700 transition-colors duration-300 ease-linear after:absolute after:-bottom-2 after:left-0 after:block after:h-px after:w-0 after:bg-[#CC1747] hover:text-primary-color-600 hover:after:w-full 2xl:gap-[13px]"
-            onClick={handleModal}
-          >
-            <span className="text-[22px]">
-              <FaRegHeart />
-            </span>
-            <span className="text-sm">leave a review</span>
+              <span>more</span>
+              <FaChevronDown
+                className={cn(
+                  "text-[10px] transition-transform duration-200",
+                  isDropdownOpen && "rotate-180"
+                )}
+              />
+            </button>
+
+            {isDropdownOpen && (
+              <div className="absolute right-0 top-full mt-3 w-48 bg-white rounded-xl shadow-xl border border-gray-100 py-1.5 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
+                {type !== "on demand" && (
+                  <Link
+                    to={`/dashboard/${courseId}/projects?title=${queryString.get("title") ?? ""}`}
+                    onClick={() => setIsDropdownOpen(false)}
+                    className={cn(
+                      "flex items-center gap-2.5 px-4 py-2 text-sm capitalize transition-colors hover:bg-gray-50 hover:text-primary-color-600",
+                      location.pathname.endsWith("projects")
+                        ? "text-primary-color-600 font-semibold bg-rose-50/50"
+                        : "text-tertiary-color-700"
+                    )}
+                  >
+                    <span className="text-[18px]">
+                      <TiGroupOutline />
+                    </span>
+                    <span>project area</span>
+                  </Link>
+                )}
+
+                <Link
+                  to={`/dashboard/${courseId}/certificate?cohortId=${cohortId}&title=${queryString.get("title") ?? ""}${onDemandDuration ? `&duration=${encodeURIComponent(onDemandDuration)}` : ""}`}
+                  onClick={() => setIsDropdownOpen(false)}
+                  className={cn(
+                    "flex items-center gap-2.5 px-4 py-2 text-sm capitalize transition-colors hover:bg-gray-50 hover:text-primary-color-600",
+                    location.pathname.endsWith("certificate")
+                      ? "text-primary-color-600 font-semibold bg-rose-50/50"
+                      : "text-tertiary-color-700"
+                  )}
+                >
+                  <span className="text-[18px]">
+                    <LiaTrophySolid />
+                  </span>
+                  <span>get certificate</span>
+                </Link>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsDropdownOpen(false);
+                    handleModal();
+                  }}
+                  className="flex items-center gap-2.5 w-full text-left px-4 py-2 text-sm capitalize text-tertiary-color-700 hover:bg-gray-50 hover:text-primary-color-600 transition-colors"
+                >
+                  <span className="text-[18px]">
+                    <FaRegHeart />
+                  </span>
+                  <span>leave a review</span>
+                </button>
+              </div>
+            )}
           </li>
         </ul>
       </div>

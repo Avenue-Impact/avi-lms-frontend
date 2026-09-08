@@ -17,8 +17,20 @@ import {
   ListFilter,
   ArrowLeftRight,
   X,
+  FolderOpen,
+  Plus,
+  Download,
+  Eye,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import MaterialCard from "@/Components/materials/MaterialCard";
+import MaterialDetailModal from "@/Components/materials/MaterialDetailModal";
+import UploadMaterialModal from "@/Components/materials/UploadMaterialModal";
+import {
+  useFetchCohortMaterials,
+  useCreateCohortMaterial,
+  useDeleteInstructorMaterial,
+} from "@/hooks/materials/use-materials";
 
 const CohortManagement = () => {
   const [selectedCohortId, setSelectedCohortId] = useState(null);
@@ -336,7 +348,7 @@ const CohortDetailPage = ({ cohort, onBack }) => {
 
       {/* Tabs */}
       <div className="mb-8 flex gap-x-20 border-b border-[#E5E5E5]">
-        {["Overview", "Students", "Assignments"].map((tab) => (
+        {["Overview", "Students", "Assignments", "Materials"].map((tab) => (
           <button
             key={tab}
             onClick={() => {
@@ -416,6 +428,196 @@ const CohortDetailPage = ({ cohort, onBack }) => {
           )}
         </div>
       )}
+      {activeTab === "Materials" && (
+        <CohortMaterialsTab cohort={cohort} />
+      )}
+    </div>
+  );
+};
+
+// Cohort Materials Tab Component
+const CohortMaterialsTab = ({ cohort }) => {
+  const cohortId = cohort.id || cohort._id;
+  const [selectedMaterial, setSelectedMaterial] = useState(null);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterType, setFilterType] = useState("all");
+
+  const { data: materials = [], isLoading } = useFetchCohortMaterials(cohortId);
+  const { mutateAsync: createMaterial, isPending: isUploading } = useCreateCohortMaterial(cohortId);
+  const { mutateAsync: deleteMaterial } = useDeleteInstructorMaterial(cohortId);
+
+  const handleUploadSubmit = async (formData) => {
+    await createMaterial(formData);
+    setIsUploadModalOpen(false);
+  };
+
+  const handleDelete = async (materialId) => {
+    if (window.confirm("Are you sure you want to delete this material? Students will no longer have access to it.")) {
+      await deleteMaterial(materialId);
+    }
+  };
+
+  const filteredMaterials = useMemo(() => {
+    return materials.filter((item) => {
+      const matchesSearch =
+        item.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.file_name?.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesType = filterType === "all" || item.type === filterType;
+      return matchesSearch && matchesType;
+    });
+  }, [materials, searchQuery, filterType]);
+
+  const totalViews = useMemo(
+    () => materials.reduce((sum, m) => sum + (m.views || 0), 0),
+    [materials]
+  );
+  const totalDownloads = useMemo(
+    () => materials.reduce((sum, m) => sum + (m.downloads || 0), 0),
+    [materials]
+  );
+
+  return (
+    <div className="space-y-6">
+      {/* Top Banner / Stats */}
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between bg-white p-6 rounded-2xl border border-gray-200">
+        <div>
+          <h2 className="text-xl font-bold text-gray-900">Cohort Learning Materials</h2>
+          <p className="text-sm text-gray-500 mt-0.5">
+            Upload and manage documents, templates, videos, and study guides for students in this cohort.
+          </p>
+        </div>
+        <button
+          onClick={() => setIsUploadModalOpen(true)}
+          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-primary-color-600 text-white font-medium hover:bg-[#b0143d] transition-colors shadow-sm"
+        >
+          <Plus size={18} />
+          Upload Material
+        </button>
+      </div>
+
+      {/* Summary Stat Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="bg-white p-5 rounded-xl border border-gray-200 flex items-center gap-4">
+          <div className="p-3 bg-red-50 text-[#CC1747] rounded-xl">
+            <FolderOpen size={24} />
+          </div>
+          <div>
+            <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Total Materials</p>
+            <p className="text-2xl font-bold text-gray-900">{materials.length}</p>
+          </div>
+        </div>
+        <div className="bg-white p-5 rounded-xl border border-gray-200 flex items-center gap-4">
+          <div className="p-3 bg-blue-50 text-blue-600 rounded-xl">
+            <Eye size={24} />
+          </div>
+          <div>
+            <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Total Views</p>
+            <p className="text-2xl font-bold text-gray-900">{totalViews}</p>
+          </div>
+        </div>
+        <div className="bg-white p-5 rounded-xl border border-gray-200 flex items-center gap-4">
+          <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl">
+            <Download size={24} />
+          </div>
+          <div>
+            <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Total Downloads</p>
+            <p className="text-2xl font-bold text-gray-900">{totalDownloads}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Search & Format Filter */}
+      <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+        <div className="relative flex-1 max-w-md">
+          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search materials by title or filename..."
+            className="w-full pl-9 pr-4 py-2 text-sm rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-color-600/30 focus:border-primary-color-600"
+          />
+        </div>
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
+          {["all", "document", "video", "image", "link"].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setFilterType(tab)}
+              className={cn(
+                "px-3 py-1.5 rounded-lg text-xs font-medium capitalize whitespace-nowrap transition-colors",
+                filterType === tab
+                  ? "bg-gray-900 text-white"
+                  : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
+              )}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Materials Grid / Empty State */}
+      {isLoading ? (
+        <div className="py-20 text-center">
+          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-b-2 border-primary-color-600"></div>
+        </div>
+      ) : filteredMaterials.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {filteredMaterials.map((material) => (
+            <MaterialCard
+              key={material._id}
+              material={material}
+              onView={(m) => setSelectedMaterial(m)}
+              onDownload={(m) => {
+                if (m.file_url) window.open(m.file_url, "_blank");
+              }}
+              onDelete={(m) => handleDelete(m._id)}
+              showActions={true}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-2xl border border-dashed border-gray-200 bg-white p-12 text-center">
+          <div className="mx-auto w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 mb-3">
+            <FolderOpen size={28} />
+          </div>
+          <h3 className="text-base font-semibold text-gray-900">No materials uploaded</h3>
+          <p className="text-sm text-gray-500 mt-1 max-w-sm mx-auto">
+            Share learning files, documents, assignments templates, or links with your students.
+          </p>
+          <button
+            onClick={() => setIsUploadModalOpen(true)}
+            className="mt-4 inline-flex items-center gap-2 px-4 py-2 text-sm rounded-xl bg-primary-color-600 text-white font-medium hover:bg-[#b0143d] transition-colors"
+          >
+            <Plus size={16} />
+            Upload First Material
+          </button>
+        </div>
+      )}
+
+      {/* Upload Material Modal */}
+      <UploadMaterialModal
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+        onSubmit={handleUploadSubmit}
+        isLoading={isUploading}
+        isAdmin={false}
+        initialData={{
+          course_id: cohort.course_id?._id || cohort.course_id?.id,
+          cohort_id: cohortId,
+        }}
+      />
+
+      {/* Material Detail Modal */}
+      <MaterialDetailModal
+        material={selectedMaterial}
+        isOpen={!!selectedMaterial}
+        onClose={() => setSelectedMaterial(null)}
+        onDownload={(m) => {
+          if (m.file_url) window.open(m.file_url, "_blank");
+        }}
+      />
     </div>
   );
 };

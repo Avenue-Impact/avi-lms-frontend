@@ -4,6 +4,7 @@ import CourseManagementSection from "@/Components/admindashboard/course-manageme
 import LinkList from "@/Components/LinkList";
 
 import LiveSessionStudentManagement from "@/Components/admindashboard/course-management/courses/LiveSessionStudentManagement";
+import AdminCourseMaterialsSection from "@/Components/admindashboard/course-management/AdminCourseMaterialsSection";
 import { FaLongArrowAltLeft } from "react-icons/fa";
 import { useNavigate, useSearchParams, useParams } from "react-router-dom";
 import { fetchAdmins } from "@/services/api";
@@ -97,10 +98,24 @@ function CourseInfomation() {
           >
             student management
           </LinkList>
+          <LinkList
+            className={"text-sm font-medium"}
+            onClick={() => setActive("course-materials")}
+            active={active === "course-materials"}
+          >
+            course materials
+          </LinkList>
         </ul>
       </header>
       {active === "course-section" && <CourseManagementSection />}
       {active === "course-management" && <LiveSessionStudentManagement />}
+      {active === "course-materials" && (
+        <AdminCourseMaterialsSection
+          courseId={courseId}
+          cohortId={cohortId}
+          cohortName={cohort}
+        />
+      )}
 
       {isModalOpen && (
         <Modal>

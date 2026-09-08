@@ -69,6 +69,7 @@ import LeaveRating from "./pages/dashboard/LeaveRating";
 import MentorshipList from "./pages/dashboard/MentorshipList";
 import CourseProgress from "./pages/dashboard/CourseProgress";
 import PayInstallmentPage from "./pages/dashboard/PayInstallmentPage";
+import CourseMaterialsPage from "./pages/dashboard/CourseMaterialsPage";
 
 import { useState } from "react";
 import { Toaster } from "react-hot-toast";
@@ -460,6 +461,10 @@ function App() {
                     const { courseId } = params;
                     return `this is for certificate ${courseId}`;
                   },
+                },
+                {
+                  path: ":courseId/materials",
+                  element: <CourseMaterialsPage />,
                 },
                 {
                   path: ":courseId/projects",

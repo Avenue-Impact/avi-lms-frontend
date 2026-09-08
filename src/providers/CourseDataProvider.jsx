@@ -9,23 +9,28 @@ export const CourseDataProvider = ({ children }) => {
   const [searchParams] = useSearchParams();
   const location = useLocation();
   
-  // Use a state to persist the access_type across sub-routes (e.g. /projects, /certificate)
+  const cohortId = searchParams.get('cohortId') || searchParams.get('cohort_id');
+  const isLiveCohort = !!cohortId && cohortId !== 'on-demand';
+
+  // Use a state to persist the access_type across sub-routes (e.g. /projects, /certificate, /materials)
   const [type, setType] = useState(() => {
-    return searchParams.get('access_type') || (location.pathname.includes('/live') ? 'live class' : 'on demand');
+    const explicit = searchParams.get('access_type');
+    if (explicit) return explicit;
+    if (location.pathname.includes('/live') || isLiveCohort) return 'live class';
+    if (location.pathname.includes('/recorded') || cohortId === 'on-demand') return 'on demand';
+    return isLiveCohort ? 'live class' : 'on demand';
   });
 
   useEffect(() => {
-    // If the user navigates explicitly to a live or recorded route, update the type
-    if (location.pathname.includes('/live')) {
+    const explicit = searchParams.get('access_type');
+    if (explicit) {
+      setType(explicit);
+    } else if (location.pathname.includes('/live') || isLiveCohort) {
       setType('live class');
-    } else if (location.pathname.includes('/recorded')) {
+    } else if (location.pathname.includes('/recorded') || cohortId === 'on-demand') {
       setType('on demand');
-    } else if (searchParams.get('access_type')) {
-      setType(searchParams.get('access_type'));
     }
-  }, [location.pathname, searchParams]);
-
-  const cohortId = searchParams.get('cohortId') || searchParams.get('cohort_id');
+  }, [location.pathname, searchParams, isLiveCohort, cohortId]);
 
   const { data, isLoading, error } = useViewEnrolledCourse(courseId, type, cohortId);
 
