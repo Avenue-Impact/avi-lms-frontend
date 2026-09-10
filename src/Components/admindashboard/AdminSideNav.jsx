@@ -118,12 +118,12 @@ function SideNav() {
   };
 
   return (
-    <aside className="baby fixed left-0 top-0 h-screen w-[249px] overflow-y-auto border-r border-r-[#E4E7EC] px-2 py-5 2xl:overflow-y-hidden">
-      <div>
+    <aside className="fixed left-0 top-0 h-screen w-[249px] bg-white border-r border-r-[#E4E7EC] flex flex-col z-40">
+      <div className="px-4 py-5 flex-shrink-0">
         <DarkLogo />
       </div>
-      <div className="flex h-full flex-col justify-between">
-        <ul className="my-4 space-y-3">
+      <div className="flex-1 overflow-y-auto custom-scrollbar px-2 pb-6 flex flex-col justify-between">
+        <ul className="my-2 space-y-3">
           {/* First Group - Buddy Hub, Course Work, Project */}
           <div className="space-y-1 border-b border-b-[#E4E7EC] pb-2">
             {navItem.map((item) => {
@@ -166,7 +166,7 @@ function SideNav() {
             })}
           </div>
         </ul>
-        <div className="divide-y">
+        <div className="divide-y pt-4 mt-auto">
           <ul className="space-y-1">
             <SidebarItem
               text={"review"}
@@ -186,7 +186,6 @@ function SideNav() {
           </ul>
           <div className="px-6 py-5">
             <button className="flex items-center gap-5" onClick={handleSignOut}>
-              <span></span>
               <span>
                 <svg
                   width="19"
