@@ -12,7 +12,7 @@ import {
 export default function CourseMaterialsPage() {
   const { courseId } = useParams();
   const [searchParams] = useSearchParams();
-  const cohortId = searchParams.get("cohortId");
+  const cohortId = searchParams.get("cohort_id") || searchParams.get("cohortId");
   const courseTitle = searchParams.get("title") || "Course";
 
   const [activeType, setActiveType] = useState("all");
@@ -20,6 +20,7 @@ export default function CourseMaterialsPage() {
   const [selectedMaterial, setSelectedMaterial] = useState(null);
 
   const { data: materials = [], isLoading, error } = useFetchStudentMaterials(courseId, {
+    cohort_id: cohortId || undefined,
     cohortId: cohortId || undefined,
   });
 

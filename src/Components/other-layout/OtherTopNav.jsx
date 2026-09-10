@@ -34,7 +34,7 @@ const OtherTopNav = ({ setShowModal, setIsQuestionDrawerOpen }) => {
   const onDemandDuration = type === "on demand" ? (data?.data?.data?.subscription_limit || "") : "";
 
   const materialParams = type === "live class" 
-    ? { cohort_id: data?.data?.data?.cohort_id }
+    ? { cohort_id: data?.data?.data?.cohort_id, cohortId: data?.data?.data?.cohort_id }
     : { on_demand_duration: data?.data?.data?.subscription_limit };
   const { data: unseenCount = 0 } = useFetchUnseenMaterialsCount(courseId, materialParams);
 
@@ -147,7 +147,7 @@ const OtherTopNav = ({ setShowModal, setIsQuestionDrawerOpen }) => {
             </li>
             <li>
               <Link
-                to={`/dashboard/${courseId}/materials?title=${queryString.get("title") ?? ""}${cohortId ? `&cohortId=${cohortId}` : ""}${onDemandDuration ? `&duration=${encodeURIComponent(onDemandDuration)}` : ""}${type ? `&access_type=${encodeURIComponent(type)}` : ""}`}
+                to={`/dashboard/${courseId}/materials?title=${queryString.get("title") ?? ""}${cohortId ? `&cohortId=${cohortId}&cohort_id=${cohortId}` : ""}${onDemandDuration ? `&duration=${encodeURIComponent(onDemandDuration)}` : ""}${type ? `&access_type=${encodeURIComponent(type)}` : ""}`}
                 className="flex items-center justify-between text-tertiary-color-700 hover:text-primary-color-600 transition-colors p-2 rounded hover:bg-gray-50"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
@@ -238,7 +238,7 @@ const OtherTopNav = ({ setShowModal, setIsQuestionDrawerOpen }) => {
             )}
           >
             <Link
-              to={`/dashboard/${courseId}/materials?title=${queryString.get("title") ?? ""}${cohortId ? `&cohortId=${cohortId}` : ""}${onDemandDuration ? `&duration=${encodeURIComponent(onDemandDuration)}` : ""}${type ? `&access_type=${encodeURIComponent(type)}` : ""}`}
+              to={`/dashboard/${courseId}/materials?title=${queryString.get("title") ?? ""}${cohortId ? `&cohortId=${cohortId}&cohort_id=${cohortId}` : ""}${onDemandDuration ? `&duration=${encodeURIComponent(onDemandDuration)}` : ""}${type ? `&access_type=${encodeURIComponent(type)}` : ""}`}
               className="flex items-center gap-2 2xl:gap-[13px] relative"
             >
               <span className="text-[22px] relative">
