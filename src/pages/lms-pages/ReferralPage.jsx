@@ -206,7 +206,7 @@ const ReferralPage = () => {
             <button
               type="button"
               onClick={handleInstagramShare}
-              className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#833ab4] via-[#fd1d1d] to-[#fcb045] hover:opacity-90 text-white px-4 py-2 rounded-lg text-xs font-semibold shadow-sm transition-opacity flex-1 min-w-[130px]"
+              className="inline-flex items-center justify-center gap-2 bg-[#CC1747] hover:bg-[#b0133d] text-white px-4 py-2 rounded-lg text-xs font-semibold shadow-sm transition-colors flex-1 min-w-[130px]"
             >
               <FontAwesomeIcon icon={faInstagram} className="text-sm" />
               Instagram
