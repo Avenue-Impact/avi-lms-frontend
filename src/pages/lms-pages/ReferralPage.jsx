@@ -91,7 +91,7 @@ const ReferralPage = () => {
           <p className="text-xs font-medium uppercase tracking-wider text-gray-500">
             Pending Withdrawal
           </p>
-          <h2 className="mt-3 text-3xl font-bold text-amber-600">
+          <h2 className="mt-3 text-3xl font-bold text-gray-600">
             {currencySymbol}
             {referralData?.pending_balance?.value ?? 0}
           </h2>
