@@ -6,7 +6,7 @@ import { referralData } from "@/lib/referralData";
 const ReferralsAdmin = () => {
   return (
     <div className="pb-20">
-      {referralData.length < 1 ? <ReferralEmpty /> : <ReferralPage />}
+      <ReferralPage />
     </div>
   );
 };

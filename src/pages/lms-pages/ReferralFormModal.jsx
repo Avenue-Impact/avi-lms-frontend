@@ -39,16 +39,22 @@ const ReferralFormModal = ({ setModal }) => {
   });
 
   const onSubmit = async (data) => {
-    console.log("Form Data:", data); // Log when user fills the form correctly
-
-    withdrawal({
-      name: data.name,
-      amount: Number(data.amountWithdraw),
-      bank_name: data.bankName,
-      account_number: data.accNo,
-      sort_code: data.sortCode || "",
-      password: data.password,
-    });
+    withdrawal(
+      {
+        name: data.name,
+        amount: Number(data.amountWithdraw),
+        bank_name: data.bankName,
+        account_number: data.accNo,
+        sort_code: data.sortCode || "",
+        password: data.password,
+      },
+      {
+        onSuccess: () => {
+          form.reset();
+          setModal(false);
+        },
+      },
+    );
   };
 
   return (

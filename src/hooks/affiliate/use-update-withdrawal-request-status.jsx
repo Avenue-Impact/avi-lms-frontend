@@ -13,8 +13,9 @@ export const useUpdateWithdrawalRequest = () => {
   const { mutate, isPending } = useMutation({
     mutationFn: updateWithdrawalRequest,
     onSuccess: ({ data }) => {
-      toast.success(data?.message ?? " status updated successfully");
-      queryClient.invalidateQueries("fetch-withdrawal-request");
+      toast.success(data?.message ?? "Status updated successfully");
+      queryClient.invalidateQueries({ queryKey: ["fetch-withdrawal-requests"] });
+      queryClient.invalidateQueries({ queryKey: ["fetch-payout-stats"] });
     },
     onError: (error) => {
       toast.error(error?.response?.data?.message ?? " failed to update status");

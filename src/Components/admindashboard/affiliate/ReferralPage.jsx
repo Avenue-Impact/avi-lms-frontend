@@ -92,28 +92,36 @@ const ReferralPage = () => {
     handleSearch(event.target.value);
   };
 
-  // Filter courses by title
-  const filteredList = fetchAffiliates?.data?.data ? fetchAffiliates.data.data.filter((data) => {
-    const fullText = (
-      data.referee_details.first_name +
-      data.referee_details.last_name +
-      data.referee_details.email
-    ).toLowerCase();
+  // Filter affiliates list
+  const affiliatesList =
+    (Array.isArray(fetchAffiliates?.data) ? fetchAffiliates.data : null) ||
+    fetchAffiliates?.data?.data ||
+    [];
 
-    const matchesSearch = fullText.includes(searchQuery.toLowerCase());
+  const filteredList = affiliatesList.filter((data) => {
+    const refereeName = `${data?.referee_details?.first_name || ""} ${data?.referee_details?.last_name || ""}`.toLowerCase();
+    const refereeEmail = (data?.referee_details?.email || "").toLowerCase();
+    const userName = `${data?.user_details?.first_name || ""} ${data?.user_details?.last_name || ""}`.toLowerCase();
+    const courseTitle = (data?.course_details?.course_title || "").toLowerCase();
+    const query = searchQuery.toLowerCase();
 
-    const matchesRole = selectedRole === "all" || data.role === selectedRole;
+    const matchesSearch =
+      refereeName.includes(query) ||
+      refereeEmail.includes(query) ||
+      userName.includes(query) ||
+      courseTitle.includes(query);
 
     const matchesCourseType =
       selectedCourseType === "all" ||
-      data.course_details.access_type === selectedCourseType;
+      data?.course_details?.access_type?.toLowerCase() === selectedCourseType.toLowerCase();
 
-    return matchesSearch && matchesRole && matchesCourseType;
-  }) : [];
+    return matchesSearch && matchesCourseType;
+  });
 
-  if (isFecthing?.data?.data?.length < 1) {
-    <p>No data.....</p>;
-  }
+  const payoutStats =
+    fetchpayout?.data?.total_payout ||
+    fetchpayout?.data?.data?.total_payout ||
+    { value: 0, currency_symbol: "£" };
 
   return (
     <div className="mt-8 pl-3">
@@ -127,9 +135,8 @@ const ReferralPage = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[28px] font-[600] text-[#23314A]">
-                  {/* £{totalAmount}{" "} */}
-                  {fetchpayout?.data?.data?.total_payout.currency_symbol}{" "}
-                  {fetchpayout?.data?.data?.total_payout.value}
+                  {payoutStats.currency_symbol ?? "£"}{" "}
+                  {payoutStats.value ?? 0}
                 </p>
                 <p className="text-[14px] font-[400] text-[#667185]">
                   Total Payout
@@ -292,36 +299,51 @@ const ReferralPage = () => {
             </thead>
             <tbody className="text-[14px]">
               {filteredList.map((data, index) => (
-                <tr key={index}>
+                <tr key={data?.id || index}>
                   <td className="border-b p-4">{index + 1}</td>
                   <td className="border-b p-4">
-                    {data.user_details.first_name} {data.user_details.last_name}{" "}
-                    {`${data.user_details.email.length > 15 ? `${data.user_details.email.slice(0, 15)}...` : data.user_details.email}`}
+                    {data?.user_details?.first_name || ""} {data?.user_details?.last_name || ""}{" "}
+                    {data?.user_details?.email ? (
+                      <span className="block text-xs text-gray-500">
+                        {data.user_details.email.length > 20
+                          ? `${data.user_details.email.slice(0, 20)}...`
+                          : data.user_details.email}
+                      </span>
+                    ) : null}
                   </td>
                   <td className="border-b p-4">
-                    {data.referee_details.first_name}{" "}
-                    {data.referee_details.last_name}{" "}
-                    {data.referee_details.email}
+                    {data?.referee_details?.first_name || ""} {data?.referee_details?.last_name || ""}{" "}
+                    {data?.referee_details?.email ? (
+                      <span className="block text-xs text-gray-500">
+                        {data.referee_details.email}
+                      </span>
+                    ) : null}
                   </td>
-                  <td className="border-b p-4">{data.referralDate ?? "N/A"}</td>
                   <td className="border-b p-4">
-                    {data.course_details.course_title}
+                    {data?.referee_details?.referral_date
+                      ? formatDateString(data.referee_details.referral_date)
+                      : data?.referralDate ?? "N/A"}
+                  </td>
+                  <td className="border-b p-4">
+                    {data?.course_details?.course_title || "N/A"}
                   </td>
                   <td className="border-b p-3">
-                    <button className="rounded bg-[#FFECE5] p-1 text-[#AD3307]">
-                      {data.course_details.access_type}
-                    </button>
+                    <span className="inline-block rounded bg-[#FFECE5] px-2 py-1 text-xs font-medium text-[#AD3307] capitalize">
+                      {data?.course_details?.access_type || "Course"}
+                    </span>
+                  </td>
+                  <td className="border-b p-4 font-medium">
+                    {data?.course_details?.course_amount?.currency_symbol ?? "£"}{" "}
+                    {data?.course_details?.course_amount?.value ?? 0}
                   </td>
                   <td className="border-b p-4">
-                    {data.course_details.course_amount.currency_symbol}{" "}
-                    {data.course_details.course_amount.value}
+                    {data?.course_details?.payment_date
+                      ? formatDateString(data.course_details.payment_date)
+                      : "N/A"}
                   </td>
-                  <td className="border-b p-4">
-                    {formatDateString(data.course_details.payment_date)}
-                  </td>
-                  <td className="border-b p-4">
-                    {data.course_details.affiliate_commission.currency_symbol}
-                    {data.course_details.affiliate_commission.value}
+                  <td className="border-b p-4 font-semibold text-green-700">
+                    {data?.course_details?.affiliate_commission?.currency_symbol ?? "£"}{" "}
+                    {data?.course_details?.affiliate_commission?.value ?? 0}
                   </td>
                 </tr>
               ))}

@@ -1,5 +1,5 @@
 import { STUDENT_BASE_URL } from "@/constant";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
@@ -19,15 +19,17 @@ const requestWithdrawal = async (data) => {
 
 // Custom hook for withdrawal request
 export const useRequestWithdrawal = () => {
+  const queryClient = useQueryClient();
   const { mutate: withdrawal, isPending } = useMutation({
     mutationFn: requestWithdrawal,
     onSuccess: ({ data }) => {
       toast.success(data.message ?? "Request submitted successfully");
-    //   console.log("Success Response:", data);
+      queryClient.invalidateQueries({ queryKey: ["fetch-referrals"] });
+      queryClient.invalidateQueries({ queryKey: ["fetch-wishlists"] });
+      queryClient.invalidateQueries({ queryKey: ["fetch-my-withdrawals"] });
     },
     onError: (error) => {
       toast.error(error.response?.data?.message ?? "Withdrawal request failed");
-    //   console.error("Error Response:", error.response?.data);
     },
   });
 

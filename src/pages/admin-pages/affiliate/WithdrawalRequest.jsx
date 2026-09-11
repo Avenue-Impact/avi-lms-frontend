@@ -42,26 +42,31 @@ const WithdrawalRequest = () => {
         handleSearch(event.target.value);
       };
     
-      const filteredList = data?.data?.data?.requests ? data.data.data.requests.filter((request) =>
-        (request.student_details.first_name + request.student_details.last_name).toLowerCase().includes(searchQuery.toLowerCase()),
-      ) : [];
-    
+  const requestsList =
+    data?.data?.requests ||
+    data?.data?.data?.requests ||
+    (Array.isArray(data?.data) ? data.data : []);
 
- const handleMarkAsPaid = (requestId) => {
-   updateWithdrawalRequest(
-     { requestId, data: { status: "paid" } }, 
-    //  {
-    //    onSuccess: () => {
-    //      setModal(true);
-    //      setCurrentRequestId(requestId);
-    //      console.log("Request marked as paid successfully!");
-    //    },
-    //    onError: (error) => {
-    //      console.error("Error marking request as paid:", error);
-    //    },
-    //  },
-   );
- };
+  const filteredList = requestsList.filter((request) => {
+    const studentName = `${request?.student_details?.first_name || ""} ${request?.student_details?.last_name || ""}`.toLowerCase();
+    const studentEmail = (request?.student_details?.email || "").toLowerCase();
+    const query = searchQuery.toLowerCase();
+    return studentName.includes(query) || studentEmail.includes(query);
+  });
+
+  const handleMarkAsPaid = (requestId) => {
+    updateWithdrawalRequest(
+      { requestId, data: { status: "paid" } },
+    );
+  };
+
+  const handleReject = (requestId) => {
+    if (window.confirm("Are you sure you want to reject this withdrawal request? The funds will be refunded to the student's available balance.")) {
+      updateWithdrawalRequest(
+        { requestId, data: { status: "rejected" } },
+      );
+    }
+  };
 
     
   const { refetch, isFetching } = useFetchGeneralCSVRequest();
@@ -199,21 +204,34 @@ const WithdrawalRequest = () => {
                   <td className="p-4">
                     {/* Status Button Based on API Response */}
                     {request.status === "pending" ? (
-                      <button
-                        onClick={() => handleMarkAsPaid(request._id)}
-                        disabled={isPending}
-                        className="flex items-center justify-center rounded bg-[#CC1747] px-3 py-2 text-white"
-                      >
-                        <img src={MarkRead} alt="Pending" className="mr-2" />
-                        {isPending ? "Processing..." : "Mark as Paid"}
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleMarkAsPaid(request._id)}
+                          disabled={isPending}
+                          className="flex items-center justify-center rounded bg-[#CC1747] px-3 py-1.5 text-xs text-white hover:bg-[#b0133d] transition-colors"
+                        >
+                          <img src={MarkRead} alt="Pending" className="mr-1.5 h-3.5 w-3.5" />
+                          {isPending ? "Processing..." : "Mark as Paid"}
+                        </button>
+                        <button
+                          onClick={() => handleReject(request._id)}
+                          disabled={isPending}
+                          className="flex items-center justify-center rounded border border-gray-300 bg-white px-2.5 py-1.5 text-xs text-red-600 hover:bg-red-50 transition-colors"
+                        >
+                          Reject
+                        </button>
+                      </div>
                     ) : request.status === "paid" ? (
-                      <button className="flex items-center justify-center rounded bg-[#FFECE5] px-3 py-2 text-[#CC1747]">
-                        <img src={MarkPaid} alt="Paid" className="mr-2" />
-                        Payment Paid
-                      </button>
+                      <span className="inline-flex items-center rounded-full bg-green-50 px-3 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                        <img src={MarkPaid} alt="Paid" className="mr-1.5 h-3.5 w-3.5" />
+                        Paid
+                      </span>
+                    ) : request.status === "rejected" ? (
+                      <span className="inline-flex items-center rounded-full bg-red-50 px-3 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
+                        Rejected
+                      </span>
                     ) : (
-                      <span className="text-gray-500">Unknown Status</span>
+                      <span className="text-gray-500 capitalize">{request.status}</span>
                     )}
                   </td>
                 </tr>
