@@ -102,7 +102,7 @@ export const PathwaysSection = () => {
               return (
                 <Link
                   key={course.id || course._id || course.slug}
-                  to={`/courses/${course.slug || course.id || course._id}`}
+                  to={`/preview-course/${course.slug || course.id || course._id}`}
                   className="bg-white rounded-2xl p-6 sm:p-7 border border-slate-200/70 shadow-sm flex flex-col justify-between hover:shadow-md hover:border-slate-300 transition-all duration-200 group"
                 >
                   <div>
