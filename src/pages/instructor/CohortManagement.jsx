@@ -21,9 +21,12 @@ import {
   Plus,
   Download,
   Eye,
+  LayoutGrid,
+  List,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import MaterialCard from "@/Components/materials/MaterialCard";
+import MaterialTable from "@/Components/materials/MaterialTable";
 import MaterialDetailModal from "@/Components/materials/MaterialDetailModal";
 import UploadMaterialModal from "@/Components/materials/UploadMaterialModal";
 import {
@@ -460,6 +463,7 @@ const CohortMaterialsTab = ({ cohort }) => {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState("all");
+  const [materialsViewMode, setMaterialsViewMode] = useState("list");
 
   const { data: materials = [], isLoading } = useFetchCohortMaterials(cohortId);
   const { mutateAsync: createMaterial, isPending: isUploading } = useCreateCohortMaterial(cohortId);
@@ -572,29 +576,72 @@ const CohortMaterialsTab = ({ cohort }) => {
               {tab}
             </button>
           ))}
+
+          {/* View Mode Switcher */}
+          <div className="flex items-center bg-gray-100 p-1 rounded-xl shrink-0">
+            <button
+              type="button"
+              onClick={() => setMaterialsViewMode("list")}
+              className={cn(
+                "p-1.5 rounded-lg transition-colors",
+                materialsViewMode === "list"
+                  ? "bg-white text-gray-900 shadow-xs"
+                  : "text-gray-500 hover:text-gray-900"
+              )}
+              title="List Column-Row View"
+            >
+              <List size={16} />
+            </button>
+            <button
+              type="button"
+              onClick={() => setMaterialsViewMode("grid")}
+              className={cn(
+                "p-1.5 rounded-lg transition-colors",
+                materialsViewMode === "grid"
+                  ? "bg-white text-gray-900 shadow-xs"
+                  : "text-gray-500 hover:text-gray-900"
+              )}
+              title="Grid Card View"
+            >
+              <LayoutGrid size={16} />
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Materials Grid / Empty State */}
+      {/* Materials Display / Empty State */}
       {isLoading ? (
         <div className="py-20 text-center">
           <div className="mx-auto h-8 w-8 animate-spin rounded-full border-b-2 border-primary-color-600"></div>
         </div>
       ) : filteredMaterials.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredMaterials.map((material) => (
-            <MaterialCard
-              key={material._id}
-              material={material}
-              onView={(m) => setSelectedMaterial(m)}
-              onDownload={(m) => {
-                if (m.file_url) window.open(m.file_url, "_blank");
-              }}
-              onDelete={(m) => handleDelete(m._id)}
-              showActions={true}
-            />
-          ))}
-        </div>
+        materialsViewMode === "list" ? (
+          <MaterialTable
+            materials={filteredMaterials}
+            onView={(m) => setSelectedMaterial(m)}
+            onDownload={(m) => {
+              if (m.file_url) window.open(m.file_url, "_blank");
+            }}
+            onDelete={(m) => handleDelete(m._id)}
+            showStats={true}
+            showScope={false}
+          />
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredMaterials.map((material) => (
+              <MaterialCard
+                key={material._id}
+                material={material}
+                onView={(m) => setSelectedMaterial(m)}
+                onDownload={(m) => {
+                  if (m.file_url) window.open(m.file_url, "_blank");
+                }}
+                onDelete={(m) => handleDelete(m._id)}
+                showActions={true}
+              />
+            ))}
+          </div>
+        )
       ) : (
         <div className="rounded-2xl border border-dashed border-gray-200 bg-white p-12 text-center">
           <div className="mx-auto w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 mb-3">

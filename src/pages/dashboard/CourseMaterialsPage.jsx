@@ -1,7 +1,19 @@
 import React, { useState, useMemo } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-import { Search, FolderOpen, FileText, Video, Image, Link as LinkIcon, Filter, Layers } from "lucide-react";
+import {
+  Search,
+  FolderOpen,
+  FileText,
+  Video,
+  Image,
+  Link as LinkIcon,
+  Filter,
+  Layers,
+  LayoutGrid,
+  List,
+} from "lucide-react";
 import MaterialCard from "@/Components/materials/MaterialCard";
+import MaterialTable from "@/Components/materials/MaterialTable";
 import MaterialDetailModal from "@/Components/materials/MaterialDetailModal";
 import {
   useFetchStudentMaterials,
@@ -18,6 +30,7 @@ export default function CourseMaterialsPage() {
   const [activeType, setActiveType] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedMaterial, setSelectedMaterial] = useState(null);
+  const [viewMode, setViewMode] = useState("list");
 
   const { data: materials = [], isLoading, error } = useFetchStudentMaterials(courseId, {
     cohort_id: cohortId || undefined,
@@ -101,41 +114,71 @@ export default function CourseMaterialsPage() {
         </div>
       </div>
 
-      {/* Filter Tabs */}
-      <div className="mb-8 flex flex-wrap items-center gap-2 border-b border-slate-200 pb-3">
-        {[
-          { id: "all", label: "All Formats", icon: Layers },
-          { id: "document", label: "Documents", icon: FileText },
-          { id: "video", label: "Videos", icon: Video },
-          { id: "image", label: "Images", icon: Image },
-          { id: "link", label: "Links", icon: LinkIcon },
-        ].map((tab) => {
-          const Icon = tab.icon;
-          const count = typeCounts[tab.id] || 0;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveType(tab.id)}
-              className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
-                activeType === tab.id
-                  ? "bg-[#CC1747] text-white shadow-sm"
-                  : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"
-              }`}
-            >
-              <Icon size={14} />
-              <span>{tab.label}</span>
-              <span
-                className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+      {/* Filter Tabs & View Switcher */}
+      <div className="mb-8 flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-3">
+        <div className="flex flex-wrap items-center gap-2">
+          {[
+            { id: "all", label: "All Formats", icon: Layers },
+            { id: "document", label: "Documents", icon: FileText },
+            { id: "video", label: "Videos", icon: Video },
+            { id: "image", label: "Images", icon: Image },
+            { id: "link", label: "Links", icon: LinkIcon },
+          ].map((tab) => {
+            const Icon = tab.icon;
+            const count = typeCounts[tab.id] || 0;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveType(tab.id)}
+                className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
                   activeType === tab.id
-                    ? "bg-white/20 text-white"
-                    : "bg-slate-100 text-slate-500"
+                    ? "bg-[#CC1747] text-white shadow-sm"
+                    : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"
                 }`}
               >
-                {count}
-              </span>
-            </button>
-          );
-        })}
+                <Icon size={14} />
+                <span>{tab.label}</span>
+                <span
+                  className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                    activeType === tab.id
+                      ? "bg-white/20 text-white"
+                      : "bg-slate-100 text-slate-500"
+                  }`}
+                >
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* View Mode Switcher */}
+        <div className="flex items-center bg-slate-100 p-1 rounded-xl shrink-0">
+          <button
+            type="button"
+            onClick={() => setViewMode("list")}
+            className={`p-1.5 rounded-lg transition-colors ${
+              viewMode === "list"
+                ? "bg-white text-slate-900 shadow-xs"
+                : "text-slate-500 hover:text-slate-900"
+            }`}
+            title="List Column-Row View"
+          >
+            <List size={16} />
+          </button>
+          <button
+            type="button"
+            onClick={() => setViewMode("grid")}
+            className={`p-1.5 rounded-lg transition-colors ${
+              viewMode === "grid"
+                ? "bg-white text-slate-900 shadow-xs"
+                : "text-slate-500 hover:text-slate-900"
+            }`}
+            title="Grid Card View"
+          >
+            <LayoutGrid size={16} />
+          </button>
+        </div>
       </div>
 
       {/* Materials Grid or Empty State */}
@@ -153,16 +196,26 @@ export default function CourseMaterialsPage() {
           Failed to load course materials. Please try refreshing.
         </div>
       ) : filteredMaterials.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-          {filteredMaterials.map((material) => (
-            <MaterialCard
-              key={material._id}
-              material={material}
-              onSelect={handleSelectMaterial}
-              onDownload={handleDownloadMaterial}
-            />
-          ))}
-        </div>
+        viewMode === "list" ? (
+          <MaterialTable
+            materials={filteredMaterials}
+            onSelect={handleSelectMaterial}
+            onDownload={handleDownloadMaterial}
+            showScope={false}
+            showStats={false}
+          />
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+            {filteredMaterials.map((material) => (
+              <MaterialCard
+                key={material._id}
+                material={material}
+                onSelect={handleSelectMaterial}
+                onDownload={handleDownloadMaterial}
+              />
+            ))}
+          </div>
+        )
       ) : (
         <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center max-w-md mx-auto my-12 shadow-xs">
           <div className="w-16 h-16 rounded-full bg-red-50 text-[#CC1747] flex items-center justify-center mx-auto mb-4">
