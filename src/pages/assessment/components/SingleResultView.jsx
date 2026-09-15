@@ -40,6 +40,22 @@ export default function SingleResultView({
     ? `/signup?id=${primaryCourseId}&title=${encodeURIComponent(primaryCourseTitle)}&_r=${encodeURIComponent(defaultEnrollUrl)}`
     : `/signup?pathway=${topMatch.slug || "career"}`;
 
+  const bundleCourse =
+    pathwayCourses.find((c) => (c.title || "").toLowerCase().includes("bundle")) ||
+    primaryCourse;
+  const bundleCourseId = bundleCourse?.id || bundleCourse?._id;
+  const bundleCourseTitle = bundleCourse?.title || `${pathwayTitle} (Bundle)`;
+
+  const bundleEnrollUrl = bundleCourseId
+    ? `/preview-video-course/${bundleCourseId}/enroll?title=${encodeURIComponent(bundleCourseTitle)}&bundle=true`
+    : `/discover-courses`;
+
+  const bundleActionTarget = isAuthenticated
+    ? bundleEnrollUrl
+    : bundleCourseId
+    ? `/signup?id=${bundleCourseId}&title=${encodeURIComponent(bundleCourseTitle)}&_r=${encodeURIComponent(bundleEnrollUrl)}`
+    : `/signup?pathway=${topMatch.slug || "career"}`;
+
   const saveAccountTarget = isAuthenticated
     ? "/dashboard"
     : primaryCourseId
@@ -76,23 +92,40 @@ export default function SingleResultView({
             {pathwaySummary}
           </p>
 
-          {/* Action Buttons */}
+          {/* Action Buttons: Pathway Enrollment (1 course vs bundle) */}
           <div className="flex flex-wrap items-center gap-3">
-            <a
-              href="#available-courses"
-              className="inline-flex items-center justify-center gap-2 bg-[#D7195A] hover:bg-[#c0144d] text-white font-inter font-semibold text-xs sm:text-sm px-6 py-3 rounded-xl shadow-lg shadow-[#D7195A]/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
-            >
-              <span>View Pathway Courses</span>
-              <ArrowRight className="w-4 h-4" />
-            </a>
-
-            {primaryCourseId && (
+            {pathwayCourses.length === 1 && primaryCourseId ? (
               <Link
                 to={heroActionTarget}
-                className="inline-flex items-center justify-center gap-1.5 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-inter font-semibold text-xs sm:text-sm px-5 py-3 rounded-xl transition"
+                className="inline-flex items-center justify-center gap-2 bg-[#D7195A] hover:bg-[#c0144d] text-white font-inter font-semibold text-xs sm:text-sm px-6 py-3 rounded-xl shadow-lg shadow-[#D7195A]/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
               >
-                <span>Enroll in Course</span>
+                <span>Enroll to Pathway</span>
+                <ArrowRight className="w-4 h-4" />
               </Link>
+            ) : pathwayCourses.length > 1 ? (
+              <>
+                <Link
+                  to={bundleActionTarget}
+                  className="inline-flex items-center justify-center gap-2 bg-[#D7195A] hover:bg-[#c0144d] text-white font-inter font-semibold text-xs sm:text-sm px-6 py-3 rounded-xl shadow-lg shadow-[#D7195A]/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+                >
+                  <span>Enroll to Pathway</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+                <a
+                  href="#available-courses"
+                  className="inline-flex items-center justify-center gap-1.5 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-inter font-semibold text-xs sm:text-sm px-5 py-3 rounded-xl transition"
+                >
+                  <span>View Courses in Pathway ({pathwayCourses.length})</span>
+                </a>
+              </>
+            ) : (
+              <a
+                href="#available-courses"
+                className="inline-flex items-center justify-center gap-2 bg-[#D7195A] hover:bg-[#c0144d] text-white font-inter font-semibold text-xs sm:text-sm px-6 py-3 rounded-xl shadow-lg shadow-[#D7195A]/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+              >
+                <span>View Pathway Courses</span>
+                <ArrowRight className="w-4 h-4" />
+              </a>
             )}
           </div>
         </div>
@@ -158,7 +191,7 @@ export default function SingleResultView({
               const enrollTarget = isAuthenticated
                 ? cEnrollUrl
                 : `/signup?id=${cId}&title=${encodeURIComponent(cTitle)}&_r=${encodeURIComponent(cEnrollUrl)}`;
-              const previewTarget = `/preview-video-course/${cId}`;
+              const previewTarget = `/preview-course/${course.slug || cId}`;
 
               const livePrice =
                 course.live_class_price?.amount
@@ -230,14 +263,14 @@ export default function SingleResultView({
                         to={enrollTarget}
                         className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#CC1747] px-5 py-2.5 text-xs sm:text-sm font-semibold text-white shadow-sm hover:bg-[#B0133D] transition"
                       >
-                        <span>Enroll in Course</span>
+                        <span>Enroll to Course</span>
                         <ArrowRight className="w-4 h-4" />
                       </Link>
                       <Link
                         to={previewTarget}
                         className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs sm:text-sm font-medium text-slate-700 hover:bg-slate-50 transition"
                       >
-                        Preview Syllabus
+                        Preview Course
                       </Link>
                     </div>
                   </div>
