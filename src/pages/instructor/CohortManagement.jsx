@@ -437,7 +437,25 @@ const CohortDetailPage = ({ cohort, onBack }) => {
 
 // Cohort Materials Tab Component
 const CohortMaterialsTab = ({ cohort }) => {
-  const cohortId = cohort.id || cohort._id;
+  const cohortId = useMemo(() => {
+    const raw = cohort?.id || cohort?._id;
+    if (!raw) return "";
+    return typeof raw === "object" ? (raw._id || raw.id || "").toString() : raw.toString();
+  }, [cohort]);
+
+  const courseId = useMemo(() => {
+    const raw = cohort?.course_id || cohort?.course;
+    if (!raw) return "";
+    if (typeof raw === "object") {
+      return (raw._id || raw.id || "").toString();
+    }
+    return raw.toString();
+  }, [cohort]);
+
+  const cohortName = useMemo(() => {
+    return cohort?.cohort || cohort?.name || "Current Cohort";
+  }, [cohort]);
+
   const [selectedMaterial, setSelectedMaterial] = useState(null);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -602,10 +620,15 @@ const CohortMaterialsTab = ({ cohort }) => {
         onClose={() => setIsUploadModalOpen(false)}
         onSubmit={handleUploadSubmit}
         isLoading={isUploading}
+        isSubmitting={isUploading}
         isAdmin={false}
+        cohortId={cohortId}
+        cohortName={cohortName}
+        courseId={courseId}
         initialData={{
-          course_id: cohort.course_id?._id || cohort.course_id?.id,
+          course_id: courseId,
           cohort_id: cohortId,
+          cohort_name: cohortName,
         }}
       />
 

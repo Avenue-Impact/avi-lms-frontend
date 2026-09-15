@@ -12,11 +12,7 @@ const fetchCohortMaterialsApi = async (cohortId) => {
 };
 
 const createCohortMaterialApi = async ({ cohortId, formData }) => {
-  const { data } = await axiosInstructor.post(`/cohorts/${cohortId}/materials`, formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+  const { data } = await axiosInstructor.post(`/cohorts/${cohortId}/materials`, formData);
   return data;
 };
 
@@ -144,11 +140,7 @@ const fetchAdminMaterialsApi = async (courseId, params = {}) => {
 };
 
 const createAdminMaterialApi = async ({ courseId, formData }) => {
-  const { data } = await axiosAdmin.post(`/courses/${courseId}/materials`, formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+  const { data } = await axiosAdmin.post(`/courses/${courseId}/materials`, formData);
   return data;
 };
 

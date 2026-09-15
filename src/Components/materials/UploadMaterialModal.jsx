@@ -6,14 +6,32 @@ export default function UploadMaterialModal({
   onClose,
   onSubmit,
   isSubmitting = false,
+  isLoading = false,
   cohortId,
   cohortName = "Current Cohort",
   courseId,
   courseDurations = [], // Configured on-demand durations for this course
   availableCohorts = [], // Available cohorts if admin
   isAdmin = false,
+  initialData = {},
 }) {
   if (!isOpen) return null;
+
+  const cleanId = (val) => {
+    if (!val) return "";
+    if (typeof val === "object") {
+      const id = val._id || val.id;
+      return id ? id.toString().trim() : "";
+    }
+    const s = String(val).trim();
+    if (s === "undefined" || s === "null" || s === "[object Object]") return "";
+    return s;
+  };
+
+  const effectiveCohortId = cleanId(cohortId || initialData?.cohort_id);
+  const effectiveCourseId = cleanId(courseId || initialData?.course_id);
+  const effectiveCohortName = cohortName !== "Current Cohort" ? cohortName : (initialData?.cohort_name || cohortName);
+  const submitting = isSubmitting || isLoading;
 
   const [title, setTitle] = useState("");
   const [instructions, setInstructions] = useState("");
@@ -25,7 +43,7 @@ export default function UploadMaterialModal({
 
   // Admin Scope Controls
   const [adminCourseType, setAdminCourseType] = useState("live"); // live, on demand
-  const [selectedCohortId, setSelectedCohortId] = useState(cohortId || "");
+  const [selectedCohortId, setSelectedCohortId] = useState(effectiveCohortId || "");
   const [selectedDuration, setSelectedDuration] = useState("all");
 
   const handleFileChange = (selectedFile) => {
@@ -78,8 +96,8 @@ export default function UploadMaterialModal({
     formData.append("instructions", instructions.trim());
     formData.append("type", materialType);
 
-    if (courseId) {
-      formData.append("course_id", courseId);
+    if (effectiveCourseId) {
+      formData.append("course_id", effectiveCourseId);
     }
 
     if (materialType === "link") {
@@ -100,8 +118,8 @@ export default function UploadMaterialModal({
     } else {
       // Instructor is locked to cohort
       formData.append("course_type", "live");
-      if (cohortId) {
-        formData.append("cohort_id", cohortId);
+      if (effectiveCohortId) {
+        formData.append("cohort_id", effectiveCohortId);
       }
     }
 
@@ -152,7 +170,7 @@ export default function UploadMaterialModal({
           {!isAdmin && (
             <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/70 text-xs text-slate-600 flex items-center justify-between">
               <span>Target Cohort:</span>
-              <span className="font-semibold text-[#0A1430]">{cohortName}</span>
+              <span className="font-semibold text-[#0A1430]">{effectiveCohortName}</span>
             </div>
           )}
 
@@ -368,7 +386,7 @@ export default function UploadMaterialModal({
                       Drag & drop your file here, or <span className="text-[#CC1747]">browse</span>
                     </p>
                     <p className="text-xs text-slate-400 mt-1">
-                      Supports PDF, DOCX, XLSX, PPTX, MP4, Images up to 200MB
+                      Supports all file formats up to 200MB (PDF, TXT, DOCX, XLSX, MP4, images, archives, etc.)
                     </p>
                   </div>
                 )}
@@ -381,17 +399,17 @@ export default function UploadMaterialModal({
             <button
               type="button"
               onClick={onClose}
-              disabled={isSubmitting}
+              disabled={submitting}
               className="px-5 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-700 hover:bg-slate-50 transition"
             >
               Cancel
             </button>
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={submitting}
               className="px-6 py-2.5 rounded-xl bg-[#CC1747] hover:bg-[#B0133D] text-sm font-semibold text-white shadow-md shadow-[#CC1747]/20 transition disabled:opacity-50 flex items-center gap-2"
             >
-              {isSubmitting ? (
+              {submitting ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   <span>Uploading...</span>
