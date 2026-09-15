@@ -1,5 +1,16 @@
 import React, { useState } from "react";
-import { X, Upload, Link as LinkIcon, FileText, AlertCircle, CheckCircle2 } from "lucide-react";
+import {
+  X,
+  Upload,
+  Link as LinkIcon,
+  FileText,
+  AlertCircle,
+  CheckCircle2,
+  Trash2,
+  Plus,
+  Film,
+  Image as ImageIcon,
+} from "lucide-react";
 
 export default function UploadMaterialModal({
   isOpen,
@@ -36,7 +47,7 @@ export default function UploadMaterialModal({
   const [title, setTitle] = useState("");
   const [instructions, setInstructions] = useState("");
   const [materialType, setMaterialType] = useState("document"); // document, video, image, link
-  const [file, setFile] = useState(null);
+  const [files, setFiles] = useState([]);
   const [linkUrl, setLinkUrl] = useState("");
   const [dragOver, setDragOver] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -46,53 +57,87 @@ export default function UploadMaterialModal({
   const [selectedCohortId, setSelectedCohortId] = useState(effectiveCohortId || "");
   const [selectedDuration, setSelectedDuration] = useState("all");
 
-  const handleFileChange = (selectedFile) => {
-    if (!selectedFile) return;
+  const formatBytes = (bytes) => {
+    if (!bytes && bytes !== 0) return "0 B";
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+  };
 
-    // Check 200MB limit
+  const getFileIcon = (fileName) => {
+    const ext = (fileName || "").split(".").pop().toLowerCase();
+    if (["mp4", "mov", "webm", "avi", "mkv"].includes(ext)) {
+      return <Film size={16} className="text-purple-600 shrink-0" />;
+    }
+    if (["jpg", "jpeg", "png", "webp", "svg", "gif"].includes(ext)) {
+      return <ImageIcon size={16} className="text-blue-600 shrink-0" />;
+    }
+    return <FileText size={16} className="text-amber-600 shrink-0" />;
+  };
+
+  const handleFilesAdded = (incomingFiles) => {
+    if (!incomingFiles || incomingFiles.length === 0) return;
+    const incomingArray = Array.from(incomingFiles);
     const maxSizeBytes = 200 * 1024 * 1024;
-    if (selectedFile.size > maxSizeBytes) {
-      setErrorMsg("File size exceeds 200MB limit. Please choose a smaller file.");
-      return;
+
+    const oversized = incomingArray.filter((f) => f.size > maxSizeBytes);
+    if (oversized.length > 0) {
+      setErrorMsg(`${oversized.length} file(s) exceed 200MB limit and were skipped.`);
+    } else {
+      setErrorMsg("");
     }
 
-    setErrorMsg("");
-    setFile(selectedFile);
+    const validFiles = incomingArray.filter((f) => f.size <= maxSizeBytes);
+    if (validFiles.length === 0) return;
 
-    // Auto-fill title if empty
-    if (!title) {
-      const nameWithoutExt = selectedFile.name.replace(/\.[^/.]+$/, "");
-      setTitle(nameWithoutExt);
-    }
+    setFiles((prev) => {
+      const existingKeys = new Set(prev.map((f) => `${f.name}_${f.size}`));
+      const newUnique = validFiles.filter((f) => !existingKeys.has(`${f.name}_${f.size}`));
+      const combined = [...prev, ...newUnique];
+
+      if (!title && combined.length > 0) {
+        setTitle(combined[0].name.replace(/\.[^/.]+$/, ""));
+      }
+      return combined;
+    });
+  };
+
+  const handleRemoveFile = (indexToRemove) => {
+    setFiles((prev) => {
+      const updated = prev.filter((_, idx) => idx !== indexToRemove);
+      return updated;
+    });
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
     setDragOver(false);
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      handleFileChange(e.dataTransfer.files[0]);
+      handleFilesAdded(e.dataTransfer.files);
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!title.trim()) {
-      setErrorMsg("Please provide a material name.");
-      return;
-    }
 
     if (materialType === "link") {
       if (!linkUrl.trim()) {
         setErrorMsg("Please enter a valid link URL.");
         return;
       }
-    } else if (!file) {
-      setErrorMsg("Please select or drop a file to upload.");
+      if (!title.trim()) {
+        setErrorMsg("Please provide a material name.");
+        return;
+      }
+    } else if (files.length === 0) {
+      setErrorMsg("Please select or drop at least one file to upload.");
       return;
     }
 
+    const effectiveTitle = title.trim() || (files[0] ? files[0].name.replace(/\.[^/.]+$/, "") : "Material");
+
     const formData = new FormData();
-    formData.append("title", title.trim());
+    formData.append("title", effectiveTitle);
     formData.append("instructions", instructions.trim());
     formData.append("type", materialType);
 
@@ -102,8 +147,13 @@ export default function UploadMaterialModal({
 
     if (materialType === "link") {
       formData.append("link_url", linkUrl.trim());
-    } else if (file) {
-      formData.append("file", file);
+    } else {
+      files.forEach((f) => {
+        formData.append("files", f);
+      });
+      if (files.length === 1) {
+        formData.append("file", files[0]);
+      }
     }
 
     if (isAdmin) {
@@ -260,15 +310,15 @@ export default function UploadMaterialModal({
           {/* Material Name */}
           <div>
             <label className="text-xs font-semibold text-slate-700 block mb-1.5">
-              Material Name <span className="text-red-500">*</span>
+              Material Name {files.length > 1 ? <span className="text-slate-400 font-normal">(Optional for multiple files)</span> : <span className="text-red-500">*</span>}
             </label>
             <input
               type="text"
-              placeholder="e.g. Sprint Planning Template & Guidelines"
+              placeholder={files.length > 1 ? "Defaults to each file's name" : "e.g. Sprint Planning Template & Guidelines"}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="w-full rounded-xl border border-slate-200 p-3 text-sm text-slate-800 focus:border-[#CC1747] focus:ring-1 focus:ring-[#CC1747] focus:outline-none"
-              required
+              required={files.length <= 1}
             />
           </div>
 
@@ -333,64 +383,127 @@ export default function UploadMaterialModal({
             </div>
           ) : (
             <div>
-              <label className="text-xs font-semibold text-slate-700 block mb-1.5">
-                Upload File (Max 200MB) <span className="text-red-500">*</span>
-              </label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-xs font-semibold text-slate-700">
+                  Upload Files (Max 200MB per file) <span className="text-red-500">*</span>
+                </label>
+                {files.length > 0 && (
+                  <span className="text-xs font-medium text-slate-500">
+                    {files.length} file{files.length > 1 ? "s" : ""} selected &bull;{" "}
+                    {formatBytes(files.reduce((acc, f) => acc + f.size, 0))}
+                  </span>
+                )}
+              </div>
 
-              <div
-                onDragOver={(e) => {
-                  e.preventDefault();
-                  setDragOver(true);
-                }}
-                onDragLeave={() => setDragOver(false)}
-                onDrop={handleDrop}
-                className={`border-2 border-dashed rounded-2xl p-6 text-center transition-all cursor-pointer ${
-                  dragOver
-                    ? "border-[#CC1747] bg-[#FFF1F4]"
-                    : file
-                    ? "border-emerald-300 bg-emerald-50/40"
-                    : "border-slate-200 hover:border-slate-300 bg-slate-50/50"
-                }`}
-                onClick={() => document.getElementById("material-file-input")?.click()}
-              >
-                <input
-                  id="material-file-input"
-                  type="file"
-                  className="hidden"
-                  onChange={(e) => {
-                    if (e.target.files && e.target.files.length > 0) {
-                      handleFileChange(e.target.files[0]);
-                    }
+              {files.length === 0 ? (
+                <div
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    setDragOver(true);
                   }}
-                />
+                  onDragLeave={() => setDragOver(false)}
+                  onDrop={handleDrop}
+                  onClick={() => document.getElementById("material-file-input")?.click()}
+                  className={`border-2 border-dashed rounded-2xl p-6 text-center transition-all cursor-pointer ${
+                    dragOver
+                      ? "border-[#CC1747] bg-[#FFF1F4]"
+                      : "border-slate-200 hover:border-slate-300 bg-slate-50/50"
+                  }`}
+                >
+                  <input
+                    id="material-file-input"
+                    type="file"
+                    multiple
+                    className="hidden"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files.length > 0) {
+                        handleFilesAdded(e.target.files);
+                        e.target.value = "";
+                      }
+                    }}
+                  />
 
-                {file ? (
-                  <div className="flex flex-col items-center">
-                    <CheckCircle2 size={32} className="text-emerald-500 mb-2" />
-                    <p className="font-semibold text-sm text-slate-800 break-all max-w-xs">
-                      {file.name}
-                    </p>
-                    <p className="text-xs text-slate-500 mt-0.5">
-                      {(file.size / (1024 * 1024)).toFixed(2)} MB &bull; Ready to upload
-                    </p>
-                    <span className="mt-2 text-xs font-medium text-[#CC1747] hover:underline">
-                      Click to choose a different file
-                    </span>
-                  </div>
-                ) : (
                   <div className="flex flex-col items-center">
                     <div className="w-12 h-12 rounded-full bg-white shadow-xs border border-slate-200 flex items-center justify-center text-slate-400 mb-2">
                       <Upload size={20} />
                     </div>
                     <p className="text-sm font-semibold text-slate-700">
-                      Drag & drop your file here, or <span className="text-[#CC1747]">browse</span>
+                      Drag & drop files here, or <span className="text-[#CC1747]">browse</span>
                     </p>
                     <p className="text-xs text-slate-400 mt-1">
-                      Supports all file formats up to 200MB (PDF, TXT, DOCX, XLSX, MP4, images, archives, etc.)
+                      Select one or multiple files up to 200MB each (PDF, TXT, DOCX, XLSX, MP4, etc.)
                     </p>
                   </div>
-                )}
-              </div>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {/* File List */}
+                  <div className="max-h-48 overflow-y-auto space-y-2 border border-slate-200 rounded-xl p-2.5 bg-slate-50/50">
+                    {files.map((f, idx) => (
+                      <div
+                        key={`${f.name}_${f.size}_${idx}`}
+                        className="flex items-center justify-between p-2.5 bg-white rounded-lg border border-slate-200/80 shadow-xs"
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0 flex-1 mr-2">
+                          <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+                            {getFileIcon(f.name)}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-xs font-semibold text-slate-800 truncate" title={f.name}>
+                              {f.name}
+                            </p>
+                            <p className="text-[11px] text-slate-400">
+                              {formatBytes(f.size)}
+                            </p>
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveFile(idx)}
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition"
+                          title="Remove file"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Add More Files Area */}
+                  <div
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setDragOver(true);
+                    }}
+                    onDragLeave={() => setDragOver(false)}
+                    onDrop={handleDrop}
+                    onClick={() => document.getElementById("material-file-input-more")?.click()}
+                    className={`border border-dashed rounded-xl py-2.5 px-4 text-center cursor-pointer transition flex items-center justify-center gap-2 ${
+                      dragOver
+                        ? "border-[#CC1747] bg-[#FFF1F4]"
+                        : "border-slate-300 hover:border-slate-400 bg-white"
+                    }`}
+                  >
+                    <input
+                      id="material-file-input-more"
+                      type="file"
+                      multiple
+                      className="hidden"
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files.length > 0) {
+                          handleFilesAdded(e.target.files);
+                          e.target.value = "";
+                        }
+                      }}
+                    />
+                    <Plus size={15} className="text-[#CC1747]" />
+                    <span className="text-xs font-medium text-slate-600">
+                      Add more files or drag & drop here
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -415,7 +528,9 @@ export default function UploadMaterialModal({
                   <span>Uploading...</span>
                 </>
               ) : (
-                <span>Upload Material</span>
+                <span>
+                  {files.length > 1 ? `Upload ${files.length} Materials` : "Upload Material"}
+                </span>
               )}
             </button>
           </div>
