@@ -258,8 +258,6 @@ export default function AdminCourseMaterialsSection({
               if (m.file_url) window.open(m.file_url, "_blank");
             }}
             onDelete={(m) => handleDelete(m._id)}
-            showStats={true}
-            showScope={true}
           />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
