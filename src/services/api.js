@@ -440,3 +440,21 @@ export const deletePathwayApi = async (pathwayId) => {
 export const togglePathwayStatusApi = async (pathwayId) => {
   return await axiosAdmin.patch(`/pathways/${pathwayId}/toggle`);
 };
+
+export const saveCareerAssessmentApi = async (data) => {
+  const token = Cookies.get("token");
+  return axios.post(`${url}/users/me/career-assessment`, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+export const fetchCareerAssessmentApi = async () => {
+  const token = Cookies.get("token");
+  return axios.get(`${url}/users/me/career-assessment`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};

@@ -13,9 +13,18 @@ import {
   X,
 } from "lucide-react";
 import { DarkLogo } from "../../../Components/Logo";
+import { useProfile } from "@/hooks/students/use-fetch-student-profile";
+import PopUp from "@/Components/dashboard/PopUp";
+import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
+import TakeAssessmentButton from "@/Components/assessment/TakeAssessmentButton";
+import Cookies from "js-cookie";
 
 export const HeroSection = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const token = Cookies.get("token");
+  const { data: profileData } = useProfile();
+  const user = profileData?.data?.data;
+  const isLoggedIn = Boolean(token && (user || profileData));
 
   const pathways = [
     { name: "Business Analysis", icon: Smartphone },
@@ -97,18 +106,39 @@ export const HeroSection = () => {
 
           {/* Auth Action Buttons */}
           <div className="hidden lg:flex items-center gap-3">
-            <Link
-              to="/login"
-              className="bg-white hover:bg-slate-50 border border-slate-200 text-[#0A1430] font-semibold text-[14px] px-5 py-2.5 rounded-lg shadow-sm transition-colors"
-            >
-              Log in
-            </Link>
-            <Link
-              to="/signup"
-              className="bg-[#D7195A] hover:bg-[#be144e] text-white font-semibold text-[14px] px-5 py-2.5 rounded-lg shadow-md shadow-[#D7195A]/25 transition-all duration-200"
-            >
-              Get Started
-            </Link>
+            {isLoggedIn ? (
+              <div className="flex items-center gap-4">
+                <Link
+                  to="/dashboard"
+                  className="text-[13px] font-semibold text-slate-700 hover:text-[#D7195A] px-3.5 py-2 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors"
+                >
+                  Go to Dashboard
+                </Link>
+                <PopUp className="relative cursor-pointer">
+                  <Avatar className="h-10 w-10 cursor-pointer border-2 border-[#D7195A]/30 hover:border-[#D7195A] transition-colors">
+                    <AvatarImage src={user?.avatar} alt="User Avatar" />
+                    <AvatarFallback className="bg-primary-color-100 text-sm font-bold text-primary-color-600">
+                      {`${user?.firstname?.charAt(0)?.toUpperCase() ?? "A"}${user?.lastname?.charAt(0)?.toUpperCase() ?? "I"}`}
+                    </AvatarFallback>
+                  </Avatar>
+                </PopUp>
+              </div>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="bg-white hover:bg-slate-50 border border-slate-200 text-[#0A1430] font-semibold text-[14px] px-5 py-2.5 rounded-lg shadow-sm transition-colors"
+                >
+                  Log in
+                </Link>
+                <Link
+                  to="/signup"
+                  className="bg-[#D7195A] hover:bg-[#be144e] text-white font-semibold text-[14px] px-5 py-2.5 rounded-lg shadow-md shadow-[#D7195A]/25 transition-all duration-200"
+                >
+                  Get Started
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Toggle Button */}
@@ -158,18 +188,46 @@ export const HeroSection = () => {
               ExpertsMerge
             </Link>
             <div className="pt-3 border-t border-slate-100 flex flex-col gap-2.5">
-              <Link
-                to="/login"
-                className="w-full text-center bg-white border border-slate-200 text-[#0A1430] font-semibold text-[14px] py-2.5 rounded-lg shadow-sm"
-              >
-                Log in
-              </Link>
-              <Link
-                to="/signup"
-                className="w-full text-center bg-[#D7195A] text-white font-semibold text-[14px] py-2.5 rounded-lg shadow-md"
-              >
-                Get Started
-              </Link>
+              {isLoggedIn ? (
+                <>
+                  <div className="flex items-center gap-3 p-2 bg-slate-50 rounded-lg">
+                    <Avatar className="h-9 w-9">
+                      <AvatarImage src={user?.avatar} alt="User Avatar" />
+                      <AvatarFallback className="bg-primary-color-100 text-xs font-bold text-primary-color-600">
+                        {`${user?.firstname?.charAt(0)?.toUpperCase() ?? "A"}${user?.lastname?.charAt(0)?.toUpperCase() ?? "I"}`}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-[#0A1430] truncate">
+                        {user?.firstname} {user?.lastname}
+                      </p>
+                      <p className="text-xs text-slate-500 truncate">{user?.email}</p>
+                    </div>
+                  </div>
+                  <Link
+                    to="/dashboard"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="w-full text-center bg-[#D7195A] text-white font-semibold text-[14px] py-2.5 rounded-lg shadow-sm"
+                  >
+                    Go to Dashboard
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    className="w-full text-center bg-white border border-slate-200 text-[#0A1430] font-semibold text-[14px] py-2.5 rounded-lg shadow-sm"
+                  >
+                    Log in
+                  </Link>
+                  <Link
+                    to="/signup"
+                    className="w-full text-center bg-[#D7195A] text-white font-semibold text-[14px] py-2.5 rounded-lg shadow-md"
+                  >
+                    Get Started
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         )}
@@ -178,25 +236,16 @@ export const HeroSection = () => {
       {/* Hero Section Container */}
       <section className="w-full bg-[#EFF1F8] pt-12 sm:pt-16 lg:pt-20 pb-12 sm:pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 xl:gap-12 items-center">
-            {/* Left Content Column */}
-            <div className="lg:col-span-7 flex flex-col justify-center">
-              {/* Category Eyebrow Badge */}
-              <div className="flex items-center gap-2 text-[#D7195A] font-space text-[12px] font-bold tracking-[0.14em] uppercase">
-                <span className="w-2 h-2 rounded-full bg-[#D7195A] inline-block" />
-                CAREER TRANSFORMATION ECOSYSTEM
-              </div>
-
-              {/* Main Headline */}
-              <h1 className="font-space font-bold text-[32px] sm:text-[40px] lg:text-[45px] leading-[38px] sm:leading-[45px] lg:leading-[50px] tracking-[-2px] text-[#0A1430] mt-4">
-                <span className="text-[#D7195A]">Acquire More than Skills</span>
-                <br />
-                Pathway to your Dream Career with Avenue Impact
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+            {/* Left Narrative Column */}
+            <div className="lg:col-span-7">
+              <h1 className="font-space font-extrabold text-[38px] sm:text-[48px] lg:text-[54px] text-[#0A1430] leading-[1.08] tracking-tight">
+                One complete journey. From zero experience to working in tech.
               </h1>
 
-              {/* Subtitle / Paragraph */}
-              <p className="font-inter text-[15px] sm:text-[16px] leading-[26px] text-[#0A1430]/80 max-w-xl mt-6">
-                Avenue Impact combines learning, mentoring, interview preparation and real
+              <p className="font-inter text-[16px] sm:text-[18px] text-slate-600 leading-relaxed mt-6 max-w-2xl font-normal">
+                Avenue Impact unites CPD-accredited training, real work experience,
+                personalised mentoring, career preparation, and international hiring
                 opportunities into one journey — from choosing a career to getting hired, and
                 beyond.
               </p>
@@ -209,12 +258,12 @@ export const HeroSection = () => {
                 >
                   Start your journey
                 </Link>
-                <Link
+                <TakeAssessmentButton
                   to="/assessment"
-                  className="bg-white hover:bg-slate-50 border border-slate-200/90 text-[#0A1430] font-inter font-semibold text-[15px] px-6 py-3.5 rounded-xl shadow-sm transition-all duration-200 active:scale-[0.98]"
-                >
-                  Take career assessment
-                </Link>
+                  label="Take career assessment"
+                  layout="inline"
+                  variant="outline"
+                />
               </div>
 
               {/* Alumni Placement Locations */}

@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Clock, Loader2 } from "lucide-react";
 import { useFetchAllCourses } from "@/hooks/students/use-fetch-all-courses";
+import TakeAssessmentButton from "@/Components/assessment/TakeAssessmentButton";
 
 const stripHtml = (html) => {
   if (!html) return "";
@@ -160,19 +161,19 @@ export const PathwaysSection = () => {
         )}
 
         {/* Bottom CTA Actions */}
-        <div className="flex flex-wrap items-center justify-center gap-4 mt-12">
+        <div className="flex flex-wrap items-center justify-center gap-6 mt-12">
           <Link
             to="/discover-courses"
             className="bg-white hover:bg-slate-50 border border-slate-200/90 text-[#0A1430] font-inter font-semibold text-[14px] sm:text-[15px] px-7 py-3.5 rounded-xl shadow-sm transition-all duration-200 active:scale-[0.98]"
           >
             View all pathways & dates
           </Link>
-          <Link
+          <TakeAssessmentButton
             to="/assessment"
-            className="bg-[#D7195A] hover:bg-[#c0154e] text-white font-inter font-semibold text-[14px] sm:text-[15px] px-7 py-3.5 rounded-xl shadow-lg shadow-[#D7195A]/25 transition-all duration-200 active:scale-[0.98]"
-          >
-            Take career assessment
-          </Link>
+            label="Take career assessment"
+            layout="inline"
+            variant="primary"
+          />
         </div>
       </div>
     </section>

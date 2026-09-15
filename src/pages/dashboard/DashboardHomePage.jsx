@@ -23,6 +23,8 @@ import { useGetRegisteredCourses } from "@/hooks/students/use-get-registered-cou
 import { useFetchPreviewlist } from "@/hooks/wishlists/use-fetch-previewlist";
 import { useNavigate } from "react-router-dom";
 import fallbackCourseImage from "@/assets/images/join_team.png";
+import TakeAssessmentButton from "@/Components/assessment/TakeAssessmentButton";
+import { useCareerAssessment } from "@/utils/careerAssessment";
 // import Cookies from "js-cookie";
 // import { useProfile } from "@/services/queries";
 
@@ -74,6 +76,9 @@ const DashBoardHomePage = () => {
 
       {/* CONTINUE FROM WHERE YOU LEFT OFF (PREVIEW LIST) */}
       <PreviewListCourses />
+
+      {/* EXPLORE ANY OF THESE PATHWAYS (SCENARIO 12) */}
+      <ExplorePathwaysDashboardSection />
 
       {/* LIVE SESSION */}
       <div className="lg:border-white-300 my-6 rounded-lg border-2 bg-white p-6">
@@ -312,6 +317,101 @@ const PreviewListCourses = () => {
           );
         })}
       </div>
+    </div>
+  );
+};
+
+const ExplorePathwaysDashboardSection = () => {
+  const { hasCompleted, pathway, courses } = useCareerAssessment();
+  const navigate = useNavigate();
+
+  return (
+    <div className="lg:border-white-300 my-6 rounded-lg border-2 bg-white p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-gray-100">
+        <div>
+          <div className="flex flex-wrap items-center gap-2.5">
+            <h3 className="text-l font-semibold text-gray-800 font-space">
+              Explore Any of These Pathways
+            </h3>
+            <span
+              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                hasCompleted
+                  ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                  : "bg-slate-100 text-slate-700 border border-slate-200"
+              }`}
+            >
+              {hasCompleted
+                ? `${courses.length} courses matched to profile`
+                : "0 courses matched to profile"}
+            </span>
+          </div>
+          <p className="text-xs text-gray-500 mt-1 font-inter">
+            {hasCompleted
+              ? `Personalized pathway suggestions for ${pathway || "your tech career profile"}`
+              : "Complete the career assessment to match your profile to personalized learning pathways and courses"}
+          </p>
+        </div>
+      </div>
+
+      {!hasCompleted ? (
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6 py-8 px-6 mt-4 bg-[#F8FAFC] border border-slate-200/80 rounded-xl">
+          <div className="max-w-xl">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="w-2 h-2 rounded-full bg-slate-400" />
+              <h4 className="text-[15px] font-bold text-[#0A1430] font-space">
+                0 courses matched to profile
+              </h4>
+            </div>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-inter">
+              You haven't completed your career assessment yet. Discover the right tech career pathway for your skills, interests, and goals to unlock tailored course recommendations.
+            </p>
+          </div>
+          <TakeAssessmentButton
+            to="/assessment"
+            label="Take career assessment"
+            layout="stacked"
+            buttonClassName="whitespace-nowrap"
+          />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+          {courses.map((course) => (
+            <div
+              key={course.id || course._id || course.slug}
+              className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
+            >
+              <div>
+                <img
+                  src={course.cover_image || fallbackCourseImage}
+                  alt={course.title}
+                  className="w-full h-40 object-cover"
+                />
+                <div className="p-4">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#D7195A] bg-[#FFEBF0] px-2 py-0.5 rounded">
+                    MATCHED TO PROFILE
+                  </span>
+                  <h4 className="font-bold text-[15px] text-[#0A1430] mt-2 line-clamp-2">
+                    {course.title}
+                  </h4>
+                  {course.overview && (
+                    <p className="text-xs text-slate-500 mt-1.5 line-clamp-2">
+                      {course.overview}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <div className="p-4 pt-0">
+                <button
+                  onClick={() => navigate(`/preview-course/${course.slug || course.id || course._id}`)}
+                  className="w-full bg-[#0A1430] hover:bg-[#D7195A] text-white text-xs font-semibold py-2.5 rounded-lg transition-colors"
+                >
+                  View Course Preview
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

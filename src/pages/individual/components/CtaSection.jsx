@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import TakeAssessmentButton from "@/Components/assessment/TakeAssessmentButton";
 
 export const CtaSection = () => {
   return (
@@ -18,13 +18,13 @@ export const CtaSection = () => {
           </p>
 
           {/* CTA Button */}
-          <div className="mt-8">
-            <Link
+          <div className="mt-8 flex justify-center">
+            <TakeAssessmentButton
               to="/assessment"
-              className="inline-flex items-center justify-center bg-[#D7195A] hover:bg-[#be144e] text-white font-inter font-semibold text-[15px] px-8 py-3.5 rounded-xl shadow-lg shadow-[#D7195A]/30 active:scale-95 transition-all duration-200"
-            >
-              Take career assessment
-            </Link>
+              label="Take career assessment"
+              layout="stacked"
+              variant="primary"
+            />
           </div>
         </div>
       </div>

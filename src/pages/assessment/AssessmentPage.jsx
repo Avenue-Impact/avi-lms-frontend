@@ -10,6 +10,7 @@ import {
   resolveCoursesForAssessment,
 } from "./components/AssessmentData";
 import { useFetchAllCourses } from "@/hooks/students/use-fetch-all-courses";
+import { persistCareerAssessment } from "@/utils/careerAssessment";
 
 export default function AssessmentPage() {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
@@ -43,6 +44,27 @@ export default function AssessmentPage() {
       const enrichedResults = resolveCoursesForAssessment(rawResults, liveCourses);
       setResults(enrichedResults);
       setIsCompleted(true);
+
+      const topMatchCourses = enrichedResults.topMatch?.courses || [];
+      const runnerUpCourses = enrichedResults.runnerUp?.courses || [];
+      const combined = [...topMatchCourses];
+      for (const c of runnerUpCourses) {
+        if (!combined.some((x) => (x.id || x._id) === (c.id || c._id))) {
+          combined.push(c);
+        }
+      }
+      for (const c of liveCourses) {
+        if (!combined.some((x) => (x.id || x._id) === (c.id || c._id))) {
+          combined.push(c);
+        }
+        if (combined.length >= 3) break;
+      }
+      persistCareerAssessment({
+        pathwayKey: enrichedResults.topMatch?.id || "",
+        pathwayTitle: enrichedResults.topMatch?.title || "",
+        recommendedCourses: combined.slice(0, 3),
+      });
+
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
@@ -53,6 +75,26 @@ export default function AssessmentPage() {
       const rawResults = calculateAssessmentResults(answers);
       const enrichedResults = resolveCoursesForAssessment(rawResults, liveCourses);
       setResults(enrichedResults);
+
+      const topMatchCourses = enrichedResults.topMatch?.courses || [];
+      const runnerUpCourses = enrichedResults.runnerUp?.courses || [];
+      const combined = [...topMatchCourses];
+      for (const c of runnerUpCourses) {
+        if (!combined.some((x) => (x.id || x._id) === (c.id || c._id))) {
+          combined.push(c);
+        }
+      }
+      for (const c of liveCourses) {
+        if (!combined.some((x) => (x.id || x._id) === (c.id || c._id))) {
+          combined.push(c);
+        }
+        if (combined.length >= 3) break;
+      }
+      persistCareerAssessment({
+        pathwayKey: enrichedResults.topMatch?.id || "",
+        pathwayTitle: enrichedResults.topMatch?.title || "",
+        recommendedCourses: combined.slice(0, 3),
+      });
     }
   }, [liveCourses, isCompleted]);
 
