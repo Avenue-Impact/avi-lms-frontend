@@ -5,6 +5,30 @@ import { useProfile } from "../hooks/students/use-fetch-student-profile";
 
 const ASSESSMENT_STORAGE_KEY = "avi_career_assessment";
 const USER_DETAILS_STORAGE_KEY = "avi_career_assessment_user";
+const DRAFT_ANSWERS_STORAGE_KEY = "avi_assessment_draft_answers";
+
+export const getAssessmentDraftAnswers = () => {
+  try {
+    const raw = localStorage.getItem(DRAFT_ANSWERS_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch (e) {
+    return {};
+  }
+};
+
+export const setAssessmentDraftAnswers = (answers) => {
+  try {
+    localStorage.setItem(DRAFT_ANSWERS_STORAGE_KEY, JSON.stringify(answers));
+  } catch (e) {
+    console.error("Failed to save draft answers:", e);
+  }
+};
+
+export const clearAssessmentDraftAnswers = () => {
+  try {
+    localStorage.removeItem(DRAFT_ANSWERS_STORAGE_KEY);
+  } catch (e) {}
+};
 
 export const getStoredAssessmentUser = () => {
   try {
@@ -88,8 +112,8 @@ export const persistCareerAssessment = async ({
     try {
       await submitCareerAssessmentApi({
         email: effectiveUser.email,
-        firstName: effectiveUser.firstName,
-        lastName: effectiveUser.lastName,
+        firstName: effectiveUser.firstName || effectiveUser.firstname || "Student",
+        lastName: effectiveUser.lastName || effectiveUser.lastname || "",
         pathway_key: pathwayKey,
         pathway_title: pathwayTitle,
         match_score: matchScore,
@@ -108,6 +132,8 @@ export const persistCareerAssessment = async ({
           pathway_key: pathwayKey,
           pathway_title: pathwayTitle,
           recommended_courses: courseIds,
+          match_score: matchScore,
+          summary,
         });
       } catch (err) {
         console.warn("Could not sync assessment to backend:", err);

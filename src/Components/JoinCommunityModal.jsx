@@ -7,7 +7,14 @@ import Cookies from 'js-cookie';
 import toast from 'react-hot-toast';
 import GoogleAuthButton from '@/pages/auth/components/GoogleAuthButton';
 
-const JoinCommunityModal = ({ open, onClose }) => {
+const JoinCommunityModal = ({
+  open,
+  onClose,
+  redirectUrl = "",
+  title,
+  subtitle,
+  onSuccess,
+}) => {
   const navigate = useNavigate();
   const url = import.meta.env.VITE_AUTH_URL;
 
@@ -52,7 +59,13 @@ const JoinCommunityModal = ({ open, onClose }) => {
 
         toast.success("Login successful");
         onClose();
-        window.location.reload();
+        if (onSuccess) {
+          onSuccess(loggedUser, token);
+        } else if (redirectUrl) {
+          navigate(redirectUrl);
+        } else {
+          window.location.reload();
+        }
       }
     } catch (err) {
       console.error("Google auth failed in modal:", err);
@@ -65,6 +78,13 @@ const JoinCommunityModal = ({ open, onClose }) => {
       onClose();
     }
   };
+
+  const signupLink = redirectUrl
+    ? `/signup?redirectTo=${encodeURIComponent(redirectUrl)}`
+    : "/signup";
+  const loginLink = redirectUrl
+    ? `/login?redirectTo=${encodeURIComponent(redirectUrl)}`
+    : "/login";
 
   return (
     <div 
@@ -89,15 +109,21 @@ const JoinCommunityModal = ({ open, onClose }) => {
 
           <div className="mb-4 h-1.5 w-12 rounded bg-[#CC1747]"></div>
           
-          <h2 className="mb-4 text-3xl font-bold tracking-tight text-gray-900 md:text-4xl leading-tight">
-            Join the Avenue Impact <br className="hidden md:block" /> Community
-          </h2>
+          {title ? (
+            <h2 className="mb-4 text-3xl font-bold tracking-tight text-gray-900 md:text-4xl leading-tight">
+              {title}
+            </h2>
+          ) : (
+            <h2 className="mb-4 text-3xl font-bold tracking-tight text-gray-900 md:text-4xl leading-tight">
+              Join the Avenue Impact <br className="hidden md:block" /> Community
+            </h2>
+          )}
           
           <p className="mb-8 text-base text-gray-500 leading-relaxed">
-            Access expert-led courses, live mentoring, career pathways and opportunities designed to help you grow and transform.
+            {subtitle || "Access expert-led courses, live mentoring, career pathways and opportunities designed to help you grow and transform."}
           </p>
 
-          <Link to="/signup" onClick={onClose}>
+          <Link to={signupLink} onClick={onClose}>
             <button className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#CC1747] px-4 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-rose-700 shadow-sm">
               <User className="h-5 w-5" />
               Create Free Account
@@ -116,7 +142,7 @@ const JoinCommunityModal = ({ open, onClose }) => {
 
           <p className="mt-6 text-center text-sm font-medium text-gray-800 flex items-center justify-center gap-1.5">
             Already a member?
-            <Link to="/login" onClick={onClose} className="font-bold text-[#CC1747] hover:underline flex items-center gap-0.5">
+            <Link to={loginLink} onClick={onClose} className="font-bold text-[#CC1747] hover:underline flex items-center gap-0.5">
               Sign In <ArrowRight className="h-4 w-4" />
             </Link>
           </p>
