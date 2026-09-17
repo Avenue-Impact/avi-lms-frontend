@@ -373,6 +373,12 @@ export const assignInstructor = async ({
   );
 };
 
+export const removeInstructor = async ({ courseId, cohortId }) => {
+  return await axiosAdmin.delete(
+    `/courses/${courseId}/cohorts/${cohortId}/assign-instructor`,
+  );
+};
+
 export const updateLiveSessionDetails = async ({
   cohortId,
   title,
