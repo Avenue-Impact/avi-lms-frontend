@@ -30,30 +30,25 @@ export default function SingleResultView({
   const primaryCourseId = primaryCourse?.id || primaryCourse?._id;
   const primaryCourseTitle = primaryCourse?.title || pathwayTitle;
 
+  // Bundle course resolution for pathways with multiple courses
+  const bundleCourse =
+    pathwayCourses.find((c) => (c.title || "").toLowerCase().includes("bundle")) ||
+    primaryCourse;
+  const bundleCourseId = bundleCourse?.id || bundleCourse?._id || primaryCourseId;
+  const bundleCourseTitle = bundleCourse?.title || `${pathwayTitle} (Bundle)`;
+
   const defaultEnrollUrl = primaryCourseId
     ? `/preview-video-course/${primaryCourseId}/enroll?title=${encodeURIComponent(primaryCourseTitle)}`
     : `/discover-courses`;
 
-  const heroActionTarget = isAuthenticated
-    ? defaultEnrollUrl
-    : primaryCourseId
-    ? `/signup?id=${primaryCourseId}&title=${encodeURIComponent(primaryCourseTitle)}&_r=${encodeURIComponent(defaultEnrollUrl)}`
-    : `/signup?pathway=${topMatch.slug || "career"}`;
-
-  const bundleCourse =
-    pathwayCourses.find((c) => (c.title || "").toLowerCase().includes("bundle")) ||
-    primaryCourse;
-  const bundleCourseId = bundleCourse?.id || bundleCourse?._id;
-  const bundleCourseTitle = bundleCourse?.title || `${pathwayTitle} (Bundle)`;
-
   const bundleEnrollUrl = bundleCourseId
     ? `/preview-video-course/${bundleCourseId}/enroll?title=${encodeURIComponent(bundleCourseTitle)}&bundle=true`
-    : `/discover-courses`;
+    : defaultEnrollUrl;
 
-  const bundleActionTarget = isAuthenticated
-    ? bundleEnrollUrl
-    : bundleCourseId
-    ? `/signup?id=${bundleCourseId}&title=${encodeURIComponent(bundleCourseTitle)}&_r=${encodeURIComponent(bundleEnrollUrl)}`
+  const heroActionTarget = isAuthenticated
+    ? (pathwayCourses.length > 1 ? bundleEnrollUrl : defaultEnrollUrl)
+    : (pathwayCourses.length > 1 ? bundleCourseId : primaryCourseId)
+    ? `/signup?id=${pathwayCourses.length > 1 ? bundleCourseId : primaryCourseId}&title=${encodeURIComponent(pathwayCourses.length > 1 ? bundleCourseTitle : primaryCourseTitle)}&_r=${encodeURIComponent(pathwayCourses.length > 1 ? bundleEnrollUrl : defaultEnrollUrl)}`
     : `/signup?pathway=${topMatch.slug || "career"}`;
 
   const saveAccountTarget = isAuthenticated
@@ -92,39 +87,28 @@ export default function SingleResultView({
             {pathwaySummary}
           </p>
 
-          {/* Action Buttons: Pathway Enrollment (1 course vs bundle) */}
+          {/* Action Buttons: Enroll to Pathway */}
           <div className="flex flex-wrap items-center gap-3">
-            {pathwayCourses.length === 1 && primaryCourseId ? (
+            {(primaryCourseId || bundleCourseId) && (
               <Link
                 to={heroActionTarget}
                 className="inline-flex items-center justify-center gap-2 bg-[#D7195A] hover:bg-[#c0144d] text-white font-inter font-semibold text-xs sm:text-sm px-6 py-3 rounded-xl shadow-lg shadow-[#D7195A]/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
               >
-                <span>Enroll to Pathway</span>
+                <span>
+                  {pathwayCourses.length > 1
+                    ? "Enroll to Pathway (All Courses)"
+                    : "Enroll to Pathway"}
+                </span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
-            ) : pathwayCourses.length > 1 ? (
-              <>
-                <Link
-                  to={bundleActionTarget}
-                  className="inline-flex items-center justify-center gap-2 bg-[#D7195A] hover:bg-[#c0144d] text-white font-inter font-semibold text-xs sm:text-sm px-6 py-3 rounded-xl shadow-lg shadow-[#D7195A]/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
-                >
-                  <span>Enroll to Pathway</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-                <a
-                  href="#available-courses"
-                  className="inline-flex items-center justify-center gap-1.5 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-inter font-semibold text-xs sm:text-sm px-5 py-3 rounded-xl transition"
-                >
-                  <span>View Courses in Pathway ({pathwayCourses.length})</span>
-                </a>
-              </>
-            ) : (
+            )}
+
+            {pathwayCourses.length > 1 && (
               <a
                 href="#available-courses"
-                className="inline-flex items-center justify-center gap-2 bg-[#D7195A] hover:bg-[#c0144d] text-white font-inter font-semibold text-xs sm:text-sm px-6 py-3 rounded-xl shadow-lg shadow-[#D7195A]/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+                className="inline-flex items-center justify-center gap-1.5 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-inter font-semibold text-xs sm:text-sm px-5 py-3 rounded-xl transition"
               >
-                <span>View Pathway Courses</span>
-                <ArrowRight className="w-4 h-4" />
+                <span>View Courses in Pathway ({pathwayCourses.length})</span>
               </a>
             )}
           </div>
