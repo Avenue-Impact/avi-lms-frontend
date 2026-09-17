@@ -30,41 +30,29 @@ const JoinCommunityModal = ({ open, onClose }) => {
         return;
       }
 
-      const response = await axios.post(`${url}/google-check`, {
-        email: payload.email,
+      const loginResponse = await axios.post(`${url}/google-login`, {
+        credential,
       });
 
-      if (response.data.exists) {
-        const loginResponse = await axios.post(`${url}/google-login`, {
-          credential,
+      if (loginResponse.data.status === "success") {
+        const { token, user: loggedUser } = loginResponse.data.data;
+        
+        Cookies.set("token", token, {
+          expires: 1,
+          secure: window.location.protocol === "https:",
+          sameSite: "strict",
+          path: "/",
+        });
+        Cookies.set("userRole", loggedUser.role, {
+          expires: 1,
+          secure: window.location.protocol === "https:",
+          sameSite: "strict",
+          path: "/",
         });
 
-        if (loginResponse.data.status === "success") {
-          const { token, user: loggedUser } = loginResponse.data.data;
-          
-          Cookies.set("token", token, {
-            expires: 1,
-            secure: true,
-            sameSite: "strict",
-            path: "/",
-          });
-          Cookies.set("userRole", loggedUser.role, {
-            expires: 1,
-            secure: true,
-            sameSite: "strict",
-            path: "/",
-          });
-
-          toast.success("Login successful");
-          onClose();
-          window.location.reload();
-        }
-      } else {
-        toast.success("No account found. Redirecting to sign up...");
+        toast.success("Login successful");
         onClose();
-        navigate(`/signup`, {
-          state: { googleToken: credential },
-        });
+        window.location.reload();
       }
     } catch (err) {
       console.error("Google auth failed in modal:", err);

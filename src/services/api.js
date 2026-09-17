@@ -458,3 +458,12 @@ export const fetchCareerAssessmentApi = async () => {
     },
   });
 };
+
+export const submitCareerAssessmentApi = async (data) => {
+  const token = Cookies.get("token");
+  const headers = {};
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+  return axios.post(`${url}/users/career-assessment/submit`, data, { headers });
+};

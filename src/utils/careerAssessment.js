@@ -1,9 +1,28 @@
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
-import { saveCareerAssessmentApi } from "../services/api";
+import { saveCareerAssessmentApi, submitCareerAssessmentApi } from "../services/api";
 import { useProfile } from "../hooks/students/use-fetch-student-profile";
 
 const ASSESSMENT_STORAGE_KEY = "avi_career_assessment";
+const USER_DETAILS_STORAGE_KEY = "avi_career_assessment_user";
+
+export const getStoredAssessmentUser = () => {
+  try {
+    const raw = localStorage.getItem(USER_DETAILS_STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (e) {
+    return null;
+  }
+};
+
+export const setStoredAssessmentUser = (user) => {
+  try {
+    localStorage.setItem(USER_DETAILS_STORAGE_KEY, JSON.stringify(user));
+  } catch (e) {
+    console.error("Failed to store assessment user:", e);
+  }
+};
 
 /**
  * Read the local assessment record from localStorage
@@ -26,12 +45,17 @@ export const persistCareerAssessment = async ({
   pathwayKey = "",
   pathwayTitle = "",
   recommendedCourses = [],
+  userDetails = null,
+  matchScore = 95,
+  summary = "",
 }) => {
   const payload = {
     completed: true,
     completedAt: new Date().toISOString(),
     pathwayKey,
     pathwayTitle,
+    matchScore,
+    summary,
     recommendedCourses: recommendedCourses.slice(0, 3).map((c) => ({
       id: c.id || c._id,
       title: c.title,
@@ -45,27 +69,49 @@ export const persistCareerAssessment = async ({
   // 1. Save to localStorage
   try {
     localStorage.setItem(ASSESSMENT_STORAGE_KEY, JSON.stringify(payload));
+    if (userDetails) {
+      setStoredAssessmentUser(userDetails);
+    }
     window.dispatchEvent(new Event("career-assessment-updated"));
   } catch (e) {
     console.error("Failed to write to localStorage:", e);
   }
 
-  // 2. If logged in, save to backend
-  const token = Cookies.get("token");
-  if (token) {
-    try {
-      const courseIds = recommendedCourses
-        .slice(0, 3)
-        .map((c) => c.id || c._id)
-        .filter(Boolean);
+  const courseIds = recommendedCourses
+    .slice(0, 3)
+    .map((c) => c.id || c._id)
+    .filter(Boolean);
 
-      await saveCareerAssessmentApi({
+  // 2. Submit to backend to trigger email report (Scenario 5)
+  const effectiveUser = userDetails || getStoredAssessmentUser();
+  if (effectiveUser?.email) {
+    try {
+      await submitCareerAssessmentApi({
+        email: effectiveUser.email,
+        firstName: effectiveUser.firstName,
+        lastName: effectiveUser.lastName,
         pathway_key: pathwayKey,
         pathway_title: pathwayTitle,
+        match_score: matchScore,
+        summary,
         recommended_courses: courseIds,
       });
-    } catch (err) {
-      console.warn("Could not sync assessment to backend:", err);
+    } catch (submitErr) {
+      console.warn("Could not submit assessment results email:", submitErr);
+    }
+  } else {
+    // If logged in without explicit userDetails, save directly to profile
+    const token = Cookies.get("token");
+    if (token) {
+      try {
+        await saveCareerAssessmentApi({
+          pathway_key: pathwayKey,
+          pathway_title: pathwayTitle,
+          recommended_courses: courseIds,
+        });
+      } catch (err) {
+        console.warn("Could not sync assessment to backend:", err);
+      }
     }
   }
 

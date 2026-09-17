@@ -87,30 +87,22 @@ export default function SingleResultView({
             {pathwaySummary}
           </p>
 
-          {/* Action Buttons: Enroll to Pathway */}
+          {/* Action Buttons: Enrol now & Talk to career coach */}
           <div className="flex flex-wrap items-center gap-3">
-            {(primaryCourseId || bundleCourseId) && (
-              <Link
-                to={heroActionTarget}
-                className="inline-flex items-center justify-center gap-2 bg-[#D7195A] hover:bg-[#c0144d] text-white font-inter font-semibold text-xs sm:text-sm px-6 py-3 rounded-xl shadow-lg shadow-[#D7195A]/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
-              >
-                <span>
-                  {pathwayCourses.length > 1
-                    ? "Enroll to Pathway (All Courses)"
-                    : "Enroll to Pathway"}
-                </span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            )}
+            <Link
+              to={heroActionTarget}
+              className="inline-flex items-center justify-center gap-2 bg-[#D7195A] hover:bg-[#c0144d] text-white font-inter font-semibold text-xs sm:text-sm px-6 py-3 rounded-xl shadow-lg shadow-[#D7195A]/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+            >
+              <span>Enrol now</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
 
-            {pathwayCourses.length > 1 && (
-              <a
-                href="#available-courses"
-                className="inline-flex items-center justify-center gap-1.5 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-inter font-semibold text-xs sm:text-sm px-5 py-3 rounded-xl transition"
-              >
-                <span>View Courses in Pathway ({pathwayCourses.length})</span>
-              </a>
-            )}
+            <Link
+              to="/contact"
+              className="inline-flex items-center justify-center gap-1.5 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-inter font-semibold text-xs sm:text-sm px-5 py-3 rounded-xl transition"
+            >
+              <span>Talk to career coach</span>
+            </Link>
           </div>
         </div>
       </div>
@@ -146,12 +138,50 @@ export default function SingleResultView({
         </div>
       </div>
 
-      {/* 3. Available Courses Section with Full Images & Enrollment Details */}
+      {/* 3. Other Strong Matches Section (Physical Order Step 2) */}
+      {otherMatches && otherMatches.length > 0 && (
+        <div className="mb-12">
+          <h2 className="font-space font-bold text-xl sm:text-2xl text-[#0A1430] mb-4">
+            Other strong matches for you
+          </h2>
+          <div className="space-y-3">
+            {otherMatches.slice(0, 3).map((match) => {
+              return (
+                <div
+                  key={match.id || match.slug}
+                  className="flex items-center justify-between bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs hover:border-slate-300 hover:shadow-md transition-all group"
+                >
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-[#D7195A] shrink-0 border border-slate-200">
+                      <Sparkles className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <span className="font-inter font-semibold text-[#0A1430] group-hover:text-[#D7195A] text-sm sm:text-base transition-colors">
+                        {match.title}
+                      </span>
+                      {match.summary && (
+                        <p className="text-xs text-slate-500 line-clamp-1 mt-0.5">
+                          {match.summary}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <span className="font-inter text-slate-500 text-xs sm:text-sm font-medium shrink-0 ml-3">
+                    {match.percentageMatch}% match
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* 4. Other Career Pathways Section (formerly "Courses in this pathway") */}
       <div id="available-courses" className="mb-12 scroll-mt-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
           <div>
             <h2 className="font-space font-bold text-2xl text-[#0A1430]">
-              Courses in this Pathway
+              Other career pathways
             </h2>
             <p className="text-slate-500 text-sm mt-1">
               Select a course below to enroll directly or preview the curriculum.
@@ -290,44 +320,6 @@ export default function SingleResultView({
           </div>
         )}
       </div>
-
-      {/* 4. Other Strong Matches (Pathways) */}
-      {otherMatches && otherMatches.length > 0 && (
-        <div className="mb-10">
-          <h2 className="font-space font-bold text-xl text-[#0A1430] mb-4">
-            Other strong matches for you
-          </h2>
-          <div className="space-y-3">
-            {otherMatches.slice(0, 3).map((match) => {
-              return (
-                <div
-                  key={match.id || match.slug}
-                  className="flex items-center justify-between bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs hover:border-slate-300 hover:shadow-md transition-all group"
-                >
-                  <div className="flex items-center gap-3.5">
-                    <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-[#D7195A] shrink-0 border border-slate-200">
-                      <Sparkles className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <span className="font-inter font-semibold text-[#0A1430] group-hover:text-[#D7195A] text-sm sm:text-base transition-colors">
-                        {match.title}
-                      </span>
-                      {match.summary && (
-                        <p className="text-xs text-slate-500 line-clamp-1 mt-0.5">
-                          {match.summary}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                  <span className="font-inter text-slate-500 text-xs sm:text-sm font-medium shrink-0 ml-3">
-                    {match.percentageMatch}% match
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
 
       {/* 5. Bottom Save CTA */}
       <div className="text-center pt-4 border-t border-slate-200">

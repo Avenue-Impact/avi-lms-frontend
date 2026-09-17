@@ -1,22 +1,33 @@
 import React, { useState } from "react";
+import Cookies from "js-cookie";
 import AssessmentHeader from "./components/AssessmentHeader";
 import AssessmentProgressBar from "./components/AssessmentProgressBar";
 import QuestionView from "./components/QuestionView";
 import SingleResultView from "./components/SingleResultView";
 import TiedResultView from "./components/TiedResultView";
+import AssessmentLeadModal from "./components/AssessmentLeadModal";
 import {
   ASSESSMENT_QUESTIONS,
   calculateAssessmentResults,
   resolveCoursesForAssessment,
 } from "./components/AssessmentData";
 import { useFetchAllCourses } from "@/hooks/students/use-fetch-all-courses";
-import { persistCareerAssessment } from "@/utils/careerAssessment";
+import {
+  persistCareerAssessment,
+  getStoredAssessmentUser,
+  setStoredAssessmentUser,
+} from "@/utils/careerAssessment";
 
 export default function AssessmentPage() {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [answers, setAnswers] = useState({});
   const [isCompleted, setIsCompleted] = useState(false);
   const [results, setResults] = useState(null);
+  const [showLeadModal, setShowLeadModal] = useState(false);
+  const [userDetails, setUserDetails] = useState(() => getStoredAssessmentUser());
+
+  const token = Cookies.get("token");
+  const isAuthenticated = Boolean(token);
 
   const { data: coursesData } = useFetchAllCourses({ perPage: 50 });
   const liveCourses = coursesData?.data?.data?.courses || coursesData?.data?.courses || [];
@@ -34,6 +45,12 @@ export default function AssessmentPage() {
 
   const handleContinue = () => {
     if (!selectedOption) return;
+
+    // After completing Question 4 (index 3), prompt for details if not provided & not logged in
+    if (currentStepIndex === 3 && !userDetails && !isAuthenticated) {
+      setShowLeadModal(true);
+      return;
+    }
 
     if (currentStepIndex + 1 < totalSteps) {
       setCurrentStepIndex((prev) => prev + 1);
@@ -63,10 +80,21 @@ export default function AssessmentPage() {
         pathwayKey: enrichedResults.topMatch?.id || "",
         pathwayTitle: enrichedResults.topMatch?.title || "",
         recommendedCourses: combined.slice(0, 3),
+        userDetails,
+        matchScore: enrichedResults.topMatch?.matchScore || 95,
+        summary: enrichedResults.topMatch?.summary || "",
       });
 
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
+  };
+
+  const handleLeadSubmit = (details) => {
+    setUserDetails(details);
+    setStoredAssessmentUser(details);
+    setShowLeadModal(false);
+    setCurrentStepIndex(4);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   // Re-enrich results when liveCourses arrive from network
@@ -94,6 +122,9 @@ export default function AssessmentPage() {
         pathwayKey: enrichedResults.topMatch?.id || "",
         pathwayTitle: enrichedResults.topMatch?.title || "",
         recommendedCourses: combined.slice(0, 3),
+        userDetails,
+        matchScore: enrichedResults.topMatch?.matchScore || 95,
+        summary: enrichedResults.topMatch?.summary || "",
       });
     }
   }, [liveCourses, isCompleted]);
@@ -110,6 +141,12 @@ export default function AssessmentPage() {
     <div className="min-h-screen bg-[#EFF1F8] flex flex-col font-inter text-[#0A1430] antialiased">
       {/* Global Assessment Header */}
       <AssessmentHeader onExit={() => window.location.href = "/"} />
+
+      {/* User Details Modal after Question 4 (Scenarios 1-4) */}
+      <AssessmentLeadModal
+        isOpen={showLeadModal}
+        onSubmit={handleLeadSubmit}
+      />
 
       <main className="flex-1 flex flex-col justify-start pb-16">
         {!isCompleted ? (

@@ -66,39 +66,28 @@ const Login = () => {
         return;
       }
 
-      const response = await axios.post(`${url}/google-check`, {
-        email: payload.email,
+      const loginResponse = await axios.post(`${url}/google-login`, {
+        credential,
       });
 
-      if (response.data.exists) {
-        const loginResponse = await axios.post(`${url}/google-login`, {
-          credential,
+      if (loginResponse.data.status === "success") {
+        const { token, user: loggedUser } = loginResponse.data.data;
+        
+        Cookies.set("token", token, {
+          expires: 1,
+          secure: window.location.protocol === "https:",
+          sameSite: "strict",
+          path: "/",
+        });
+        Cookies.set("userRole", loggedUser.role, {
+          expires: 1,
+          secure: window.location.protocol === "https:",
+          sameSite: "strict",
+          path: "/",
         });
 
-        if (loginResponse.data.status === "success") {
-          const { token, user: loggedUser } = loginResponse.data.data;
-          
-          Cookies.set("token", token, {
-            expires: 1,
-            secure: window.location.protocol === "https:",
-            sameSite: "strict",
-            path: "/",
-          });
-          Cookies.set("userRole", loggedUser.role, {
-            expires: 1,
-            secure: window.location.protocol === "https:",
-            sameSite: "strict",
-            path: "/",
-          });
-
-          toast.success("Login successful");
-          navigate(redirectTarget ? from : (loginResponse.data.forward_url || "/dashboard"));
-        }
-      } else {
-        toast.success("No account found. Redirecting to sign up...");
-        navigate(`/signup${redirectTarget ? `?redirectTo=${encodeURIComponent(redirectTarget)}` : ""}`, {
-          state: { googleToken: credential },
-        });
+        toast.success("Login successful");
+        navigate(redirectTarget ? from : (loginResponse.data.forward_url || "/dashboard"));
       }
     } catch (err) {
       console.error("Google login failed:", err);

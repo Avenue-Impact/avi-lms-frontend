@@ -162,29 +162,33 @@ const SignUp = ({ isPage = true }) => {
         return;
       }
 
-      const response = await axios.post(`${url}/google-check`, {
-        email: payload.email,
+      const loginResponse = await axios.post(`${url}/google-login`, {
+        credential,
       });
 
-      if (response.data.exists) {
-        toast.error("Account already exists. Please log in.");
-        navigate(`/login${redirectTarget ? `?redirectTo=${encodeURIComponent(redirectTarget)}` : ""}`);
+      if (loginResponse.data.status === "success") {
+        const { token, user: loggedUser } = loginResponse.data.data;
+
+        Cookies.set("token", token, {
+          expires: 1,
+          secure: window.location.protocol === "https:",
+          sameSite: "strict",
+          path: "/",
+        });
+        Cookies.set("userRole", loggedUser.role || "student", {
+          expires: 1,
+          secure: window.location.protocol === "https:",
+          sameSite: "strict",
+          path: "/",
+        });
+
+        toast.success("Registration successful!");
+        navigate(from || "/dashboard");
         return;
       }
-
-      form.setValue("email", payload.email);
-      if (payload.given_name) form.setValue("firstName", payload.given_name);
-      if (payload.family_name) form.setValue("lastName", payload.family_name);
-      
-      const usernamePart = payload.email.split("@")[0].toLowerCase();
-      form.setValue("username", usernamePart);
-
-      setGoogleToken(credential);
-      setStep("form");
-      toast.success("Google account linked. Please complete your password and phone number.");
     } catch (err) {
       console.error("Google authentication error:", err);
-      toast.error("Google authentication failed. Please try again.");
+      toast.error(err.response?.data?.message || "Google authentication failed. Please try again.");
     }
   };
 

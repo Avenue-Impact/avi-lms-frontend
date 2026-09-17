@@ -175,6 +175,23 @@ export default function TiedResultView({
         <p className="max-w-xl mx-auto text-slate-300 font-inter text-xs sm:text-sm leading-relaxed mb-6">
           You're drawn to structured problem-solving and coordinating people toward a clear outcome — both instincts sit right at the center of these two pathways.
         </p>
+
+        {/* Hero CTA Action Buttons */}
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          <a
+            href="#tied-courses"
+            className="inline-flex items-center justify-center gap-2 bg-[#D7195A] hover:bg-[#c0144d] text-white font-inter font-semibold text-xs sm:text-sm px-6 py-3 rounded-xl shadow-lg shadow-[#D7195A]/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+          >
+            <span>Enrol now</span>
+            <ArrowRight className="w-4 h-4" />
+          </a>
+          <Link
+            to="/contact"
+            className="inline-flex items-center justify-center gap-1.5 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-inter font-semibold text-xs sm:text-sm px-5 py-3 rounded-xl transition"
+          >
+            <span>Talk to career coach</span>
+          </Link>
+        </div>
       </div>
 
       {/* 2. Soft Pink Notice Banner */}
@@ -183,7 +200,7 @@ export default function TiedResultView({
       </div>
 
       {/* 3. Available Courses for Both Pathways */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+      <div id="tied-courses" className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 scroll-mt-6">
         {/* Pathway 1 Courses */}
         <div className="space-y-4">
           <div className="flex items-center justify-between pb-2 border-b border-slate-200">
