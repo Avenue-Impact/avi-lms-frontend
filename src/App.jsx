@@ -788,6 +788,10 @@ function App() {
                   element: <CohortManagement />,
                 },
                 {
+                  path: "cohorts/:cohortId",
+                  element: <CohortManagement />,
+                },
+                {
                   path: "cohorts/:cohortId/assignments",
                   element: <AssignmentManagement />,
                 },

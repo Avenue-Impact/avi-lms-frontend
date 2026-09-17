@@ -10,7 +10,10 @@ import {
   Plus,
   Film,
   Image as ImageIcon,
+  RefreshCw,
 } from "lucide-react";
+import toast from "react-hot-toast";
+import { formatUploadErrorMessage } from "@/hooks/materials/use-materials";
 
 export default function UploadMaterialModal({
   isOpen,
@@ -42,7 +45,10 @@ export default function UploadMaterialModal({
   const effectiveCohortId = cleanId(cohortId || initialData?.cohort_id);
   const effectiveCourseId = cleanId(courseId || initialData?.course_id);
   const effectiveCohortName = cohortName !== "Current Cohort" ? cohortName : (initialData?.cohort_name || cohortName);
-  const submitting = isSubmitting || isLoading;
+
+  const [localUploading, setLocalUploading] = useState(false);
+  const [uploadStatusText, setUploadStatusText] = useState("");
+  const submitting = isSubmitting || isLoading || localUploading;
 
   const [title, setTitle] = useState("");
   const [instructions, setInstructions] = useState("");
@@ -117,8 +123,11 @@ export default function UploadMaterialModal({
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    if (submitting) return;
+
+    setErrorMsg("");
 
     if (materialType === "link") {
       if (!linkUrl.trim()) {
@@ -129,51 +138,160 @@ export default function UploadMaterialModal({
         setErrorMsg("Please provide a material name.");
         return;
       }
-    } else if (files.length === 0) {
+
+      const formData = new FormData();
+      formData.append("title", title.trim());
+      formData.append("instructions", instructions.trim());
+      formData.append("type", "link");
+      formData.append("link_url", linkUrl.trim());
+
+      if (effectiveCourseId) {
+        formData.append("course_id", effectiveCourseId);
+      }
+
+      if (isAdmin) {
+        formData.append("course_type", adminCourseType);
+        if (adminCourseType === "live") {
+          if (selectedCohortId) {
+            formData.append("cohort_id", selectedCohortId);
+          }
+        } else if (adminCourseType === "on demand") {
+          formData.append("on_demand_duration", selectedDuration);
+        }
+      } else {
+        formData.append("course_type", "live");
+        if (effectiveCohortId) {
+          formData.append("cohort_id", effectiveCohortId);
+        }
+      }
+
+      try {
+        setLocalUploading(true);
+        setUploadStatusText("Adding link material...");
+        await onSubmit(formData);
+        toast.success("Link material added successfully!");
+        onClose();
+      } catch (err) {
+        const friendly = formatUploadErrorMessage(err);
+        setErrorMsg(friendly);
+        toast.error(friendly);
+      } finally {
+        setLocalUploading(false);
+        setUploadStatusText("");
+      }
+      return;
+    }
+
+    // Handle File Uploads
+    if (files.length === 0) {
       setErrorMsg("Please select or drop at least one file to upload.");
       return;
     }
 
-    const effectiveTitle = title.trim() || (files[0] ? files[0].name.replace(/\.[^/.]+$/, "") : "Material");
+    setLocalUploading(true);
+    setErrorMsg("");
 
-    const formData = new FormData();
-    formData.append("title", effectiveTitle);
-    formData.append("instructions", instructions.trim());
-    formData.append("type", materialType);
+    const filesToUpload = [...files];
+    const totalFiles = filesToUpload.length;
+    let completedCount = 0;
+    let hasFailure = false;
 
-    if (effectiveCourseId) {
-      formData.append("course_id", effectiveCourseId);
-    }
+    for (let i = 0; i < filesToUpload.length; i++) {
+      const curFile = filesToUpload[i];
+      const baseName = curFile.name.replace(/\.[^/.]+$/, "");
+      const effectiveTitle =
+        totalFiles === 1 && title.trim()
+          ? title.trim()
+          : (title.trim() ? `${title.trim()} (${i + 1})` : baseName);
 
-    if (materialType === "link") {
-      formData.append("link_url", linkUrl.trim());
-    } else {
-      files.forEach((f) => {
-        formData.append("files", f);
-      });
-      if (files.length === 1) {
-        formData.append("file", files[0]);
-      }
-    }
-
-    if (isAdmin) {
-      formData.append("course_type", adminCourseType);
-      if (adminCourseType === "live") {
-        if (selectedCohortId) {
-          formData.append("cohort_id", selectedCohortId);
+      const makeFormData = () => {
+        const fd = new FormData();
+        fd.append("title", effectiveTitle);
+        fd.append("instructions", instructions.trim());
+        fd.append("type", materialType);
+        if (effectiveCourseId) {
+          fd.append("course_id", effectiveCourseId);
         }
-      } else if (adminCourseType === "on demand") {
-        formData.append("on_demand_duration", selectedDuration);
+        // Always append as "file" for single-file Multer compatibility on Heroku,
+        // and also "files" for multi-file backend compatibility
+        fd.append("file", curFile);
+        fd.append("files", curFile);
+
+        if (isAdmin) {
+          fd.append("course_type", adminCourseType);
+          if (adminCourseType === "live") {
+            if (selectedCohortId) {
+              fd.append("cohort_id", selectedCohortId);
+            }
+          } else if (adminCourseType === "on demand") {
+            fd.append("on_demand_duration", selectedDuration);
+          }
+        } else {
+          formData_append_instructor_scope: {
+            fd.append("course_type", "live");
+            if (effectiveCohortId) {
+              fd.append("cohort_id", effectiveCohortId);
+            }
+          }
+        }
+        return fd;
+      };
+
+      let uploadedSuccessfully = false;
+      const maxAttempts = 2;
+
+      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        try {
+          if (attempt > 1) {
+            setUploadStatusText(
+              `Upload interrupted. Retrying (attempt ${attempt} of ${maxAttempts}) for "${curFile.name}"...`
+            );
+            // Brief backoff before retry
+            await new Promise((resolve) => setTimeout(resolve, 1500));
+          } else {
+            setUploadStatusText(
+              totalFiles > 1
+                ? `Uploading ${i + 1} of ${totalFiles}: "${curFile.name}"...`
+                : `Uploading "${curFile.name}"...`
+            );
+          }
+
+          const fd = makeFormData();
+          await onSubmit(fd);
+          uploadedSuccessfully = true;
+          completedCount++;
+
+          // Remove completed file from pending list
+          setFiles((prev) => prev.filter((f) => f !== curFile));
+          break;
+        } catch (uploadErr) {
+          console.warn(`Upload attempt ${attempt} failed for ${curFile.name}:`, uploadErr);
+          if (attempt === maxAttempts) {
+            hasFailure = true;
+            const friendly = formatUploadErrorMessage(uploadErr);
+            setErrorMsg(friendly);
+            toast.error(friendly);
+          }
+        }
       }
-    } else {
-      // Instructor is locked to cohort
-      formData.append("course_type", "live");
-      if (effectiveCohortId) {
-        formData.append("cohort_id", effectiveCohortId);
+
+      if (!uploadedSuccessfully) {
+        // Halt remaining sequential uploads so user can click "Try Again" for remaining files
+        break;
       }
     }
 
-    onSubmit(formData);
+    setLocalUploading(false);
+    setUploadStatusText("");
+
+    if (!hasFailure && completedCount > 0) {
+      toast.success(
+        completedCount === 1
+          ? "Material uploaded successfully!"
+          : `All ${completedCount} materials uploaded successfully!`
+      );
+      onClose();
+    }
   };
 
   return (
@@ -210,9 +328,21 @@ export default function UploadMaterialModal({
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-5">
           {errorMsg && (
-            <div className="flex items-center gap-2 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-medium">
-              <AlertCircle size={16} className="shrink-0" />
-              <span>{errorMsg}</span>
+            <div className="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-medium animate-in fade-in">
+              <div className="flex items-center gap-2">
+                <AlertCircle size={16} className="shrink-0" />
+                <span>{errorMsg}</span>
+              </div>
+              {!submitting && (
+                <button
+                  type="button"
+                  onClick={() => handleSubmit()}
+                  className="shrink-0 flex items-center gap-1.5 px-3 py-1 rounded-lg bg-red-100 hover:bg-red-200 text-red-800 text-xs font-semibold transition shadow-xs cursor-pointer"
+                >
+                  <RefreshCw size={13} />
+                  <span>Try Again</span>
+                </button>
+              )}
             </div>
           )}
 
@@ -520,13 +650,15 @@ export default function UploadMaterialModal({
             <button
               type="submit"
               disabled={submitting}
-              className="px-6 py-2.5 rounded-xl bg-[#CC1747] hover:bg-[#B0133D] text-sm font-semibold text-white shadow-md shadow-[#CC1747]/20 transition disabled:opacity-50 flex items-center gap-2"
+              className="px-6 py-2.5 rounded-xl bg-[#CC1747] hover:bg-[#B0133D] text-sm font-semibold text-white shadow-md shadow-[#CC1747]/20 transition disabled:opacity-50 flex items-center gap-2 cursor-pointer"
             >
               {submitting ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  <span>Uploading...</span>
+                  <span>{uploadStatusText || "Uploading..."}</span>
                 </>
+              ) : materialType === "link" ? (
+                <span>Add Link Material</span>
               ) : (
                 <span>
                   {files.length > 1 ? `Upload ${files.length} Materials` : "Upload Material"}

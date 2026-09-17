@@ -73,8 +73,7 @@ export default function AdminCourseMaterialsSection({
   const { mutateAsync: deleteMaterial } = useDeleteAdminMaterial(courseId);
 
   const handleUploadSubmit = async (formData) => {
-    await createMaterial(formData);
-    setIsUploadModalOpen(false);
+    return await createMaterial(formData);
   };
 
   const handleDelete = async (materialId) => {
