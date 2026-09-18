@@ -17,12 +17,13 @@ import RegisterSuccess from "./components/RegisterSuccess";
 import ConfirmEmail from "./components/ConfirmEmail";
 import RegisterFail from "./components/RegisterFail";
 import toast from "react-hot-toast";
-import { Eye, EyeOff, Tag } from "lucide-react";
+import { Eye, EyeOff, Tag, CheckCircle2, Circle } from "lucide-react";
 import axios from "axios";
 import { route } from "@/lib/route-checker";
 import { useOtpGate } from "@/context/OtpGateContext";
 import PhoneInput from "@/Components/ui/phone-input";
 import { Form } from "@/Components/ui/form";
+import { passwordRegex } from "@/lib/utils";
 
 const baseSignupSchema = z.object({
   firstName: z.string().min(1, { message: "First name is required" }),
@@ -37,7 +38,10 @@ const baseSignupSchema = z.object({
   password: z
     .string()
     .min(8, { message: "Password must be at least 8 characters long" })
-    .regex(/[0-9]/, { message: "Password must contain at least one number" }),
+    .regex(passwordRegex, {
+      message:
+        "Ensure password contains at least 8 characters, uppercase, lowercase, number and symbol",
+    }),
   agreeTerms: z.literal(true, {
     errorMap: () => ({
       message: "You must agree to the Terms of Service and Privacy Policy",
@@ -56,6 +60,7 @@ const SignUp = ({ isPage = true }) => {
   const [modal, setModal] = useState(false);
   const [user, setUser] = useState();
   const [showPassword, setShowPassword] = useState(false);
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [showReferralInput, setShowReferralInput] = useState(false);
   const [isReferralLocked, setIsReferralLocked] = useState(false);
 
@@ -87,6 +92,19 @@ const SignUp = ({ isPage = true }) => {
   });
 
   const { isSubmitting, errors } = form.formState;
+  const currentPassword = form.watch("password") || "";
+
+  const passwordRequirements = [
+    { label: "At least 8 characters", valid: currentPassword.length >= 8 },
+    { label: "One uppercase letter", valid: /[A-Z]/.test(currentPassword) },
+    { label: "One lowercase letter", valid: /[a-z]/.test(currentPassword) },
+    { label: "One number", valid: /[0-9]/.test(currentPassword) },
+    {
+      label: "One special character",
+      valid: /[#?!@$%^&*-]/.test(currentPassword),
+    },
+  ];
+
   const url = import.meta.env.VITE_AUTH_URL;
 
   // Auto-populate referral code from query params and lock it if present
@@ -364,7 +382,7 @@ const SignUp = ({ isPage = true }) => {
           />
 
           {/* Divider */}
-          <div className="relative my-6 flex items-center">
+          <div className="relative my-4 flex items-center">
             <div className="flex-grow border-t border-gray-200" />
             <span className="flex-shrink mx-4 text-xs font-normal text-gray-400">
               or
@@ -480,6 +498,8 @@ const SignUp = ({ isPage = true }) => {
                   autoComplete="new-password"
                   placeholder="Create a password"
                   {...form.register("password")}
+                  onFocus={() => setIsPasswordFocused(true)}
+                  onBlur={() => setIsPasswordFocused(false)}
                   className={`w-full px-3.5 py-2.5 rounded-xl border ${
                     errors.password ? "border-red-500" : "border-[#D0D5DD]"
                   } text-sm text-[#101828] placeholder:text-[#98A2B3] focus:outline-none focus:ring-2 focus:ring-[#D7195A]/20 focus:border-[#D7195A] transition-all pr-10`}
@@ -493,9 +513,47 @@ const SignUp = ({ isPage = true }) => {
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
-              <p className="mt-1.5 text-xs text-[#667085]">
-                Minimum 8 characters, one number
-              </p>
+
+              {/* Animated Password Requirements Checklist (appears when focused) */}
+              <div
+                className={`grid transition-all duration-300 ease-in-out ${
+                  isPasswordFocused
+                    ? "mt-2.5 mb-2 grid-rows-[1fr] opacity-100"
+                    : "mt-0 mb-0 grid-rows-[0fr] opacity-0 pointer-events-none"
+                }`}
+              >
+                <div className="overflow-hidden">
+                  <div className="flex flex-col gap-2 rounded-xl border border-gray-100 bg-gray-50/90 p-3.5">
+                    <p className="mb-0.5 text-xs font-semibold text-gray-700">
+                      Password must contain:
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                      {passwordRequirements.map((req, idx) => (
+                        <div key={idx} className="flex items-center gap-2">
+                          {req.valid ? (
+                            <CheckCircle2 className="h-3.5 w-3.5 text-green-600 transition-colors duration-200 shrink-0" />
+                          ) : (
+                            <Circle className="h-3.5 w-3.5 text-gray-300 transition-colors duration-200 shrink-0" />
+                          )}
+                          <span
+                            className={`text-xs transition-colors duration-200 ${
+                              req.valid ? "text-green-700 font-medium" : "text-gray-500"
+                            }`}
+                          >
+                            {req.label}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {!isPasswordFocused && (
+                <p className="mt-1.5 text-xs text-[#667085]">
+                  Minimum 8 characters, one number
+                </p>
+              )}
               {errors.password && (
                 <p className="mt-1 text-xs text-red-500">
                   {errors.password.message}
