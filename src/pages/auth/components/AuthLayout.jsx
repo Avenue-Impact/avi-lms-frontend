@@ -45,14 +45,14 @@ const AuthLayout = ({
   return (
     <div className="min-h-screen w-full flex flex-col lg:flex-row bg-white selection:bg-[#D7195A]/20">
       {/* ── Left Panel (White form area) ── */}
-      <div className="w-full lg:w-1/2 flex flex-col justify-between p-6 sm:p-10 lg:p-12 xl:p-16 min-h-screen bg-white">
+      <div className="w-full lg:w-1/2 flex flex-col justify-between p-6 sm:p-10 xl:p-12 min-h-screen bg-white">
         {/* Top Header with Logo & Back button */}
         <div className="w-full max-w-[420px] mx-auto lg:mx-0 flex items-center justify-between">
           <Link to="/" className="inline-flex items-center">
             <img
               src={Logo}
               alt="Avenue Impact"
-              className="h-8 sm:h-9 object-contain"
+              className="h-8 sm:h-10 object-contain"
             />
           </Link>
           <button
