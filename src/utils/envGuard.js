@@ -1,6 +1,17 @@
 export const isDevOrTestEnv = () => {
-	const mode = import.meta.env.MODE || import.meta.env.VITE_ENV || import.meta.env.NODE_ENV;
-	const isDevMode = mode === "development" || mode === "test" || mode === "local" || mode === "staging" || import.meta.env.DEV === true;
 	const explicitOverride = import.meta.env.VITE_ENABLE_OTP_GATE === "true";
-	return isDevMode || explicitOverride;
+	if (explicitOverride) return true;
+
+	const viteEnv = (import.meta.env.VITE_ENV || "").toLowerCase();
+	const mode = (import.meta.env.MODE || "").toLowerCase();
+	const nodeEnv = (import.meta.env.NODE_ENV || "").toLowerCase();
+
+	const devValues = ["development", "test", "local", "staging"];
+	const isDevMode =
+		devValues.includes(viteEnv) ||
+		devValues.includes(mode) ||
+		devValues.includes(nodeEnv) ||
+		import.meta.env.DEV === true;
+
+	return isDevMode;
 };

@@ -81,8 +81,8 @@ export default function AssessmentPage() {
 
     const targetUser = userOverride || currentUser || getStoredAssessmentUser();
     const userPayload = targetUser?.email ? {
-      firstName: targetUser.firstname || targetUser.firstName || "Student",
-      lastName: targetUser.lastname || targetUser.lastName || "",
+      firstName: targetUser.first_name || targetUser.firstName || targetUser.firstname || "Student",
+      lastName: targetUser.last_name || targetUser.lastName || targetUser.lastname || "",
       email: targetUser.email,
     } : null;
 
@@ -91,8 +91,29 @@ export default function AssessmentPage() {
       pathwayTitle: enrichedResults.topMatch?.title || "",
       recommendedCourses: combined.slice(0, 3),
       userDetails: userPayload,
-      matchScore: enrichedResults.topMatch?.matchScore || 95,
+      matchScore: enrichedResults.topMatch?.percentageMatch || enrichedResults.topMatch?.matchScore || 95,
       summary: enrichedResults.topMatch?.summary || "",
+      isTied: enrichedResults.isTied || false,
+      topMatch: {
+        pathwayKey: enrichedResults.topMatch?.id || "",
+        pathwayTitle: enrichedResults.topMatch?.title || "",
+        matchScore: enrichedResults.topMatch?.percentageMatch || enrichedResults.topMatch?.matchScore || 95,
+        summary: enrichedResults.topMatch?.summary || "",
+      },
+      runnerUp: enrichedResults.runnerUp ? {
+        pathwayKey: enrichedResults.runnerUp?.id || "",
+        pathwayTitle: enrichedResults.runnerUp?.title || "",
+        matchScore: enrichedResults.runnerUp?.percentageMatch || enrichedResults.runnerUp?.matchScore || 85,
+        summary: enrichedResults.runnerUp?.summary || "",
+      } : null,
+      matches: (enrichedResults.allRanked || []).map((m, idx) => ({
+        pathwayKey: m.id || "",
+        pathwayTitle: m.title || "",
+        matchScore: m.percentageMatch || m.matchScore || 0,
+        summary: m.summary || "",
+        rank: idx + 1,
+      })),
+      answers: activeAnswers,
     });
 
     if (userPayload?.email && !notificationSentRef.current) {
@@ -132,7 +153,8 @@ export default function AssessmentPage() {
       const draftAnswers = Object.keys(answers).length > 0 ? answers : getAssessmentDraftAnswers();
       if (Object.keys(draftAnswers).length > 0) {
         setAnswers(draftAnswers);
-        finishAssessment(draftAnswers, currentUser);
+        const activeUser = currentUser || getStoredAssessmentUser();
+        finishAssessment(draftAnswers, activeUser);
       }
     }
   }, [isViewResultParam, currentUser, liveCourses]);
@@ -146,8 +168,8 @@ export default function AssessmentPage() {
 
       const targetUser = currentUser || getStoredAssessmentUser();
       const userPayload = targetUser?.email ? {
-        firstName: targetUser.firstname || targetUser.firstName || "Student",
-        lastName: targetUser.lastname || targetUser.lastName || "",
+        firstName: targetUser.first_name || targetUser.firstName || targetUser.firstname || "Student",
+        lastName: targetUser.last_name || targetUser.lastName || targetUser.lastname || "",
         email: targetUser.email,
       } : null;
 
@@ -156,8 +178,29 @@ export default function AssessmentPage() {
         pathwayTitle: enrichedResults.topMatch?.title || "",
         recommendedCourses: (enrichedResults.topMatch?.courses || []).slice(0, 3),
         userDetails: userPayload,
-        matchScore: enrichedResults.topMatch?.matchScore || 95,
+        matchScore: enrichedResults.topMatch?.percentageMatch || enrichedResults.topMatch?.matchScore || 95,
         summary: enrichedResults.topMatch?.summary || "",
+        isTied: enrichedResults.isTied || false,
+        topMatch: {
+          pathwayKey: enrichedResults.topMatch?.id || "",
+          pathwayTitle: enrichedResults.topMatch?.title || "",
+          matchScore: enrichedResults.topMatch?.percentageMatch || enrichedResults.topMatch?.matchScore || 95,
+          summary: enrichedResults.topMatch?.summary || "",
+        },
+        runnerUp: enrichedResults.runnerUp ? {
+          pathwayKey: enrichedResults.runnerUp?.id || "",
+          pathwayTitle: enrichedResults.runnerUp?.title || "",
+          matchScore: enrichedResults.runnerUp?.percentageMatch || enrichedResults.runnerUp?.matchScore || 85,
+          summary: enrichedResults.runnerUp?.summary || "",
+        } : null,
+        matches: (enrichedResults.allRanked || []).map((m, idx) => ({
+          pathwayKey: m.id || "",
+          pathwayTitle: m.title || "",
+          matchScore: m.percentageMatch || m.matchScore || 0,
+          summary: m.summary || "",
+          rank: idx + 1,
+        })),
+        answers,
       });
     }
   }, [liveCourses, isCompleted]);

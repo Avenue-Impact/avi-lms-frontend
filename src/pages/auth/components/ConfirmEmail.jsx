@@ -6,6 +6,10 @@ import { useCredentials } from "@/hooks/useCredentials";
 import axios from "axios";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
+import {
+  setStoredAssessmentUser,
+  submitAssessmentDraftForUser,
+} from "@/utils/careerAssessment";
 
 const url = import.meta.env.VITE_AUTH_URL;
 
@@ -42,6 +46,17 @@ const ConfirmEmail = ({ setConfirm, setModal, setSuccess, user, form }) => {
           sameSite: "strict",
           path: "/",
         });
+
+        const verifiedUser = verify.data.data?.user || user;
+        const userDetails = {
+          firstName: verifiedUser?.first_name || verifiedUser?.firstName || user?.firstName || "Student",
+          lastName: verifiedUser?.last_name || verifiedUser?.lastName || user?.lastName || "",
+          email: verifiedUser?.email || user?.email || user?.userid,
+        };
+        setStoredAssessmentUser(userDetails);
+        submitAssessmentDraftForUser(userDetails).catch((err) =>
+          console.warn("Error submitting assessment on OTP verify:", err)
+        );
 
         // Close the confirmation modal and open the success modal
         setConfirm(false);

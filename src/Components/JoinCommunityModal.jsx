@@ -6,6 +6,10 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import toast from 'react-hot-toast';
 import GoogleAuthButton from '@/pages/auth/components/GoogleAuthButton';
+import {
+  setStoredAssessmentUser,
+  submitAssessmentDraftForUser,
+} from '@/utils/careerAssessment';
 
 const JoinCommunityModal = ({
   open,
@@ -56,6 +60,16 @@ const JoinCommunityModal = ({
           sameSite: "strict",
           path: "/",
         });
+
+        const userDetails = {
+          firstName: loggedUser.first_name || loggedUser.firstName || payload.given_name || "Student",
+          lastName: loggedUser.last_name || loggedUser.lastName || payload.family_name || "",
+          email: loggedUser.email || payload.email,
+        };
+        setStoredAssessmentUser(userDetails);
+        submitAssessmentDraftForUser(userDetails).catch((err) =>
+          console.warn("Error submitting assessment on Google modal login:", err)
+        );
 
         toast.success("Login successful");
         onClose();

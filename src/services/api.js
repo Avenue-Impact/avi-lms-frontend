@@ -449,7 +449,7 @@ export const togglePathwayStatusApi = async (pathwayId) => {
 
 export const saveCareerAssessmentApi = async (data) => {
   const token = Cookies.get("token");
-  return axios.post(`${url}/users/me/career-assessment`, data, {
+  return axios.post(`${STUDENT_BASE_URL}/users/me/career-assessment`, data, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -458,7 +458,7 @@ export const saveCareerAssessmentApi = async (data) => {
 
 export const fetchCareerAssessmentApi = async () => {
   const token = Cookies.get("token");
-  return axios.get(`${url}/users/me/career-assessment`, {
+  return axios.get(`${STUDENT_BASE_URL}/users/me/career-assessment`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -471,5 +471,5 @@ export const submitCareerAssessmentApi = async (data) => {
   if (token) {
     headers.Authorization = `Bearer ${token}`;
   }
-  return axios.post(`${url}/users/career-assessment/submit`, data, { headers });
+  return axios.post(`${STUDENT_BASE_URL}/users/career-assessment/submit`, data, { headers });
 };

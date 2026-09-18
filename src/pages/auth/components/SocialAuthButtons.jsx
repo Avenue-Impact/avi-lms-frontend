@@ -119,7 +119,7 @@ const SocialAuthButtons = ({
       {/* LinkedIn Button */}
       <button
         type="button"
-        onClick={handleLinkedInClick}
+        onClick={null}
         className="w-full flex items-center justify-center gap-2.5 py-2.5 px-3 border border-[#D0D5DD] rounded-xl hover:bg-gray-50 transition-colors text-sm font-medium text-[#344054] bg-white shadow-sm"
       >
         <LinkedInIcon className="w-4 h-4 shrink-0" />

@@ -24,6 +24,10 @@ import { useOtpGate } from "@/context/OtpGateContext";
 import PhoneInput from "@/Components/ui/phone-input";
 import { Form } from "@/Components/ui/form";
 import { passwordRegex } from "@/lib/utils";
+import {
+  setStoredAssessmentUser,
+  submitAssessmentDraftForUser,
+} from "@/utils/careerAssessment";
 
 const baseSignupSchema = z.object({
   firstName: z.string().min(1, { message: "First name is required" }),
@@ -160,6 +164,16 @@ const SignUp = ({ isPage = true }) => {
           path: "/",
         });
 
+        const userDetails = {
+          firstName: loggedUser.first_name || loggedUser.firstName || payload.given_name || "Student",
+          lastName: loggedUser.last_name || loggedUser.lastName || payload.family_name || "",
+          email: loggedUser.email || payload.email,
+        };
+        setStoredAssessmentUser(userDetails);
+        submitAssessmentDraftForUser(userDetails).catch((err) =>
+          console.warn("Error submitting assessment on Google signup:", err)
+        );
+
         toast.success("Registration successful!");
         navigate(from || "/dashboard");
       }
@@ -175,6 +189,13 @@ const SignUp = ({ isPage = true }) => {
   const handleSubmit = async (values) => {
     try {
       const { firstName, lastName, password, email, phoneNumber, referralCode } = values;
+
+      const userDetails = {
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        email: email.trim().toLowerCase(),
+      };
+      setStoredAssessmentUser(userDetails);
 
       // Auto-generate clean username from email or name
       const emailPrefix = email.split("@")[0].replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
@@ -225,6 +246,11 @@ const SignUp = ({ isPage = true }) => {
             sameSite: "strict",
             path: "/",
           });
+
+          submitAssessmentDraftForUser(userDetails).catch((err) =>
+            console.warn("Error submitting assessment on signup:", err)
+          );
+
           toast.success("Registration successful!");
           navigate(from || "/dashboard");
           return;
@@ -290,7 +316,7 @@ const SignUp = ({ isPage = true }) => {
                 </label>
                 <input
                   type="text"
-                  placeholder="David"
+                  placeholder="Fakson"
                   {...form.register("firstName")}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-[#D0D5DD] text-sm"
                 />
@@ -301,7 +327,7 @@ const SignUp = ({ isPage = true }) => {
                 </label>
                 <input
                   type="text"
-                  placeholder="Adeyemi"
+                  placeholder="Lim"
                   {...form.register("lastName")}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-[#D0D5DD] text-sm"
                 />
@@ -406,7 +432,7 @@ const SignUp = ({ isPage = true }) => {
                     id="firstName"
                     type="text"
                     autoComplete="given-name"
-                    placeholder="David"
+                    placeholder="Fakson"
                     {...form.register("firstName")}
                     className={`w-full px-3.5 py-2.5 rounded-xl border ${
                       errors.firstName ? "border-red-500" : "border-[#D0D5DD]"
@@ -430,7 +456,7 @@ const SignUp = ({ isPage = true }) => {
                     id="lastName"
                     type="text"
                     autoComplete="family-name"
-                    placeholder="Adeyemi"
+                    placeholder="Lim"
                     {...form.register("lastName")}
                     className={`w-full px-3.5 py-2.5 rounded-xl border ${
                       errors.lastName ? "border-red-500" : "border-[#D0D5DD]"

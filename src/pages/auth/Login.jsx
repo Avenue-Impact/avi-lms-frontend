@@ -17,6 +17,10 @@ import Modal from "./components/Modal";
 import ConfirmEmail from "./components/ConfirmEmail";
 import { Eye, EyeOff } from "lucide-react";
 import toast from "react-hot-toast";
+import {
+  setStoredAssessmentUser,
+  submitAssessmentDraftForUser,
+} from "@/utils/careerAssessment";
 
 const loginSchema = z.object({
   email: z.string().min(1, { message: "Email or username is required" }),
@@ -83,6 +87,16 @@ const Login = () => {
           path: "/",
         });
 
+        const userDetails = {
+          firstName: loggedUser.first_name || loggedUser.firstName || payload.given_name || "Student",
+          lastName: loggedUser.last_name || loggedUser.lastName || payload.family_name || "",
+          email: loggedUser.email || payload.email,
+        };
+        setStoredAssessmentUser(userDetails);
+        submitAssessmentDraftForUser(userDetails).catch((err) =>
+          console.warn("Error submitting assessment on Google login:", err)
+        );
+
         toast.success("Login successful");
         navigate(
           redirectTarget ? from : loginResponse.data.forward_url || "/dashboard"
@@ -140,6 +154,17 @@ const Login = () => {
           sameSite: "strict",
           path: "/",
         });
+
+        const loggedUser = data.data.user;
+        const userDetails = {
+          firstName: loggedUser.first_name || loggedUser.firstName || "Student",
+          lastName: loggedUser.last_name || loggedUser.lastName || "",
+          email: loggedUser.email || values.email,
+        };
+        setStoredAssessmentUser(userDetails);
+        submitAssessmentDraftForUser(userDetails).catch((err) =>
+          console.warn("Error submitting assessment on password login:", err)
+        );
 
         if (courseId) {
           navigate(
