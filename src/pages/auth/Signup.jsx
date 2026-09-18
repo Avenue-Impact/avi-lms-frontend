@@ -26,6 +26,12 @@ const baseSignupSchema = z.object({
   firstName: z.string().min(1, { message: "First name is required" }),
   lastName: z.string().min(1, { message: "Last name is required" }),
   email: z.string().email({ message: "Please enter a valid email address" }),
+  phoneNumber: z
+    .string()
+    .optional()
+    .refine((val) => !val || /^[0-9+\-\s()]*$/.test(val), {
+      message: "Please enter a valid phone number format",
+    }),
   password: z
     .string()
     .min(8, { message: "Password must be at least 8 characters long" })
@@ -71,6 +77,7 @@ const SignUp = ({ isPage = true }) => {
       firstName: "",
       lastName: "",
       email: "",
+      phoneNumber: "",
       password: "",
       agreeTerms: false,
       referralCode: "",
@@ -147,7 +154,7 @@ const SignUp = ({ isPage = true }) => {
 
   const handleSubmit = async (values) => {
     try {
-      const { firstName, lastName, password, email, referralCode } = values;
+      const { firstName, lastName, password, email, phoneNumber, referralCode } = values;
 
       // Auto-generate clean username from email or name
       const emailPrefix = email.split("@")[0].replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
@@ -163,6 +170,7 @@ const SignUp = ({ isPage = true }) => {
         email: email.trim().toLowerCase(),
         password,
         username,
+        phoneNumber: phoneNumber?.trim() || undefined,
         referral_code: referralCode ? referralCode.trim() : undefined,
         source_url: window.location.href,
       };
@@ -210,6 +218,7 @@ const SignUp = ({ isPage = true }) => {
           password,
           confirmPassword: password,
           username,
+          phoneNumber,
           referralCode,
         });
         setConfirm(true);
@@ -285,6 +294,17 @@ const SignUp = ({ isPage = true }) => {
               type="email"
               placeholder="you@example.com"
               {...form.register("email")}
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#D0D5DD] text-sm"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-gray-700 mb-1">
+              Phone number <span className="text-gray-400 font-normal">(optional)</span>
+            </label>
+            <input
+              type="tel"
+              placeholder="+44 7123 456789"
+              {...form.register("phoneNumber")}
               className="w-full px-3.5 py-2.5 rounded-xl border border-[#D0D5DD] text-sm"
             />
           </div>
@@ -421,6 +441,31 @@ const SignUp = ({ isPage = true }) => {
               {errors.email && (
                 <p className="mt-1 text-xs text-red-500">
                   {errors.email.message}
+                </p>
+              )}
+            </div>
+
+            {/* Phone Number (Optional) */}
+            <div>
+              <label
+                htmlFor="phoneNumber"
+                className="block text-sm font-semibold text-[#344054] mb-1.5"
+              >
+                Phone number <span className="text-xs font-normal text-[#667085]">(optional)</span>
+              </label>
+              <input
+                id="phoneNumber"
+                type="tel"
+                autoComplete="tel"
+                placeholder="+44 7123 456789"
+                {...form.register("phoneNumber")}
+                className={`w-full px-3.5 py-2.5 rounded-xl border ${
+                  errors.phoneNumber ? "border-red-500" : "border-[#D0D5DD]"
+                } text-sm text-[#101828] placeholder:text-[#98A2B3] focus:outline-none focus:ring-2 focus:ring-[#D7195A]/20 focus:border-[#D7195A] transition-all`}
+              />
+              {errors.phoneNumber && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.phoneNumber.message}
                 </p>
               )}
             </div>
