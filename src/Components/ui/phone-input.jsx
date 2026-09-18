@@ -137,14 +137,16 @@ export default function PhoneInput({
 
           setLocalNumber(val);
           // Combine and update react-hook-form
-          field.onChange(country.callingCode + val.replace(/[\s-]/g, ""));
+          const clean = val.replace(/[\s-]/g, "");
+          field.onChange(clean ? country.callingCode + clean : "");
         };
 
         const handleCountrySelect = (selectedCountry) => {
           setCountry(selectedCountry);
           setIsOpen(false);
           setSearchQuery("");
-          field.onChange(selectedCountry.callingCode + localNumber.replace(/[\s-]/g, ""));
+          const clean = localNumber.replace(/[\s-]/g, "");
+          field.onChange(clean ? selectedCountry.callingCode + clean : "");
         };
 
         return (
@@ -160,22 +162,22 @@ export default function PhoneInput({
               </FormLabel>
             )}
             <FormControl>
-              <div className="flex gap-3">
+              <div className="flex gap-2.5">
                 <Popover open={isOpen} onOpenChange={setIsOpen}>
                   <PopoverTrigger asChild>
                     <button
                       type="button"
                       disabled={disabled}
                       className={cn(
-                        "mt-0 flex h-10 w-[140px] shrink-0 items-center justify-between rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+                        "mt-0 flex h-11 w-[130px] shrink-0 items-center justify-between rounded-xl border border-[#D0D5DD] bg-white px-3 py-2 text-sm text-[#101828] focus:outline-none focus:ring-2 focus:ring-[#D7195A]/20 focus:border-[#D7195A] disabled:cursor-not-allowed disabled:opacity-50 transition-all",
                         !country && "text-muted-foreground"
                       )}
                     >
-                      <span className="truncate flex-1 text-left">
-                        {country ? `${country.code} (${country.callingCode})` : "Select country..."}
+                      <span className="truncate flex-1 text-left font-medium">
+                        {country ? `${country.code} (${country.callingCode})` : "Country..."}
                       </span>
                       <svg
-                        className="ml-2 h-4 w-4 shrink-0 opacity-50"
+                        className="ml-1.5 h-4 w-4 shrink-0 opacity-50"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -189,8 +191,8 @@ export default function PhoneInput({
                       </svg>
                     </button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-[300px] p-0 bg-background" align="start">
-                    <div className="bg-background flex items-center border border-accent px-3">
+                  <PopoverContent className="w-[300px] p-0 bg-white rounded-xl border border-gray-200 shadow-xl z-50" align="start">
+                    <div className="bg-white flex items-center border-b border-gray-100 px-3">
                       <svg
                         className="mr-2 h-4 w-4 shrink-0 opacity-50"
                         xmlns="http://www.w3.org/2000/svg"
@@ -206,15 +208,15 @@ export default function PhoneInput({
                       </svg>
                       <input
                         placeholder="Search country or code..."
-                        className="flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
+                        className="flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-gray-400 disabled:cursor-not-allowed disabled:opacity-50"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         autoFocus
                       />
                     </div>
-                    <div className="max-h-[300px] overflow-y-auto p-1">
+                    <div className="max-h-[260px] overflow-y-auto p-1">
                       {filteredCountries.length === 0 ? (
-                        <p className="p-4 text-center text-sm text-muted-foreground">
+                        <p className="p-4 text-center text-sm text-gray-500">
                           No country found.
                         </p>
                       ) : (
@@ -223,12 +225,12 @@ export default function PhoneInput({
                             key={c.code}
                             onClick={() => handleCountrySelect(c)}
                             className={cn(
-                              "relative flex cursor-pointer bg-background select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
-                              country?.code === c.code ? "bg-accent text-accent-foreground font-medium" : ""
+                              "relative flex cursor-pointer select-none items-center rounded-lg px-2.5 py-2 text-sm outline-none hover:bg-gray-100 hover:text-gray-900 transition-colors",
+                              country?.code === c.code ? "bg-gray-100 text-gray-900 font-semibold" : "text-gray-700"
                             )}
                           >
                             <span className="flex-1 truncate">{c.name}</span>
-                            <span className="ml-2 text-muted-foreground">{c.callingCode}</span>
+                            <span className="ml-2 text-xs font-mono text-gray-400">{c.callingCode}</span>
                           </div>
                         ))
                       )}
@@ -237,7 +239,10 @@ export default function PhoneInput({
                 </Popover>
 
                 <Input
-                  className={cn("flex-1", className)}
+                  className={cn(
+                    "flex-1 h-11 rounded-xl border-[#D0D5DD] px-3.5 py-2.5 text-sm text-[#101828] placeholder:text-[#98A2B3] focus-visible:ring-2 focus-visible:ring-[#D7195A]/20 focus-visible:border-[#D7195A] transition-all",
+                    className
+                  )}
                   type="tel"
                   placeholder={placeholder || "813 696 9006"}
                   id={id}

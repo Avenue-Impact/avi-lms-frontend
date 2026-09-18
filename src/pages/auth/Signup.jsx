@@ -21,6 +21,8 @@ import { Eye, EyeOff, Tag } from "lucide-react";
 import axios from "axios";
 import { route } from "@/lib/route-checker";
 import { useOtpGate } from "@/context/OtpGateContext";
+import PhoneInput from "@/Components/ui/phone-input";
+import { Form } from "@/Components/ui/form";
 
 const baseSignupSchema = z.object({
   firstName: z.string().min(1, { message: "First name is required" }),
@@ -261,72 +263,75 @@ const SignUp = ({ isPage = true }) => {
         leftSubtext="Join learners gaining practical knowledge, career support, and industry-ready experience through Avenue Impact."
       >
         {/* Partner referral standard form */}
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1">
-                First name
-              </label>
-              <input
-                type="text"
-                placeholder="David"
-                {...form.register("firstName")}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-[#D0D5DD] text-sm"
-              />
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                  First name
+                </label>
+                <input
+                  type="text"
+                  placeholder="David"
+                  {...form.register("firstName")}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#D0D5DD] text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                  Last name
+                </label>
+                <input
+                  type="text"
+                  placeholder="Adeyemi"
+                  {...form.register("lastName")}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#D0D5DD] text-sm"
+                />
+              </div>
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-700 mb-1">
-                Last name
+                Email address
               </label>
               <input
-                type="text"
-                placeholder="Adeyemi"
-                {...form.register("lastName")}
+                type="email"
+                placeholder="you@example.com"
+                {...form.register("email")}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-[#D0D5DD] text-sm"
               />
             </div>
-          </div>
-          <div>
-            <label className="block text-xs font-semibold text-gray-700 mb-1">
-              Email address
-            </label>
-            <input
-              type="email"
-              placeholder="you@example.com"
-              {...form.register("email")}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-[#D0D5DD] text-sm"
+            <PhoneInput
+              label={
+                <span className="block text-xs font-semibold text-gray-700 mb-1 normal-case">
+                  Phone number <span className="text-gray-400 font-normal">(optional)</span>
+                </span>
+              }
+              name="phoneNumber"
+              control={form.control}
+              id="partnerPhoneNumber"
+              placeholder="7123 456789"
+              labelClass="!text-xs !font-semibold !text-gray-700 !normal-case"
             />
-          </div>
-          <div>
-            <label className="block text-xs font-semibold text-gray-700 mb-1">
-              Phone number <span className="text-gray-400 font-normal">(optional)</span>
-            </label>
-            <input
-              type="tel"
-              placeholder="+44 7123 456789"
-              {...form.register("phoneNumber")}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-[#D0D5DD] text-sm"
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-semibold text-gray-700 mb-1">
-              Password
-            </label>
-            <input
-              type="password"
-              placeholder="Create a password"
-              {...form.register("password")}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-[#D0D5DD] text-sm"
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full py-3 bg-[#D7195A] text-white rounded-xl font-semibold"
-          >
-            {isSubmitting ? "Creating account..." : "Create account"}
-          </button>
-        </form>
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1">
+                Password
+              </label>
+              <input
+                type="password"
+                placeholder="Create a password"
+                {...form.register("password")}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-[#D0D5DD] text-sm"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full py-3 bg-[#D7195A] text-white rounded-xl font-semibold"
+            >
+              {isSubmitting ? "Creating account..." : "Create account"}
+            </button>
+          </form>
+        </Form>
       </ReferralAuthLayout>
     );
   }
@@ -368,107 +373,97 @@ const SignUp = ({ isPage = true }) => {
           </div>
 
           {/* Registration Form */}
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-            {/* First & Last Name row */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+              {/* First & Last Name row */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label
+                    htmlFor="firstName"
+                    className="block text-sm font-semibold text-[#344054] mb-1.5"
+                  >
+                    First name
+                  </label>
+                  <input
+                    id="firstName"
+                    type="text"
+                    autoComplete="given-name"
+                    placeholder="David"
+                    {...form.register("firstName")}
+                    className={`w-full px-3.5 py-2.5 rounded-xl border ${
+                      errors.firstName ? "border-red-500" : "border-[#D0D5DD]"
+                    } text-sm text-[#101828] placeholder:text-[#98A2B3] focus:outline-none focus:ring-2 focus:ring-[#D7195A]/20 focus:border-[#D7195A] transition-all`}
+                  />
+                  {errors.firstName && (
+                    <p className="mt-1 text-xs text-red-500">
+                      {errors.firstName.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="lastName"
+                    className="block text-sm font-semibold text-[#344054] mb-1.5"
+                  >
+                    Last name
+                  </label>
+                  <input
+                    id="lastName"
+                    type="text"
+                    autoComplete="family-name"
+                    placeholder="Adeyemi"
+                    {...form.register("lastName")}
+                    className={`w-full px-3.5 py-2.5 rounded-xl border ${
+                      errors.lastName ? "border-red-500" : "border-[#D0D5DD]"
+                    } text-sm text-[#101828] placeholder:text-[#98A2B3] focus:outline-none focus:ring-2 focus:ring-[#D7195A]/20 focus:border-[#D7195A] transition-all`}
+                  />
+                  {errors.lastName && (
+                    <p className="mt-1 text-xs text-red-500">
+                      {errors.lastName.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Email Address */}
               <div>
                 <label
-                  htmlFor="firstName"
+                  htmlFor="email"
                   className="block text-sm font-semibold text-[#344054] mb-1.5"
                 >
-                  First name
+                  Email address
                 </label>
                 <input
-                  id="firstName"
-                  type="text"
-                  autoComplete="given-name"
-                  placeholder="David"
-                  {...form.register("firstName")}
+                  id="email"
+                  type="email"
+                  autoComplete="email"
+                  placeholder="you@example.com"
+                  {...form.register("email")}
                   className={`w-full px-3.5 py-2.5 rounded-xl border ${
-                    errors.firstName ? "border-red-500" : "border-[#D0D5DD]"
+                    errors.email ? "border-red-500" : "border-[#D0D5DD]"
                   } text-sm text-[#101828] placeholder:text-[#98A2B3] focus:outline-none focus:ring-2 focus:ring-[#D7195A]/20 focus:border-[#D7195A] transition-all`}
                 />
-                {errors.firstName && (
+                {errors.email && (
                   <p className="mt-1 text-xs text-red-500">
-                    {errors.firstName.message}
+                    {errors.email.message}
                   </p>
                 )}
               </div>
 
-              <div>
-                <label
-                  htmlFor="lastName"
-                  className="block text-sm font-semibold text-[#344054] mb-1.5"
-                >
-                  Last name
-                </label>
-                <input
-                  id="lastName"
-                  type="text"
-                  autoComplete="family-name"
-                  placeholder="Adeyemi"
-                  {...form.register("lastName")}
-                  className={`w-full px-3.5 py-2.5 rounded-xl border ${
-                    errors.lastName ? "border-red-500" : "border-[#D0D5DD]"
-                  } text-sm text-[#101828] placeholder:text-[#98A2B3] focus:outline-none focus:ring-2 focus:ring-[#D7195A]/20 focus:border-[#D7195A] transition-all`}
-                />
-                {errors.lastName && (
-                  <p className="mt-1 text-xs text-red-500">
-                    {errors.lastName.message}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* Email Address */}
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-semibold text-[#344054] mb-1.5"
-              >
-                Email address
-              </label>
-              <input
-                id="email"
-                type="email"
-                autoComplete="email"
-                placeholder="you@example.com"
-                {...form.register("email")}
-                className={`w-full px-3.5 py-2.5 rounded-xl border ${
-                  errors.email ? "border-red-500" : "border-[#D0D5DD]"
-                } text-sm text-[#101828] placeholder:text-[#98A2B3] focus:outline-none focus:ring-2 focus:ring-[#D7195A]/20 focus:border-[#D7195A] transition-all`}
-              />
-              {errors.email && (
-                <p className="mt-1 text-xs text-red-500">
-                  {errors.email.message}
-                </p>
-              )}
-            </div>
-
-            {/* Phone Number (Optional) */}
-            <div>
-              <label
-                htmlFor="phoneNumber"
-                className="block text-sm font-semibold text-[#344054] mb-1.5"
-              >
-                Phone number <span className="text-xs font-normal text-[#667085]">(optional)</span>
-              </label>
-              <input
+              {/* Phone Number (Optional) with Country Code Select */}
+              <PhoneInput
+                label={
+                  <span className="block text-sm font-semibold text-[#344054] mb-1.5 normal-case font-sans">
+                    Phone number <span className="text-xs font-normal text-[#667085]">(optional)</span>
+                  </span>
+                }
+                name="phoneNumber"
+                control={form.control}
                 id="phoneNumber"
-                type="tel"
-                autoComplete="tel"
-                placeholder="+44 7123 456789"
-                {...form.register("phoneNumber")}
-                className={`w-full px-3.5 py-2.5 rounded-xl border ${
-                  errors.phoneNumber ? "border-red-500" : "border-[#D0D5DD]"
-                } text-sm text-[#101828] placeholder:text-[#98A2B3] focus:outline-none focus:ring-2 focus:ring-[#D7195A]/20 focus:border-[#D7195A] transition-all`}
+                placeholder="7123 456789"
+                labelClass="!text-sm !font-semibold !text-[#344054] !normal-case !font-sans"
               />
-              {errors.phoneNumber && (
-                <p className="mt-1 text-xs text-red-500">
-                  {errors.phoneNumber.message}
-                </p>
-              )}
-            </div>
 
             {/* Password */}
             <div>
@@ -575,15 +570,16 @@ const SignUp = ({ isPage = true }) => {
               )}
             </div>
 
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full mt-4 py-3 px-4 bg-[#D7195A] hover:bg-[#c0154e] active:scale-[0.99] text-white text-sm font-semibold rounded-xl shadow-lg shadow-[#D7195A]/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-            >
-              {isSubmitting ? "Creating account..." : "Create account"}
-            </button>
-          </form>
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full mt-4 py-3 px-4 bg-[#D7195A] hover:bg-[#c0154e] active:scale-[0.99] text-white text-sm font-semibold rounded-xl shadow-lg shadow-[#D7195A]/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {isSubmitting ? "Creating account..." : "Create account"}
+              </button>
+            </form>
+          </Form>
 
           {/* Footer */}
           <p className="mt-8 text-center text-sm text-[#475467]">
