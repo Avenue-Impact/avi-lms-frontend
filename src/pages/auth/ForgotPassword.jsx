@@ -103,9 +103,9 @@ const ForgotPassword = () => {
         </Modal>
       )}
       <AuthLayout 
-        title="Welcome back!" 
-        subtitle="Use your email to sign in to your dashboard"
-        isMobileStacked={true}
+        title="Reset your password" 
+        subtitle="Enter your email to receive password reset instructions"
+        variant="login"
       >
             <Form {...form}>
               <form

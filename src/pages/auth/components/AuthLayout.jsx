@@ -1,164 +1,179 @@
+import React from "react";
 import { Link } from "react-router-dom";
 import Logo from "@/assets/logo/logo.svg";
-import WhiteLogo from "@/assets/logo/logo_white.png";
-import { ChevronLeft, BookOpen, Award, FileText, Users } from "lucide-react";
+import AuthVector from "@/assets/icons/auth-vector.png";
+import { BookOpen, Users, Award, ChevronLeft } from "lucide-react";
 import { useSafeBack } from "@/hooks/use-safe-back";
 
-const features = [
-  {
-    icon: BookOpen,
-    title: "Industry-Relevant Training",
-    desc: "Learn practical skills designed for today's job market.",
-  },
-  {
-    icon: Award,
-    title: "Certificate of Completion",
-    desc: "Earn a verifiable certificate after completing your program.",
-  },
-  {
-    icon: FileText,
-    title: "CV & Interview Support",
-    desc: "Get guidance to prepare for real career opportunities.",
-  },
-  {
-    icon: Users,
-    title: "Mentorship Access",
-    desc: "Receive support from experienced professionals and mentors.",
-  },
-];
-
 /**
- * AuthLayout — two-panel card design.
- * Left panel: crimson branding + feature grid.
- * Right panel: form content (title, subtitle, children).
+ * AuthLayout — Modern 50/50 split authentication layout.
+ * Left: Clean white panel with Avenue Impact logo and form content.
+ * Right: Dark Navy panel (#0B1536 / #0F1D45) with the custom auth-vector.png graphic
+ *        and contextual value propositions (Login pathway card vs. Signup feature badges).
  */
 const AuthLayout = ({
   children,
   title,
   subtitle,
+  variant = "login", // "login" | "signup"
   isPage = true,
-  alignTop = false,
-  leftHeadline,
-  leftSubtext,
+  rightEyebrow,
+  rightHeadline,
 }) => {
   const goBack = useSafeBack();
 
+  if (!isPage) {
+    return (
+      <div className="w-full max-w-[440px] mx-auto p-4 bg-white rounded-2xl">
+        {(title || subtitle) && (
+          <div className="mb-6">
+            {title && (
+              <h1 className="text-2xl font-bold text-[#101828] tracking-tight">
+                {title}
+              </h1>
+            )}
+            {subtitle && (
+              <p className="text-sm text-[#667085] mt-1.5">{subtitle}</p>
+            )}
+          </div>
+        )}
+        <div className="w-full">{children}</div>
+      </div>
+    );
+  }
+
   return (
-    <div className={`${isPage ? "min-h-screen" : "py-8"} bg-[#f4f6fb]`}>
-      {/* Top header bar */}
-      {isPage && (
-        <header className="flex items-center border-b border-gray-100 bg-white px-4 py-4 md:px-10">
+    <div className="min-h-screen w-full flex flex-col lg:flex-row bg-white selection:bg-[#D7195A]/20">
+      {/* ── Left Panel (White form area) ── */}
+      <div className="w-full lg:w-1/2 flex flex-col justify-between p-6 sm:p-10 lg:p-12 xl:p-16 min-h-screen bg-white">
+        {/* Top Header with Logo & Back button */}
+        <div className="w-full max-w-[420px] mx-auto lg:mx-0 flex items-center justify-between">
+          <Link to="/" className="inline-flex items-center">
+            <img
+              src={Logo}
+              alt="Avenue Impact"
+              className="h-8 sm:h-9 object-contain"
+            />
+          </Link>
           <button
+            type="button"
             onClick={goBack}
-            className="mr-4 text-gray-500 transition-colors hover:text-gray-800"
+            className="lg:hidden text-gray-400 hover:text-gray-600 p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
             aria-label="Go back"
           >
-            <ChevronLeft size={22} />
+            <ChevronLeft size={20} />
           </button>
-          <Link to="/" className="flex items-center">
-            <img src={Logo} alt="Avenue Impact Logo" className="h-8 md:h-10" />
-          </Link>
-        </header>
-      )}
+        </div>
 
-      {/* Page body */}
-      <main
-        className={`flex w-full justify-center p-4 md:p-8 ${
-          isPage
-            ? alignTop
-              ? "min-h-[calc(100vh-68px)] items-start pt-8 md:pt-12"
-              : "min-h-[calc(100vh-68px)] items-center"
-            : "items-center"
-        }`}
-      >
-        {/* Outer card */}
-        <div className="flex w-full max-w-[1024px] flex-col-reverse overflow-hidden rounded-2xl shadow-xl md:flex-row">
-          {/* ── Left panel (crimson) ── */}
-          <div className="relative flex flex-shrink-0 flex-col justify-between overflow-hidden bg-[#14345F] p-8 text-white md:w-[45%] md:p-10">
-            {/* Background Grid & Gradient */}
-            <div
-              className="pointer-events-none absolute inset-0"
-              style={{
-                backgroundImage:
-                  "linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px)",
-                backgroundSize: "40px 40px",
-              }}
-            />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#c41e3a]/50 via-transparent to-[#3d000f]/90" />
+        {/* Centered Form Body */}
+        <div className="w-full max-w-[420px] mx-auto my-auto py-6">
+          {(title || subtitle) && (
+            <div className="mb-6">
+              {title && (
+                <h1 className="text-2xl sm:text-[28px] font-bold text-[#101828] tracking-tight">
+                  {title}
+                </h1>
+              )}
+              {subtitle && (
+                <p className="text-sm text-[#667085] mt-1.5">{subtitle}</p>
+              )}
+            </div>
+          )}
 
-            <div className="relative z-10">
-              {/* Logo */}
-              <div className="mb-10">
-                <img
-                  src={WhiteLogo}
-                  alt="Avenue Impact"
-                  className="h-8"
-                  onError={(e) => {
-                    // fallback if white_logo not found
-                    e.currentTarget.style.display = "none";
-                  }}
-                />
-              </div>
+          <div className="w-full">{children}</div>
+        </div>
 
-              {/* Headline */}
-              <h2 className="mb-4 text-2xl font-extrabold leading-tight md:text-5xl">
-                {leftHeadline || "Ready to Build\nIn-Demand Skills?"}
+        {/* Bottom spacer for balance */}
+        <div className="hidden lg:block h-6" />
+      </div>
+
+      {/* ── Right Panel (Dark Navy showcase) ── */}
+      <div className="hidden lg:flex lg:w-1/2 relative flex-col justify-end p-12 xl:p-20 bg-[#0F1D45] text-white overflow-hidden select-none">
+        {/* Curved dashed line vector */}
+        <img
+          src={AuthVector}
+          alt=""
+          className="absolute top-10 right-0 w-[85%] max-w-[560px] object-contain pointer-events-none opacity-90"
+        />
+
+        {/* Value Proposition Content */}
+        <div className="relative z-10 max-w-lg mb-4">
+          {variant === "signup" ? (
+            <>
+              <p className="text-xs font-bold tracking-widest text-[#D7195A] uppercase mb-3">
+                {rightEyebrow || "FREE TO JOIN"}
+              </p>
+              <h2 className="text-3xl xl:text-[36px] font-bold leading-tight text-white mb-8">
+                {rightHeadline || "Everything you need to go from idea to hired."}
               </h2>
 
-              {/* Sub-text */}
-              <p className="mb-8 mt-2 text-base leading-relaxed text-white/80">
-                {leftSubtext ||
-                  "Join learners gaining practical knowledge, career support, and industry-ready experience through "}
-                <strong className="text-white">Avenue Impact.</strong>
-              </p>
-
-              {/* Divider */}
-              <hr className="mb-8 border-white/20" />
-
-              {/* Feature 2×2 grid */}
-              <div className="grid grid-cols-2 gap-14 pb-4 pt-8">
-                {features.map(({ icon: Icon, title: ft, desc }) => (
-                  <div key={ft} className="space-y-1">
-                    <div className="mb-1 flex items-center gap-2">
-                      <Icon className="h-4 w-4 flex-shrink-0 text-white/70" />
-                      <p className="text-sm font-semibold leading-tight">
-                        {ft}
-                      </p>
-                    </div>
-                    <p className="text-white/65 text-xs leading-relaxed">
-                      {desc}
+              <div className="space-y-6">
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center shrink-0">
+                    <BookOpen className="w-5 h-5 text-white/90" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-semibold text-white">
+                      Personalised pathways
+                    </h4>
+                    <p className="text-xs text-white/60 mt-0.5">
+                      Structured learning for the career you choose.
                     </p>
                   </div>
-                ))}
-              </div>
-            </div>
-          </div>
+                </div>
 
-          {/* ── Right panel (white form area) ── */}
-          <div
-            className={`flex flex-1 flex-col justify-center bg-white px-8 py-10 md:px-10 ${
-              alignTop ? "md:justify-start md:pt-10" : ""
-            }`}
-          >
-            {/* Form header */}
-            {(title || subtitle) && (
-              <div className="mb-8 text-left">
-                {title && (
-                  <h1 className="mb-2 text-2xl font-medium tracking-tight text-[#1a1a1a] md:text-[32px]">
-                    {title}
-                  </h1>
-                )}
-                {subtitle && (
-                  <p className="text-sm text-gray-500">{subtitle}</p>
-                )}
-              </div>
-            )}
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center shrink-0">
+                    <Users className="w-5 h-5 text-white/90" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-semibold text-white">
+                      Real mentors
+                    </h4>
+                    <p className="text-xs text-white/60 mt-0.5">
+                      1:1 guidance from working professionals.
+                    </p>
+                  </div>
+                </div>
 
-            {/* Form children */}
-            <div className="auth-form-container w-full">{children}</div>
-          </div>
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center shrink-0">
+                    <Award className="w-5 h-5 text-white/90" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-semibold text-white">
+                      Interview-ready
+                    </h4>
+                    <p className="text-xs text-white/60 mt-0.5">
+                      Mock interviews scored against real roles.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="text-xs font-bold tracking-widest text-[#D7195A] uppercase mb-3">
+                {rightEyebrow || "12,000+ CAREERS TRANSFORMED"}
+              </p>
+              <h2 className="text-3xl xl:text-[36px] font-bold leading-tight text-white mb-8">
+                {rightHeadline ||
+                  "Learning, mentoring and real opportunities — all in one place."}
+              </h2>
+
+              {/* Glassmorphism Floating Card */}
+              <div className="rounded-2xl border border-white/15 bg-white/10 backdrop-blur-md p-5 max-w-md shadow-2xl">
+                <p className="text-sm font-semibold text-white">
+                  Business Analysis Pathway
+                </p>
+                <p className="text-xs text-white/70 mt-1">
+                  David is on stage 4 of 7 — Mentiiv mentoring
+                </p>
+              </div>
+            </>
+          )}
         </div>
-      </main>
+      </div>
     </div>
   );
 };

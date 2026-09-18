@@ -1,84 +1,42 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useSearchParams, useLocation, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useSearchParams,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import Cookies from "js-cookie";
-import GoogleAuthButton from "./components/GoogleAuthButton";
 import { z } from "zod";
 import AuthLayout from "./components/AuthLayout";
 import ReferralAuthLayout from "./components/ReferralAuthLayout";
-import { CommonButton } from "@/Components/ui/button";
-import { Form } from "@/Components/ui/form";
-import FormInput from "@/Components/ui/form-input";
-import PhoneInput from "@/Components/ui/phone-input";
+import SocialAuthButtons from "./components/SocialAuthButtons";
 import Modal from "./components/Modal";
 import RegisterSuccess from "./components/RegisterSuccess";
 import ConfirmEmail from "./components/ConfirmEmail";
-import PasswordInput from "@/Components/ui/password-input";
-import axios from "axios";
 import RegisterFail from "./components/RegisterFail";
 import toast from "react-hot-toast";
-import { CheckCircle2, Circle } from "lucide-react";
-import { passwordRegex } from "@/lib/utils";
+import { Eye, EyeOff, Tag } from "lucide-react";
+import axios from "axios";
 import { route } from "@/lib/route-checker";
 import { useOtpGate } from "@/context/OtpGateContext";
 
-const loginSchema = z
-  .object({
-    email: z.string().superRefine((val, ctx) => {
-      if (!val) { ctx.addIssue({ code: z.ZodIssueCode.custom, message: "This field is required" }); return; }
-      if (/\s/.test(val)) { ctx.addIssue({ code: z.ZodIssueCode.custom, message: "⚠ Please enter a valid email address - You have entered a blank space" }); return; }
-      if (!val.includes("@")) { ctx.addIssue({ code: z.ZodIssueCode.custom, message: "⚠ Please enter a valid email address - You have missed out the @ symbol" }); return; }
-      const [username, ...rest] = val.split("@");
-      if (!username) { ctx.addIssue({ code: z.ZodIssueCode.custom, message: "⚠ Please enter a valid email address - You have missed out the username" }); return; }
-      const domainPart = rest.join("@");
-      if (!domainPart || rest.length > 1) { 
-        ctx.addIssue({ code: z.ZodIssueCode.custom, message: !domainPart ? "⚠ Please enter a valid email address - You have missed out the domain" : "⚠ Please enter a valid email address" }); return; 
-      }
-      if (!domainPart.includes(".")) { ctx.addIssue({ code: z.ZodIssueCode.custom, message: '⚠ Please enter a valid email address - You have missed out the a "."' }); return; }
-      const domainParts = domainPart.split(".");
-      const tld = domainParts[domainParts.length - 1];
-      if (!tld || tld.length < 2) { ctx.addIssue({ code: z.ZodIssueCode.custom, message: "⚠ Please enter a valid email address - You have missed out the Top Leve Domain" }); return; }
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) { ctx.addIssue({ code: z.ZodIssueCode.custom, message: "⚠ Please enter a valid email address" }); return; }
+const baseSignupSchema = z.object({
+  firstName: z.string().min(1, { message: "First name is required" }),
+  lastName: z.string().min(1, { message: "Last name is required" }),
+  email: z.string().email({ message: "Please enter a valid email address" }),
+  password: z
+    .string()
+    .min(8, { message: "Password must be at least 8 characters long" })
+    .regex(/[0-9]/, { message: "Password must contain at least one number" }),
+  agreeTerms: z.literal(true, {
+    errorMap: () => ({
+      message: "You must agree to the Terms of Service and Privacy Policy",
     }),
-    phoneNumber: z
-      .string()
-      .min(10, { message: "Please enter a valid phone number" })
-      .regex(/^[0-9+\-()]*$/, {
-        message:
-          "Spaces are not allowed. Please enter a valid phone number format",
-      }),
-    password: z
-      .string()
-      .min(4, { message: "Password must be at least 8 characters long " })
-      .regex(passwordRegex, {
-        message:
-          "Ensure your password contains at least a lowercase letter, an upper case letter, a special symbol and a number",
-      }),
-    confirmPassword: z
-      .string()
-      .min(4, { message: "Password must be at least 8 characters ong" })
-      .regex(passwordRegex, {
-        message:
-          "Ensure your password contains at least a lowercase letter, an upper case letter, a special symbol and a number",
-      }),
-    firstName: z
-      .string()
-      .min(1, { message: " first name must be at least 4 characters long" }),
-    lastName: z
-      .string()
-      .min(1, { message: "last name must be at least 4 characters long" }),
-    username: z
-      .string()
-      .min(1, { message: " username must be at least 4 characters long" }),
-    referralCode: z.string().optional(),
-    exclusive_info: z.boolean().optional(),
-    agreeTerms: z.boolean().optional(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Password don't match",
-    path: ["confirmPassword"],
-  });
+  }),
+  referralCode: z.string().optional(),
+});
 
 const SignUp = ({ isPage = true }) => {
   const { requestOtpVerification } = useOtpGate();
@@ -86,64 +44,57 @@ const SignUp = ({ isPage = true }) => {
   const location = useLocation();
 
   const [success, setSuccess] = useState("");
-  const [title, setTitle] = useState("Sign Up and Start Learning");
   const [confirm, setConfirm] = useState(false);
   const [modal, setModal] = useState(false);
   const [user, setUser] = useState();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showReferralInput, setShowReferralInput] = useState(false);
+  const [isReferralLocked, setIsReferralLocked] = useState(false);
+
   const [queryString] = useSearchParams();
   const _r = queryString.get("_r");
   const redirectTo = queryString.get("redirectTo");
   const redirectTarget = redirectTo || _r;
   const from = redirectTarget ? decodeURIComponent(redirectTarget) : "";
 
-  const [googleToken, setGoogleToken] = useState("");
-  const [step, setStep] = useState(location.state?.googleToken ? "form" : "choice");
-  const [showReferralReminder, setShowReferralReminder] = useState(false);
-  const [pendingSignupValues, setPendingSignupValues] = useState(null);
-  const [skipReferralReminder, setSkipReferralReminder] = useState(false);
-  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
-  const [isReferralLocked, setIsReferralLocked] = useState(false);
-  const formRef = useRef(null);
-
   const courseId = queryString.get("id");
   const courseTitle = queryString.get("title");
 
   // Determine if this signup is a referral from the Partner page
-  const isPartnerReferral = queryString.get("r") === "student" && !!queryString.get("t");
+  const isPartnerReferral =
+    queryString.get("r") === "student" && !!queryString.get("t");
 
   const form = useForm({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(baseSignupSchema),
     mode: "onChange",
     defaultValues: {
-      email: "",
-      password: "",
       firstName: "",
       lastName: "",
-      username: "",
-      confirmPassword: "",
-      referralCode: "",
-      phoneNumber: "",
-      exclusive_info: false,
+      email: "",
+      password: "",
       agreeTerms: false,
+      referralCode: "",
     },
   });
 
   const { isSubmitting, errors } = form.formState;
-  const currentPassword = form.watch("password") || "";
-  const hasErrors = Object.keys(errors).length > 0;
-
-  const passwordRequirements = [
-    { label: "At least 8 characters", valid: currentPassword.length >= 8 },
-    { label: "One uppercase letter", valid: /[A-Z]/.test(currentPassword) },
-    { label: "One lowercase letter", valid: /[a-z]/.test(currentPassword) },
-    { label: "One number", valid: /[0-9]/.test(currentPassword) },
-    {
-      label: "One special character",
-      valid: /[#?!@$%^&*-]/.test(currentPassword),
-    },
-  ];
-
   const url = import.meta.env.VITE_AUTH_URL;
+
+  // Auto-populate referral code from query params and lock it if present
+  useEffect(() => {
+    const urlReferral =
+      queryString.get("code") ||
+      queryString.get("ref") ||
+      queryString.get("referral_code") ||
+      queryString.get("referralCode");
+
+    if (urlReferral) {
+      const cleanCode = urlReferral.trim();
+      form.setValue("referralCode", cleanCode);
+      setIsReferralLocked(true);
+      setShowReferralInput(true);
+    }
+  }, [queryString]);
 
   const handleGoogleCallback = async (credential) => {
     try {
@@ -184,84 +135,42 @@ const SignUp = ({ isPage = true }) => {
 
         toast.success("Registration successful!");
         navigate(from || "/dashboard");
-        return;
       }
     } catch (err) {
       console.error("Google authentication error:", err);
-      toast.error(err.response?.data?.message || "Google authentication failed. Please try again.");
+      toast.error(
+        err.response?.data?.message ||
+          "Google authentication failed. Please try again."
+      );
     }
   };
 
   const handleSubmit = async (values) => {
     try {
-      const {
-        firstName,
-        lastName,
-        password,
-        email,
-        username,
-        referralCode,
-        phoneNumber,
-      } = values;
+      const { firstName, lastName, password, email, referralCode } = values;
 
-      // Validate all required fields
-      if (
-        !firstName ||
-        !lastName ||
-        !email ||
-        !password ||
-        !username ||
-        !phoneNumber
-      ) {
-        toast.error("All fields are required");
-        return;
-      }
-
-      // Validate email format
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        toast.error("Please enter a valid email address");
-        return;
-      }
-
-      // Validate phone number format
-      const phoneRegex = /^[0-9+\-\s()]*$/;
-      if (!phoneRegex.test(phoneNumber)) {
-        toast.error("Please enter a valid phone number");
-        return;
-      }
-
-      // Validate password strength
-      if (password.length < 8) {
-        toast.error("Password must be at least 8 characters long");
-        return;
-      }
-
-      // If referralCode is empty, show reminder modal (unless skipping)
-      if (!values.referralCode && !skipReferralReminder) {
-        setPendingSignupValues(values);
-        setShowReferralReminder(true);
-        return;
-      }
+      // Auto-generate clean username from email or name
+      const emailPrefix = email.split("@")[0].replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+      const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+      const username =
+        emailPrefix.length >= 3
+          ? `${emailPrefix}${randomSuffix}`
+          : `user${randomSuffix}`;
 
       const users = {
-        firstname: firstName,
-        lastname: lastName,
-        email,
+        firstname: firstName.trim(),
+        lastname: lastName.trim(),
+        email: email.trim().toLowerCase(),
         password,
         username,
-        referral_code: referralCode || undefined,
-        phoneNumber,
-        exclusive_info: Boolean(values.exclusive_info),
+        referral_code: referralCode ? referralCode.trim() : undefined,
         source_url: window.location.href,
-        googleToken: googleToken || undefined,
       };
 
       const verified = await requestOtpVerification(email);
       if (!verified) return;
 
       const response = await axios.post(`${url}/signup`, users, {
-
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
@@ -270,10 +179,7 @@ const SignUp = ({ isPage = true }) => {
 
       if (response.data.status === "success") {
         if (response.data.forward_url) {
-          sessionStorage.setItem(
-            "signup_forward_url",
-            response.data.forward_url,
-          );
+          sessionStorage.setItem("signup_forward_url", response.data.forward_url);
         } else if (from) {
           sessionStorage.setItem("signup_forward_url", from);
         }
@@ -285,7 +191,7 @@ const SignUp = ({ isPage = true }) => {
             sameSite: "strict",
             path: "/",
           });
-          Cookies.set("userRole", response.data.newUser.role || "student", {
+          Cookies.set("userRole", response.data.newUser?.role || "student", {
             expires: 1,
             secure: window.location.protocol === "https:",
             sameSite: "strict",
@@ -305,7 +211,6 @@ const SignUp = ({ isPage = true }) => {
           confirmPassword: password,
           username,
           referralCode,
-          phoneNumber,
         });
         setConfirm(true);
       }
@@ -315,7 +220,6 @@ const SignUp = ({ isPage = true }) => {
         return;
       }
 
-      // Handle specific error cases
       if (error.response.status === 409) {
         toast.error("Email or username already exists");
       } else if (error.response.status === 400) {
@@ -323,58 +227,92 @@ const SignUp = ({ isPage = true }) => {
       } else {
         toast.error(
           error.response.data.message ||
-            "Registration failed. Please try again.",
+            "Registration failed. Please try again."
         );
       }
       setSuccess("fail");
-    } finally {
-      setSkipReferralReminder(false);
     }
   };
 
-  // Auto-populate referral code from query params and lock it
-  useEffect(() => {
-    const urlReferral =
-      queryString.get("code") ||
-      queryString.get("ref") ||
-      queryString.get("referral_code") ||
-      queryString.get("referralCode");
+  const loginLink =
+    route("/login", courseId, courseTitle) +
+    (_r
+      ? (courseId || courseTitle ? "&" : "?") + `_r=${encodeURIComponent(_r)}`
+      : "");
 
-    if (urlReferral) {
-      const cleanCode = urlReferral.trim();
-      form.setValue("referralCode", cleanCode);
-      setIsReferralLocked(true);
-    }
-  }, [queryString]);
-
-  useEffect(() => {
-    if (location.state?.googleToken) {
-      handleGoogleCallback(location.state.googleToken);
-    }
-  }, [location.state]);
-
-  // Add viewport meta tag for iOS
-  useEffect(() => {
-    const meta = document.createElement("meta");
-    meta.name = "viewport";
-    meta.content =
-      "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no";
-    document.head.appendChild(meta);
-
-    setTitle(queryString.get("ttl") || "Sign Up and Start Learning");
-    return () => {
-      document.head.removeChild(meta);
-    };
-  }, []);
-
-  // Add iOS-specific input handling
-  const handleInputFocus = (e) => {
-    // Prevent zoom on focus for iOS
-    e.target.style.fontSize = "16px";
-  };
+  // If this is a partner referral, delegate to ReferralAuthLayout to preserve custom partner flow
+  if (isPartnerReferral) {
+    return (
+      <ReferralAuthLayout
+        title="Register Now"
+        isMobileStacked={true}
+        isPage={isPage}
+        alignTop={true}
+        leftHeadline="You've been invited!"
+        leftSubtext="Join learners gaining practical knowledge, career support, and industry-ready experience through Avenue Impact."
+      >
+        {/* Partner referral standard form */}
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1">
+                First name
+              </label>
+              <input
+                type="text"
+                placeholder="David"
+                {...form.register("firstName")}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-[#D0D5DD] text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1">
+                Last name
+              </label>
+              <input
+                type="text"
+                placeholder="Adeyemi"
+                {...form.register("lastName")}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-[#D0D5DD] text-sm"
+              />
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-gray-700 mb-1">
+              Email address
+            </label>
+            <input
+              type="email"
+              placeholder="you@example.com"
+              {...form.register("email")}
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#D0D5DD] text-sm"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-gray-700 mb-1">
+              Password
+            </label>
+            <input
+              type="password"
+              placeholder="Create a password"
+              {...form.register("password")}
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#D0D5DD] text-sm"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full py-3 bg-[#D7195A] text-white rounded-xl font-semibold"
+          >
+            {isSubmitting ? "Creating account..." : "Create account"}
+          </button>
+        </form>
+      </ReferralAuthLayout>
+    );
+  }
 
   return (
-    <div className="">
+    <div>
       {confirm && (
         <Modal>
           <ConfirmEmail
@@ -387,369 +325,240 @@ const SignUp = ({ isPage = true }) => {
         </Modal>
       )}
 
-      {showReferralReminder && (
-        <Modal>
-          <div className="w-full max-w-[350px] rounded-lg bg-white p-8 text-center shadow-lg">
-            <h2 className="mb-2 text-lg font-semibold text-[#CC1747]">
-              Did you enter a referral code?
-            </h2>
-            <p className="mb-4 text-sm text-gray-700">
-              If you have a referral code, please enter it before signing up to
-              enjoy referral benefits. You cannot add it later.
-            </p>
-            <div className="mt-4 flex flex-col gap-3">
-              <button
-                className="rounded bg-[#CC1747] px-4 py-2 text-white hover:bg-[#b30e3b]"
-                onClick={() => {
-                  setShowReferralReminder(false);
-                  setPendingSignupValues(null);
-                  // Do not proceed, let user enter code
-                }}
-              >
-                I haven't inputted
-              </button>
+      <AuthLayout
+        title="Create your account"
+        subtitle="Start your career transformation — free to join."
+        variant="signup"
+        isPage={isPage}
+      >
+        <div className="w-full">
+          {/* Social Auth Buttons (Side-by-side grid as in Mockup) */}
+          <SocialAuthButtons
+            onGoogleCallback={handleGoogleCallback}
+            layout="grid"
+          />
 
-              <button
-                className="rounded bg-gray-200 px-4 py-2 text-gray-800 hover:bg-gray-300"
-                onClick={() => {
-                  setShowReferralReminder(false);
-                  setSkipReferralReminder(true);
-                  if (pendingSignupValues) {
-                    Object.entries(pendingSignupValues).forEach(
-                      ([key, value]) => {
-                        form.setValue(key, value);
-                      },
-                    );
-                    form.setValue("referralCode", "");
-                    setTimeout(() => {
-                      if (formRef.current) {
-                        formRef.current.requestSubmit();
-                      }
-                    }, 0);
-                    setPendingSignupValues(null);
-                  }
-                }}
-              >
-                I wasn't referred
-              </button>
-            </div>
+          {/* Divider */}
+          <div className="relative my-6 flex items-center">
+            <div className="flex-grow border-t border-gray-200" />
+            <span className="flex-shrink mx-4 text-xs font-normal text-gray-400">
+              or
+            </span>
+            <div className="flex-grow border-t border-gray-200" />
           </div>
-        </Modal>
-      )}
 
-      {/* Conditionally render the appropriate layout */}
-      {(() => {
-        const LayoutComponent = isPartnerReferral ? ReferralAuthLayout : AuthLayout;
-        return (
-          <LayoutComponent
-            title={step === "choice" ? "Choose Registration" : "Register Now"}
-            isMobileStacked={true}
-            isPage={isPage}
-            alignTop={true}
-            leftHeadline={isPartnerReferral ? "You've been invited!" : "Ready to Build\nIn-Demand Skills?"}
-            leftSubtext={isPartnerReferral 
-              ? "Join learners gaining practical knowledge, career support, and industry-ready experience through Avenue Impact." 
-              : "Join learners gaining practical knowledge, career support, and industry-ready experience through "}
-          >
-            {step === "choice" ? (
-              <div className="flex flex-col gap-6 py-6 font-poppins">
-                <div className="text-center mb-2">
-                  <h2 className="text-xl font-bold text-gray-900">Create your account</h2>
-                  <p className="text-xs text-gray-500 mt-1">Choose how you want to register</p>
-                </div>
+          {/* Registration Form */}
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+            {/* First & Last Name row */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label
+                  htmlFor="firstName"
+                  className="block text-sm font-semibold text-[#344054] mb-1.5"
+                >
+                  First name
+                </label>
+                <input
+                  id="firstName"
+                  type="text"
+                  autoComplete="given-name"
+                  placeholder="David"
+                  {...form.register("firstName")}
+                  className={`w-full px-3.5 py-2.5 rounded-xl border ${
+                    errors.firstName ? "border-red-500" : "border-[#D0D5DD]"
+                  } text-sm text-[#101828] placeholder:text-[#98A2B3] focus:outline-none focus:ring-2 focus:ring-[#D7195A]/20 focus:border-[#D7195A] transition-all`}
+                />
+                {errors.firstName && (
+                  <p className="mt-1 text-xs text-red-500">
+                    {errors.firstName.message}
+                  </p>
+                )}
+              </div>
 
-                <GoogleAuthButton onCallback={handleGoogleCallback} text="signup_with" />
+              <div>
+                <label
+                  htmlFor="lastName"
+                  className="block text-sm font-semibold text-[#344054] mb-1.5"
+                >
+                  Last name
+                </label>
+                <input
+                  id="lastName"
+                  type="text"
+                  autoComplete="family-name"
+                  placeholder="Adeyemi"
+                  {...form.register("lastName")}
+                  className={`w-full px-3.5 py-2.5 rounded-xl border ${
+                    errors.lastName ? "border-red-500" : "border-[#D0D5DD]"
+                  } text-sm text-[#101828] placeholder:text-[#98A2B3] focus:outline-none focus:ring-2 focus:ring-[#D7195A]/20 focus:border-[#D7195A] transition-all`}
+                />
+                {errors.lastName && (
+                  <p className="mt-1 text-xs text-red-500">
+                    {errors.lastName.message}
+                  </p>
+                )}
+              </div>
+            </div>
 
-                <div className="relative flex py-2 items-center">
-                  <div className="flex-grow border-t border-gray-200"></div>
-                  <span className="flex-shrink mx-4 text-xs font-semibold text-gray-400">OR</span>
-                  <div className="flex-grow border-t border-gray-200"></div>
-                </div>
+            {/* Email Address */}
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-sm font-semibold text-[#344054] mb-1.5"
+              >
+                Email address
+              </label>
+              <input
+                id="email"
+                type="email"
+                autoComplete="email"
+                placeholder="you@example.com"
+                {...form.register("email")}
+                className={`w-full px-3.5 py-2.5 rounded-xl border ${
+                  errors.email ? "border-red-500" : "border-[#D0D5DD]"
+                } text-sm text-[#101828] placeholder:text-[#98A2B3] focus:outline-none focus:ring-2 focus:ring-[#D7195A]/20 focus:border-[#D7195A] transition-all`}
+              />
+              {errors.email && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.email.message}
+                </p>
+              )}
+            </div>
 
+            {/* Password */}
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-semibold text-[#344054] mb-1.5"
+              >
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="new-password"
+                  placeholder="Create a password"
+                  {...form.register("password")}
+                  className={`w-full px-3.5 py-2.5 rounded-xl border ${
+                    errors.password ? "border-red-500" : "border-[#D0D5DD]"
+                  } text-sm text-[#101828] placeholder:text-[#98A2B3] focus:outline-none focus:ring-2 focus:ring-[#D7195A]/20 focus:border-[#D7195A] transition-all pr-10`}
+                />
                 <button
                   type="button"
-                  onClick={() => setStep("form")}
-                  className="w-full flex items-center justify-center gap-3 px-6 py-3.5 border border-gray-300 hover:border-[#CC1747] hover:bg-gray-50/50 rounded-xl transition-all font-semibold text-gray-700 text-sm hover:text-[#CC1747]"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
-                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                  Register now (with form)
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
-
-                <p className="mt-4 flex items-center justify-center gap-4 text-center">
-                  <span className="text-sm text-[#514A4A]">
-                    Already have an account?
-                  </span>
-                  <Link
-                    to={
-                      route("/login", courseId, courseTitle) +
-                      (_r
-                        ? (courseId || courseTitle ? "&" : "?") +
-                          `_r=${encodeURIComponent(_r)}`
-                        : "")
-                    }
-                    className="text-sm font-semibold capitalize text-primary-color-600"
-                  >
-                    sign in
-                  </Link>
+              </div>
+              <p className="mt-1.5 text-xs text-[#667085]">
+                Minimum 8 characters, one number
+              </p>
+              {errors.password && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.password.message}
                 </p>
+              )}
+            </div>
+
+            {/* Optional Referral Code Toggle */}
+            {showReferralInput ? (
+              <div className="pt-1">
+                <label
+                  htmlFor="referralCode"
+                  className="block text-xs font-medium text-gray-600 mb-1"
+                >
+                  Referral Code (Optional)
+                </label>
+                <input
+                  id="referralCode"
+                  type="text"
+                  disabled={isReferralLocked}
+                  placeholder="Enter referral code"
+                  {...form.register("referralCode")}
+                  className={`w-full px-3 py-2 rounded-xl border text-xs ${
+                    isReferralLocked
+                      ? "bg-gray-100 text-gray-500 cursor-not-allowed border-gray-200"
+                      : "border-gray-300 text-gray-800"
+                  }`}
+                />
               </div>
             ) : (
-              <>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setStep("choice");
-                    setGoogleToken("");
-                    form.reset({
-                      email: "",
-                      password: "",
-                      firstName: "",
-                      lastName: "",
-                      username: "",
-                      confirmPassword: "",
-                      referralCode: "",
-                      phoneNumber: "",
-                    });
-                  }}
-                  className="mb-4 flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-[#CC1747] transition-colors"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-                  </svg>
-                  Choose another registration method
-                </button>
-
-                <Form {...form}>
-                  <form ref={formRef} onSubmit={form.handleSubmit(handleSubmit)}>
-                    {googleToken && (
-                      <div className="mb-6 rounded-lg bg-green-50 border border-green-200 p-4 text-xs text-green-800 font-medium font-poppins flex items-start gap-2.5">
-                        <svg className="w-4 h-4 shrink-0 text-green-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <div>
-                          <strong className="block mb-0.5 text-green-900 font-bold">Google account connected!</strong>
-                          Create password to complete registration
-                        </div>
-                      </div>
-                    )}
-                    <div className="space-y-4">
-                      <div
-                        className={`${isPage ? "" : "sm:grid-cols-2"} grid gap-x-3 gap-y-4 sm:grid-cols-2`}
-                      >
-                        <FormInput
-                          label="First Name"
-                          name="firstName"
-                          control={form.control}
-                          type="text"
-                          id="firstName"
-                          placeholder=""
-                          onFocus={handleInputFocus}
-                          autoComplete="given-name"
-                          autoCapitalize="words"
-                          absoluteError
-                        />
-                        <FormInput
-                          label="Last Name"
-                          name="lastName"
-                          control={form.control}
-                          type="text"
-                          id="lastName"
-                          placeholder=""
-                          onFocus={handleInputFocus}
-                          autoComplete="family-name"
-                          autoCapitalize="words"
-                          absoluteError
-                        />
-                      </div>
-                      <div
-                        className={`${isPage ? "" : "sm:grid-cols-2"} grid gap-x-3 gap-y-4 sm:grid-cols-2`}
-                      >
-                        <FormInput
-                          label="Username"
-                          name="username"
-                          control={form.control}
-                          type="text"
-                          id="username"
-                          placeholder=""
-                          onFocus={handleInputFocus}
-                          autoComplete="username"
-                          absoluteError
-                        />
-                        <FormInput
-                          label="Email"
-                          name="email"
-                          control={form.control}
-                          type="text"
-                          id="email"
-                          placeholder=""
-                          onFocus={handleInputFocus}
-                          autoComplete="email"
-                          absoluteError
-                        />
-                      </div>
-                      <PhoneInput
-                        label="Phone Number"
-                        name="phoneNumber"
-                        control={form.control}
-                        id="phoneNumber"
-                        placeholder="813 696 9006"
-                        absoluteError
-                      />
-                      <div
-                        className={`${isPage ? "" : "sm:grid-cols-2"} grid gap-x-3 gap-y-4 sm:grid-cols-2`}
-                      >
-                        <PasswordInput
-                          id="password"
-                          autoComplete="new-password"
-                          label="Password"
-                          name="password"
-                          control={form.control}
-                          placeholder=""
-                          onFocus={(e) => {
-                            handleInputFocus(e);
-                            setIsPasswordFocused(true);
-                          }}
-                          onBlur={() => {
-                            setIsPasswordFocused(false);
-                          }}
-                          absoluteError
-                        />
-                        <PasswordInput
-                          id="confirmPassword"
-                          autoComplete="new-password"
-                          label="Confirm Password"
-                          name="confirmPassword"
-                          control={form.control}
-                          placeholder=""
-                          onFocus={(e) => {
-                            handleInputFocus(e);
-                            setIsPasswordFocused(true);
-                          }}
-                          onBlur={() => {
-                            setIsPasswordFocused(false);
-                          }}
-                          absoluteError
-                        />
-                      </div>
-
-                      <div
-                        className={`grid transition-all duration-300 ease-in-out ${
-                          isPasswordFocused
-                            ? "mb-4 mt-2 grid-rows-[1fr] opacity-100"
-                            : "mb-0 mt-0 grid-rows-[0fr] opacity-0"
-                        }`}
-                      >
-                        <div className="overflow-hidden">
-                          <div className="flex flex-col gap-2 rounded-md border border-gray-100 bg-gray-50 p-4">
-                            <p className="mb-1 text-xs font-semibold text-gray-700">
-                              Password must contain:
-                            </p>
-                            {passwordRequirements.map((req, idx) => (
-                              <div key={idx} className="flex items-center gap-2">
-                                {req.valid ? (
-                                  <CheckCircle2 className="h-4 w-4 text-green-600 transition-colors duration-300" />
-                                ) : (
-                                  <Circle className="h-4 w-4 text-gray-300 transition-colors duration-300" />
-                                )}
-                                <span
-                                  className={`text-xs transition-colors duration-300 ${req.valid ? "text-green-700" : "text-gray-500"}`}
-                                >
-                                  {req.label}
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-
-                      <FormInput
-                        label="AVI Referral Code"
-                        name="referralCode"
-                        control={form.control}
-                        type="text"
-                        id="referralCode"
-                        placeholder=""
-                        onFocus={handleInputFocus}
-                        autoComplete="off"
-                        disabled={isReferralLocked}
-                        className={
-                          isReferralLocked
-                            ? "bg-gray-100 text-gray-600 font-medium border-gray-200 cursor-not-allowed select-none"
-                            : ""
-                        }
-                        absoluteError
-                      />
-                    </div>
-                    <div className="mt-[10px] flex items-center gap-4">
-                      <input
-                        type="checkbox"
-                        id="exclusive_info"
-                        {...form.register("exclusive_info")}
-                        className="h-5 w-5 accent-[#C41E3A] cursor-pointer"
-                      />
-                      <label htmlFor="exclusive_info" className="text-sm text-label cursor-pointer select-none">
-                        Send me exclusive offers, tailored recommendations, and
-                        educational tips.
-                      </label>
-                    </div>
-
-                    <div className="mt-[10px] flex items-center gap-4">
-                      <input
-                        type="checkbox"
-                        id="agreeTerms"
-                        {...form.register("agreeTerms")}
-                        className="h-4 w-4 accent-[#C41E3A] cursor-pointer"
-                        required
-                      />
-
-                      <label htmlFor="agreeTerms" className="text-sm text-label cursor-pointer select-none">
-                        I agree to the <Link to="/terms-of-service" className="text-[#C41E3A] hover:underline font-semibold">terms and conditions</Link>
-                      </label>
-                    </div>
-
-                    <CommonButton
-                      className="mt-4 w-full rounded-lg bg-[#C41E3A] py-3 font-poppins text-base font-semibold capitalize text-white hover:bg-[#a8103a]"
-                      type="submit"
-                      disabled={isSubmitting || hasErrors}
-                    >
-                      {isSubmitting ? "loading..." : "Submit Application"}
-                    </CommonButton>
-                  </form>
-                </Form>
-
-                <p className="mt-4 flex items-center justify-center gap-4 text-center">
-                  <span className="text-sm text-[#514A4A]">
-                    Already have an account?
-                  </span>
-                  <Link
-                    to={
-                      route("/login", courseId, courseTitle) +
-                      (_r
-                        ? (courseId || courseTitle ? "&" : "?") +
-                          `_r=${encodeURIComponent(_r)}`
-                        : "")
-                    }
-                    className="text-sm font-semibold capitalize text-primary-color-600"
-                  >
-                    sign in
-                  </Link>
-                </p>
-              </>
+              <button
+                type="button"
+                onClick={() => setShowReferralInput(true)}
+                className="text-xs text-[#667085] hover:text-[#D7195A] flex items-center gap-1.5 transition-colors pt-1"
+              >
+                <Tag size={13} />
+                <span>Have a referral code?</span>
+              </button>
             )}
-          </LayoutComponent>
-        );
-      })()}
+
+            {/* Terms of Service & Privacy Policy Checkbox */}
+            <div className="pt-2">
+              <label className="flex items-start gap-2.5 cursor-pointer text-xs text-[#475467] select-none leading-relaxed">
+                <input
+                  type="checkbox"
+                  {...form.register("agreeTerms")}
+                  className="h-4 w-4 mt-0.5 rounded border-gray-300 accent-[#D7195A] focus:ring-[#D7195A] cursor-pointer shrink-0"
+                />
+                <span>
+                  I agree to Avenue Impact's{" "}
+                  <Link
+                    to="/terms-of-service"
+                    target="_blank"
+                    className="underline text-gray-800 hover:text-[#D7195A]"
+                  >
+                    Terms of Service
+                  </Link>{" "}
+                  and{" "}
+                  <Link
+                    to="/privacy-policy"
+                    target="_blank"
+                    className="underline text-gray-800 hover:text-[#D7195A]"
+                  >
+                    Privacy Policy
+                  </Link>
+                </span>
+              </label>
+              {errors.agreeTerms && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.agreeTerms.message}
+                </p>
+              )}
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full mt-4 py-3 px-4 bg-[#D7195A] hover:bg-[#c0154e] active:scale-[0.99] text-white text-sm font-semibold rounded-xl shadow-lg shadow-[#D7195A]/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              {isSubmitting ? "Creating account..." : "Create account"}
+            </button>
+          </form>
+
+          {/* Footer */}
+          <p className="mt-8 text-center text-sm text-[#475467]">
+            Already have an account?{" "}
+            <Link
+              to={loginLink}
+              className="font-bold text-[#101828] hover:underline ml-1"
+            >
+              Log in
+            </Link>
+          </p>
+        </div>
+      </AuthLayout>
 
       {modal && (
         <Modal>
           {success === "success" ? (
             <RegisterSuccess
-              title={"Registration Successful!"}
-              text={
-                "You have successfully registered and can now start using your account. Enjoy your experience with us!"
-              }
+              title="Registration Successful!"
+              text="You have successfully registered and can now start using your account. Enjoy your experience with us!"
               setModal={setModal}
               path={from || "/dashboard"}
             />

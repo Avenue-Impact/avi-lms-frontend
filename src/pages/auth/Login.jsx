@@ -1,33 +1,29 @@
 import { useState } from "react";
 import AuthLayout from "./components/AuthLayout";
-import { Form } from "@/Components/ui/form";
-import FormInput from "@/Components/ui/form-input";
+import SocialAuthButtons from "./components/SocialAuthButtons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
   Link,
   useNavigate,
   useSearchParams,
-  useLocation,
 } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
-import GoogleAuthButton from "./components/GoogleAuthButton";
 import { z } from "zod";
 import { useLoginUser } from "@/hooks/students/use-login-user";
 import { ClipLoader } from "react-spinners";
 import Modal from "./components/Modal";
 import ConfirmEmail from "./components/ConfirmEmail";
-import { CommonButton } from "@/Components/ui/button";
-import PasswordInput from "@/Components/ui/password-input";
+import { Eye, EyeOff } from "lucide-react";
 import toast from "react-hot-toast";
 
-
 const loginSchema = z.object({
-  username: z.string().min(1, { message: "name is required" }),
+  email: z.string().min(1, { message: "Email or username is required" }),
   password: z
     .string()
-    .min(4, { message: "password must be at least 4 characters long" }),
+    .min(4, { message: "Password must be at least 4 characters long" }),
+  rememberMe: z.boolean().optional(),
 });
 
 const Login = () => {
@@ -46,6 +42,7 @@ const Login = () => {
   const [user, setUser] = useState();
   const [modal, setModal] = useState(false);
   const [success, setSuccess] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const url = import.meta.env.VITE_AUTH_URL;
 
@@ -72,7 +69,7 @@ const Login = () => {
 
       if (loginResponse.data.status === "success") {
         const { token, user: loggedUser } = loginResponse.data.data;
-        
+
         Cookies.set("token", token, {
           expires: 1,
           secure: window.location.protocol === "https:",
@@ -87,21 +84,37 @@ const Login = () => {
         });
 
         toast.success("Login successful");
-        navigate(redirectTarget ? from : (loginResponse.data.forward_url || "/dashboard"));
+        navigate(
+          redirectTarget ? from : loginResponse.data.forward_url || "/dashboard"
+        );
       }
     } catch (err) {
       console.error("Google login failed:", err);
-      toast.error(err.response?.data?.message || "Google authentication failed. Please try again.");
+      toast.error(
+        err.response?.data?.message ||
+          "Google authentication failed. Please try again."
+      );
     }
   };
 
+  const form = useForm({
+    resolver: zodResolver(loginSchema),
+    mode: "onChange",
+    defaultValues: {
+      email: "",
+      password: "",
+      rememberMe: false,
+    },
+  });
+
+  const { errors } = form.formState;
+
   const handleSubmit = async (values) => {
     const user = {
-      userid: values.username,
+      userid: values.email,
       password: values.password,
     };
     setUser(user);
-
 
     mutate(user, {
       onSuccess: ({ data }) => {
@@ -116,13 +129,13 @@ const Login = () => {
           return;
         }
         Cookies.set("token", data.data.token, {
-          expires: 1,
+          expires: values.rememberMe ? 30 : 1,
           secure: window.location.protocol === "https:",
           sameSite: "strict",
           path: "/",
         });
         Cookies.set("userRole", data.data.user.role, {
-          expires: 1,
+          expires: values.rememberMe ? 30 : 1,
           secure: window.location.protocol === "https:",
           sameSite: "strict",
           path: "/",
@@ -130,13 +143,14 @@ const Login = () => {
 
         if (courseId) {
           navigate(
-            `/preview-video-course/${courseId}/enroll?title=${courseTitle}`,
+            `/preview-video-course/${courseId}/enroll?title=${courseTitle}`
           );
         } else {
-          const defaultPath = data.data.user.role?.toLowerCase() === "instructor" 
-            ? "/instructor/dashboard" 
-            : "/dashboard";
-          navigate(redirectTarget ? from : (data.forward_url || defaultPath));
+          const defaultPath =
+            data.data.user.role?.toLowerCase() === "instructor"
+              ? "/instructor/dashboard"
+              : "/dashboard";
+          navigate(redirectTarget ? from : data.forward_url || defaultPath);
         }
       },
       onError: (err) => {
@@ -151,21 +165,20 @@ const Login = () => {
           toast.error("Account is locked. Please contact support.");
         } else {
           toast.error(
-            err.response?.data?.message || "Login failed. Please try again.",
+            err.response?.data?.message || "Login failed. Please try again."
           );
         }
       },
     });
   };
 
-  const form = useForm({
-    resolver: zodResolver(loginSchema),
-    mode: "onChange",
-    defaultValues: {
-      username: "",
-      password: "",
-    },
-  });
+  const forgotPasswordLink = `/forgot-password${
+    redirectTarget ? `?redirectTo=${encodeURIComponent(redirectTarget)}` : ""
+  }`;
+
+  const signupLink = `/signup${
+    redirectTarget ? `?redirectTo=${encodeURIComponent(redirectTarget)}` : ""
+  }`;
 
   return (
     <div>
@@ -182,72 +195,129 @@ const Login = () => {
       )}
 
       <AuthLayout
-        title="Welcome back!"
-        subtitle="Use your email to sign in to your dashboard"
-        isMobileStacked={true}
-        leftHeadline={"Welcome Back\nto Avenue Impact"}
-        leftSubtext="Log in to continue your learning journey, track your progress, and access your courses anytime. "
+        title="Welcome back"
+        subtitle="Log in to continue your career journey."
+        variant="login"
       >
-        <Form {...form}>
-          <form
-            action=""
-            className="space-y-4"
-            onSubmit={form.handleSubmit(handleSubmit)}
-          >
-            <FormInput
-              name="username"
-              label="Username/Email"
-              placeholder="Enter your username or email"
-              id="username"
-              type="text"
-              control={form.control}
-              autoComplete="username"
-              className="w-full"
-            />
-            <PasswordInput
-              id="password"
-              autoComplete="current-password"
-              label="Password"
-              name="password"
-              control={form.control}
-              placeholder="Enter your password"
-              className="w-full"
-            />
+        <div className="w-full">
+          {/* Social Auth Buttons (Stacked vertically as in Mockup) */}
+          <SocialAuthButtons
+            onGoogleCallback={handleGoogleCallback}
+            layout="vertical"
+          />
 
-            <Link
-              to={`/forgot-password${redirectTarget ? `?redirectTo=${encodeURIComponent(redirectTarget)}` : ""}`}
-              className="hover:text-primary-color-700 block text-sm font-semibold capitalize text-primary-color-600"
-            >
-              Forgot password?
-            </Link>
+          {/* Divider */}
+          <div className="relative my-6 flex items-center">
+            <div className="flex-grow border-t border-gray-200" />
+            <span className="flex-shrink mx-4 text-xs font-semibold uppercase text-gray-400">
+              OR
+            </span>
+            <div className="flex-grow border-t border-gray-200" />
+          </div>
 
-            <CommonButton
-              className="hover:bg-[#a8103a] mt-8 w-full bg-[#C41E3A] font-poppins text-[16px] font-[500] capitalize text-white disabled:opacity-50 rounded-lg py-3"
+          {/* Credentials Form */}
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-sm font-semibold text-[#344054] mb-1.5"
+              >
+                Email address
+              </label>
+              <input
+                id="email"
+                type="text"
+                autoComplete="email username"
+                placeholder="you@example.com"
+                {...form.register("email")}
+                className={`w-full px-3.5 py-2.5 rounded-xl border ${
+                  errors.email ? "border-red-500" : "border-[#D0D5DD]"
+                } text-sm text-[#101828] placeholder:text-[#98A2B3] focus:outline-none focus:ring-2 focus:ring-[#D7195A]/20 focus:border-[#D7195A] transition-all`}
+              />
+              {errors.email && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.email.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-semibold text-[#344054] mb-1.5"
+              >
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                  placeholder="Enter your password"
+                  {...form.register("password")}
+                  className={`w-full px-3.5 py-2.5 rounded-xl border ${
+                    errors.password ? "border-red-500" : "border-[#D0D5DD]"
+                  } text-sm text-[#101828] placeholder:text-[#98A2B3] focus:outline-none focus:ring-2 focus:ring-[#D7195A]/20 focus:border-[#D7195A] transition-all pr-10`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+              {errors.password && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
+
+            {/* Remember Me & Forgot Password Row */}
+            <div className="flex items-center justify-between pt-1">
+              <label className="flex items-center gap-2 cursor-pointer text-sm text-[#475467] select-none">
+                <input
+                  type="checkbox"
+                  {...form.register("rememberMe")}
+                  className="h-4 w-4 rounded border-gray-300 accent-[#D7195A] focus:ring-[#D7195A] cursor-pointer"
+                />
+                <span>Remember me</span>
+              </label>
+              <Link
+                to={forgotPasswordLink}
+                className="text-sm font-semibold text-[#D7195A] hover:underline"
+              >
+                Forgot password?
+              </Link>
+            </div>
+
+            {/* Submit Button */}
+            <button
               type="submit"
               disabled={isPending}
+              className="w-full mt-4 py-3 px-4 bg-[#D7195A] hover:bg-[#c0154e] active:scale-[0.99] text-white text-sm font-semibold rounded-xl shadow-lg shadow-[#D7195A]/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              {isPending ? <ClipLoader size={20} color={"#fff"} /> : "Log In"}
-            </CommonButton>
+              {isPending ? (
+                <ClipLoader size={18} color="#ffffff" />
+              ) : (
+                "Log in"
+              )}
+            </button>
           </form>
-        </Form>
 
-        <div className="my-5 flex items-center gap-3">
-          <div className="flex-1 h-px bg-gray-200" />
-          <span className="text-xs font-semibold text-gray-400">OR</span>
-          <div className="flex-1 h-px bg-gray-200" />
+          {/* Footer */}
+          <p className="mt-8 text-center text-sm text-[#475467]">
+            Don't have an account?{" "}
+            <Link
+              to={signupLink}
+              className="font-bold text-[#101828] hover:underline ml-1"
+            >
+              Sign up free
+            </Link>
+          </p>
         </div>
-
-        <GoogleAuthButton onCallback={handleGoogleCallback} text="signin_with" />
-
-        <p className="mt-6 flex items-center justify-center gap-4 text-center">
-          <span className="text-sm text-[#514A4A]">Don't have an account?</span>
-          <Link
-            to={`/signup${redirectTarget ? `?redirectTo=${encodeURIComponent(redirectTarget)}` : ""}`}
-            className="hover:text-primary-color-700 text-sm font-semibold capitalize text-primary-color-600"
-          >
-            Sign up
-          </Link>
-        </p>
       </AuthLayout>
     </div>
   );
