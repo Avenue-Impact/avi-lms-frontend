@@ -12,34 +12,42 @@ import { useUnreadNotificationsPrompt } from "@/hooks/students/use-unread-notifi
 const OtherLayout = () => {
   const [showModal, setShowModal] = useState(false);
   const [isQuestionDrawerOpen, setIsQuestionDrawerOpen] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   useUnreadNotificationsPrompt();
 
   return (
     <div className="min-h-screen bg-[#FDFDFD]">
-      <OtherSideNav setIsQuestionDrawerOpen={setIsQuestionDrawerOpen} />
+      <CourseDataProvider>
+        <CourseSectionViewProvider>
+          {/* Course Sidebar Navigation */}
+          <OtherSideNav
+            setIsQuestionDrawerOpen={setIsQuestionDrawerOpen}
+            setShowModal={setShowModal}
+            isOpenMobile={isMobileSidebarOpen}
+            setIsOpenMobile={setIsMobileSidebarOpen}
+          />
 
-      {/* Questions Drawer (toggled by the Question icon in SideNav) */}
-      <QuestionsDrawer
-        isOpen={isQuestionDrawerOpen}
-        onClose={() => setIsQuestionDrawerOpen(false)}
-      />
+          {/* Questions Drawer (toggled by Questions & Help item) */}
+          <QuestionsDrawer
+            isOpen={isQuestionDrawerOpen}
+            onClose={() => setIsQuestionDrawerOpen(false)}
+          />
 
-      {/* Main Content Area - Pushed right on desktop to clear the 76px sidebar */}
-      <div className="flex min-h-screen flex-col lg:ml-[76px]">
-        <CourseDataProvider>
-          <CourseSectionViewProvider>
+          {/* Main Content Area - Pushed right on desktop to clear the 272px sidebar */}
+          <div className="flex min-h-screen flex-col lg:ml-[272px]">
             <OtherTopNav
               setShowModal={setShowModal}
               setIsQuestionDrawerOpen={setIsQuestionDrawerOpen}
+              setIsMobileSidebarOpen={setIsMobileSidebarOpen}
             />
             <main
-              className={`mx-auto w-full flex-1 bg-[#FDFDFD] px-4 py-8 md:px-8 lg:px-12`}
+              className="mx-auto w-full flex-1 bg-[#FDFDFD] px-4 py-8 md:px-8 lg:px-12"
             >
               <Outlet />
             </main>
-          </CourseSectionViewProvider>
-        </CourseDataProvider>
-      </div>
+          </div>
+        </CourseSectionViewProvider>
+      </CourseDataProvider>
 
       {showModal && (
         <Modal>

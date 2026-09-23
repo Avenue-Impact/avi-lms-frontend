@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 
 const CourseViewLayout = () => {
   return (
-    <div className="lg:ml-24">
+    <div className="w-full">
       <Outlet />
     </div>
   );
