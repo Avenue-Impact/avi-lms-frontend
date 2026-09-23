@@ -1,9 +1,15 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useFetchCohortStudents } from "@/hooks/instructor/use-fetch-cohort-students";
 import { useFetchInstructorCohorts } from "@/hooks/instructor/use-fetch-instructor-cohorts";
-import { useFetchAssignmentTasks } from "@/hooks/instructor/use-assignment-management";
+import {
+  useFetchAssignmentTasks,
+  useDeleteAssignmentTask,
+} from "@/hooks/instructor/use-assignment-management";
 import AssignmentCard from "@/Components/instructor/AssignmentCard";
-import { useNavigate } from "react-router-dom";
+import AssignmentTable from "@/Components/instructor/AssignmentTable";
+import AssignmentModal from "@/Components/instructor/AssignmentModal";
+import DeleteConfirmModal from "@/Components/instructor/DeleteConfirmModal";
+import { useNavigate, useParams } from "react-router-dom";
 import { transferStudent } from "@/hooks/students/use-enrolled-courses";
 import {
   Users,
@@ -21,9 +27,12 @@ import {
   Plus,
   Download,
   Eye,
+  LayoutGrid,
+  List,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import MaterialCard from "@/Components/materials/MaterialCard";
+import MaterialTable from "@/Components/materials/MaterialTable";
 import MaterialDetailModal from "@/Components/materials/MaterialDetailModal";
 import UploadMaterialModal from "@/Components/materials/UploadMaterialModal";
 import {
@@ -32,13 +41,32 @@ import {
   useDeleteInstructorMaterial,
 } from "@/hooks/materials/use-materials";
 
+const getCohortStatus = (cohort) => {
+  if (cohort.status) return cohort.status;
+  const now = new Date();
+  const start = new Date(cohort.start_date || cohort.created_at || Date.now());
+  const end = cohort.end_date ? new Date(cohort.end_date) : null;
+
+  if (end && now > end) return "Completed";
+  if (now < start) return "Upcoming";
+  return "In Progress";
+};
+
 const CohortManagement = () => {
-  const [selectedCohortId, setSelectedCohortId] = useState(null);
+  const { cohortId: routeCohortId } = useParams();
+  const navigate = useNavigate();
+  const [selectedCohortId, setSelectedCohortId] = useState(routeCohortId || null);
   const [searchQuery, setSearchQuery] = useState("");
 
   const { data: cohortsData, isLoading: isLoadingCohorts } =
     useFetchInstructorCohorts();
   const cohorts = cohortsData?.data?.cohorts || [];
+
+  useEffect(() => {
+    if (routeCohortId) {
+      setSelectedCohortId(routeCohortId);
+    }
+  }, [routeCohortId]);
 
   const selectedCohort = useMemo(() => {
     return cohorts.find((c) => (c.id || c._id) === selectedCohortId);
@@ -56,7 +84,10 @@ const CohortManagement = () => {
     return (
       <CohortDetailPage
         cohort={selectedCohort}
-        onBack={() => setSelectedCohortId(null)}
+        onBack={() => {
+          setSelectedCohortId(null);
+          navigate("/instructor/cohorts");
+        }}
       />
     );
   }
@@ -64,9 +95,12 @@ const CohortManagement = () => {
   return (
     <CohortsListPage
       cohorts={cohorts}
-      onManage={(id) => setSelectedCohortId(id)}
       searchQuery={searchQuery}
       setSearchQuery={setSearchQuery}
+      onManage={(id) => {
+        setSelectedCohortId(id);
+        navigate(`/instructor/cohorts/${id}`);
+      }}
     />
   );
 };
@@ -299,14 +333,6 @@ const StatusBadge = ({ status }) => {
   );
 };
 
-// Helper for status determination
-const getCohortStatus = (cohort) => {
-  // If we had real status fields, we'd use them. For now, logic:
-  // (This is just a mockup logic, modify with real API fields if available)
-  if (cohort.is_active === false) return "Completed";
-  if (new Date(cohort.start_date) > new Date()) return "Upcoming";
-  return "In Progress";
-};
 
 // --- PAGE 1: COHORT DETAIL PAGE ---
 const CohortDetailPage = ({ cohort, onBack }) => {
@@ -385,48 +411,7 @@ const CohortDetailPage = ({ cohort, onBack }) => {
         />
       )}
       {activeTab === "Assignments" && (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2">
-          {isLoadingAssignments ? (
-            <div className="col-span-full py-20 text-center">
-              <div className="mx-auto h-8 w-8 animate-spin rounded-full border-b-2 border-primary-color-600"></div>
-            </div>
-          ) : assignments.length > 0 ? (
-            assignments.map((assignment) => (
-              <AssignmentCard
-                key={assignment._id}
-                title={assignment.title}
-                cohort={
-                  cohort.course_id?.title + " - " + cohort.cohort || "Cohort"
-                }
-                dueDate={new Date(assignment.due_date).toLocaleDateString(
-                  "en-US",
-                  {
-                    month: "long",
-                    day: "numeric",
-                    year: "numeric",
-                  },
-                )}
-                submissionStats={{
-                  submitted: assignment.submissions_count || 0,
-                  total: students.length,
-                }}
-                onClick={() =>
-                  navigate(`/instructor/submissions?taskId=${assignment._id}`)
-                }
-              />
-            ))
-          ) : (
-            <div className="col-span-full rounded-xl border border-dashed border-[#E5E5E5] bg-white py-20 text-center">
-              <FileText className="mx-auto mb-4 text-gray-300" size={48} />
-              <h3 className="text-lg font-semibold text-[#1A1A2E]">
-                No assignments found
-              </h3>
-              <p className="text-sm text-gray-400">
-                You haven't created any assignments for this cohort yet.
-              </p>
-            </div>
-          )}
-        </div>
+        <CohortAssignmentsTab cohort={cohort} students={students} />
       )}
       {activeTab === "Materials" && (
         <CohortMaterialsTab cohort={cohort} />
@@ -435,21 +420,270 @@ const CohortDetailPage = ({ cohort, onBack }) => {
   );
 };
 
+// Cohort Assignments Tab Component
+const CohortAssignmentsTab = ({ cohort, students = [] }) => {
+  const navigate = useNavigate();
+
+  const cohortId = useMemo(() => {
+    const raw = cohort?.id || cohort?._id;
+    if (!raw) return "";
+    return typeof raw === "object" ? (raw._id || raw.id || "").toString() : raw.toString();
+  }, [cohort]);
+
+  const courseId = useMemo(() => {
+    const raw = cohort?.course_id || cohort?.course;
+    if (!raw) return "";
+    if (typeof raw === "object") {
+      return (raw._id || raw.id || "").toString();
+    }
+    return raw.toString();
+  }, [cohort]);
+
+  const cohortName = useMemo(() => {
+    return cohort?.cohort || cohort?.name || "Current Cohort";
+  }, [cohort]);
+
+  const courseTitle = useMemo(() => {
+    return cohort?.course_id?.title || "Course";
+  }, [cohort]);
+
+  const [assignmentsViewMode, setAssignmentsViewMode] = useState("list");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [editingAssignment, setEditingAssignment] = useState(null);
+  const [deletingAssignment, setDeletingAssignment] = useState(null);
+
+  const { data: assignmentsData, isLoading } = useFetchAssignmentTasks(cohortId);
+  const { mutateAsync: deleteAssignment, isPending: isDeleting } =
+    useDeleteAssignmentTask(cohortId);
+
+  const assignments = assignmentsData?.data?.tasks || [];
+
+  const filteredAssignments = useMemo(() => {
+    return assignments.filter((item) => {
+      const matchesSearch =
+        item.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.description?.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesSearch;
+    });
+  }, [assignments, searchQuery]);
+
+  const handleDeleteConfirm = async () => {
+    if (!deletingAssignment) return;
+    const assignmentId = deletingAssignment._id || deletingAssignment.id;
+    try {
+      await deleteAssignment(assignmentId);
+      setDeletingAssignment(null);
+    } catch (err) {
+      console.error("Failed to delete assignment:", err);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Top Banner */}
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between bg-white p-6 rounded-2xl border border-gray-200">
+        <div>
+          <h2 className="text-xl font-bold text-gray-900">Cohort Assignments</h2>
+          <p className="text-sm text-gray-500 mt-0.5">
+            Create, view, modify, and grade assignments for {cohortName}.
+          </p>
+        </div>
+        <button
+          onClick={() => setIsCreateModalOpen(true)}
+          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-primary-color-600 text-white font-medium hover:bg-[#b0143d] transition-colors shadow-sm cursor-pointer"
+        >
+          <Plus size={18} />
+          New Assignment
+        </button>
+      </div>
+
+      {/* Search & View Mode Switcher */}
+      <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+        <div className="relative flex-1 max-w-md">
+          <Search
+            size={16}
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"
+          />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search assignments by title..."
+            className="w-full pl-9 pr-4 py-2 text-sm rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-color-600/30 focus:border-primary-color-600"
+          />
+        </div>
+
+        {/* View Mode Switcher */}
+        <div className="flex items-center bg-gray-100 p-1 rounded-xl shrink-0">
+          <button
+            type="button"
+            onClick={() => setAssignmentsViewMode("list")}
+            className={cn(
+              "p-1.5 rounded-lg transition-colors cursor-pointer",
+              assignmentsViewMode === "list"
+                ? "bg-white text-gray-900 shadow-xs"
+                : "text-gray-500 hover:text-gray-900"
+            )}
+            title="List Column-Row View"
+          >
+            <List size={16} />
+          </button>
+          <button
+            type="button"
+            onClick={() => setAssignmentsViewMode("grid")}
+            className={cn(
+              "p-1.5 rounded-lg transition-colors cursor-pointer",
+              assignmentsViewMode === "grid"
+                ? "bg-white text-gray-900 shadow-xs"
+                : "text-gray-500 hover:text-gray-900"
+            )}
+            title="Grid Card View"
+          >
+            <LayoutGrid size={16} />
+          </button>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      {isLoading ? (
+        <div className="py-20 text-center">
+          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-b-2 border-primary-color-600"></div>
+        </div>
+      ) : filteredAssignments.length > 0 ? (
+        assignmentsViewMode === "list" ? (
+          <AssignmentTable
+            assignments={filteredAssignments}
+            totalStudents={students.length}
+            onEdit={(a) => setEditingAssignment(a)}
+            onDelete={(a) => setDeletingAssignment(a)}
+            onViewSubmissions={(a) =>
+              navigate(`/instructor/submissions?taskId=${a._id || a.id}`)
+            }
+          />
+        ) : (
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            {filteredAssignments.map((assignment) => {
+              const assignmentId = assignment._id || assignment.id;
+              return (
+                <AssignmentCard
+                  key={assignmentId}
+                  title={assignment.title}
+                  cohort={`${courseTitle} - ${cohortName}`}
+                  dueDate={
+                    assignment.due_date
+                      ? new Date(assignment.due_date).toLocaleDateString("en-US", {
+                        month: "long",
+                        day: "numeric",
+                        year: "numeric",
+                      })
+                      : "No date"
+                  }
+                  submissionStats={{
+                    submitted: assignment.submissions_count || 0,
+                    total: students.length,
+                  }}
+                  onClick={() =>
+                    navigate(`/instructor/submissions?taskId=${assignmentId}`)
+                  }
+                  onEdit={() => setEditingAssignment(assignment)}
+                  onDelete={() => setDeletingAssignment(assignment)}
+                />
+              );
+            })}
+          </div>
+        )
+      ) : (
+        <div className="rounded-2xl border border-dashed border-gray-200 bg-white p-12 text-center">
+          <div className="mx-auto w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 mb-3">
+            <FileText size={28} />
+          </div>
+          <h3 className="text-base font-semibold text-gray-900">
+            {searchQuery ? "No matching assignments" : "No assignments created yet"}
+          </h3>
+          <p className="text-sm text-gray-500 mt-1 max-w-sm mx-auto">
+            {searchQuery
+              ? "Try adjusting your search keywords."
+              : "Create an assignment task for students in this cohort to submit their work."}
+          </p>
+          {!searchQuery && (
+            <button
+              onClick={() => setIsCreateModalOpen(true)}
+              className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary-color-600 text-white text-xs font-semibold hover:bg-[#b0143d] transition shadow-xs cursor-pointer"
+            >
+              <Plus size={15} />
+              Create Assignment
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Create Modal */}
+      {isCreateModalOpen && (
+        <AssignmentModal
+          isOpen={isCreateModalOpen}
+          onClose={() => setIsCreateModalOpen(false)}
+          cohortId={cohortId}
+          courseId={courseId}
+        />
+      )}
+
+      {/* Edit Modal */}
+      {editingAssignment && (
+        <AssignmentModal
+          isOpen={Boolean(editingAssignment)}
+          onClose={() => setEditingAssignment(null)}
+          cohortId={cohortId}
+          courseId={courseId}
+          initialData={editingAssignment}
+        />
+      )}
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmModal
+        isOpen={Boolean(deletingAssignment)}
+        onClose={() => setDeletingAssignment(null)}
+        onConfirm={handleDeleteConfirm}
+        itemName={deletingAssignment?.title}
+        isDeleting={isDeleting}
+      />
+    </div>
+  );
+};
+
 // Cohort Materials Tab Component
 const CohortMaterialsTab = ({ cohort }) => {
-  const cohortId = cohort.id || cohort._id;
+  const cohortId = useMemo(() => {
+    const raw = cohort?.id || cohort?._id;
+    if (!raw) return "";
+    return typeof raw === "object" ? (raw._id || raw.id || "").toString() : raw.toString();
+  }, [cohort]);
+
+  const courseId = useMemo(() => {
+    const raw = cohort?.course_id || cohort?.course;
+    if (!raw) return "";
+    if (typeof raw === "object") {
+      return (raw._id || raw.id || "").toString();
+    }
+    return raw.toString();
+  }, [cohort]);
+
+  const cohortName = useMemo(() => {
+    return cohort?.cohort || cohort?.name || "Current Cohort";
+  }, [cohort]);
+
   const [selectedMaterial, setSelectedMaterial] = useState(null);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState("all");
+  const [materialsViewMode, setMaterialsViewMode] = useState("list");
 
   const { data: materials = [], isLoading } = useFetchCohortMaterials(cohortId);
   const { mutateAsync: createMaterial, isPending: isUploading } = useCreateCohortMaterial(cohortId);
   const { mutateAsync: deleteMaterial } = useDeleteInstructorMaterial(cohortId);
 
   const handleUploadSubmit = async (formData) => {
-    await createMaterial(formData);
-    setIsUploadModalOpen(false);
+    return await createMaterial(formData);
   };
 
   const handleDelete = async (materialId) => {
@@ -554,29 +788,70 @@ const CohortMaterialsTab = ({ cohort }) => {
               {tab}
             </button>
           ))}
+
+          {/* View Mode Switcher */}
+          <div className="flex items-center bg-gray-100 p-1 rounded-xl shrink-0">
+            <button
+              type="button"
+              onClick={() => setMaterialsViewMode("list")}
+              className={cn(
+                "p-1.5 rounded-lg transition-colors",
+                materialsViewMode === "list"
+                  ? "bg-white text-gray-900 shadow-xs"
+                  : "text-gray-500 hover:text-gray-900"
+              )}
+              title="List Column-Row View"
+            >
+              <List size={16} />
+            </button>
+            <button
+              type="button"
+              onClick={() => setMaterialsViewMode("grid")}
+              className={cn(
+                "p-1.5 rounded-lg transition-colors",
+                materialsViewMode === "grid"
+                  ? "bg-white text-gray-900 shadow-xs"
+                  : "text-gray-500 hover:text-gray-900"
+              )}
+              title="Grid Card View"
+            >
+              <LayoutGrid size={16} />
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Materials Grid / Empty State */}
+      {/* Materials Display / Empty State */}
       {isLoading ? (
         <div className="py-20 text-center">
           <div className="mx-auto h-8 w-8 animate-spin rounded-full border-b-2 border-primary-color-600"></div>
         </div>
       ) : filteredMaterials.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredMaterials.map((material) => (
-            <MaterialCard
-              key={material._id}
-              material={material}
-              onView={(m) => setSelectedMaterial(m)}
-              onDownload={(m) => {
-                if (m.file_url) window.open(m.file_url, "_blank");
-              }}
-              onDelete={(m) => handleDelete(m._id)}
-              showActions={true}
-            />
-          ))}
-        </div>
+        materialsViewMode === "list" ? (
+          <MaterialTable
+            materials={filteredMaterials}
+            onView={(m) => setSelectedMaterial(m)}
+            onDownload={(m) => {
+              if (m.file_url) window.open(m.file_url, "_blank");
+            }}
+            onDelete={(m) => handleDelete(m._id)}
+          />
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredMaterials.map((material) => (
+              <MaterialCard
+                key={material._id}
+                material={material}
+                onView={(m) => setSelectedMaterial(m)}
+                onDownload={(m) => {
+                  if (m.file_url) window.open(m.file_url, "_blank");
+                }}
+                onDelete={(m) => handleDelete(m._id)}
+                showActions={true}
+              />
+            ))}
+          </div>
+        )
       ) : (
         <div className="rounded-2xl border border-dashed border-gray-200 bg-white p-12 text-center">
           <div className="mx-auto w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 mb-3">
@@ -602,10 +877,15 @@ const CohortMaterialsTab = ({ cohort }) => {
         onClose={() => setIsUploadModalOpen(false)}
         onSubmit={handleUploadSubmit}
         isLoading={isUploading}
+        isSubmitting={isUploading}
         isAdmin={false}
+        cohortId={cohortId}
+        cohortName={cohortName}
+        courseId={courseId}
         initialData={{
-          course_id: cohort.course_id?._id || cohort.course_id?.id,
+          course_id: courseId,
           cohort_id: cohortId,
+          cohort_name: cohortName,
         }}
       />
 
@@ -1035,11 +1315,10 @@ const TransferStudentModal = ({ student, cohort }) => {
             {/* Feedback */}
             {feedback && (
               <p
-                className={`mb-4 rounded-lg px-4 py-2.5 text-sm font-medium ${
-                  feedback.type === "success"
+                className={`mb-4 rounded-lg px-4 py-2.5 text-sm font-medium ${feedback.type === "success"
                     ? "bg-green-50 text-green-700"
                     : "bg-red-50 text-[#C8102E]"
-                }`}
+                  }`}
               >
                 {feedback.message}
               </p>

@@ -46,13 +46,12 @@ const CourseManagementPage = () => {
   const btnRef = useRef(null);
 
   const { setActiveTab } = useCourseManagementInfo();
-  
+
   const courseId =
     localStorage.getItem("course-information") && courseInformation.id;
 
   const dataToEdit = (courseInformation && Object.keys(courseInformation).length > 0) ? {
     courseTitle: courseInformation.title || "",
-    pathway: courseInformation.pathway || courseInformation.category || "",
     benefits: (courseInformation.benefits || []).join("\n"),
     courseIncludes: (courseInformation.course_includes || []).join("\n"),
     highlight: (courseInformation.program_highlights || []).join("\n"),
@@ -74,16 +73,16 @@ const CourseManagementPage = () => {
     defaultValues: dataToEdit
       ? dataToEdit
       : {
-          courseTitle: "",
-          pathway: "",
-          benefits: "",
-          courseIncludes: "",
-          highlight: "",
-          technologies: "",
-          overview: "",
-          url: "",
-          is_private: false,
-        },
+        courseTitle: "",
+        pathway: "",
+        benefits: "",
+        courseIncludes: "",
+        highlight: "",
+        technologies: "",
+        overview: "",
+        url: "",
+        is_private: false,
+      },
   });
 
   const editCourse = (data) => {
@@ -183,7 +182,7 @@ const CourseManagementPage = () => {
       overview: overview,
       is_private,
     };
-    
+
     // Support file uploads, or fallback to existing string URL from clone
     if (image.file) {
       courses.coverImage = image.file;

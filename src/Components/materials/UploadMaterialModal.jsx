@@ -1,111 +1,297 @@
 import React, { useState } from "react";
-import { X, Upload, Link as LinkIcon, FileText, AlertCircle, CheckCircle2 } from "lucide-react";
+import {
+  X,
+  Upload,
+  Link as LinkIcon,
+  FileText,
+  AlertCircle,
+  CheckCircle2,
+  Trash2,
+  Plus,
+  Film,
+  Image as ImageIcon,
+  RefreshCw,
+} from "lucide-react";
+import toast from "react-hot-toast";
+import { formatUploadErrorMessage } from "@/hooks/materials/use-materials";
 
 export default function UploadMaterialModal({
   isOpen,
   onClose,
   onSubmit,
   isSubmitting = false,
+  isLoading = false,
   cohortId,
   cohortName = "Current Cohort",
   courseId,
   courseDurations = [], // Configured on-demand durations for this course
   availableCohorts = [], // Available cohorts if admin
   isAdmin = false,
+  initialData = {},
 }) {
   if (!isOpen) return null;
+
+  const cleanId = (val) => {
+    if (!val) return "";
+    if (typeof val === "object") {
+      const id = val._id || val.id;
+      return id ? id.toString().trim() : "";
+    }
+    const s = String(val).trim();
+    if (s === "undefined" || s === "null" || s === "[object Object]") return "";
+    return s;
+  };
+
+  const effectiveCohortId = cleanId(cohortId || initialData?.cohort_id);
+  const effectiveCourseId = cleanId(courseId || initialData?.course_id);
+  const effectiveCohortName = cohortName !== "Current Cohort" ? cohortName : (initialData?.cohort_name || cohortName);
+
+  const [localUploading, setLocalUploading] = useState(false);
+  const [uploadStatusText, setUploadStatusText] = useState("");
+  const submitting = isSubmitting || isLoading || localUploading;
 
   const [title, setTitle] = useState("");
   const [instructions, setInstructions] = useState("");
   const [materialType, setMaterialType] = useState("document"); // document, video, image, link
-  const [file, setFile] = useState(null);
+  const [files, setFiles] = useState([]);
   const [linkUrl, setLinkUrl] = useState("");
   const [dragOver, setDragOver] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
   // Admin Scope Controls
   const [adminCourseType, setAdminCourseType] = useState("live"); // live, on demand
-  const [selectedCohortId, setSelectedCohortId] = useState(cohortId || "");
+  const [selectedCohortId, setSelectedCohortId] = useState(effectiveCohortId || "");
   const [selectedDuration, setSelectedDuration] = useState("all");
 
-  const handleFileChange = (selectedFile) => {
-    if (!selectedFile) return;
+  const formatBytes = (bytes) => {
+    if (!bytes && bytes !== 0) return "0 B";
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+  };
 
-    // Check 200MB limit
+  const getFileIcon = (fileName) => {
+    const ext = (fileName || "").split(".").pop().toLowerCase();
+    if (["mp4", "mov", "webm", "avi", "mkv"].includes(ext)) {
+      return <Film size={16} className="text-purple-600 shrink-0" />;
+    }
+    if (["jpg", "jpeg", "png", "webp", "svg", "gif"].includes(ext)) {
+      return <ImageIcon size={16} className="text-blue-600 shrink-0" />;
+    }
+    return <FileText size={16} className="text-amber-600 shrink-0" />;
+  };
+
+  const handleFilesAdded = (incomingFiles) => {
+    if (!incomingFiles || incomingFiles.length === 0) return;
+    const incomingArray = Array.from(incomingFiles);
     const maxSizeBytes = 200 * 1024 * 1024;
-    if (selectedFile.size > maxSizeBytes) {
-      setErrorMsg("File size exceeds 200MB limit. Please choose a smaller file.");
-      return;
+
+    const oversized = incomingArray.filter((f) => f.size > maxSizeBytes);
+    if (oversized.length > 0) {
+      setErrorMsg(`${oversized.length} file(s) exceed 200MB limit and were skipped.`);
+    } else {
+      setErrorMsg("");
     }
 
-    setErrorMsg("");
-    setFile(selectedFile);
+    const validFiles = incomingArray.filter((f) => f.size <= maxSizeBytes);
+    if (validFiles.length === 0) return;
 
-    // Auto-fill title if empty
-    if (!title) {
-      const nameWithoutExt = selectedFile.name.replace(/\.[^/.]+$/, "");
-      setTitle(nameWithoutExt);
-    }
+    setFiles((prev) => {
+      const existingKeys = new Set(prev.map((f) => `${f.name}_${f.size}`));
+      const newUnique = validFiles.filter((f) => !existingKeys.has(`${f.name}_${f.size}`));
+      const combined = [...prev, ...newUnique];
+
+      if (!title && combined.length > 0) {
+        setTitle(combined[0].name.replace(/\.[^/.]+$/, ""));
+      }
+      return combined;
+    });
+  };
+
+  const handleRemoveFile = (indexToRemove) => {
+    setFiles((prev) => {
+      const updated = prev.filter((_, idx) => idx !== indexToRemove);
+      return updated;
+    });
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
     setDragOver(false);
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      handleFileChange(e.dataTransfer.files[0]);
+      handleFilesAdded(e.dataTransfer.files);
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!title.trim()) {
-      setErrorMsg("Please provide a material name.");
-      return;
-    }
+  const handleSubmit = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    if (submitting) return;
+
+    setErrorMsg("");
 
     if (materialType === "link") {
       if (!linkUrl.trim()) {
         setErrorMsg("Please enter a valid link URL.");
         return;
       }
-    } else if (!file) {
-      setErrorMsg("Please select or drop a file to upload.");
+      if (!title.trim()) {
+        setErrorMsg("Please provide a material name.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("title", title.trim());
+      formData.append("instructions", instructions.trim());
+      formData.append("type", "link");
+      formData.append("link_url", linkUrl.trim());
+
+      if (effectiveCourseId) {
+        formData.append("course_id", effectiveCourseId);
+      }
+
+      if (isAdmin) {
+        formData.append("course_type", adminCourseType);
+        if (adminCourseType === "live") {
+          if (selectedCohortId) {
+            formData.append("cohort_id", selectedCohortId);
+          }
+        } else if (adminCourseType === "on demand") {
+          formData.append("on_demand_duration", selectedDuration);
+        }
+      } else {
+        formData.append("course_type", "live");
+        if (effectiveCohortId) {
+          formData.append("cohort_id", effectiveCohortId);
+        }
+      }
+
+      try {
+        setLocalUploading(true);
+        setUploadStatusText("Adding link material...");
+        await onSubmit(formData);
+        toast.success("Link material added successfully!");
+        onClose();
+      } catch (err) {
+        const friendly = formatUploadErrorMessage(err);
+        setErrorMsg(friendly);
+        toast.error(friendly);
+      } finally {
+        setLocalUploading(false);
+        setUploadStatusText("");
+      }
       return;
     }
 
-    const formData = new FormData();
-    formData.append("title", title.trim());
-    formData.append("instructions", instructions.trim());
-    formData.append("type", materialType);
-
-    if (courseId) {
-      formData.append("course_id", courseId);
+    // Handle File Uploads
+    if (files.length === 0) {
+      setErrorMsg("Please select or drop at least one file to upload.");
+      return;
     }
 
-    if (materialType === "link") {
-      formData.append("link_url", linkUrl.trim());
-    } else if (file) {
-      formData.append("file", file);
-    }
+    setLocalUploading(true);
+    setErrorMsg("");
 
-    if (isAdmin) {
-      formData.append("course_type", adminCourseType);
-      if (adminCourseType === "live") {
-        if (selectedCohortId) {
-          formData.append("cohort_id", selectedCohortId);
+    const filesToUpload = [...files];
+    const totalFiles = filesToUpload.length;
+    let completedCount = 0;
+    let hasFailure = false;
+
+    for (let i = 0; i < filesToUpload.length; i++) {
+      const curFile = filesToUpload[i];
+      const baseName = curFile.name.replace(/\.[^/.]+$/, "");
+      const effectiveTitle =
+        totalFiles === 1 && title.trim()
+          ? title.trim()
+          : (title.trim() ? `${title.trim()} (${i + 1})` : baseName);
+
+      const makeFormData = () => {
+        const fd = new FormData();
+        fd.append("title", effectiveTitle);
+        fd.append("instructions", instructions.trim());
+        fd.append("type", materialType);
+        if (effectiveCourseId) {
+          fd.append("course_id", effectiveCourseId);
         }
-      } else if (adminCourseType === "on demand") {
-        formData.append("on_demand_duration", selectedDuration);
+        // Always append as "file" for single-file Multer compatibility on Heroku,
+        // and also "files" for multi-file backend compatibility
+        fd.append("file", curFile);
+        fd.append("files", curFile);
+
+        if (isAdmin) {
+          fd.append("course_type", adminCourseType);
+          if (adminCourseType === "live") {
+            if (selectedCohortId) {
+              fd.append("cohort_id", selectedCohortId);
+            }
+          } else if (adminCourseType === "on demand") {
+            fd.append("on_demand_duration", selectedDuration);
+          }
+        } else {
+          formData_append_instructor_scope: {
+            fd.append("course_type", "live");
+            if (effectiveCohortId) {
+              fd.append("cohort_id", effectiveCohortId);
+            }
+          }
+        }
+        return fd;
+      };
+
+      let uploadedSuccessfully = false;
+      const maxAttempts = 2;
+
+      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        try {
+          if (attempt > 1) {
+            setUploadStatusText(
+              `Upload interrupted. Retrying (attempt ${attempt} of ${maxAttempts}) for "${curFile.name}"...`
+            );
+            // Brief backoff before retry
+            await new Promise((resolve) => setTimeout(resolve, 1500));
+          } else {
+            setUploadStatusText(
+              totalFiles > 1
+                ? `Uploading ${i + 1} of ${totalFiles}: "${curFile.name}"...`
+                : `Uploading "${curFile.name}"...`
+            );
+          }
+
+          const fd = makeFormData();
+          await onSubmit(fd);
+          uploadedSuccessfully = true;
+          completedCount++;
+
+          // Remove completed file from pending list
+          setFiles((prev) => prev.filter((f) => f !== curFile));
+          break;
+        } catch (uploadErr) {
+          console.warn(`Upload attempt ${attempt} failed for ${curFile.name}:`, uploadErr);
+          if (attempt === maxAttempts) {
+            hasFailure = true;
+            const friendly = formatUploadErrorMessage(uploadErr);
+            setErrorMsg(friendly);
+            toast.error(friendly);
+          }
+        }
       }
-    } else {
-      // Instructor is locked to cohort
-      formData.append("course_type", "live");
-      if (cohortId) {
-        formData.append("cohort_id", cohortId);
+
+      if (!uploadedSuccessfully) {
+        // Halt remaining sequential uploads so user can click "Try Again" for remaining files
+        break;
       }
     }
 
-    onSubmit(formData);
+    setLocalUploading(false);
+    setUploadStatusText("");
+
+    if (!hasFailure && completedCount > 0) {
+      toast.success(
+        completedCount === 1
+          ? "Material uploaded successfully!"
+          : `All ${completedCount} materials uploaded successfully!`
+      );
+      onClose();
+    }
   };
 
   return (
@@ -142,9 +328,21 @@ export default function UploadMaterialModal({
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-5">
           {errorMsg && (
-            <div className="flex items-center gap-2 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-medium">
-              <AlertCircle size={16} className="shrink-0" />
-              <span>{errorMsg}</span>
+            <div className="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-medium animate-in fade-in">
+              <div className="flex items-center gap-2">
+                <AlertCircle size={16} className="shrink-0" />
+                <span>{errorMsg}</span>
+              </div>
+              {!submitting && (
+                <button
+                  type="button"
+                  onClick={() => handleSubmit()}
+                  className="shrink-0 flex items-center gap-1.5 px-3 py-1 rounded-lg bg-red-100 hover:bg-red-200 text-red-800 text-xs font-semibold transition shadow-xs cursor-pointer"
+                >
+                  <RefreshCw size={13} />
+                  <span>Try Again</span>
+                </button>
+              )}
             </div>
           )}
 
@@ -152,7 +350,7 @@ export default function UploadMaterialModal({
           {!isAdmin && (
             <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/70 text-xs text-slate-600 flex items-center justify-between">
               <span>Target Cohort:</span>
-              <span className="font-semibold text-[#0A1430]">{cohortName}</span>
+              <span className="font-semibold text-[#0A1430]">{effectiveCohortName}</span>
             </div>
           )}
 
@@ -242,15 +440,15 @@ export default function UploadMaterialModal({
           {/* Material Name */}
           <div>
             <label className="text-xs font-semibold text-slate-700 block mb-1.5">
-              Material Name <span className="text-red-500">*</span>
+              Material Name {files.length > 1 ? <span className="text-slate-400 font-normal">(Optional for multiple files)</span> : <span className="text-red-500">*</span>}
             </label>
             <input
               type="text"
-              placeholder="e.g. Sprint Planning Template & Guidelines"
+              placeholder={files.length > 1 ? "Defaults to each file's name" : "e.g. Sprint Planning Template & Guidelines"}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="w-full rounded-xl border border-slate-200 p-3 text-sm text-slate-800 focus:border-[#CC1747] focus:ring-1 focus:ring-[#CC1747] focus:outline-none"
-              required
+              required={files.length <= 1}
             />
           </div>
 
@@ -315,64 +513,127 @@ export default function UploadMaterialModal({
             </div>
           ) : (
             <div>
-              <label className="text-xs font-semibold text-slate-700 block mb-1.5">
-                Upload File (Max 200MB) <span className="text-red-500">*</span>
-              </label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-xs font-semibold text-slate-700">
+                  Upload Files (Max 200MB per file) <span className="text-red-500">*</span>
+                </label>
+                {files.length > 0 && (
+                  <span className="text-xs font-medium text-slate-500">
+                    {files.length} file{files.length > 1 ? "s" : ""} selected &bull;{" "}
+                    {formatBytes(files.reduce((acc, f) => acc + f.size, 0))}
+                  </span>
+                )}
+              </div>
 
-              <div
-                onDragOver={(e) => {
-                  e.preventDefault();
-                  setDragOver(true);
-                }}
-                onDragLeave={() => setDragOver(false)}
-                onDrop={handleDrop}
-                className={`border-2 border-dashed rounded-2xl p-6 text-center transition-all cursor-pointer ${
-                  dragOver
-                    ? "border-[#CC1747] bg-[#FFF1F4]"
-                    : file
-                    ? "border-emerald-300 bg-emerald-50/40"
-                    : "border-slate-200 hover:border-slate-300 bg-slate-50/50"
-                }`}
-                onClick={() => document.getElementById("material-file-input")?.click()}
-              >
-                <input
-                  id="material-file-input"
-                  type="file"
-                  className="hidden"
-                  onChange={(e) => {
-                    if (e.target.files && e.target.files.length > 0) {
-                      handleFileChange(e.target.files[0]);
-                    }
+              {files.length === 0 ? (
+                <div
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    setDragOver(true);
                   }}
-                />
+                  onDragLeave={() => setDragOver(false)}
+                  onDrop={handleDrop}
+                  onClick={() => document.getElementById("material-file-input")?.click()}
+                  className={`border-2 border-dashed rounded-2xl p-6 text-center transition-all cursor-pointer ${
+                    dragOver
+                      ? "border-[#CC1747] bg-[#FFF1F4]"
+                      : "border-slate-200 hover:border-slate-300 bg-slate-50/50"
+                  }`}
+                >
+                  <input
+                    id="material-file-input"
+                    type="file"
+                    multiple
+                    className="hidden"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files.length > 0) {
+                        handleFilesAdded(e.target.files);
+                        e.target.value = "";
+                      }
+                    }}
+                  />
 
-                {file ? (
-                  <div className="flex flex-col items-center">
-                    <CheckCircle2 size={32} className="text-emerald-500 mb-2" />
-                    <p className="font-semibold text-sm text-slate-800 break-all max-w-xs">
-                      {file.name}
-                    </p>
-                    <p className="text-xs text-slate-500 mt-0.5">
-                      {(file.size / (1024 * 1024)).toFixed(2)} MB &bull; Ready to upload
-                    </p>
-                    <span className="mt-2 text-xs font-medium text-[#CC1747] hover:underline">
-                      Click to choose a different file
-                    </span>
-                  </div>
-                ) : (
                   <div className="flex flex-col items-center">
                     <div className="w-12 h-12 rounded-full bg-white shadow-xs border border-slate-200 flex items-center justify-center text-slate-400 mb-2">
                       <Upload size={20} />
                     </div>
                     <p className="text-sm font-semibold text-slate-700">
-                      Drag & drop your file here, or <span className="text-[#CC1747]">browse</span>
+                      Drag & drop files here, or <span className="text-[#CC1747]">browse</span>
                     </p>
                     <p className="text-xs text-slate-400 mt-1">
-                      Supports PDF, DOCX, XLSX, PPTX, MP4, Images up to 200MB
+                      Select one or multiple files up to 200MB each (PDF, TXT, DOCX, XLSX, MP4, etc.)
                     </p>
                   </div>
-                )}
-              </div>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {/* File List */}
+                  <div className="max-h-48 overflow-y-auto space-y-2 border border-slate-200 rounded-xl p-2.5 bg-slate-50/50">
+                    {files.map((f, idx) => (
+                      <div
+                        key={`${f.name}_${f.size}_${idx}`}
+                        className="flex items-center justify-between p-2.5 bg-white rounded-lg border border-slate-200/80 shadow-xs"
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0 flex-1 mr-2">
+                          <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+                            {getFileIcon(f.name)}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-xs font-semibold text-slate-800 truncate" title={f.name}>
+                              {f.name}
+                            </p>
+                            <p className="text-[11px] text-slate-400">
+                              {formatBytes(f.size)}
+                            </p>
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveFile(idx)}
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition"
+                          title="Remove file"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Add More Files Area */}
+                  <div
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setDragOver(true);
+                    }}
+                    onDragLeave={() => setDragOver(false)}
+                    onDrop={handleDrop}
+                    onClick={() => document.getElementById("material-file-input-more")?.click()}
+                    className={`border border-dashed rounded-xl py-2.5 px-4 text-center cursor-pointer transition flex items-center justify-center gap-2 ${
+                      dragOver
+                        ? "border-[#CC1747] bg-[#FFF1F4]"
+                        : "border-slate-300 hover:border-slate-400 bg-white"
+                    }`}
+                  >
+                    <input
+                      id="material-file-input-more"
+                      type="file"
+                      multiple
+                      className="hidden"
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files.length > 0) {
+                          handleFilesAdded(e.target.files);
+                          e.target.value = "";
+                        }
+                      }}
+                    />
+                    <Plus size={15} className="text-[#CC1747]" />
+                    <span className="text-xs font-medium text-slate-600">
+                      Add more files or drag & drop here
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -381,23 +642,27 @@ export default function UploadMaterialModal({
             <button
               type="button"
               onClick={onClose}
-              disabled={isSubmitting}
+              disabled={submitting}
               className="px-5 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-700 hover:bg-slate-50 transition"
             >
               Cancel
             </button>
             <button
               type="submit"
-              disabled={isSubmitting}
-              className="px-6 py-2.5 rounded-xl bg-[#CC1747] hover:bg-[#B0133D] text-sm font-semibold text-white shadow-md shadow-[#CC1747]/20 transition disabled:opacity-50 flex items-center gap-2"
+              disabled={submitting}
+              className="px-6 py-2.5 rounded-xl bg-[#CC1747] hover:bg-[#B0133D] text-sm font-semibold text-white shadow-md shadow-[#CC1747]/20 transition disabled:opacity-50 flex items-center gap-2 cursor-pointer"
             >
-              {isSubmitting ? (
+              {submitting ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  <span>Uploading...</span>
+                  <span>{uploadStatusText || "Uploading..."}</span>
                 </>
+              ) : materialType === "link" ? (
+                <span>Add Link Material</span>
               ) : (
-                <span>Upload Material</span>
+                <span>
+                  {files.length > 1 ? `Upload ${files.length} Materials` : "Upload Material"}
+                </span>
               )}
             </button>
           </div>

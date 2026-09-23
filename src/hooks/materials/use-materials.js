@@ -12,11 +12,7 @@ const fetchCohortMaterialsApi = async (cohortId) => {
 };
 
 const createCohortMaterialApi = async ({ cohortId, formData }) => {
-  const { data } = await axiosInstructor.post(`/cohorts/${cohortId}/materials`, formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+  const { data } = await axiosInstructor.post(`/cohorts/${cohortId}/materials`, formData);
   return data;
 };
 
@@ -33,16 +29,34 @@ export const useFetchCohortMaterials = (cohortId) => {
   });
 };
 
+export const formatUploadErrorMessage = (error) => {
+  const serverMsg = error?.response?.data?.message || error?.message;
+  const isGlitch =
+    error?.code === "ERR_NETWORK" ||
+    error?.code === "ECONNABORTED" ||
+    !serverMsg ||
+    (typeof serverMsg === "string" &&
+      (serverMsg.includes("Unexpected field") ||
+        serverMsg.includes("LIMIT_UNEXPECTED_FILE") ||
+        serverMsg.includes("InvalidPart") ||
+        serverMsg.includes("timeout") ||
+        serverMsg.includes("Network Error")));
+
+  if (serverMsg && typeof serverMsg === "string" && (serverMsg.includes("200MB") || serverMsg.includes("limit"))) {
+    return "File size exceeds the 200MB limit";
+  }
+
+  return isGlitch
+    ? "Upload timed out or something went wrong. Please try again."
+    : serverMsg;
+};
+
 export const useCreateCohortMaterial = (cohortId) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (formData) => createCohortMaterialApi({ cohortId, formData }),
     onSuccess: () => {
       queryClient.invalidateQueries(["cohort-materials", cohortId]);
-      toast.success("Course material uploaded successfully!");
-    },
-    onError: (error) => {
-      toast.error(error.response?.data?.message || "Failed to upload course material");
     },
   });
 };
@@ -144,11 +158,7 @@ const fetchAdminMaterialsApi = async (courseId, params = {}) => {
 };
 
 const createAdminMaterialApi = async ({ courseId, formData }) => {
-  const { data } = await axiosAdmin.post(`/courses/${courseId}/materials`, formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+  const { data } = await axiosAdmin.post(`/courses/${courseId}/materials`, formData);
   return data;
 };
 
@@ -171,10 +181,6 @@ export const useCreateAdminMaterial = (courseId) => {
     mutationFn: (formData) => createAdminMaterialApi({ courseId, formData }),
     onSuccess: () => {
       queryClient.invalidateQueries(["admin-materials", courseId]);
-      toast.success("Course material uploaded successfully!");
-    },
-    onError: (error) => {
-      toast.error(error.response?.data?.message || "Failed to upload course material");
     },
   });
 };

@@ -10,10 +10,10 @@ export function QuestionsDrawer({ isOpen= false, onClose }) {
 
   return (
     <>
-      {/* Overlay - visible only on mobile/tablet when open */}
+      {/* Overlay - visible when open */}
       <div 
         className={cn(
-          "fixed inset-0 bg-black/50 z-40 transition-opacity lg:hidden",
+          "fixed inset-0 bg-black/40 z-40 transition-opacity",
           isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         )}
         onClick={onClose}
@@ -22,15 +22,17 @@ export function QuestionsDrawer({ isOpen= false, onClose }) {
       {/* Drawer */}
       <div 
         className={cn(
-          "fixed top-0 left-0 lg:left-[76px] h-screen w-[320px] md:w-[400px] bg-white z-50 shadow-xl transition-transform duration-300 ease-in-out border-r border-gray-200 flex flex-col lg:max-w-[360px]",
+          "fixed top-0 left-0 lg:left-[0px] h-screen w-[320px] md:w-[400px] bg-white z-50 shadow-xl transition-transform duration-300 ease-in-out border-r border-gray-200 flex flex-col lg:max-w-[360px]",
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         <div className="flex items-center justify-between p-6 pb-4">
           <h2 className="text-xl md:text-[22px] font-bold text-[#111827]">Questions</h2>
           <button 
+            type="button"
             onClick={onClose}
-            className="text-black hover:text-gray-600 transition-colors lg:hidden"
+            className="rounded-lg p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+            aria-label="Close drawer"
           >
             <IoCloseOutline size={24} />
           </button>
@@ -48,13 +50,22 @@ export function QuestionsDrawer({ isOpen= false, onClose }) {
                 />
               </div>
 
-              <CommonButton 
-                onClick={() => setView("detail")}
-                className="w-full md:w-auto bg-primary-color-600 hover:bg-primary-color-700 text-white rounded-md flex items-center justify-center gap-2 px-6 py-2.5"
-              >
-                <span>My Questions</span>
-                <FaArrowRight size={12} />
-              </CommonButton>
+              <div className="flex items-center gap-3">
+                <CommonButton 
+                  onClick={() => setView("detail")}
+                  className="bg-primary-color-600 hover:bg-primary-color-700 text-white rounded-md flex items-center justify-center gap-2 px-6 py-2.5 text-sm"
+                >
+                  <span>My Questions</span>
+                  <FaArrowRight size={12} />
+                </CommonButton>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors rounded-md border border-gray-200 hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           )}
 
@@ -73,12 +84,19 @@ export function QuestionsDrawer({ isOpen= false, onClose }) {
                   placeholder="Write your question here..."
                   className="w-full h-[200px] p-4 bg-primary-color-100/20 border border-primary-color-300/30 rounded-md text-sm placeholder:text-primary-color-300/70 focus:outline-none focus:ring-1 focus:ring-primary-color-300 resize-none"
                 />
-                <div className="mt-4">
+                <div className="mt-4 flex items-center gap-3">
                   <CommonButton 
-                    className="w-full md:w-auto bg-primary-color-600 hover:bg-primary-color-700 text-white rounded-md px-6 py-2.5"
+                    className="bg-primary-color-600 hover:bg-primary-color-700 text-white rounded-md px-6 py-2.5 text-sm"
                   >
                     Add Comment
                   </CommonButton>
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors rounded-md border border-gray-200 hover:bg-gray-50"
+                  >
+                    Cancel
+                  </button>
                 </div>
               </div>
             </div>
