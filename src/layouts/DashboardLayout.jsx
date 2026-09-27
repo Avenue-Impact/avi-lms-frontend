@@ -1,5 +1,6 @@
 import DashboardNav from "@/Components/dashboard/DashboardNav";
 import DashboardSideNav from "@/Components/dashboard/DashboardSideNav";
+import { QuestionsDrawer } from "@/Components/dashboard/QuestionsDrawer";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useUnreadNotificationsPrompt } from "@/hooks/students/use-unread-notifications-prompt";
@@ -8,6 +9,7 @@ import { Outlet, ScrollRestoration } from "react-router-dom";
 
 const DashboardLayout = ({ userInfo }) => {
   const [toggleNav, setToggleNav] = useState(true);
+  const [isHelpDeskOpen, setIsHelpDeskOpen] = useState(false);
   useUnreadNotificationsPrompt();
 
   return (
@@ -19,7 +21,17 @@ const DashboardLayout = ({ userInfo }) => {
           toggleNav ? "-translate-x-full" : "translate-x-0",
         )}
       ></div>
-      <DashboardSideNav toggleNav={toggleNav} setTogglNav={setToggleNav} />
+      <DashboardSideNav
+        toggleNav={toggleNav}
+        setTogglNav={setToggleNav}
+        onOpenHelpDesk={() => setIsHelpDeskOpen(true)}
+      />
+
+      {/* Help Desk Hotline Drawer */}
+      <QuestionsDrawer
+        isOpen={isHelpDeskOpen}
+        onClose={() => setIsHelpDeskOpen(false)}
+      />
 
       <div className="ml-0 h-full lg:ml-[272px] lg:px-0">
         <DashboardNav setToggleNav={setToggleNav} userInfo={userInfo} />

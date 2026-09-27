@@ -425,3 +425,24 @@ export const reorderRecordedSessionVideos = async ({
     { videoIds }
   );
 };
+
+// Help Desk / Helpline API endpoints
+export const submitHelplineTicket = async (ticketData) => {
+  const token = Cookies.get("token");
+  const headers = token && token !== "undefined" ? { Authorization: `Bearer ${token}` } : {};
+  return await axios.post(`${STUDENT_BASE_URL}/helpline`, ticketData, { headers });
+};
+
+export const fetchHelplineTickets = async ({ page = 1, limit = 15, status = "all", search = "" }) => {
+  return await axiosAdmin.get(
+    `/helpline?page=${page}&limit=${limit}&status=${status}&search=${encodeURIComponent(search)}`
+  );
+};
+
+export const updateHelplineTicketStatus = async (ticketId, { status, adminNotes }) => {
+  return await axiosAdmin.patch(`/helpline/${ticketId}`, { status, adminNotes });
+};
+
+export const deleteHelplineTicket = async (ticketId) => {
+  return await axiosAdmin.delete(`/helpline/${ticketId}`);
+};

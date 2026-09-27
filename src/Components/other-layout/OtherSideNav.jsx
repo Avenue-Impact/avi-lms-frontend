@@ -2,6 +2,7 @@ import React from "react";
 import { Link, NavLink, useLocation, useParams, useSearchParams } from "react-router-dom";
 import { DarkLogo } from "../Logo";
 import { cn } from "@/lib/utils";
+import { Headphones } from "lucide-react";
 import { useCourseData } from "@/hooks/use-course-data";
 import { useProfile } from "@/hooks/students/use-fetch-student-profile";
 import { useFetchUnseenMaterialsCount } from "@/hooks/materials/use-materials";
@@ -252,30 +253,30 @@ const OtherSideNav = ({
                   </div>
                 </button>
               </li>
-
-              {/* 7. Ask Question / Support */}
-              <li>
-                <button
-                  type="button"
-                  onClick={() => {
-                    handleLinkClick();
-                    setIsQuestionDrawerOpen?.(true);
-                  }}
-                  className={cn(
-                    "w-full text-left",
-                    getItemClass(false)
-                  )}
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="text-lg text-inherit">
-                      <AiOutlineQuestionCircle />
-                    </span>
-                    <span>Ask a Question</span>
-                  </div>
-                </button>
-              </li>
             </ul>
           </div>
+        </div>
+
+        {/* Bottom Help Desk Nav Item */}
+        <div className="border-t border-[#F2F4F7] px-3 py-2">
+          <button
+            type="button"
+            onClick={() => {
+              handleLinkClick();
+              setIsQuestionDrawerOpen?.(true);
+            }}
+            className={cn(
+              "w-full text-left",
+              getItemClass(false)
+            )}
+          >
+            <div className="flex items-center gap-3">
+              <span className="text-lg text-inherit">
+                <Headphones className="h-5 w-5" />
+              </span>
+              <span>Help Desk</span>
+            </div>
+          </button>
         </div>
 
         {/* Bottom Student Profile Card */}

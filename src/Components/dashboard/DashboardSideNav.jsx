@@ -56,7 +56,7 @@ export const navItem = [
     path: "/dashboard/wishlists",
   },
 ];
-function DashboardSideNav({ toggleNav, setTogglNav }) {
+function DashboardSideNav({ toggleNav, setTogglNav, onOpenHelpDesk }) {
   const { data: mentorshipAccess } = useCheckMentorshipAccess();
 
   // Filter out Mentorship from the static array if they don't have access
@@ -69,7 +69,11 @@ function DashboardSideNav({ toggleNav, setTogglNav }) {
 
   const hadleClick = (id) => {};
   return (
-    <Sidebar toggleNav={toggleNav} setToggleNav={setTogglNav}>
+    <Sidebar
+      toggleNav={toggleNav}
+      setToggleNav={setTogglNav}
+      onOpenHelpDesk={onOpenHelpDesk}
+    >
       {visibleNavItems.map((item) => (
         <SidebarItem
           key={item.text}

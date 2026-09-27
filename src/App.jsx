@@ -10,6 +10,7 @@ import AvenueImpactCustomPayment from "./pages/AvenueImpactCustomPayment";
 import SuccessStoryForm from "./pages/SuccessStoryForm";
 import ProtectedSuccessStoryRoute from "./Components/ProtectedSuccessStoryRoute";
 import AdminSuccessStoryManagement from "./pages/admin-pages/AdminSuccessStoryManagement";
+import HelplineManagementPage from "./pages/admin-pages/helpline-management/HelplineManagementPage";
 import AVI from "./pages/AVI";
 import Partner from "./pages/Partner";
 import SelfPace from "./pages/SelfPace";
@@ -645,6 +646,10 @@ function App() {
                 {
                   path: "/admin/success-stories",
                   element: <AdminSuccessStoryManagement />,
+                },
+                {
+                  path: "/admin/helpline-management",
+                  element: <HelplineManagementPage />,
                 },
 
                 {

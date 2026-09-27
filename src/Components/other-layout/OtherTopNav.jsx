@@ -83,15 +83,6 @@ const OtherTopNav = ({
         <div className="hidden lg:flex items-center gap-2.5">
           <button
             type="button"
-            onClick={() => setIsQuestionDrawerOpen?.(true)}
-            className="flex items-center gap-1.5 rounded-lg border border-[#EAECF0] bg-white px-3 py-1.5 text-xs font-semibold text-[#344054] hover:bg-[#F9FAFB] hover:text-[#101928] transition-colors shadow-2xs"
-          >
-            <AiOutlineQuestionCircle className="text-base text-[#CC1747]" />
-            <span>Ask Question</span>
-          </button>
-
-          <button
-            type="button"
             onClick={() => setShowModal?.(true)}
             className="flex items-center gap-1.5 rounded-lg border border-[#EAECF0] bg-white px-3 py-1.5 text-xs font-semibold text-[#344054] hover:bg-[#F9FAFB] hover:text-[#101928] transition-colors shadow-2xs"
           >
