@@ -111,20 +111,20 @@ export const editLiveSessionSchema = z.object({
     .string()
     .min(5, { message: "Title must be at least 5 character long" })
     .max(70, { message: "Title character must not exceed 70 " }),
-  time: z.string({ message: "This field is required" }),
-  start_date: z.string({ message: "This field is required" })
+  time: z.string().min(1, { message: "This field is required" }),
+  start_date: z.string().min(1, { message: "This field is required" }),
 });
 
 export const courseTypeSchema = z.object({
   coursePrice: z.coerce.string().min(1, { message: "This field is required" }),
-  discountPrice: z.coerce.string().min(1, { message: "this field is required" }),
+  discountPrice: z.coerce.string().min(1, { message: "This field is required" }),
   duration: z
     .string({ message: "This field is required" })
-    .min(1, { message: "this field is required" }),
-  time: z.string({ message: "This field is required" }),
-  timezone: z.string({ message: "This field is required" }),
-  startDate: z.string({ message: "This field is required" }),
-  discountType: z.string({ message: "This field is required" }),
+    .min(1, { message: "This field is required" }),
+  time: z.string().min(1, { message: "This field is required" }),
+  timezone: z.string().min(1, { message: "This field is required" }),
+  startDate: z.string().min(1, { message: "Start date is required" }),
+  discountType: z.string().min(1, { message: "This field is required" }),
   discountValue: z.union([z.string(), z.number()]).optional(),
   zoom_account_id: z.string().optional(),
 });

@@ -147,6 +147,8 @@ import InstructorSettings from "./pages/instructor/InstructorSettings";
 import UserJoinMeeting from "./pages/dashboard/UserJoinMeeting";
 import PreviewCourse from "./pages/previewCourse";
 import PreviewVideoCourse from "./pages/previewVideoCourse";
+import CoursesPage from "./pages/courses/CoursesPage";
+import CoursePreviewPage from "./pages/courses/CoursePreviewPage";
 import VideoManagement from "./pages/admin-pages/data-management/VideoManagement";
 
 import AdminErrorPage from "./admin-error-page";
@@ -181,7 +183,7 @@ function App() {
       children: [
         {
           path: "/preview-course/:courseId",
-          element: <PreviewCourse />,
+          element: <CoursePreviewPage />,
         },
         {
           path: "/preview-video-course/:courseId/enroll",
@@ -301,24 +303,32 @@ function App() {
           element: <CourseLayout />,
           children: [
             {
+              index: true,
+              element: <CoursesPage />,
+            },
+            {
+              path: "/courses/:courseId",
+              element: <CoursePreviewPage />,
+            },
+            {
               path: "/courses/landing-page/c/:courseId",
               element: <LandingPage />,
             },
             {
               path: "/courses/business-analysis",
-              element: <BusinessAnalysis />,
+              element: <CoursePreviewPage />,
             },
             {
               path: "/courses/data-analytics",
-              element: <DataAnalytics />,
+              element: <CoursePreviewPage />,
             },
             {
               path: "/courses/cloud-computing",
-              element: <CloudComputing />,
+              element: <CoursePreviewPage />,
             },
             {
               path: "/courses/project-management",
-              element: <ProjectManagement />,
+              element: <CoursePreviewPage />,
             },
             {
               path: "/courses/thanks",
@@ -385,7 +395,7 @@ function App() {
 
         {
           path: "/discover-courses",
-          element: <DiscoverCourses />,
+          element: <CoursesPage />,
         },
         {
           element: <ProtectedRoute tokin={"token"} path={"/login"} />,

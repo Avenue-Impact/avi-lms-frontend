@@ -27,12 +27,12 @@ export const HeroSection = () => {
   const isLoggedIn = Boolean(token && (user || profileData));
 
   const pathways = [
-    { name: "Business Analysis", icon: Smartphone },
-    { name: "Project Management", icon: Flag },
-    { name: "Data Analytics", icon: TrendingUp },
-    { name: "Cyber Security", icon: Shield },
-    { name: "Cloud Computing", icon: Cloud },
-    { name: "Machine Learning", icon: Cpu },
+    { name: "Business Analysis", icon: Smartphone, slug: "business-analysis" },
+    { name: "Project Management", icon: Flag, slug: "project-management" },
+    { name: "Data Analytics", icon: TrendingUp, slug: "data-analytics" },
+    { name: "Cyber Security", icon: Shield, slug: "cybersecurity-fundamentals" },
+    { name: "Cloud Computing", icon: Cloud, slug: "cloud-computing" },
+    { name: "Machine Learning", icon: Cpu, slug: "machine-learning" },
   ];
 
   const trustedCompanies = [
@@ -80,9 +80,9 @@ export const HeroSection = () => {
 
           {/* Desktop Nav Links */}
           <nav className="hidden lg:flex items-center gap-8 text-[14px] font-medium text-[#0A1430]">
-            <a href="#pathways" className="hover:text-[#D7195A] transition-colors">
+            <Link to="/courses" className="hover:text-[#D7195A] transition-colors">
               Pathways & Start Dates
-            </a>
+            </Link>
             <a
               href="https://prepnhire.com/"
               target="_blank"
@@ -155,13 +155,13 @@ export const HeroSection = () => {
         {/* Mobile Dropdown Menu */}
         {mobileMenuOpen && (
           <div className="lg:hidden bg-white border-b border-slate-200 px-4 pt-3 pb-6 space-y-3 shadow-lg">
-            <a
-              href="#pathways"
+            <Link
+              to="/courses"
               onClick={() => setMobileMenuOpen(false)}
               className="block py-2 text-[15px] font-medium text-[#0A1430] hover:text-[#D7195A]"
             >
               Pathways & Start Dates
-            </a>
+            </Link>
             <a
               href="https://prepnhire.com/"
               target="_blank"
@@ -297,8 +297,9 @@ export const HeroSection = () => {
                   {pathways.map((item) => {
                     const IconComponent = item.icon;
                     return (
-                      <div
+                      <Link
                         key={item.name}
+                        to={`/courses/${item.slug}`}
                         className="bg-[#151F3D]/90 hover:bg-[#1D2B52] border border-white/10 rounded-xl p-3.5 flex items-center gap-3 transition-all duration-200 cursor-pointer group"
                       >
                         <IconComponent
@@ -308,14 +309,17 @@ export const HeroSection = () => {
                         <span className="font-inter text-[11px] sm:text-[13px] font-medium text-slate-100 group-hover:text-white leading-tight">
                           {item.name}
                         </span>
-                      </div>
+                      </Link>
                     );
                   })}
                 </div>
 
                 {/* Agile Delivery & Scrum (Full width) */}
                 <div className="mt-2.5">
-                  <div className="bg-[#151F3D]/90 hover:bg-[#1D2B52] border border-white/10 rounded-xl p-3.5 flex items-center gap-3 transition-all duration-200 cursor-pointer group">
+                  <Link
+                    to="/courses/project-management"
+                    className="bg-[#151F3D]/90 hover:bg-[#1D2B52] border border-white/10 rounded-xl p-3.5 flex items-center gap-3 transition-all duration-200 cursor-pointer group"
+                  >
                     <Users
                       size={18}
                       className="text-slate-300 group-hover:text-white shrink-0 transition-colors"
@@ -323,7 +327,7 @@ export const HeroSection = () => {
                     <span className="font-inter text-[13px] font-medium text-slate-100 group-hover:text-white leading-tight">
                       Agile Delivery & Scrum
                     </span>
-                  </div>
+                  </Link>
                 </div>
 
                 {/* Profile Match Information Card */}
@@ -338,12 +342,12 @@ export const HeroSection = () => {
 
                 {/* Footer Link */}
                 <div className="mt-4 pt-1">
-                  <a
-                    href="#pathways"
+                  <Link
+                    to="/courses"
                     className="inline-flex items-center gap-1.5 text-slate-300 hover:text-white font-inter text-[12px] font-medium transition-colors"
                   >
                     See all pathways & start dates <ArrowRight size={14} />
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

@@ -349,13 +349,14 @@ const EditLiveSessionCourseType = ({
               {/* Start Date */}
               <div className="flex-1">
                 <FormInput
-                  label={"Start Date"}
+                  label={"Start Date *"}
                   className="w-full rounded border border-gray-300 p-2"
                   type="date"
                   control={form.control}
                   name="startDate"
                   labelClass={"text-base font-medium"}
                   id="startDate"
+                  required
                 />
               </div>
 

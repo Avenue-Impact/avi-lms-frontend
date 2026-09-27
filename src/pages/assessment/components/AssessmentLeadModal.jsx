@@ -1,12 +1,103 @@
-import React, { useState } from "react";
-import { Mail, User, Phone, ArrowRight, Sparkles, CheckCircle2 } from "lucide-react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
+import { ArrowRight, ChevronDown, Check, Search } from "lucide-react";
+import { getCountries, getCountryCallingCode, parsePhoneNumberFromString } from "libphonenumber-js/min";
+import darkLogo from "@/assets/logo/logo.svg";
 
-export default function AssessmentLeadModal({ isOpen, onSubmit }) {
+// Initialize the display names API for country localized names (matching phone-input.jsx pattern)
+const regionNames = new Intl.DisplayNames(["en"], { type: "region" });
+
+// Helper to convert 2-letter ISO country code into Unicode flag emoji
+const getCountryFlag = (countryCode) => {
+  if (!countryCode || countryCode.length !== 2) return "";
+  const codePoints = countryCode
+    .toUpperCase()
+    .split("")
+    .map((char) => 127397 + char.charCodeAt(0));
+  return String.fromCodePoint(...codePoints);
+};
+
+// Generate list of all countries supported by libphonenumber-js
+const ALL_COUNTRIES = getCountries()
+  .map((countryCode) => {
+    let countryName = countryCode;
+    try {
+      countryName = regionNames.of(countryCode) || countryCode;
+    } catch (e) {
+      // Fallback if region name parsing fails
+    }
+    return {
+      code: countryCode, // e.g. 'NG', 'GB', 'US'
+      dialCode: `+${getCountryCallingCode(countryCode)}`,
+      name: countryName,
+      flag: getCountryFlag(countryCode),
+    };
+  })
+  .sort((a, b) => a.name.localeCompare(b.name));
+
+// Default to Nigeria (NG, +234) as shown in design
+const DEFAULT_COUNTRY = ALL_COUNTRIES.find((c) => c.code === "NG") || ALL_COUNTRIES[0];
+
+export default function AssessmentLeadModal({ isOpen, onClose, onSubmit, isSubmitting = false }) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState(DEFAULT_COUNTRY);
+  const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sendResources, setSendResources] = useState(true);
   const [errors, setErrors] = useState({});
+
+  const dropdownRef = useRef(null);
+  const searchInputRef = useRef(null);
+
+  // Filter countries using libphonenumber country records
+  const filteredCountries = useMemo(() => {
+    if (!searchQuery.trim()) return ALL_COUNTRIES;
+    const lowerQuery = searchQuery.toLowerCase().trim();
+    return ALL_COUNTRIES.filter(
+      (c) =>
+        c.name.toLowerCase().includes(lowerQuery) ||
+        c.dialCode.includes(lowerQuery) ||
+        c.code.toLowerCase().includes(lowerQuery)
+    );
+  }, [searchQuery]);
+
+  // Focus search input when dropdown opens
+  useEffect(() => {
+    if (isCountryDropdownOpen && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [isCountryDropdownOpen]);
+
+  // Close country dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsCountryDropdownOpen(false);
+        setSearchQuery("");
+      }
+    }
+    if (isCountryDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isCountryDropdownOpen]);
+
+  // Handle ESC key to close if allowed
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if (e.key === "Escape" && onClose) {
+        onClose();
+      }
+    }
+    if (isOpen) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -14,182 +105,298 @@ export default function AssessmentLeadModal({ isOpen, onSubmit }) {
     const newErrors = {};
 
     if (!firstName.trim()) {
-      newErrors.firstName = "Please enter your first name.";
+      newErrors.firstName = "First name is required";
     }
 
     if (!lastName.trim()) {
-      newErrors.lastName = "Please enter your last name.";
+      newErrors.lastName = "Last name is required";
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email.trim()) {
-      newErrors.email = "Please enter your email address.";
+      newErrors.email = "Email is required";
     } else if (!emailRegex.test(email.trim())) {
-      newErrors.email = "Please enter a valid email address.";
+      newErrors.email = "Please enter a valid email address";
+    }
+
+    if (!phoneNumber.trim()) {
+      newErrors.phoneNumber = "Mobile number is required";
+    } else {
+      // Validate using libphonenumber-js parser
+      try {
+        const parsed = parsePhoneNumberFromString(phoneNumber.trim(), selectedCountry.code);
+        if (parsed && !parsed.isPossible()) {
+          newErrors.phoneNumber = "Please enter a valid mobile number";
+        }
+      } catch (e) {
+        // Fallback
+      }
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+  const handlePhoneInputChange = (e) => {
+    let val = e.target.value;
+
+    // Auto-detect country if user pasted with a leading +
+    if (val.startsWith("+")) {
+      const sortedCodes = [...ALL_COUNTRIES].sort(
+        (a, b) => b.dialCode.length - a.dialCode.length
+      );
+      for (const c of sortedCodes) {
+        if (val.startsWith(c.dialCode)) {
+          setSelectedCountry(c);
+          val = val.slice(c.dialCode.length);
+          break;
+        }
+      }
+    }
+
+    // Strip leading zero if entering national format
+    if (val.startsWith("0")) {
+      val = val.replace(/^0+/, "");
+    }
+
+    setPhoneNumber(val);
+    if (errors.phoneNumber) setErrors((prev) => ({ ...prev, phoneNumber: null }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validate()) return;
+
+    const fullPhoneNumber = `${selectedCountry.dialCode} ${phoneNumber.trim()}`;
 
     onSubmit({
       firstName: firstName.trim(),
       lastName: lastName.trim(),
       email: email.trim().toLowerCase(),
-      phoneNumber: phoneNumber.trim(),
+      phoneNumber: fullPhoneNumber,
+      dialCode: selectedCountry.dialCode,
+      countryCode: selectedCountry.code,
+      subscribe: sendResources,
     });
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-      <div className="bg-white rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative overflow-hidden">
-        {/* Subtle accent bar */}
-        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#D7195A] via-[#CC1747] to-[#0A1430]" />
-
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 rounded-xl bg-pink-50 border border-pink-100 flex items-center justify-center text-[#D7195A] shrink-0">
-            <Sparkles className="w-5 h-5" />
-          </div>
-          <div>
-            <span className="text-[11px] font-mono uppercase tracking-wider font-semibold text-[#D7195A]">
-              Step 4 Completed
-            </span>
-            <h2 className="font-space font-bold text-xl sm:text-2xl text-[#0A1430]">
-              Where should we send your results?
-            </h2>
-          </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs transition-opacity duration-200">
+      <div
+        className="w-full max-w-[460px] rounded-3xl bg-white p-7 sm:p-9 shadow-2xl border border-gray-100 transition-all transform animate-in fade-in zoom-in-95 duration-200"
+      >
+        {/* Top Logo */}
+        <div className="flex justify-center">
+          <img
+            src={darkLogo}
+            alt="Avenue Impact"
+            className="h-10 sm:h-11 w-auto object-contain"
+          />
         </div>
 
-        {/* Explain why details are required (Scenario 2) */}
-        <div className="bg-[#F8FAFC] border border-slate-200/80 rounded-xl p-3.5 mb-6 text-xs sm:text-sm text-slate-600 leading-relaxed font-inter flex items-start gap-2.5">
-          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-          <span>
-            Enter your details so your personalized assessment results, recommended career pathway, and course syllabus can be sent directly to your email.
-          </span>
+        {/* Subtle Horizontal Divider */}
+        <div className="my-5 h-px w-full bg-gray-100" />
+
+        {/* Headings */}
+        <div className="text-center">
+          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#101928]">
+            Almost there!
+          </h2>
+          <p className="mt-2 text-xs sm:text-[13px] leading-relaxed text-[#667185]">
+            We'll email your full career match breakdown
+            <br />
+            so you can revisit it anytime.
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-            {/* First Name */}
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+          {/* First Name & Last Name */}
+          <div className="grid grid-cols-2 gap-3.5">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5 font-inter">
-                First Name <span className="text-red-500">*</span>
+              <label className="block text-xs font-semibold text-[#344054] mb-1.5">
+                First name *
               </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                  <User className="w-4 h-4" />
-                </div>
-                <input
-                  type="text"
-                  value={firstName}
-                  onChange={(e) => {
-                    setFirstName(e.target.value);
-                    if (errors.firstName) setErrors((prev) => ({ ...prev, firstName: null }));
-                  }}
-                  placeholder="e.g. Sarah"
-                  className={`w-full pl-9 pr-3 py-2.5 rounded-xl border text-sm font-inter text-[#0A1430] placeholder-slate-400 focus:outline-hidden transition-all ${
-                    errors.firstName
-                      ? "border-red-400 bg-red-50/20 focus:border-red-500 focus:ring-1 focus:ring-red-500"
-                      : "border-slate-300 bg-white focus:border-[#D7195A] focus:ring-1 focus:ring-[#D7195A]"
-                  }`}
-                />
-              </div>
-              {errors.firstName && (
-                <p className="text-[11px] text-red-500 mt-1 font-inter">{errors.firstName}</p>
-              )}
-            </div>
-
-            {/* Last Name */}
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5 font-inter">
-                Last Name <span className="text-red-500">*</span>
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                  <User className="w-4 h-4" />
-                </div>
-                <input
-                  type="text"
-                  value={lastName}
-                  onChange={(e) => {
-                    setLastName(e.target.value);
-                    if (errors.lastName) setErrors((prev) => ({ ...prev, lastName: null }));
-                  }}
-                  placeholder="e.g. Jenkins"
-                  className={`w-full pl-9 pr-3 py-2.5 rounded-xl border text-sm font-inter text-[#0A1430] placeholder-slate-400 focus:outline-hidden transition-all ${
-                    errors.lastName
-                      ? "border-red-400 bg-red-50/20 focus:border-red-500 focus:ring-1 focus:ring-red-500"
-                      : "border-slate-300 bg-white focus:border-[#D7195A] focus:ring-1 focus:ring-[#D7195A]"
-                  }`}
-                />
-              </div>
-              {errors.lastName && (
-                <p className="text-[11px] text-red-500 mt-1 font-inter">{errors.lastName}</p>
-              )}
-            </div>
-          </div>
-
-          {/* Email Address */}
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1.5 font-inter">
-              Email Address <span className="text-red-500">*</span>
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                <Mail className="w-4 h-4" />
-              </div>
               <input
-                type="email"
-                value={email}
+                type="text"
+                value={firstName}
                 onChange={(e) => {
-                  setEmail(e.target.value);
-                  if (errors.email) setErrors((prev) => ({ ...prev, email: null }));
+                  setFirstName(e.target.value);
+                  if (errors.firstName) setErrors((prev) => ({ ...prev, firstName: null }));
                 }}
-                placeholder="name@example.com"
-                className={`w-full pl-9 pr-3 py-2.5 rounded-xl border text-sm font-inter text-[#0A1430] placeholder-slate-400 focus:outline-hidden transition-all ${
-                  errors.email
+                className={`w-full rounded-xl border px-3.5 py-2.5 text-sm text-[#101928] placeholder-gray-400 bg-white transition-all focus:outline-none ${
+                  errors.firstName
                     ? "border-red-400 bg-red-50/20 focus:border-red-500 focus:ring-1 focus:ring-red-500"
-                    : "border-slate-300 bg-white focus:border-[#D7195A] focus:ring-1 focus:ring-[#D7195A]"
+                    : "border-gray-200 focus:border-[#D7195A] focus:ring-1 focus:ring-[#D7195A]"
                 }`}
               />
+              {errors.firstName && (
+                <p className="mt-1 text-[11px] text-red-500">{errors.firstName}</p>
+              )}
             </div>
-            {errors.email && (
-              <p className="text-[11px] text-red-500 mt-1 font-inter">{errors.email}</p>
+
+            <div>
+              <label className="block text-xs font-semibold text-[#344054] mb-1.5">
+                Last name *
+              </label>
+              <input
+                type="text"
+                value={lastName}
+                onChange={(e) => {
+                  setLastName(e.target.value);
+                  if (errors.lastName) setErrors((prev) => ({ ...prev, lastName: null }));
+                }}
+                className={`w-full rounded-xl border px-3.5 py-2.5 text-sm text-[#101928] placeholder-gray-400 bg-white transition-all focus:outline-none ${
+                  errors.lastName
+                    ? "border-red-400 bg-red-50/20 focus:border-red-500 focus:ring-1 focus:ring-red-500"
+                    : "border-gray-200 focus:border-[#D7195A] focus:ring-1 focus:ring-[#D7195A]"
+                }`}
+              />
+              {errors.lastName && (
+                <p className="mt-1 text-[11px] text-red-500">{errors.lastName}</p>
+              )}
+            </div>
+          </div>
+
+          {/* Mobile */}
+          <div>
+            <label className="block text-xs font-semibold text-[#344054] mb-1.5">
+              Mobile *
+            </label>
+            <div className="flex gap-2 relative">
+              {/* Country Code Selector Box */}
+              <div ref={dropdownRef} className="relative">
+                <button
+                  type="button"
+                  onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
+                  className="flex h-full min-w-[96px] items-center justify-between gap-1.5 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm font-medium text-[#101928] hover:bg-gray-50 transition-colors focus:outline-none focus:border-[#D7195A]"
+                >
+                  <span className="text-base leading-none">{selectedCountry.flag}</span>
+                  <span className="text-xs font-semibold text-[#344054]">{selectedCountry.dialCode}</span>
+                  <ChevronDown className="h-3.5 w-3.5 text-gray-400" />
+                </button>
+
+                {/* Country Dropdown Menu powered by libphonenumber-js */}
+                {isCountryDropdownOpen && (
+                  <div className="absolute left-0 top-full z-50 mt-1 max-h-64 w-64 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl flex flex-col">
+                    {/* Search inside country list */}
+                    <div className="p-2 border-b border-gray-100 bg-gray-50/50">
+                      <div className="relative">
+                        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
+                        <input
+                          ref={searchInputRef}
+                          type="text"
+                          placeholder="Search country..."
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          className="w-full pl-8 pr-2.5 py-1.5 text-xs rounded-lg border border-gray-200 bg-white focus:outline-none focus:border-[#D7195A]"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Scrollable list */}
+                    <div className="overflow-y-auto max-h-48 py-1">
+                      {filteredCountries.map((country) => (
+                        <button
+                          key={country.code}
+                          type="button"
+                          onClick={() => {
+                            setSelectedCountry(country);
+                            setIsCountryDropdownOpen(false);
+                            setSearchQuery("");
+                          }}
+                          className="flex w-full items-center justify-between px-3 py-2 text-left text-xs hover:bg-gray-50 transition-colors"
+                        >
+                          <div className="flex items-center gap-2 truncate">
+                            <span className="text-base shrink-0">{country.flag}</span>
+                            <span className="font-medium text-[#344054] truncate">{country.name}</span>
+                          </div>
+                          <div className="flex items-center gap-1 text-gray-400 shrink-0 ml-2">
+                            <span className="font-mono text-[11px]">{country.dialCode}</span>
+                            {selectedCountry.code === country.code && (
+                              <Check className="h-3 w-3 text-[#D7195A]" />
+                            )}
+                          </div>
+                        </button>
+                      ))}
+                      {filteredCountries.length === 0 && (
+                        <div className="p-3 text-center text-xs text-gray-400">
+                          No countries found
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Phone Input */}
+              <div className="flex-1">
+                <input
+                  type="tel"
+                  value={phoneNumber}
+                  onChange={handlePhoneInputChange}
+                  className={`w-full rounded-xl border px-3.5 py-2.5 text-sm text-[#101928] placeholder-gray-400 bg-white transition-all focus:outline-none ${
+                    errors.phoneNumber
+                      ? "border-red-400 bg-red-50/20 focus:border-red-500 focus:ring-1 focus:ring-red-500"
+                      : "border-gray-200 focus:border-[#D7195A] focus:ring-1 focus:ring-[#D7195A]"
+                  }`}
+                />
+              </div>
+            </div>
+            {errors.phoneNumber && (
+              <p className="mt-1 text-[11px] text-red-500">{errors.phoneNumber}</p>
             )}
           </div>
 
-          {/* Phone Number (Optional) */}
+          {/* Email */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1.5 font-inter">
-              Phone Number <span className="text-slate-400 font-normal">(Optional)</span>
+            <label className="block text-xs font-semibold text-[#344054] mb-1.5">
+              Email *
             </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                <Phone className="w-4 h-4" />
-              </div>
-              <input
-                type="tel"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                placeholder="+44 7123 456789"
-                className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-inter text-[#0A1430] placeholder-slate-400 focus:outline-hidden focus:border-[#D7195A] focus:ring-1 focus:ring-[#D7195A] transition-all"
-              />
-            </div>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (errors.email) setErrors((prev) => ({ ...prev, email: null }));
+              }}
+              className={`w-full rounded-xl border px-3.5 py-2.5 text-sm text-[#101928] placeholder-gray-400 bg-white transition-all focus:outline-none ${
+                errors.email
+                  ? "border-red-400 bg-red-50/20 focus:border-red-500 focus:ring-1 focus:ring-red-500"
+                  : "border-gray-200 focus:border-[#D7195A] focus:ring-1 focus:ring-[#D7195A]"
+              }`}
+            />
+            {errors.email && (
+              <p className="mt-1 text-[11px] text-red-500">{errors.email}</p>
+            )}
           </div>
 
-          <div className="pt-2">
-            <button
-              type="submit"
-              className="w-full inline-flex items-center justify-center gap-2 bg-[#D7195A] hover:bg-[#c0144d] text-white font-inter font-semibold text-sm px-6 py-3 rounded-xl shadow-lg shadow-[#D7195A]/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+          {/* Checkbox */}
+          <div className="flex items-start gap-2.5 pt-1">
+            <input
+              type="checkbox"
+              id="sendResources"
+              checked={sendResources}
+              onChange={(e) => setSendResources(e.target.checked)}
+              className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#D7195A] accent-[#D7195A] cursor-pointer shrink-0"
+            />
+            <label
+              htmlFor="sendResources"
+              className="text-xs text-[#667185] leading-snug cursor-pointer select-none font-inter"
             >
-              <span>Continue Assessment</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
+              Send me my results + free resources to help me land my first tech role.
+            </label>
           </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-[#D7195A] py-3.5 text-sm font-semibold text-white shadow-md shadow-[#D7195A]/30 transition-all hover:bg-[#c0144d] active:scale-[0.99] disabled:opacity-70 disabled:cursor-not-allowed"
+          >
+            <span>{isSubmitting ? "Submitting..." : "Get My Results"}</span>
+            {!isSubmitting && <ArrowRight className="h-4 w-4" />}
+          </button>
         </form>
       </div>
     </div>

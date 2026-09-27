@@ -209,6 +209,8 @@ export const persistCareerAssessment = async ({
         email: effectiveUser.email,
         firstName: effectiveUser.firstName || effectiveUser.firstname || effectiveUser.first_name || "Student",
         lastName: effectiveUser.lastName || effectiveUser.lastname || effectiveUser.last_name || "",
+        phoneNumber: effectiveUser.phoneNumber || effectiveUser.phone_number || "",
+        subscribe: Boolean(effectiveUser.subscribe ?? effectiveUser.marketing_consent),
         ...assessmentPayload,
       });
     } catch (submitErr) {

@@ -7,7 +7,7 @@ import AssessmentProgressBar from "./components/AssessmentProgressBar";
 import QuestionView from "./components/QuestionView";
 import SingleResultView from "./components/SingleResultView";
 import TiedResultView from "./components/TiedResultView";
-import JoinCommunityModal from "@/Components/JoinCommunityModal";
+import AssessmentLeadModal from "./components/AssessmentLeadModal";
 import {
   ASSESSMENT_QUESTIONS,
   calculateAssessmentResults,
@@ -127,8 +127,9 @@ export default function AssessmentPage() {
   const handleContinue = () => {
     if (!selectedOption) return;
 
-    // After completing Question 4 (index 3), prompt with JoinCommunityModal if not logged in
-    if (currentStepIndex === 3 && !isAuthenticated) {
+    // After completing Question 4 (index 3), prompt with AssessmentLeadModal if not logged in and details not captured
+    const storedUser = getStoredAssessmentUser();
+    if (currentStepIndex === 3 && !isAuthenticated && !storedUser?.email) {
       setShowAuthModal(true);
       return;
     }
@@ -137,14 +138,26 @@ export default function AssessmentPage() {
       setCurrentStepIndex((prev) => prev + 1);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
+      // If at end of assessment and no user details or auth, prompt before finalizing
+      if (!isAuthenticated && !storedUser?.email && !currentUser?.email) {
+        setShowAuthModal(true);
+        return;
+      }
       finishAssessment(answers);
     }
   };
 
-  const handleGoogleSuccess = (loggedUser) => {
+  const handleLeadSubmit = (leadData) => {
     setShowAuthModal(false);
-    const currentAnswers = Object.keys(answers).length > 0 ? answers : getAssessmentDraftAnswers();
-    finishAssessment(currentAnswers, loggedUser);
+    setStoredAssessmentUser(leadData);
+
+    if (currentStepIndex + 1 < totalSteps) {
+      setCurrentStepIndex((prev) => prev + 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      const activeAnswers = Object.keys(answers).length > 0 ? answers : getAssessmentDraftAnswers();
+      finishAssessment(activeAnswers, leadData);
+    }
   };
 
   // When redirected back from signup/login (e.g. /assessment?viewResult=true)
@@ -231,18 +244,11 @@ export default function AssessmentPage() {
       {/* Global Assessment Header */}
       <AssessmentHeader onExit={() => window.location.href = "/"} />
 
-      {/* Auth Modal after Question 4 / Auth Gate matching Learning Hub */}
-      <JoinCommunityModal
-        open={showAuthModal}
+      {/* Assessment Lead Modal matching screenshot design */}
+      <AssessmentLeadModal
+        isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
-        redirectUrl="/assessment?viewResult=true"
-        onSuccess={handleGoogleSuccess}
-        title={
-          <span>
-            Join the Avenue Impact <br className="hidden md:block" /> Community
-          </span>
-        }
-        subtitle="Create a free account or sign in to view your career assessment results and receive your personalized career plan via email."
+        onSubmit={handleLeadSubmit}
       />
 
       <main className="flex-1 flex flex-col justify-start pb-16">

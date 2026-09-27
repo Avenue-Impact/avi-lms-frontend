@@ -13,7 +13,7 @@ export const EcosystemSection = () => {
       title: "Learn live & on-demand",
       description: "Industry-led pathways built around real roles.",
       bg: "bg-[#1C2C64]",
-      to: "/digital-learning-hub",
+      to: "/courses",
       customLogo: (
         <img src={AVILogo} alt="Avenue Impact" className="w-20 h-auto" />
       ),

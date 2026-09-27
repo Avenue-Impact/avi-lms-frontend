@@ -95,7 +95,7 @@ export const PathwaysSection = () => {
 
               const latestCohort =
                 course.cohorts && course.cohorts.length > 0
-                  ? course.cohorts[0]?.cohort || course.cohorts[0]?.created_at
+                  ? course.cohorts[0]?.start_date || course.cohorts[0]?.cohort || course.cohorts[0]?.created_at
                   : null;
 
               const cleanOverview = stripHtml(course.overview || course.description || "");
@@ -103,7 +103,7 @@ export const PathwaysSection = () => {
               return (
                 <Link
                   key={course.id || course._id || course.slug}
-                  to={`/preview-course/${course.slug || course.id || course._id}`}
+                  to={`/courses/${course.slug || course.id || course._id}`}
                   className="bg-white rounded-2xl p-6 sm:p-7 border border-slate-200/70 shadow-sm flex flex-col justify-between hover:shadow-md hover:border-slate-300 transition-all duration-200 group"
                 >
                   <div>
@@ -163,7 +163,7 @@ export const PathwaysSection = () => {
         {/* Bottom CTA Actions */}
         <div className="flex flex-wrap items-center justify-center gap-6 mt-12">
           <Link
-            to="/discover-courses"
+            to="/courses"
             className="bg-white hover:bg-slate-50 border border-slate-200/90 text-[#0A1430] font-inter font-semibold text-[14px] sm:text-[15px] px-7 py-3.5 rounded-xl shadow-sm transition-all duration-200 active:scale-[0.98]"
           >
             View all pathways & dates
