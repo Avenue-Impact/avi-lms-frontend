@@ -251,8 +251,8 @@ export default function HelplineManagementPage() {
                 }}
                 className={`rounded-xl px-3.5 py-1.5 text-xs font-medium transition-all ${
                   statusFilter === tab.id
-                    ? "bg-[#0B1930] text-white shadow-xs"
-                    : "text-gray-600 hover:bg-gray-100"
+                    ? "bg-primary-color-600 text-white shadow-xs font-semibold"
+                    : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
                 }`}
               >
                 {tab.label}
@@ -568,7 +568,7 @@ export default function HelplineManagementPage() {
             <div className="flex items-center justify-between border-t border-gray-100 bg-gray-50/70 px-6 py-3.5 rounded-b-2xl">
               <a
                 href={`mailto:${selectedTicket.userEmail}?subject=Re: ${encodeURIComponent(selectedTicket.title)}`}
-                className="inline-flex items-center gap-2 rounded-xl bg-[#0B1930] px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-[#142647]"
+                className="inline-flex items-center gap-2 rounded-xl bg-primary-color-600 px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-primary-color-700 transition-colors"
               >
                 <Mail size={13} />
                 <span>Reply to Student via Email</span>
