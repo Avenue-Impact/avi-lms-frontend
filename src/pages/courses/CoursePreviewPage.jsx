@@ -22,6 +22,8 @@ import { cn } from "@/lib/utils";
 import SEOHead from "@/Components/SEOHead";
 import Cookies from "js-cookie";
 
+import { useGetSuccessStories } from "@/hooks/success-stories/use-success-stories";
+
 export const CoursePreviewPage = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
@@ -32,10 +34,35 @@ export const CoursePreviewPage = () => {
   const { previewCourse, isLoading } = usePreviewCourses(courseId);
   const apiCourse = previewCourse?.data?.data?.course || null;
 
+  // Fetch approved success stories from API
+  const { data: apiSuccessStories = [] } = useGetSuccessStories();
+
   // Resolve pathway data (dynamic from API or matched from catalog)
   const pathway = useMemo(() => {
     return getPathwayData(courseId, apiCourse);
   }, [courseId, apiCourse]);
+
+  // Determine course types
+  const isLive = Boolean(apiCourse?.available_course_types?.live_session || pathway.type === "live" || (apiCourse?.cohorts && apiCourse.cohorts.length > 0));
+  const isOnDemand = Boolean(apiCourse?.available_course_types?.on_demand || pathway.type === "on-demand" || (apiCourse?.pre_recorded_price && apiCourse.pre_recorded_price.length > 0));
+
+  // Select 3 random approved success stories
+  const displaySuccessStories = useMemo(() => {
+    if (Array.isArray(apiSuccessStories) && apiSuccessStories.length > 0) {
+      const approved = apiSuccessStories.filter((s) => s.is_approved !== false);
+      const list = approved.length > 0 ? approved : apiSuccessStories;
+      // Shuffle & pick 3
+      const shuffled = [...list].sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, 3).map((story) => ({
+        id: story._id || story.id,
+        quote: story.story || story.quote || story.content || "The practical training transformed my career path.",
+        author: story.name || `${story.first_name || ""} ${story.last_name || ""}`.trim() || story.author || "Avenue Impact Graduate",
+        role: story.current_role || story.job_title || story.role || "Practitioner",
+        rating: story.rating || 5,
+      }));
+    }
+    return pathway.successStories || [];
+  }, [apiSuccessStories, pathway]);
 
   // Enrollment guard
   const { isEnrolled } = useEnrolledCourses();
@@ -173,62 +200,34 @@ export const CoursePreviewPage = () => {
                 </p>
 
                 <div className="mt-6 space-y-3">
-                  {pathway.modules.map((mod, idx) => {
-                    const isExpanded = openModules[idx];
-                    return (
-                      <div
-                        key={idx}
-                        className="rounded-xl border border-[#EAECF0] bg-white transition-all hover:border-[#D0D5DD] shadow-2xs"
-                      >
-                        <button
-                          type="button"
-                          onClick={() => toggleModule(idx)}
-                          className="flex w-full items-start justify-between gap-4 p-4 text-left sm:p-5"
-                        >
-                          <div className="flex items-start gap-3.5">
-                            <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-[#F2F4F7] text-xs font-bold text-[#344054]">
-                              {mod.number || idx + 1}
-                            </span>
-                            <div>
-                              <h3 className="text-sm font-bold text-[#101928] sm:text-base">
-                                {mod.title}
-                              </h3>
-                              <p className="mt-1 text-xs leading-relaxed text-[#667185] sm:text-sm">
-                                {mod.description}
-                              </p>
-                            </div>
-                          </div>
-
-                          <div className="mt-1 text-[#98A2B3]">
-                            {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-                          </div>
-                        </button>
-
-                        {isExpanded && (
-                          <div className="border-t border-[#F2F4F7] bg-[#F9FAFB] px-5 py-4 text-xs leading-relaxed text-[#475467] rounded-b-xl">
-                            <p className="font-semibold text-[#101928] mb-1">
-                              Key Outcomes & Industry Application:
-                            </p>
-                            <ul className="list-disc pl-4 space-y-1">
-                              <li>Hands-on practical deliverables evaluated against enterprise standards.</li>
-                              <li>Scenario-based assignments prepared for technical interviews.</li>
-                              <li>Direct feedback from industry practitioners and mentors.</li>
-                            </ul>
-                          </div>
-                        )}
+                  {pathway.modules.map((mod, idx) => (
+                    <div
+                      key={idx}
+                      className="flex items-center gap-4 rounded-xl border border-[#EAECF0] bg-white p-4 shadow-2xs sm:p-5"
+                    >
+                      <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#F2F4F7] text-xs font-bold text-[#344054]">
+                        {mod.number || idx + 1}
+                      </span>
+                      <div>
+                        <h3 className="text-sm font-bold text-[#101928] sm:text-base">
+                          {mod.title}
+                        </h3>
+                        <p className="mt-1 text-xs leading-relaxed text-[#667185] sm:text-sm">
+                          {mod.description}
+                        </p>
                       </div>
-                    );
-                  })}
+                    </div>
+                  ))}
                 </div>
               </section>
 
-              {/* Section 2: Skills you'll build */}
+              {/* Section 2: Skills you'll build (populated from course benefits or skills) */}
               <section className="pt-2">
                 <h2 className="text-xl font-bold text-[#101928] sm:text-2xl">
                   Skills you'll build
                 </h2>
                 <div className="mt-4 flex flex-wrap items-center gap-2">
-                  {pathway.skills.map((skill, idx) => (
+                  {(apiCourse?.benefits && apiCourse.benefits.length > 0 ? apiCourse.benefits : pathway.skills).map((skill, idx) => (
                     <span
                       key={idx}
                       className="rounded-lg border border-[#EAECF0] bg-white px-3.5 py-2 text-xs font-semibold text-[#344054] shadow-2xs"
@@ -239,71 +238,69 @@ export const CoursePreviewPage = () => {
                 </div>
               </section>
 
-              {/* Section 3: Who this is for */}
+              {/* Section 3: Who this is for (static) */}
               <section className="pt-2">
                 <h2 className="text-xl font-bold text-[#101928] sm:text-2xl">
                   Who this is for
                 </h2>
                 <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                  {pathway.whoIsThisFor.map((audience, idx) => {
-                    const isSelected = selectedAudience === idx;
-                    return (
-                      <div
-                        key={idx}
-                        onClick={() => setSelectedAudience(idx)}
-                        className={cn(
-                          "cursor-pointer rounded-xl p-4 transition-all border text-left shadow-2xs",
-                          isSelected
-                            ? "border-[#CC1747] bg-[#FFF1F3]/60 shadow-xs"
-                            : "border-[#EAECF0] bg-white hover:border-[#D0D5DD] hover:bg-gray-50"
-                        )}
-                      >
-                        <h3 className={cn("text-xs font-bold", isSelected ? "text-[#CC1747]" : "text-[#101928]")}>
-                          {audience.title}
-                        </h3>
-                        <p className="mt-1 text-[11px] leading-relaxed text-[#667185]">
-                          {audience.description}
-                        </p>
-                      </div>
-                    );
-                  })}
+                  {[
+                    { title: "Complete beginner", description: "Never worked in tech or this role", highlight: true },
+                    { title: "Some experience", description: "Touched on it in an adjacent role", highlight: false },
+                    { title: "Career switcher", description: "Experienced in another field", highlight: false },
+                    { title: "Ready to specialize", description: "Already in an adjacent role", highlight: false },
+                  ].map((audience, idx) => (
+                    <div
+                      key={idx}
+                      className={cn(
+                        "rounded-xl p-4 border text-left shadow-2xs",
+                        audience.highlight
+                          ? "border-[#CC1747] bg-[#FFF1F3]/60 shadow-xs"
+                          : "border-[#EAECF0] bg-white"
+                      )}
+                    >
+                      <h3 className={cn("text-xs font-bold", audience.highlight ? "text-[#CC1747]" : "text-[#101928]")}>
+                        {audience.title}
+                      </h3>
+                      <p className="mt-1 text-[11px] leading-relaxed text-[#667185]">
+                        {audience.description}
+                      </p>
+                    </div>
+                  ))}
                 </div>
               </section>
 
-              {/* Section 4: Choose your pace */}
-              <section className="pt-2">
-                <h2 className="text-xl font-bold text-[#101928] sm:text-2xl">
-                  Choose your pace
-                </h2>
-                <p className="mt-2 text-sm text-[#475467]">
-                  Same ~100 hours of learning either way — pick the schedule that
-                  actually fits your week.
-                </p>
+              {/* Section 4: Course Types (if for Live Cohort / if for On-Demand) */}
+              {isLive && (
+                <section className="pt-2">
+                  <h2 className="text-xl font-bold text-[#101928] sm:text-2xl">
+                    Choose your pace
+                  </h2>
+                  <p className="mt-2 text-sm text-[#475467]">
+                    Same ~100 hours of learning either way — pick the schedule that
+                    actually fits your week.
+                  </p>
 
-                <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  {pathway.paceOptions.map((pace, idx) => {
-                    const isSelected = selectedPace === idx;
-                    return (
+                  <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    {pathway.paceOptions.map((pace, idx) => (
                       <div
                         key={idx}
-                        onClick={() => setSelectedPace(idx)}
                         className={cn(
-                          "cursor-pointer rounded-2xl p-5 border transition-all text-left shadow-2xs relative",
-                          isSelected
+                          "rounded-2xl p-5 border text-left shadow-2xs relative",
+                          pace.badgeType === "highlight" || idx === 1
                             ? "border-[#CC1747] bg-[#FFF1F3]/40 shadow-xs"
-                            : "border-[#EAECF0] bg-white hover:border-[#D0D5DD]"
+                            : "border-[#EAECF0] bg-white"
                         )}
                       >
-                        {/* Pace Badge */}
                         <span
                           className={cn(
                             "inline-block text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider mb-2",
-                            pace.badgeType === "highlight"
+                            pace.badgeType === "highlight" || idx === 1
                               ? "bg-[#FFE4E8] text-[#E11D48]"
                               : "bg-[#F2F4F7] text-[#475467]"
                           )}
                         >
-                          {pace.badge}
+                          {pace.badge || (idx === 1 ? "FASTEST COMPLETION" : "LOWER WEEKLY COMMITMENT")}
                         </span>
 
                         <h3 className="text-base font-bold text-[#101928]">
@@ -325,12 +322,43 @@ export const CoursePreviewPage = () => {
                           </div>
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
-              </section>
+                    ))}
+                  </div>
+                </section>
+              )}
 
-              {/* Section 5: Your mentors */}
+              {isOnDemand && (
+                <section className="pt-2">
+                  <h2 className="text-xl font-bold text-[#101928] sm:text-2xl">
+                    On-Demand Curriculum
+                  </h2>
+                  <p className="mt-2 text-sm text-[#475467]">
+                    Self-paced video modules with lifetime access and downloadable resources.
+                  </p>
+                  <div className="mt-4 space-y-3">
+                    {apiCourse?.pre_recorded_price?.length > 0 ? (
+                      apiCourse.pre_recorded_price.map((opt, i) => (
+                        <div key={i} className="flex items-center justify-between rounded-xl border border-[#EAECF0] bg-white p-4 shadow-2xs">
+                          <div>
+                            <span className="text-xs font-bold text-[#101928] uppercase">{opt.duration} Access</span>
+                            <p className="text-xs text-[#667185]">Full access to recorded video sessions and materials</p>
+                          </div>
+                          <span className="text-sm font-extrabold text-[#CC1747]">
+                            {opt.currency_symbol || "£"}{opt.amount}
+                          </span>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="rounded-xl border border-[#EAECF0] bg-white p-4 text-xs text-[#667185]">
+                        Lifetime access to pre-recorded video lectures, project materials, and downloadable guides.
+                      </div>
+                    )}
+                  </div>
+                </section>
+              )}
+
+              {/* Section 5: Your mentors (commented out for now) */}
+              {/*
               <section className="pt-2">
                 <h2 className="text-xl font-bold text-[#101928] sm:text-2xl">
                   Your mentors
@@ -347,7 +375,6 @@ export const CoursePreviewPage = () => {
                       className="flex flex-col justify-between rounded-2xl border border-[#EAECF0] bg-white p-4 shadow-2xs transition-all hover:border-[#D0D5DD] hover:shadow-md"
                     >
                       <div>
-                        {/* Mentor Photo with Availability Badge */}
                         <div className="relative aspect-4/3 overflow-hidden rounded-xl bg-gray-100">
                           <img
                             src={mentor.image}
@@ -362,7 +389,6 @@ export const CoursePreviewPage = () => {
                           )}
                         </div>
 
-                        {/* Name & Credentials */}
                         <h3 className="mt-3.5 text-sm font-bold text-[#101928]">
                           {mentor.name}
                         </h3>
@@ -377,7 +403,6 @@ export const CoursePreviewPage = () => {
                         </p>
                       </div>
 
-                      {/* Book a session Button */}
                       <button
                         type="button"
                         onClick={handleEnrollClick}
@@ -389,24 +414,24 @@ export const CoursePreviewPage = () => {
                   ))}
                 </div>
               </section>
+              */}
 
-              {/* Section 6: Success stories */}
+              {/* Section 6: Success stories (random approved stories) */}
               <section className="pt-2">
                 <h2 className="text-xl font-bold text-[#101928] sm:text-2xl">
                   Success stories
                 </h2>
 
                 <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
-                  {pathway.successStories.map((story) => (
+                  {displaySuccessStories.map((story, i) => (
                     <div
-                      key={story.id}
+                      key={story.id || i}
                       className="flex flex-col justify-between rounded-2xl border border-[#EAECF0] bg-white p-5 shadow-2xs"
                     >
                       <div>
-                        {/* 5 Stars */}
                         <div className="flex items-center gap-0.5 text-[#E11D48]">
-                          {[...Array(5)].map((_, i) => (
-                            <Star key={i} size={14} fill="currentColor" />
+                          {[...Array(story.rating || 5)].map((_, idx) => (
+                            <Star key={idx} size={14} fill="currentColor" />
                           ))}
                         </div>
 
@@ -417,7 +442,7 @@ export const CoursePreviewPage = () => {
 
                       <div className="mt-4 flex items-center gap-2.5 border-t border-[#F2F4F7] pt-3">
                         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-[#344054]">
-                          {story.author.charAt(0)}
+                          {(story.author || "A").charAt(0)}
                         </div>
                         <div>
                           <p className="text-xs font-bold text-[#101928]">
@@ -433,7 +458,8 @@ export const CoursePreviewPage = () => {
                 </div>
               </section>
 
-              {/* Section 7: Frequently asked questions */}
+              {/* Section 7: Frequently asked questions (commented out for now) */}
+              {/*
               <section className="pt-2">
                 <h2 className="text-xl font-bold text-[#101928] sm:text-2xl">
                   Frequently asked questions
@@ -469,6 +495,7 @@ export const CoursePreviewPage = () => {
                   })}
                 </div>
               </section>
+              */}
             </div>
 
             {/* Right Column: Floating/Sticky Cohort Details Card */}

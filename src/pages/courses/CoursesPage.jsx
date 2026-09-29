@@ -31,11 +31,20 @@ export const CoursesPage = () => {
   // Fetch from API
   const { data: apiData, isLoading } = useFetchAllCourses({
     courseType: activeType === "all" ? "" : activeType === "live" ? "live" : "on-demand",
+    page: 1,
+    perPage: 12,
   });
 
   // Merge API courses with default pathways
   const allPathways = useMemo(() => {
-    const rawCourses = apiData?.data?.data || apiData?.data?.courses || [];
+    const rawCourses = Array.isArray(apiData?.data?.data?.courses)
+      ? apiData.data.data.courses
+      : Array.isArray(apiData?.data?.courses)
+      ? apiData.data.courses
+      : Array.isArray(apiData?.data?.data)
+      ? apiData.data.data
+      : [];
+
     if (!Array.isArray(rawCourses) || rawCourses.length === 0) {
       return DEFAULT_PATHWAYS;
     }
