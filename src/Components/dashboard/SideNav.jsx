@@ -1,4 +1,4 @@
-import { LucideLogOut } from "lucide-react";
+import { LucideLogOut, Headphones } from "lucide-react";
 import { PiGearThin } from "react-icons/pi";
 import { IoGiftOutline } from "react-icons/io5";
 
@@ -14,7 +14,7 @@ import { Skeleton } from "../ui/skeleton";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { useProfile } from "@/hooks/students/use-fetch-student-profile";
 
-export function Sidebar({ children, toggleNav, setToggleNav }) {
+export function Sidebar({ children, toggleNav, setToggleNav, onOpenHelpDesk }) {
   const location = useLocation();
 
   const { data, isLoading } = useProfile();
@@ -90,6 +90,25 @@ export function Sidebar({ children, toggleNav, setToggleNav }) {
                     Referrals
                   </span>
                 </NavLink>
+              </li>
+
+              {/* Help Desk Hotline */}
+              <li className="dashboard">
+                <button
+                  type="button"
+                  onClick={() => {
+                    onOpenHelpDesk?.();
+                    setToggleNav?.((prev) => !prev);
+                  }}
+                  className="group relative my-1 flex w-full cursor-pointer items-center border-4 border-transparent px-3 py-2 text-gray-600 transition-colors hover:border-l-primary-color-600 hover:bg-primary-color-100/30 hover:text-primary-color-600"
+                >
+                  <span className="text-xl">
+                    <Headphones className="h-5 w-5" />
+                  </span>
+                  <span className="ml-3 overflow-hidden text-left transition-all">
+                    Help Desk
+                  </span>
+                </button>
               </li>
             </ul>
             <div className="flex items-center justify-between border-t p-3">
