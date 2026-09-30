@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { DarkLogo } from "../../../Components/Logo";
 import { useProfile } from "@/hooks/students/use-fetch-student-profile";
+import { useCareerAssessment } from "@/utils/careerAssessment";
 import PopUp from "@/Components/dashboard/PopUp";
 import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
 import TakeAssessmentButton from "@/Components/assessment/TakeAssessmentButton";
@@ -22,9 +23,30 @@ import Cookies from "js-cookie";
 export const HeroSection = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const token = Cookies.get("token");
+  const adminToken = Cookies.get("adminToken");
   const { data: profileData } = useProfile();
   const user = profileData?.data?.data;
   const isLoggedIn = Boolean(token && (user || profileData));
+
+  // Dynamic Dashboard Routing based on User Role (Admin, Instructor, Student)
+  const userRole = (user?.role || "").toLowerCase();
+  const isAdmin = Boolean(adminToken || userRole === "admin" || user?.is_admin);
+  const isInstructor = Boolean(userRole === "instructor" || user?.is_instructor);
+
+  const dashboardPath = isAdmin
+    ? "/admin/data-management"
+    : isInstructor
+    ? "/admin/course-management"
+    : "/dashboard";
+
+  const dashboardLabel = isAdmin
+    ? "Go to Admin Dashboard"
+    : isInstructor
+    ? "Go to Instructor Dashboard"
+    : "Go to Dashboard";
+
+  // Career Assessment Status for Profile Matching
+  const { hasCompleted, pathway: userPathway, count } = useCareerAssessment();
 
   const pathways = [
     { name: "Business Analysis", icon: Smartphone, slug: "business-analysis" },
@@ -109,10 +131,10 @@ export const HeroSection = () => {
             {isLoggedIn ? (
               <div className="flex items-center gap-4">
                 <Link
-                  to="/dashboard"
+                  to={dashboardPath}
                   className="text-[13px] font-semibold text-slate-700 hover:text-[#D7195A] px-3.5 py-2 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors"
                 >
-                  Go to Dashboard
+                  {dashboardLabel}
                 </Link>
                 <PopUp className="relative cursor-pointer">
                   <Avatar className="h-10 w-10 cursor-pointer border-2 border-[#D7195A]/30 hover:border-[#D7195A] transition-colors">
@@ -205,11 +227,11 @@ export const HeroSection = () => {
                     </div>
                   </div>
                   <Link
-                    to="/dashboard"
+                    to={dashboardPath}
                     onClick={() => setMobileMenuOpen(false)}
                     className="w-full text-center bg-[#D7195A] text-white font-semibold text-[14px] py-2.5 rounded-lg shadow-sm"
                   >
-                    Go to Dashboard
+                    {dashboardLabel}
                   </Link>
                 </>
               ) : (
@@ -332,12 +354,34 @@ export const HeroSection = () => {
 
                 {/* Profile Match Information Card */}
                 <div className="bg-[#121B35] border border-white/10 rounded-xl p-4 mt-3.5">
-                  <div className="font-space font-bold text-[13.5px] text-white">
-                    3 roles matched to your profile
-                  </div>
-                  <div className="font-inter text-[12px] text-slate-400 mt-1">
-                    92% match · Business Analyst role, London
-                  </div>
+                  {!isLoggedIn ? (
+                    <>
+                      <div className="font-space font-bold text-[13.5px] text-white">
+                        0 roles matched to your profile
+                      </div>
+                      <div className="font-inter text-[12px] text-slate-400 mt-1">
+                        Log in or take our assessment to discover your pathway matches
+                      </div>
+                    </>
+                  ) : hasCompleted ? (
+                    <>
+                      <div className="font-space font-bold text-[13.5px] text-white">
+                        {count || 1} {count === 1 ? "role" : "roles"} matched to your profile
+                      </div>
+                      <div className="font-inter text-[12px] text-[#22C55E] font-medium mt-1">
+                        Top Match · {userPathway || "Business Analyst role"}
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="font-space font-bold text-[13.5px] text-white">
+                        3 roles matched to your profile
+                      </div>
+                      <div className="font-inter text-[12px] text-slate-400 mt-1">
+                        92% match · Business Analyst role, London
+                      </div>
+                    </>
+                  )}
                 </div>
 
                 {/* Footer Link */}
