@@ -271,36 +271,6 @@ export const CoursePreviewPage = () => {
               </section>
 
               {/* Section 4: Course Types (standalone if for On-Demand and if for Live Cohort) */}
-              {isOnDemand && (
-                <section className="pt-2">
-                  <h2 className="text-xl font-bold text-[#101928] sm:text-2xl">
-                    Choose your pace
-                  </h2>
-                  <p className="mt-2 text-sm text-[#475467]">
-                    Self-paced video modules with lifetime access and downloadable resources — pick the duration that fits your learning style.
-                  </p>
-                  <div className="mt-4 space-y-3">
-                    {apiCourse?.pre_recorded_price?.length > 0 ? (
-                      apiCourse.pre_recorded_price.map((opt, i) => (
-                        <div key={i} className="flex items-center justify-between rounded-xl border border-[#EAECF0] bg-white p-4 shadow-2xs">
-                          <div>
-                            <span className="text-xs font-bold text-[#101928] uppercase">{opt.duration} Access</span>
-                            <p className="text-xs text-[#667185]">Full access to recorded video sessions, project tasks, and materials</p>
-                          </div>
-                          <span className="text-sm font-extrabold text-[#CC1747]">
-                            {opt.currency_symbol || "£"}{opt.amount}
-                          </span>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="rounded-xl border border-[#EAECF0] bg-white p-4 text-xs text-[#667185]">
-                        Lifetime access to pre-recorded video lectures, project materials, and downloadable guides.
-                      </div>
-                    )}
-                  </div>
-                </section>
-              )}
-
               {isLive && (
                 <section className="pt-2">
                   <h2 className="text-xl font-bold text-[#101928] sm:text-2xl">
@@ -353,6 +323,36 @@ export const CoursePreviewPage = () => {
                         </div>
                       </div>
                     ))}
+                  </div>
+                </section>
+              )}
+
+              {isOnDemand && (
+                <section className="pt-2">
+                  <h2 className="text-xl font-bold text-[#101928] sm:text-2xl">
+                    Choose your pace
+                  </h2>
+                  <p className="mt-2 text-sm text-[#475467]">
+                    Self-paced video modules with lifetime access and downloadable resources — pick the duration that fits your learning style.
+                  </p>
+                  <div className="mt-4 space-y-3">
+                    {apiCourse?.pre_recorded_price?.length > 0 ? (
+                      apiCourse.pre_recorded_price.map((opt, i) => (
+                        <div key={i} className="flex items-center justify-between rounded-xl border border-[#EAECF0] bg-white p-4 shadow-2xs">
+                          <div>
+                            <span className="text-xs font-bold text-[#101928] uppercase">{opt.duration} Access</span>
+                            <p className="text-xs text-[#667185]">Full access to recorded video sessions, project tasks, and materials</p>
+                          </div>
+                          <span className="text-sm font-extrabold text-[#CC1747]">
+                            {opt.currency_symbol || "£"}{opt.amount}
+                          </span>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="rounded-xl border border-[#EAECF0] bg-white p-4 text-xs text-[#667185]">
+                        Lifetime access to pre-recorded video lectures, project materials, and downloadable guides.
+                      </div>
+                    )}
                   </div>
                 </section>
               )}
@@ -509,14 +509,6 @@ export const CoursePreviewPage = () => {
                       {pathway.cohortName && pathway.cohortStartDate
                         ? `${pathway.cohortName} (${pathway.cohortStartDate})`
                         : pathway.startsDate}
-                    </span>
-                  </div>
-
-                  {/* Seats left */}
-                  <div className="flex items-center justify-between border-b border-[#F2F4F7] pb-3">
-                    <span className="text-[#667185]">Seats left</span>
-                    <span className="font-bold text-[#E11D48]">
-                      {pathway.seatsLeft ? `${pathway.seatsLeft} seats left` : "Unlimited"}
                     </span>
                   </div>
 
