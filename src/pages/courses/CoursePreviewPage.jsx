@@ -282,47 +282,116 @@ export const CoursePreviewPage = () => {
                   </p>
 
                   <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    {pathway.paceOptions.map((pace, idx) => (
-                      <div
-                        key={idx}
-                        className={cn(
-                          "rounded-2xl p-5 border text-left shadow-2xs relative",
-                          pace.badgeType === "highlight" || idx === 1
-                            ? "border-[#CC1747] bg-[#FFF1F3]/40 shadow-xs"
-                            : "border-[#EAECF0] bg-white"
-                        )}
-                      >
-                        <span
+                    {apiCourse?.cohorts?.length > 0 ? (
+                      apiCourse.cohorts.map((cohortItem, idx) => {
+                        const cohortName = cohortItem.cohort || `Cohort ${idx + 1}`;
+                        const classDays = cohortItem.class_days || "Weekend or evening";
+                        const cohortTime = cohortItem.time ? ` (${cohortItem.time})` : "";
+                        const startDate = cohortItem.start_date
+                          ? new Date(cohortItem.start_date).toLocaleDateString("en-GB", {
+                              day: "numeric",
+                              month: "short",
+                              year: "numeric",
+                            })
+                          : null;
+                        const priceDisplay =
+                          cohortItem.discounted_price?.price_string ||
+                          cohortItem.original_price?.price_string ||
+                          (cohortItem.discounted_price?.amount
+                            ? `${cohortItem.discounted_price.currency_symbol || "£"}${cohortItem.discounted_price.amount}`
+                            : null);
+
+                        return (
+                          <div
+                            key={idx}
+                            className={cn(
+                              "rounded-2xl p-5 border text-left shadow-2xs relative",
+                              idx === 0
+                                ? "border-[#CC1747] bg-[#FFF1F3]/40 shadow-xs"
+                                : "border-[#EAECF0] bg-white"
+                            )}
+                          >
+                            <span
+                              className={cn(
+                                "inline-block text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider mb-2",
+                                idx === 0
+                                  ? "bg-[#FFE4E8] text-[#E11D48]"
+                                  : "bg-[#F2F4F7] text-[#475467]"
+                              )}
+                            >
+                              {idx === 0 ? "NEXT UPCOMING COHORT" : "FUTURE COHORT"}
+                            </span>
+
+                            <h3 className="text-base font-bold text-[#101928]">
+                              {cohortName}
+                            </h3>
+
+                            <div className="mt-4 space-y-2 text-xs">
+                              {startDate && (
+                                <div className="flex items-center justify-between border-b border-[#F2F4F7] pb-1.5">
+                                  <span className="text-[#667185]">Start Date</span>
+                                  <span className="font-semibold text-[#101928]">{startDate}</span>
+                                </div>
+                              )}
+                              <div className="flex items-center justify-between border-b border-[#F2F4F7] pb-1.5">
+                                <span className="text-[#667185]">Schedule</span>
+                                <span className="font-semibold text-[#101928]">
+                                  {classDays}{cohortTime}
+                                </span>
+                              </div>
+                              {priceDisplay && (
+                                <div className="flex items-center justify-between pt-0.5">
+                                  <span className="text-[#667185]">Cohort Price</span>
+                                  <span className="font-extrabold text-[#CC1747]">{priceDisplay}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      pathway.paceOptions.map((pace, idx) => (
+                        <div
+                          key={idx}
                           className={cn(
-                            "inline-block text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider mb-2",
+                            "rounded-2xl p-5 border text-left shadow-2xs relative",
                             pace.badgeType === "highlight" || idx === 1
-                              ? "bg-[#FFE4E8] text-[#E11D48]"
-                              : "bg-[#F2F4F7] text-[#475467]"
+                              ? "border-[#CC1747] bg-[#FFF1F3]/40 shadow-xs"
+                              : "border-[#EAECF0] bg-white"
                           )}
                         >
-                          {pace.badge || (idx === 1 ? "FASTEST COMPLETION" : "LOWER WEEKLY COMMITMENT")}
-                        </span>
+                          <span
+                            className={cn(
+                              "inline-block text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider mb-2",
+                              pace.badgeType === "highlight" || idx === 1
+                                ? "bg-[#FFE4E8] text-[#E11D48]"
+                                : "bg-[#F2F4F7] text-[#475467]"
+                            )}
+                          >
+                            {pace.badge || (idx === 1 ? "FASTEST COMPLETION" : "LOWER WEEKLY COMMITMENT")}
+                          </span>
 
-                        <h3 className="text-base font-bold text-[#101928]">
-                          {pace.title}
-                        </h3>
+                          <h3 className="text-base font-bold text-[#101928]">
+                            {pace.title}
+                          </h3>
 
-                        <div className="mt-4 space-y-2 text-xs">
-                          <div className="flex items-center justify-between border-b border-[#F2F4F7] pb-1.5">
-                            <span className="text-[#667185]">Schedule</span>
-                            <span className="font-semibold text-[#101928]">{pace.schedule}</span>
-                          </div>
-                          <div className="flex items-center justify-between border-b border-[#F2F4F7] pb-1.5">
-                            <span className="text-[#667185]">Weekly commitment</span>
-                            <span className="font-semibold text-[#101928]">{pace.weeklyCommitment}</span>
-                          </div>
-                          <div className="flex items-center justify-between pt-0.5">
-                            <span className="text-[#667185]">Total hours</span>
-                            <span className="font-semibold text-[#101928]">{pace.totalHours}</span>
+                          <div className="mt-4 space-y-2 text-xs">
+                            <div className="flex items-center justify-between border-b border-[#F2F4F7] pb-1.5">
+                              <span className="text-[#667185]">Schedule</span>
+                              <span className="font-semibold text-[#101928]">{pace.schedule}</span>
+                            </div>
+                            <div className="flex items-center justify-between border-b border-[#F2F4F7] pb-1.5">
+                              <span className="text-[#667185]">Weekly commitment</span>
+                              <span className="font-semibold text-[#101928]">{pace.weeklyCommitment}</span>
+                            </div>
+                            <div className="flex items-center justify-between pt-0.5">
+                              <span className="text-[#667185]">Total hours</span>
+                              <span className="font-semibold text-[#101928]">{pace.totalHours}</span>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      ))
+                    )}
                   </div>
                 </section>
               )}
@@ -337,17 +406,26 @@ export const CoursePreviewPage = () => {
                   </p>
                   <div className="mt-4 space-y-3">
                     {apiCourse?.pre_recorded_price?.length > 0 ? (
-                      apiCourse.pre_recorded_price.map((opt, i) => (
-                        <div key={i} className="flex items-center justify-between rounded-xl border border-[#EAECF0] bg-white p-4 shadow-2xs">
-                          <div>
-                            <span className="text-xs font-bold text-[#101928] uppercase">{opt.duration} Access</span>
-                            <p className="text-xs text-[#667185]">Full access to recorded video sessions, project tasks, and materials</p>
+                      apiCourse.pre_recorded_price.map((opt, i) => {
+                        const priceStr =
+                          opt.discounted_price?.price_string ||
+                          opt.original_price?.price_string ||
+                          (opt.amount ? `${opt.currency_symbol || "£"}${opt.amount}` : null);
+
+                        return (
+                          <div key={i} className="flex items-center justify-between rounded-xl border border-[#EAECF0] bg-white p-4 shadow-2xs">
+                            <div>
+                              <span className="text-xs font-bold text-[#101928] uppercase">{opt.duration} Access</span>
+                              <p className="text-xs text-[#667185]">Full access to recorded video sessions, project tasks, and materials</p>
+                            </div>
+                            {priceStr && (
+                              <span className="text-sm font-extrabold text-[#CC1747]">
+                                {priceStr}
+                              </span>
+                            )}
                           </div>
-                          <span className="text-sm font-extrabold text-[#CC1747]">
-                            {opt.currency_symbol || "£"}{opt.amount}
-                          </span>
-                        </div>
-                      ))
+                        );
+                      })
                     ) : (
                       <div className="rounded-xl border border-[#EAECF0] bg-white p-4 text-xs text-[#667185]">
                         Lifetime access to pre-recorded video lectures, project materials, and downloadable guides.
