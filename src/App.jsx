@@ -24,6 +24,7 @@ import ProjectManagement from "./pages/courses/projectManagement";
 import ThanksPage from "./pages/thanksPage";
 import LandingPage from "./pages/courses/landingPage";
 import IndividualLandingPage from "./pages/individual/IndividualLandingPage";
+import EnterpriseLandingPage from "./pages/enterprise/EnterpriseLandingPage";
 import AssessmentPage from "./pages/assessment/AssessmentPage";
 
 import Contact from "./pages/Contact";
@@ -265,6 +266,14 @@ function App() {
           element: <AssessmentPage />,
         },
         {
+          path: "/enterprise",
+          element: <EnterpriseLandingPage />,
+        },
+        {
+          path: "/enterprise-landing-page",
+          element: <EnterpriseLandingPage />,
+        },
+        {
           path: "/individual",
           element: <IndividualLandingPage />,
         },
@@ -347,7 +356,7 @@ function App() {
             },
             {
               path: "/partner",
-              element: <Partner />,
+              element: <EnterpriseLandingPage />,
             },
             {
               path: "/self-pace",
