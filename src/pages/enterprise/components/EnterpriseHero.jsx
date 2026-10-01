@@ -3,7 +3,7 @@ import { ArrowRight, ShieldCheck, Globe, Zap, Users } from "lucide-react";
 
 export const EnterpriseHero = ({ onOpenModal }) => {
   return (
-    <section className="relative w-full bg-[#0A1430] text-white pt-12 pb-16 sm:pt-16 sm:pb-20 lg:pt-20 lg:pb-24 overflow-hidden font-inter border-b border-slate-800">
+    <section className="relative w-full bg-[#0A1430] text-white pt-12 pb-16 sm:pt-16 sm:pb-20 lg:pt-20 lg:pb-24 overflow-hidden font-inter border-b border-slate-800 lg:pl-32">
       {/* Subtle Ambient Background Gradients */}
       <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#CC1747]/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 right-10 w-[400px] h-[400px] bg-blue-600/10 rounded-full blur-[100px] pointer-events-none" />

@@ -31,7 +31,7 @@ export const EnterpriseNavbar = ({ onOpenModal }) => {
         <div className="mx-auto px-4 flex items-center justify-center gap-3 flex-wrap text-center">
           <span className="text-slate-400">Avenue Impact for:</span>
           <Link
-            to="/"
+            to="/individual"
             className="text-slate-300 hover:text-white font-medium transition-colors inline-flex items-center gap-1"
           >
             Individuals <ArrowRight size={12} />

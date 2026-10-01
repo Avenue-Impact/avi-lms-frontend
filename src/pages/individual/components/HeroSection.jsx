@@ -105,9 +105,6 @@ export const HeroSection = () => {
             <Link to="/courses" className="hover:text-[#D7195A] transition-colors">
               Pathways & Start Dates
             </Link>
-            <Link to="/enterprise" className="hover:text-[#D7195A] transition-colors">
-              Enterprise & Gov
-            </Link>
             <a
               href="https://prepnhire.com/"
               target="_blank"

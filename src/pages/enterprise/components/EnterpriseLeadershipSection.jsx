@@ -6,7 +6,7 @@ export const EnterpriseLeadershipSection = ({ onOpenModal }) => {
   return (
     <section
       id="leadership"
-      className="w-full bg-white py-12 sm:py-16 lg:py-20 font-inter text-[#0A1430] border-b border-slate-200"
+      className="w-full bg-white py-12 sm:py-16 lg:py-20 lg:px-32 font-inter text-[#0A1430] border-b border-slate-200"
     >
       <div className="mx-6 md:mx-12 px-4 sm:px-6 lg:px-8">
         {/* Eyebrow & Heading */}
