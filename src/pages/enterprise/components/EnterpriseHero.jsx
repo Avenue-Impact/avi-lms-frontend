@@ -3,12 +3,12 @@ import { ArrowRight, ShieldCheck, Globe, Zap, Users } from "lucide-react";
 
 export const EnterpriseHero = ({ onOpenModal }) => {
   return (
-    <section className="relative w-full bg-[#0A1430] text-white pt-16 pb-20 sm:pt-20 sm:pb-24 lg:pt-24 lg:pb-28 overflow-hidden font-inter border-b border-slate-800">
+    <section className="relative w-full bg-[#0A1430] text-white pt-12 pb-16 sm:pt-16 sm:pb-20 lg:pt-20 lg:pb-24 overflow-hidden font-inter border-b border-slate-800">
       {/* Subtle Ambient Background Gradients */}
       <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#CC1747]/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 right-10 w-[400px] h-[400px] bg-blue-600/10 rounded-full blur-[100px] pointer-events-none" />
 
-      <div className="relative w-full px-6 md:px-12 lg:px-16">
+      <div className="relative mx-6 md:mx-12 px-4 sm:px-6 lg:px-8">
         <div>
           {/* Eyebrow Tag */}
           <div className="inline-flex items-center gap-2 mb-6">

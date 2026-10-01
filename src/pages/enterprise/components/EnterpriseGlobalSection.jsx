@@ -15,9 +15,9 @@ export const EnterpriseGlobalSection = () => {
   return (
     <section
       id="global-capability"
-      className="w-full bg-white py-16 sm:py-20 lg:py-24 font-inter text-[#0A1430] border-b border-slate-200"
+      className="w-full bg-white py-12 sm:py-16 lg:py-20 font-inter text-[#0A1430] border-b border-slate-200"
     >
-      <div className="w-full px-6 md:px-12 lg:px-16">
+      <div className="mx-6 md:mx-12 px-4 sm:px-6 lg:px-8">
         <div>
           {/* Eyebrow */}
           <div className="text-[#CC1747] font-space text-[11px] sm:text-[12px] font-bold tracking-[0.18em] uppercase mb-2">

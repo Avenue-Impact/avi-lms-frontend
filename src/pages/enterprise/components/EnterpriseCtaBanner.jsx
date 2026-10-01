@@ -3,8 +3,8 @@ import { ArrowRight } from "lucide-react";
 
 export const EnterpriseCtaBanner = ({ onOpenModal }) => {
   return (
-    <section className="w-full bg-[#F8F9FC] py-16 sm:py-20 lg:py-24 font-inter text-white">
-      <div className="w-full px-6 md:px-12 lg:px-16">
+    <section className="w-full bg-[#F8F9FC] py-12 sm:py-16 lg:py-20 font-inter text-white">
+      <div className="mx-6 md:mx-12 px-4 sm:px-6 lg:px-8">
         <div className="rounded-3xl bg-[#0A1430] p-8 sm:p-12 lg:p-16 text-center border border-slate-800 shadow-2xl relative overflow-hidden">
           {/* Ambient Glow */}
           <div className="absolute top-0 right-0 w-80 h-80 bg-[#CC1747]/10 rounded-full blur-3xl pointer-events-none" />
