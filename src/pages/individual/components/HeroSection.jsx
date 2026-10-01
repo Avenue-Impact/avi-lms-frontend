@@ -84,7 +84,7 @@ export const HeroSection = () => {
             Individuals
           </span>
           <Link
-            to="/partner"
+            to="/enterprise"
             className="text-slate-300 hover:text-white ml-3 font-medium transition-colors inline-flex items-center gap-1"
           >
             Corporate & Government <span aria-hidden="true">→</span>
@@ -104,6 +104,9 @@ export const HeroSection = () => {
           <nav className="hidden lg:flex items-center gap-8 text-[14px] font-medium text-[#0A1430]">
             <Link to="/courses" className="hover:text-[#D7195A] transition-colors">
               Pathways & Start Dates
+            </Link>
+            <Link to="/enterprise" className="hover:text-[#D7195A] transition-colors">
+              Enterprise & Gov
             </Link>
             <a
               href="https://prepnhire.com/"

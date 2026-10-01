@@ -38,6 +38,7 @@ const AVIFooter = ({ theme = "dark", variant, light = false }) => {
 
   const companyLinks = [
     { label: "About", to: "/about" },
+    { label: "Enterprise & Gov", to: "/enterprise" },
     { label: "Careers", to: "/contact" },
     { label: "Success Stories", to: "/success-stories" },
   ];
