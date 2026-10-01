@@ -28,21 +28,18 @@ export const EnterpriseNavbar = ({ onOpenModal }) => {
     <header className="w-full sticky top-0 z-50 font-inter">
       {/* Top Banner */}
       <div className="w-full bg-[#070D20] border-b border-slate-800/60 py-2 text-white text-[12px] sm:text-[13px]">
-        <div className="mx-6 md:mx-12 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-slate-400">Avenue Impact for:</span>
-            <span className="bg-[#CC1747] text-white px-3 py-0.5 rounded-full font-semibold text-[11px] sm:text-xs tracking-wide">
-              Enterprise & Public Sector
-            </span>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link
-              to="/"
-              className="text-slate-300 hover:text-white font-medium transition-colors inline-flex items-center gap-1"
-            >
-              For Individuals <ArrowRight size={12} />
-            </Link>
-          </div>
+        <div className="mx-auto px-4 flex items-center justify-center gap-3 flex-wrap text-center">
+          <span className="text-slate-400">Avenue Impact for:</span>
+          <Link
+            to="/"
+            className="text-slate-300 hover:text-white font-medium transition-colors inline-flex items-center gap-1"
+          >
+            Individuals <ArrowRight size={12} />
+          </Link>
+          <span className="text-slate-600">|</span>
+          <span className="bg-[#CC1747] text-white px-3.5 py-1 rounded-full font-semibold text-[11px] sm:text-xs tracking-wide">
+            Organisations & Government
+          </span>
         </div>
       </div>
 

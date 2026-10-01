@@ -1,56 +1,59 @@
 import React from "react";
-import { Globe, MapPin, Check } from "lucide-react";
 
 export const EnterpriseGlobalSection = () => {
-  const hubs = [
-    { country: "UK", code: "GB", flag: "🇬🇧" },
-    { country: "Ghana", code: "GH", flag: "🇬🇭" },
-    { country: "Nigeria", code: "NG", flag: "🇳🇬" },
-    { country: "South Africa", code: "ZA", flag: "🇿🇦" },
-    { country: "Kenya", code: "KE", flag: "🇰🇪" },
-    { country: "Rwanda", code: "RW", flag: "🇷🇼" },
-    { country: "Zimbabwe", code: "ZW", flag: "🇿🇼" },
+  const steps = [
+    { num: "01", label: "Identify" },
+    { num: "02", label: "Assess" },
+    { num: "03", label: "Develop" },
+    { num: "04", label: "Certify" },
+    { num: "05", label: "Deploy" },
+    { num: "06", label: "Manage" },
+    { num: "07", label: "Measure" },
   ];
 
   return (
     <section
       id="global-capability"
-      className="w-full bg-white py-12 sm:py-16 lg:py-20 font-inter text-[#0A1430] border-b border-slate-200"
+      className="w-full bg-[#F8F9FC] py-12 sm:py-16 lg:py-20 font-inter text-[#0A1430] border-b border-slate-200"
     >
       <div className="mx-6 md:mx-12 px-4 sm:px-6 lg:px-8">
-        <div>
+        <div className="max-w-3xl">
           {/* Eyebrow */}
           <div className="text-[#CC1747] font-space text-[11px] sm:text-[12px] font-bold tracking-[0.18em] uppercase mb-2">
-            GLOBAL DELIVERY HUB
+            ABOUT AVENUE IMPACT
           </div>
 
           {/* Heading */}
-          <h2 className="font-space font-extrabold text-[28px] sm:text-[38px] lg:text-[42px] leading-tight text-[#0A1430]">
+          <h2 className="font-space font-extrabold text-[28px] sm:text-[36px] lg:text-[40px] leading-tight text-[#0A1430]">
             Global capability, built on quality — not cost
           </h2>
 
-          {/* Subtitle / Paragraph */}
-          <div className="mt-4 space-y-3 text-slate-600 text-sm sm:text-base leading-relaxed">
+          {/* Paragraphs */}
+          <div className="mt-4 space-y-4 text-slate-500 text-[14px] sm:text-[15px] leading-relaxed">
             <p>
-              Avenue Impact maintains delivery hubs across strategic global regions — combining top-tier technical talent with rigorous governance and quality control. We give you global capability without the usual quality friction or timezone issues.
+              Avenue Impact combines deep UK market understanding with a high-quality professional delivery capability across Africa. This isn't about low-cost labour — it's about accessing skilled, well-developed professional talent through a structured, accountable delivery model.
             </p>
-            <p className="text-xs sm:text-sm text-slate-500 font-medium">
-              Every hub operates under centralized UK governance, CPD-accredited quality standards, and strict security compliance.
+            <p>
+              Our talent goes through a clear pathway, supported by our own learning and development infrastructure — including structured mentoring and professional readiness programmes — which means the people we deploy arrive prepared, and stay supported throughout an engagement.
             </p>
           </div>
+        </div>
 
-          {/* Country Hub Pills */}
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            {hubs.map((hub) => (
-              <div
-                key={hub.country}
-                className="inline-flex items-center gap-2 bg-[#F8F9FC] hover:bg-[#EEF2F9] border border-slate-200 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#0A1430] shadow-2xs transition-colors"
-              >
-                <span className="text-base">{hub.flag}</span>
-                <span>{hub.country}</span>
+        {/* 7 Step Process Pills */}
+        <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 sm:gap-4">
+          {steps.map((step) => (
+            <div
+              key={step.num}
+              className="bg-white border border-slate-200/80 rounded-xl p-3.5 sm:p-4 text-center shadow-2xs hover:shadow-xs transition-shadow"
+            >
+              <div className="text-[#CC1747] font-space font-extrabold text-xs sm:text-sm">
+                {step.num}
               </div>
-            ))}
-          </div>
+              <div className="text-[#0A1430] font-space font-bold text-xs sm:text-sm mt-1">
+                {step.label}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>

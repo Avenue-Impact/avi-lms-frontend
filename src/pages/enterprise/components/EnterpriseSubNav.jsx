@@ -1,36 +1,23 @@
 import React from "react";
 
 export const EnterpriseSubNav = () => {
-  const links = [
-    { label: "The Delivery Problem", href: "#delivery-problem" },
-    { label: "How We Help", href: "#how-we-help" },
-    { label: "Case Studies", href: "#case-studies" },
-    { label: "Our Process", href: "#our-process" },
-    { label: "Global Capability", href: "#global-capability" },
-    { label: "Leadership", href: "#leadership" },
+  const clients = [
+    "East Midlands Railway",
+    "NidCOM",
+    "Central Bank of Nigeria",
   ];
 
-  const handleScrollTo = (e, href) => {
-    e.preventDefault();
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   return (
-    <div className="w-full bg-white border-b border-slate-200 sticky top-[72px] z-40 font-inter shadow-xs">
-      <div className="mx-6 md:mx-12 px-4 sm:px-6 lg:px-8 overflow-x-auto scrollbar-none">
-        <div className="flex items-center gap-6 sm:gap-8 py-3 text-xs sm:text-sm font-medium whitespace-nowrap text-slate-600">
-          {links.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              onClick={(e) => handleScrollTo(e, link.href)}
-              className="hover:text-[#CC1747] transition-colors py-1 cursor-pointer"
-            >
-              {link.label}
-            </a>
+    <div className="w-full bg-[#F8F9FC] border-b border-slate-200/80 py-4 font-inter text-[#0A1430]">
+      <div className="mx-6 md:mx-12 px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <span className="font-space text-[10px] sm:text-[11px] font-bold tracking-[0.18em] uppercase text-slate-400">
+          DELIVERY TRACK RECORD WITH
+        </span>
+        <div className="flex items-center gap-6 sm:gap-10 overflow-x-auto scrollbar-none font-space font-semibold text-slate-600 text-xs sm:text-sm">
+          {clients.map((client) => (
+            <span key={client} className="whitespace-nowrap">
+              {client}
+            </span>
           ))}
         </div>
       </div>

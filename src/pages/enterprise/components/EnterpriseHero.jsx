@@ -9,22 +9,22 @@ export const EnterpriseHero = ({ onOpenModal }) => {
       <div className="absolute bottom-0 right-10 w-[400px] h-[400px] bg-blue-600/10 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="relative mx-6 md:mx-12 px-4 sm:px-6 lg:px-8">
-        <div>
+        <div className="max-w-3xl">
           {/* Eyebrow Tag */}
-          <div className="inline-flex items-center gap-2 mb-6">
-            <span className="font-space text-[11px] sm:text-[12px] font-bold tracking-[0.2em] uppercase text-[#F43F5E] bg-[#CC1747]/10 border border-[#CC1747]/25 px-3 py-1 rounded-full">
-              BUSINESS · HIGHER EDUCATION · GOVERNMENT · HEALTHCARE
+          <div className="mb-4">
+            <span className="font-space text-[11px] sm:text-[12px] font-bold tracking-[0.2em] uppercase text-[#F43F5E]">
+              WORKFORCE TRANSFORMATION & GLOBAL DELIVERY
             </span>
           </div>
 
           {/* Main Headline */}
-          <h1 className="font-space font-extrabold text-[38px] sm:text-[52px] lg:text-[62px] leading-[1.08] tracking-tight text-white">
+          <h1 className="font-space font-extrabold text-[38px] sm:text-[52px] lg:text-[58px] leading-[1.08] tracking-tight text-white">
             Transform your workforce. Deliver change. Access global capability.
           </h1>
 
           {/* Subtitle */}
-          <p className="font-inter text-[16px] sm:text-[19px] leading-relaxed text-slate-300 mt-6 font-normal">
-            Avenue Impact builds talent pipelines and deploys delivery teams to help organizations scale capacity, execute critical initiatives, and access global talent — without compromising on quality or governance.
+          <p className="font-inter text-[15px] sm:text-[17px] leading-relaxed text-slate-300 mt-5 font-normal">
+            Avenue Impact is a workforce transformation and global delivery company helping organisations build future-ready capabilities, deliver transformation and access high-quality professional talent within the UK and across the UK and Africa.
           </p>
 
           {/* Primary CTA Button */}
