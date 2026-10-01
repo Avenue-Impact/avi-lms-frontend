@@ -29,9 +29,9 @@ export const EnterpriseProcessSection = () => {
       id="our-process"
       className="w-full bg-white py-16 sm:py-20 lg:py-24 font-inter text-[#0A1430] border-b border-slate-200"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-6 md:px-12 lg:px-16">
         {/* Eyebrow & Heading */}
-        <div className="mb-12 max-w-3xl">
+        <div className="mb-12">
           <div className="text-[#CC1747] font-space text-[11px] sm:text-[12px] font-bold tracking-[0.18em] uppercase mb-2">
             HOW WE WORK
           </div>

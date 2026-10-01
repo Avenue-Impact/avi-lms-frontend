@@ -7,8 +7,8 @@ export const EnterpriseProblemSection = ({ onOpenModal }) => {
       id="delivery-problem"
       className="w-full bg-[#F8F9FC] py-16 sm:py-20 lg:py-24 font-inter text-[#0A1430] border-b border-slate-200"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl">
+      <div className="w-full px-6 md:px-12 lg:px-16">
+        <div>
           {/* Eyebrow */}
           <div className="text-[#CC1747] font-space text-[11px] sm:text-[12px] font-bold tracking-[0.18em] uppercase mb-3">
             THE DELIVERY CHALLENGE

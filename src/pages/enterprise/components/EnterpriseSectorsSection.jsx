@@ -21,7 +21,7 @@ export const EnterpriseSectorsSection = () => {
 
   return (
     <section className="w-full bg-[#F8F9FC] py-16 sm:py-20 lg:py-24 font-inter text-[#0A1430] border-b border-slate-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-6 md:px-12 lg:px-16">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           {/* Left Narrative Column */}
           <div className="lg:col-span-6">

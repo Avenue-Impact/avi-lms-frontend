@@ -28,7 +28,7 @@ export const EnterpriseNavbar = ({ onOpenModal }) => {
     <header className="w-full sticky top-0 z-50 font-inter">
       {/* Top Banner */}
       <div className="w-full bg-[#070D20] border-b border-slate-800/60 py-2 px-4 text-white text-[12px] sm:text-[13px]">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <div className="w-full px-6 md:px-12 lg:px-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-slate-400">Avenue Impact for:</span>
             <span className="bg-[#CC1747] text-white px-3 py-0.5 rounded-full font-semibold text-[11px] sm:text-xs tracking-wide">
@@ -48,7 +48,7 @@ export const EnterpriseNavbar = ({ onOpenModal }) => {
 
       {/* Main Header Bar */}
       <nav className="w-full bg-[#0A1430]/95 backdrop-blur-md border-b border-slate-800/80 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[72px] flex items-center justify-between">
+        <div className="w-full px-6 md:px-12 lg:px-16 h-[72px] flex items-center justify-between">
           {/* Logo */}
           <Link to="/enterprise" className="flex items-center gap-2">
             <DarkLogo className="h-[36px] sm:h-[42px] w-auto object-contain brightness-0 invert" />
