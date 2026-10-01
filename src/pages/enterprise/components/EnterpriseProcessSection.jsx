@@ -31,11 +31,11 @@ export const EnterpriseProcessSection = () => {
     >
       <div className="mx-6 md:mx-12 px-4 sm:px-6 lg:px-8">
         {/* Eyebrow & Heading */}
-        <div className="mb-12">
+        <div className="mb-12 max-w-3xl">
           <div className="text-[#CC1747] font-space text-[11px] sm:text-[12px] font-bold tracking-[0.18em] uppercase mb-2">
             HOW WE WORK
           </div>
-          <h2 className="font-space font-extrabold text-[28px] sm:text-[38px] lg:text-[42px] leading-tight text-[#0A1430]">
+          <h2 className="font-space font-extrabold text-[28px] sm:text-[36px] lg:text-[40px] leading-tight text-[#0A1430]">
             A clear, accountable process
           </h2>
         </div>
@@ -58,7 +58,7 @@ export const EnterpriseProcessSection = () => {
               </h3>
 
               {/* Step Description */}
-              <p className="mt-2 text-xs sm:text-sm text-slate-600 leading-relaxed max-w-xs">
+              <p className="mt-2 text-xs sm:text-sm text-slate-500 leading-relaxed max-w-xs">
                 {item.description}
               </p>
             </div>

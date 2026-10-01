@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowRight, CheckCircle2, AlertTriangle, ShieldCheck } from "lucide-react";
+import { CheckCircle2, ShieldCheck } from "lucide-react";
 
 export const EnterpriseResultsSection = ({ onOpenModal }) => {
   const caseStudies = [
@@ -39,14 +39,14 @@ export const EnterpriseResultsSection = ({ onOpenModal }) => {
     >
       <div className="mx-6 md:mx-12 px-4 sm:px-6 lg:px-8">
         {/* Eyebrow & Heading */}
-        <div className="mb-10">
+        <div className="mb-10 max-w-3xl">
           <div className="text-[#CC1747] font-space text-[11px] sm:text-[12px] font-bold tracking-[0.18em] uppercase mb-2">
-            IMPACT
+            PROVEN RESULTS
           </div>
-          <h2 className="font-space font-extrabold text-[28px] sm:text-[38px] lg:text-[42px] leading-tight text-[#0A1430]">
+          <h2 className="font-space font-extrabold text-[28px] sm:text-[36px] lg:text-[40px] leading-tight text-[#0A1430]">
             Results, not promises
           </h2>
-          <p className="mt-3 text-slate-600 text-sm sm:text-base">
+          <p className="mt-3 text-slate-500 text-sm sm:text-base leading-relaxed">
             Real outcomes delivered for enterprise clients across healthcare, financial services, and higher education.
           </p>
         </div>
@@ -87,7 +87,7 @@ export const EnterpriseResultsSection = ({ onOpenModal }) => {
                 <button
                   type="button"
                   onClick={onOpenModal}
-                  className="w-full bg-[#151F3D] hover:bg-[#1D2B52] border border-white/10 text-slate-200 hover:text-white font-medium text-xs py-2.5 px-3 rounded-lg transition-colors text-center"
+                  className="w-full bg-[#151F3D] hover:bg-[#1D2B52] border border-white/10 text-slate-200 hover:text-white font-medium text-xs py-2.5 px-3 rounded-lg transition-colors text-center cursor-pointer"
                 >
                   Talk to us about a similar delivery need
                 </button>
