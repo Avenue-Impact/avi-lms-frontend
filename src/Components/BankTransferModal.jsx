@@ -1,23 +1,77 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import DashButton from '../pages/auth/ButtonDash';
 import { STUDENT_BASE_URL } from '@/constant';
 import Cookies from 'js-cookie';
+import { useAuth } from '@/hooks/useAuth';
+import {
+    getAutoPaymentReference,
+    formatPaymentReference,
+    validatePaymentReference,
+    MAX_PAYMENT_REF_LENGTH
+} from '@/utils/paymentReference';
 
 
 const BankTransferModal = ({ isOpen, onClose, transactionId, enrollmentId, bankDetails, amount, currency, onBack }) => {
+    const authContext = useAuth?.() || {};
+    const userDetails = authContext.userDetails || authContext.user || null;
+
+    const getSavedUser = () => {
+        if (userDetails && (userDetails.firstname || userDetails.first_name || userDetails.firstName)) {
+            return userDetails;
+        }
+        try {
+            const cookieUser = Cookies.get("user");
+            if (cookieUser) return JSON.parse(cookieUser);
+            const localUser = localStorage.getItem("user");
+            if (localUser) return JSON.parse(localUser);
+        } catch (e) {
+            // Ignore parse errors
+        }
+        return null;
+    };
+
+    const userProfile = getSavedUser();
+    const initialReference = getAutoPaymentReference(userProfile);
+
+    const [paymentReference, setPaymentReference] = useState(initialReference);
+    const [refError, setRefError] = useState('');
     const [file, setFile] = useState(null);
     const [isUploading, setIsUploading] = useState(false);
     const [confirmed, setConfirmed] = useState(false);
 
+    useEffect(() => {
+        if (isOpen) {
+            const autoRef = getAutoPaymentReference(userProfile);
+            setPaymentReference(autoRef);
+            setRefError('');
+        }
+    }, [isOpen]);
+
     if (!isOpen) return null;
+
+    const handleReferenceChange = (e) => {
+        const value = e.target.value;
+        const formatted = formatPaymentReference(value, MAX_PAYMENT_REF_LENGTH);
+        setPaymentReference(formatted);
+        if (formatted.trim()) {
+            setRefError('');
+        }
+    };
 
     const handleFileChange = (e) => {
         setFile(e.target.files[0]);
     };
 
     const handleUpload = async () => {
+        const validation = validatePaymentReference(paymentReference, MAX_PAYMENT_REF_LENGTH);
+        if (!validation.isValid) {
+            setRefError(validation.error || "Please enter a valid payment reference before payment submission.");
+            toast.error(validation.error || "Please enter a valid payment reference before payment submission.");
+            return;
+        }
+
         if (!file) {
             toast.error("Please upload evidence of payment");
             return;
@@ -31,6 +85,7 @@ const BankTransferModal = ({ isOpen, onClose, transactionId, enrollmentId, bankD
         formData.append('receipt', file);
         formData.append('transactionId', transactionId);
         formData.append('enrollmentId', enrollmentId);
+        formData.append('paymentReference', validation.formatted);
 
         try {
             setIsUploading(true);
@@ -98,6 +153,36 @@ const BankTransferModal = ({ isOpen, onClose, transactionId, enrollmentId, bankD
                              <p className="font-bold text-gray-800">{bankDetails.sortCode}</p>
                         </div>
                         )}
+
+                        {/* Payment Reference Field */}
+                        <div className="col-span-2 mt-2">
+                            <div className="flex items-center justify-between mb-1">
+                                <label htmlFor="payment-reference" className="text-xs font-semibold text-gray-700">
+                                    Payment Reference <span className="text-[#CC1747]">*</span>
+                                </label>
+                                <span className="text-[10px] text-gray-400">
+                                    {paymentReference.length}/{MAX_PAYMENT_REF_LENGTH}
+                                </span>
+                            </div>
+                            <input
+                                id="payment-reference"
+                                type="text"
+                                value={paymentReference}
+                                onChange={handleReferenceChange}
+                                maxLength={MAX_PAYMENT_REF_LENGTH}
+                                placeholder="Enter payment reference (e.g. FirstName LastName)"
+                                className={`w-full rounded border px-3 py-2 text-sm text-gray-800 transition focus:outline-none ${
+                                    refError ? 'border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500' : 'border-gray-300 focus:border-[#CC1747] focus:ring-1 focus:ring-[#CC1747]'
+                                }`}
+                            />
+                            {refError ? (
+                                <p className="mt-1 text-xs text-red-500">{refError}</p>
+                            ) : (
+                                <p className="mt-1 text-[11px] text-gray-400">
+                                    Use your full name so your payment can be easily matched by recipient.
+                                </p>
+                            )}
+                        </div>
                          <div className="col-span-2 mt-2">
                              <input 
                                 id="receipt-upload"

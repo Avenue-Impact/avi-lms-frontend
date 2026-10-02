@@ -74,6 +74,9 @@ const AdminBankTransfers = () => {
                   Amount
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  Payment Ref
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                   Receipt
                 </th>
                 {statusFilter === "pending" && (
@@ -87,7 +90,7 @@ const AdminBankTransfers = () => {
               {isLoading ? (
                 <tr>
                   <td
-                    colSpan={statusFilter === "pending" ? "6" : "5"}
+                    colSpan={statusFilter === "pending" ? "7" : "6"}
                     className="px-6 py-4 text-center text-gray-500"
                   >
                     Loading...
@@ -96,7 +99,7 @@ const AdminBankTransfers = () => {
               ) : error ? (
                 <tr>
                   <td
-                    colSpan={statusFilter === "pending" ? "6" : "5"}
+                    colSpan={statusFilter === "pending" ? "7" : "6"}
                     className="px-6 py-4 text-center text-red-500"
                   >
                     Error loading transfers
@@ -105,7 +108,7 @@ const AdminBankTransfers = () => {
               ) : transfers.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={statusFilter === "pending" ? "6" : "5"}
+                    colSpan={statusFilter === "pending" ? "7" : "6"}
                     className="px-6 py-4 text-center text-gray-500"
                   >
                     No {statusFilter} transfers found
@@ -129,6 +132,12 @@ const AdminBankTransfers = () => {
                     </td>
                     <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800">
                       {transfer.amount} {transfer.currency}
+                    </td>
+                    <td className="whitespace-nowrap px-6 py-4 text-sm font-mono text-gray-700">
+                      {transfer.data?.transaction_details?.payment_reference ||
+                        transfer.payment_reference ||
+                        `${transfer.student_id?.first_name || ""} ${transfer.student_id?.last_name || ""}`.trim() ||
+                        "-"}
                     </td>
                     <td className="whitespace-nowrap px-6 py-4 text-sm text-blue-600">
                       <button
