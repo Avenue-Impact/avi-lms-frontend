@@ -27,7 +27,7 @@ export const EnterpriseProcessSection = () => {
   return (
     <section
       id="our-process"
-      className="w-full bg-[#F8F9FC] py-12 sm:py-16 lg:py-20 font-inter text-[#0A1430] border-b border-slate-200"
+      className="w-full bg-[#F8F9FC] py-12 sm:py-16 lg:py-20 lg:px-32 font-inter text-[#0A1430] border-b border-slate-200"
     >
       <div className="mx-6 md:mx-12 px-4 sm:px-6 lg:px-8">
         {/* Eyebrow & Heading */}
@@ -48,7 +48,7 @@ export const EnterpriseProcessSection = () => {
           {steps.map((item) => (
             <div key={item.step} className="relative z-10 flex flex-col items-center text-center">
               {/* Step Number Circle */}
-              <div className="w-13 h-13 rounded-full bg-[#0E1736] text-white flex items-center justify-center font-space font-extrabold text-base shadow-sm border-4 border-white mb-4">
+              <div className="w-12 h-12 rounded-full bg-[#0E1736] text-white flex items-center justify-center font-space font-extrabold text-base shadow-sm border-4 border-white mb-4">
                 {item.step}
               </div>
 

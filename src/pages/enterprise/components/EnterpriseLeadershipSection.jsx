@@ -1,6 +1,6 @@
 import React from "react";
 import { ArrowRight, Trophy } from "lucide-react";
-import funsoPortrait from "@/assets/images/partner/partner_about_man_1776809356497.png";
+import funsoPortrait from "@/assets/images/partner/founder_funso.png";
 
 export const EnterpriseLeadershipSection = ({ onOpenModal }) => {
   return (

@@ -54,7 +54,7 @@ export const EnterpriseModal = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg rounded-2xl bg-white p-6 sm:p-8 shadow-2xl border border-slate-200 font-inter text-[#0A1430] max-h-[90vh] overflow-y-auto">
+      <div className="relative w-full max-w-xl rounded-2xl bg-white p-6 sm:p-8 shadow-2xl border border-slate-200 font-inter text-[#0A1430] max-h-[90vh] overflow-y-auto">
         {/* Close Button */}
         <button
           type="button"
