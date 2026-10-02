@@ -14,17 +14,17 @@ export const EnterpriseGlobalSection = () => {
   return (
     <section
       id="global-capability"
-      className="w-full bg-[#F8F9FC] py-12 sm:py-16 lg:py-20 lg:px-32 font-inter text-[#0A1430] border-b border-slate-200"
+      className="w-full bg-[#F8F9FC] py-12 sm:py-16 lg:py-20 font-inter text-[#0A1430] border-b border-slate-200"
     >
       <div className="mx-6 md:mx-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl">
           {/* Eyebrow */}
           <div className="text-[#CC1747] font-space text-[11px] sm:text-[12px] font-bold tracking-[0.18em] uppercase mb-2">
-            ABOUT AVENUE IMPACT
+            THE UK–AFRICA ADVANTAGE
           </div>
 
           {/* Heading */}
-          <h2 className="font-space font-extrabold text-[28px] sm:text-[36px] lg:text-[40px] leading-tight text-[#0A1430]">
+          <h2 className="font-space font-extrabold text-[28px] sm:text-[38px] lg:text-[42px] leading-tight text-[#0A1430]">
             Global capability, built on quality — not cost
           </h2>
 
@@ -44,12 +44,12 @@ export const EnterpriseGlobalSection = () => {
           {steps.map((step) => (
             <div
               key={step.num}
-              className="bg-white border border-slate-200/80 rounded-xl p-3.5 sm:p-4 text-center shadow-2xs hover:shadow-xs transition-shadow"
+              className="bg-white/80 border border-slate-200/80 rounded-xl p-3.5 sm:p-4 text-center shadow-2xs hover:shadow-xs transition-shadow"
             >
-              <div className="text-[#CC1747] font-space font-extrabold text-xs sm:text-sm">
+              <div className="text-[#CC1747] font-space font-bold text-xs">
                 {step.num}
               </div>
-              <div className="text-[#0A1430] font-space font-bold text-xs sm:text-sm mt-1">
+              <div className="text-[#0A1430] font-space font-bold text-xs sm:text-sm mt-0.5">
                 {step.label}
               </div>
             </div>
