@@ -317,32 +317,16 @@ function App() {
               element: <CoursesPage />,
             },
             {
-              path: "/courses/:courseId",
-              element: <CoursePreviewPage />,
-            },
-            {
-              path: "/courses/landing-page/c/:courseId",
+              path: "landing-page/c/:courseId",
               element: <LandingPage />,
             },
             {
-              path: "/courses/business-analysis",
-              element: <CoursePreviewPage />,
-            },
-            {
-              path: "/courses/data-analytics",
-              element: <CoursePreviewPage />,
-            },
-            {
-              path: "/courses/cloud-computing",
-              element: <CoursePreviewPage />,
-            },
-            {
-              path: "/courses/project-management",
-              element: <CoursePreviewPage />,
-            },
-            {
-              path: "/courses/thanks",
+              path: "thanks",
               element: <ThanksPage />,
+            },
+            {
+              path: ":courseId",
+              element: <CoursePreviewPage />,
             },
           ],
         },

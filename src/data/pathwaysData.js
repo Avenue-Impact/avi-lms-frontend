@@ -476,6 +476,96 @@ export const DEFAULT_PATHWAYS = [
     ],
   },
   {
+    id: "cloud-computing",
+    slug: "cloud-computing",
+    title: "Cloud Computing",
+    pathwayTitle: "Cloud Computing Pathway",
+    type: "live",
+    badge: "LIVE COHORT",
+    category: "Cloud & Infrastructure",
+    description:
+      "AWS & Azure architectures, CloudFormation, Terraform, Docker, and CI/CD deployment pipelines.",
+    headline:
+      "Master cloud architecture, infrastructure as code, containerisation, and DevOps automation to build resilient cloud platforms.",
+    modulesCount: 6,
+    duration: "8 weeks",
+    level: "Beginner-friendly",
+    startsDate: "15 Sep 2026",
+    seatsLeft: 12,
+    isUnlimited: false,
+    stats: {
+      openRoles: "450+",
+      medianSalary: "£55k",
+      quarterDemand: "135%",
+      coreModules: 6,
+    },
+    modules: [
+      { number: 1, title: "Cloud Fundamentals & AWS/Azure Architecture", description: "IAM, VPCs, compute instances, storage, and networking basics." },
+      { number: 2, title: "Infrastructure as Code (Terraform & CloudFormation)", description: "Automating cloud infrastructure provisioning reproducibly." },
+      { number: 3, title: "Containerisation with Docker & Kubernetes", description: "Packaging applications into containers and orchestrating clusters." },
+      { number: 4, title: "CI/CD & DevOps Automation", description: "Building robust automated deployment pipelines with GitHub Actions." },
+      { number: 5, title: "Cloud Security, IAM & Compliance", description: "Implementing least-privilege security and governance standards." },
+      { number: 6, title: "Production Capstone & Cloud Deployment", description: "Deploying a scalable microservice infrastructure on live cloud." },
+    ],
+    skills: [
+      "AWS",
+      "Azure",
+      "Terraform",
+      "Docker",
+      "Kubernetes",
+      "CI/CD",
+      "Cloud Security",
+      "Linux Administration",
+    ],
+    whoIsThisFor: [
+      { title: "IT & Admin pros", description: "Transitioning from traditional IT to Cloud/DevOps" },
+      { title: "Developers", description: "Wanting to master cloud deployments & infra" },
+      { title: "Complete beginner", description: "Motivated to break into cloud engineering" },
+    ],
+    paceOptions: [
+      {
+        badge: "FASTEST COMPLETION",
+        badgeType: "highlight",
+        title: "4-Month Evening Track",
+        schedule: "Mon–Thu, 7:00–9:00 pm",
+        weeklyCommitment: "8-10 hrs/week",
+        totalHours: "~100 hours",
+        isPopular: true,
+      },
+    ],
+    mentors: [
+      {
+        id: "cloud-mentor-1",
+        name: "David Alabi",
+        initials: "DA",
+        image: mentor1,
+        isAvailable: true,
+        services: "Cloud Arch Review | Terraform Coaching",
+        roles: "Senior Cloud Engineer at Enterprise",
+        sessionsCount: "95 sessions (14 reviews)",
+      },
+    ],
+    successStories: [
+      {
+        id: "cloud-story-1",
+        quote: "Landed my AWS Solutions Architect Associate role within 4 weeks of completing the cloud capstone!",
+        author: "Samuel O.",
+        role: "Cloud Solutions Architect",
+        rating: 5,
+      },
+    ],
+    faqs: [
+      {
+        question: "Do I need prior Linux or coding experience?",
+        answer: "No prior experience required — module 1 builds Linux and cloud CLI fundamentals from scratch.",
+      },
+      {
+        question: "Are cloud lab environments provided?",
+        answer: "Yes, you will work directly inside real AWS and Azure sandboxed accounts.",
+      },
+    ],
+  },
+  {
     id: "digital-transformation-consulting",
     slug: "digital-transformation-consulting",
     title: "Digital Transformation Consulting",
@@ -945,6 +1035,7 @@ export const getPathwayData = (identifier, apiCourse = null, overrideTitle = nul
         p.slug.toLowerCase() === normalizedKey ||
         p.title.toLowerCase() === normalizedKey ||
         p.title.toLowerCase().replace(/\s+/g, "-") === normalizedKey ||
+        normalizedKey.replace(/-/g, " ") === p.title.toLowerCase() ||
         normalizedKey.includes(p.slug.toLowerCase()) ||
         normalizedKey.includes(p.id.toLowerCase())
     );
@@ -958,9 +1049,9 @@ export const getPathwayData = (identifier, apiCourse = null, overrideTitle = nul
     const matchedByTitle = DEFAULT_PATHWAYS.find(
       (p) =>
         p.title.toLowerCase() === overrideKey ||
+        p.title.toLowerCase().replace(/\s+/g, "-") === overrideKey ||
         overrideKey.includes(p.slug.toLowerCase()) ||
-        overrideKey.includes(p.id.toLowerCase()) ||
-        overrideKey.includes(p.title.toLowerCase().split(" ")[0])
+        overrideKey.includes(p.id.toLowerCase())
     );
     if (matchedByTitle) {
       basePathway = { ...matchedByTitle };
@@ -968,7 +1059,89 @@ export const getPathwayData = (identifier, apiCourse = null, overrideTitle = nul
   }
 
   if (!basePathway) {
-    basePathway = { ...DEFAULT_PATHWAYS[0] };
+    const rawTitle = cleanOverride || (identifier ? String(identifier).replace(/-/g, " ") : "Career Pathway");
+    const formattedTitle = rawTitle
+      .replace(/\b\w/g, (c) => c.toUpperCase())
+      .replace(/\s+Pathway$/i, "")
+      .trim();
+
+    basePathway = {
+      id: identifier || "custom-pathway",
+      slug: identifier || "custom-pathway",
+      title: formattedTitle,
+      pathwayTitle: `${formattedTitle} Pathway`,
+      type: "live",
+      badge: "LIVE COHORT",
+      category: "Technology & Business",
+      description: `Comprehensive hands-on training and mentorship in ${formattedTitle}.`,
+      headline: `Become job-ready in ${formattedTitle} through practical projects, mentorship, and career preparation.`,
+      modulesCount: 4,
+      duration: "8 weeks",
+      level: "Beginner-friendly",
+      startsDate: "Upcoming Cohort",
+      seatsLeft: 15,
+      isUnlimited: false,
+      stats: {
+        openRoles: "300+",
+        medianSalary: "£48k",
+        quarterDemand: "115%",
+        coreModules: 4,
+      },
+      modules: [
+        { number: 1, title: "Orientation & Industry Foundations", description: `Introduction to key concepts, tooling, and workflow in ${formattedTitle}.` },
+        { number: 2, title: "Core Methodologies & Practical Execution", description: `Hands-on training and real-world problem solving in ${formattedTitle}.` },
+        { number: 3, title: "Advanced Frameworks & Industry Scenarios", description: "Executing complex enterprise projects and team collaboration." },
+        { number: 4, title: "Capstone Project & Portfolio Defense", description: "Building a portfolio project validated by senior industry mentors." },
+      ],
+      skills: [formattedTitle, "Portfolio building", "Team collaboration", "Industry best practices"],
+      whoIsThisFor: [
+        { title: "Complete beginner", description: "No prior experience required" },
+        { title: "Career switcher", description: "Transitioning into tech and modern digital roles" },
+        { title: "Skill upgrader", description: "Sharpening practical hands-on experience" },
+      ],
+      paceOptions: [
+        {
+          badge: "POPULAR TRACK",
+          badgeType: "highlight",
+          title: "Live Cohort Track",
+          schedule: "Mon–Thu, 7:00–9:00 pm",
+          weeklyCommitment: "8-10 hrs/week",
+          totalHours: "~100 hours",
+          isPopular: true,
+        },
+      ],
+      mentors: [
+        {
+          id: "lead-mentor",
+          name: "Senior Industry Mentor",
+          initials: "IM",
+          image: mentor1,
+          isAvailable: true,
+          services: "CV Review | Interview Preparation",
+          roles: `${formattedTitle} Lead`,
+          sessionsCount: "100+ sessions",
+        },
+      ],
+      successStories: [
+        {
+          id: "dyn-story-1",
+          quote: `The practical training in ${formattedTitle} gave me the skills and confidence to transition successfully into my role.`,
+          author: "Avenue Impact Graduate",
+          role: "Practitioner",
+          rating: 5,
+        },
+      ],
+      faqs: [
+        {
+          question: "Do I need a technical degree?",
+          answer: "No, our pathways start from foundational principles up to job-ready portfolio projects.",
+        },
+        {
+          question: "Is certification included?",
+          answer: "Yes, you earn an industry-recognized certificate of completion alongside verified portfolio projects.",
+        },
+      ],
+    };
   } else {
     basePathway = { ...basePathway };
   }
