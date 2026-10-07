@@ -104,17 +104,27 @@ export default function AssessmentLeadModal({ isOpen, onClose, onSubmit, isSubmi
   const validate = () => {
     const newErrors = {};
 
+    const nameRegex = /^[a-zA-Z\s'-]{2,50}$/;
+
     if (!firstName.trim()) {
       newErrors.firstName = "First name is required";
+    } else if (firstName.trim().length < 2) {
+      newErrors.firstName = "First name must be at least 2 characters";
+    } else if (!nameRegex.test(firstName.trim())) {
+      newErrors.firstName = "Please enter a valid first name";
     }
 
     if (!lastName.trim()) {
       newErrors.lastName = "Last name is required";
+    } else if (lastName.trim().length < 2) {
+      newErrors.lastName = "Last name must be at least 2 characters";
+    } else if (!nameRegex.test(lastName.trim())) {
+      newErrors.lastName = "Please enter a valid last name";
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!email.trim()) {
-      newErrors.email = "Email is required";
+      newErrors.email = "Email address is required";
     } else if (!emailRegex.test(email.trim())) {
       newErrors.email = "Please enter a valid email address";
     }
@@ -122,14 +132,13 @@ export default function AssessmentLeadModal({ isOpen, onClose, onSubmit, isSubmi
     if (!phoneNumber.trim()) {
       newErrors.phoneNumber = "Mobile number is required";
     } else {
-      // Validate using libphonenumber-js parser
       try {
         const parsed = parsePhoneNumberFromString(phoneNumber.trim(), selectedCountry.code);
-        if (parsed && !parsed.isPossible()) {
+        if (!parsed || !parsed.isPossible()) {
           newErrors.phoneNumber = "Please enter a valid mobile number";
         }
       } catch (e) {
-        // Fallback
+        newErrors.phoneNumber = "Please enter a valid mobile number";
       }
     }
 
@@ -154,11 +163,6 @@ export default function AssessmentLeadModal({ isOpen, onClose, onSubmit, isSubmi
       }
     }
 
-    // Strip leading zero if entering national format
-    if (val.startsWith("0")) {
-      val = val.replace(/^0+/, "");
-    }
-
     setPhoneNumber(val);
     if (errors.phoneNumber) setErrors((prev) => ({ ...prev, phoneNumber: null }));
   };
@@ -167,7 +171,8 @@ export default function AssessmentLeadModal({ isOpen, onClose, onSubmit, isSubmi
     e.preventDefault();
     if (!validate()) return;
 
-    const fullPhoneNumber = `${selectedCountry.dialCode} ${phoneNumber.trim()}`;
+    const cleanedPhone = phoneNumber.trim().replace(/^0+/, "");
+    const fullPhoneNumber = `${selectedCountry.dialCode} ${cleanedPhone}`;
 
     onSubmit({
       firstName: firstName.trim(),

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { ArrowRight, ShieldCheck, Globe, Zap, Users } from "lucide-react";
 
 export const EnterpriseHero = ({ onOpenModal }) => {
@@ -29,14 +30,13 @@ export const EnterpriseHero = ({ onOpenModal }) => {
 
           {/* Primary CTA Button */}
           <div className="mt-8 sm:mt-10 flex flex-wrap items-center gap-4">
-            <button
-              type="button"
-              onClick={onOpenModal}
+            <Link
+              to="/contact"
               className="bg-[#CC1747] hover:bg-[#b0133d] text-white font-semibold text-[15px] sm:text-[16px] px-8 py-4 rounded-xl shadow-xl shadow-[#CC1747]/25 transition-all duration-200 active:scale-[0.98] inline-flex items-center gap-2 group"
             >
               <span>Talk to us about your delivery needs</span>
               <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
-            </button>
+            </Link>
           </div>
 
           {/* Key Trust Metrics Strip */}

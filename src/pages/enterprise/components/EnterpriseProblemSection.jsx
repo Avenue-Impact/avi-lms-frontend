@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export const EnterpriseProblemSection = ({ onOpenModal }) => {
   return (
@@ -30,13 +31,12 @@ export const EnterpriseProblemSection = ({ onOpenModal }) => {
 
           {/* CTA Button */}
           <div className="mt-8">
-            <button
-              type="button"
-              onClick={onOpenModal}
+            <Link
+              to="/contact"
               className="bg-[#0E1736] hover:bg-[#1C2C64] text-white font-semibold text-[14px] sm:text-[15px] px-7 py-3.5 rounded-xl shadow-md transition-all duration-200 inline-flex items-center gap-2 group cursor-pointer"
             >
               <span>Talk to us about your delivery needs</span>
-            </button>
+            </Link>
           </div>
         </div>
       </div>

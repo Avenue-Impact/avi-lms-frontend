@@ -32,7 +32,7 @@ export const EnterpriseNavbar = ({ onOpenModal }) => {
           <span className="text-slate-400">Avenue Impact for:</span>
           <Link
             to="/individual"
-            className="text-slate-300 hover:text-white font-medium transition-colors inline-flex items-center gap-1"
+            className="text-slate-300 hover:text-[#CC1747] font-medium transition-colors inline-flex items-center gap-1"
           >
             Individuals <ArrowRight size={12} />
           </Link>
@@ -70,13 +70,12 @@ export const EnterpriseNavbar = ({ onOpenModal }) => {
 
           {/* Right Action CTA */}
           <div className="hidden lg:flex items-center gap-3">
-            <button
-              type="button"
-              onClick={onOpenModal}
+            <Link
+              to="/contact"
               className="bg-[#CC1747] hover:bg-[#b0133d] text-white font-semibold text-[13px] xl:text-[14px] px-5 py-2.5 rounded-xl shadow-lg shadow-[#CC1747]/20 transition-all duration-200 active:scale-[0.98] inline-flex items-center gap-1.5"
             >
               <span>Talk to us about your delivery needs</span>
-            </button>
+            </Link>
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -104,16 +103,13 @@ export const EnterpriseNavbar = ({ onOpenModal }) => {
               </a>
             ))}
             <div className="pt-3">
-              <button
-                type="button"
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  onOpenModal();
-                }}
-                className="w-full bg-[#CC1747] hover:bg-[#b0133d] text-white font-semibold text-[14px] py-3 rounded-xl shadow-md text-center"
+              <Link
+                to="/contact"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block w-full bg-[#CC1747] hover:bg-[#b0133d] text-white font-semibold text-[14px] py-3 rounded-xl shadow-md text-center"
               >
                 Talk to us about your delivery needs
-              </button>
+              </Link>
             </div>
           </div>
         )}

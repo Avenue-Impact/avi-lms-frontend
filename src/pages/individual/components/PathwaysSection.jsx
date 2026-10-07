@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Clock, Loader2 } from "lucide-react";
+import { Clock, Loader2, ArrowRight } from "lucide-react";
 import { useFetchAllCourses } from "@/hooks/students/use-fetch-all-courses";
 import TakeAssessmentButton from "@/Components/assessment/TakeAssessmentButton";
 
@@ -103,7 +103,8 @@ export const PathwaysSection = () => {
               return (
                 <Link
                   key={course.id || course._id || course.slug}
-                  to={`/courses/${course.slug || course.id || course._id}`}
+                  to={`/courses/${course.slug || course.id || course._id}?title=${encodeURIComponent(course.title)}`}
+                  state={{ title: course.title }}
                   className="bg-white rounded-2xl p-6 sm:p-7 border border-slate-200/70 shadow-sm flex flex-col justify-between hover:shadow-md hover:border-slate-300 transition-all duration-200 group"
                 >
                   <div>
@@ -136,7 +137,7 @@ export const PathwaysSection = () => {
                     </p>
                   </div>
 
-                  {/* Card Bottom Meta Line (Seats removed as requested) */}
+                  {/* Card Bottom Meta Line & Explore & Enrol CTA */}
                   <div className="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-inter">
                     <div>
                       {isLive ? (
@@ -153,6 +154,9 @@ export const PathwaysSection = () => {
                         </span>
                       )}
                     </div>
+                    <span className="inline-flex items-center gap-1 font-semibold text-[#D7195A] group-hover:translate-x-0.5 transition-transform">
+                      Explore & Enrol <ArrowRight size={13} />
+                    </span>
                   </div>
                 </Link>
               );

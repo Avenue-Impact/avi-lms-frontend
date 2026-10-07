@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export const EnterpriseCtaBanner = ({ onOpenModal }) => {
   return (
@@ -17,13 +18,12 @@ export const EnterpriseCtaBanner = ({ onOpenModal }) => {
           </p>
 
           <div className="mt-8 flex justify-center">
-            <button
-              type="button"
-              onClick={onOpenModal}
-              className="bg-[#CC1747] hover:bg-[#b0133d] text-white font-semibold text-[14px] sm:text-[15px] px-7 py-3.5 rounded-xl shadow-lg shadow-[#CC1747]/25 transition-all duration-200 active:scale-[0.98] cursor-pointer"
+            <Link
+              to="/contact"
+              className="bg-[#CC1747] hover:bg-[#b0133d] text-white font-semibold text-[14px] sm:text-[15px] px-7 py-3.5 rounded-xl shadow-lg shadow-[#CC1747]/25 transition-all duration-200 active:scale-[0.98] cursor-pointer inline-block"
             >
               Talk to us about your delivery needs
-            </button>
+            </Link>
           </div>
         </div>
       </div>

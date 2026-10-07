@@ -85,7 +85,7 @@ export const HeroSection = () => {
           </span>
           <Link
             to="/enterprise"
-            className="text-slate-300 hover:text-white ml-3 font-medium transition-colors inline-flex items-center gap-1"
+            className="text-slate-300 hover:text-[#D7195A] ml-3 font-medium transition-colors inline-flex items-center gap-1"
           >
             Corporate & Government <span aria-hidden="true">→</span>
           </Link>

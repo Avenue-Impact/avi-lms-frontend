@@ -38,7 +38,7 @@ export const EnterpriseResultsSection = ({ onOpenModal }) => {
         {/* Eyebrow & Heading */}
         <div className="mb-10 max-w-3xl">
           <div className="text-[#CC1747] font-space text-[11px] sm:text-[12px] font-bold tracking-[0.18em] uppercase mb-2">
-            PROOF
+            PORTFOLIO
           </div>
           <h2 className="font-space font-extrabold text-[28px] sm:text-[38px] lg:text-[42px] leading-tight text-[#0A1430]">
             Results, not promises

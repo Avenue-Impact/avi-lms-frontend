@@ -930,26 +930,56 @@ export const normalizeApiCourse = (apiCourse) => {
 };
 
 /**
- * Retrieves a pathway by id or slug, merging with any fetched API course data.
+ * Retrieves a pathway by id or slug, merging with any fetched API course data and carrying overrideTitle if clicked.
  */
-export const getPathwayData = (identifier, apiCourse = null) => {
+export const getPathwayData = (identifier, apiCourse = null, overrideTitle = null) => {
+  let basePathway = null;
+
   if (apiCourse) {
-    return normalizeApiCourse(apiCourse);
+    basePathway = normalizeApiCourse(apiCourse);
+  } else if (identifier) {
+    const normalizedKey = String(identifier).toLowerCase().trim();
+    const found = DEFAULT_PATHWAYS.find(
+      (p) =>
+        p.id.toLowerCase() === normalizedKey ||
+        p.slug.toLowerCase() === normalizedKey ||
+        p.title.toLowerCase() === normalizedKey ||
+        p.title.toLowerCase().replace(/\s+/g, "-") === normalizedKey ||
+        normalizedKey.includes(p.slug.toLowerCase()) ||
+        normalizedKey.includes(p.id.toLowerCase())
+    );
+    basePathway = found ? { ...found } : null;
   }
 
-  if (!identifier) {
-    return DEFAULT_PATHWAYS[0];
+  const cleanOverride = typeof overrideTitle === "string" ? overrideTitle.trim() : null;
+
+  if (cleanOverride && !basePathway) {
+    const overrideKey = cleanOverride.toLowerCase();
+    const matchedByTitle = DEFAULT_PATHWAYS.find(
+      (p) =>
+        p.title.toLowerCase() === overrideKey ||
+        overrideKey.includes(p.slug.toLowerCase()) ||
+        overrideKey.includes(p.id.toLowerCase()) ||
+        overrideKey.includes(p.title.toLowerCase().split(" ")[0])
+    );
+    if (matchedByTitle) {
+      basePathway = { ...matchedByTitle };
+    }
   }
 
-  const normalizedKey = String(identifier).toLowerCase().trim();
+  if (!basePathway) {
+    basePathway = { ...DEFAULT_PATHWAYS[0] };
+  } else {
+    basePathway = { ...basePathway };
+  }
 
-  const found = DEFAULT_PATHWAYS.find(
-    (p) =>
-      p.id.toLowerCase() === normalizedKey ||
-      p.slug.toLowerCase() === normalizedKey ||
-      p.title.toLowerCase() === normalizedKey ||
-      p.title.toLowerCase().replace(/\s+/g, "-") === normalizedKey
-  );
+  if (cleanOverride) {
+    const formattedTitle = cleanOverride.replace(/\s+pathway$/i, "").trim();
+    basePathway.title = formattedTitle;
+    basePathway.pathwayTitle = formattedTitle.endsWith("Pathway")
+      ? formattedTitle
+      : `${formattedTitle} Pathway`;
+  }
 
-  return found || DEFAULT_PATHWAYS[0];
+  return basePathway;
 };

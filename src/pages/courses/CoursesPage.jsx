@@ -334,7 +334,8 @@ export const CoursesPage = () => {
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {filteredPathways.map((pathway) => {
                   const isSaved = savedCourses.includes(pathway.id);
-                  const courseRoute = `/courses/${pathway.slug || pathway.id}`;
+                  const pathwayTitleStr = pathway.title || pathway.pathwayTitle || "";
+                  const courseRoute = `/courses/${pathway.slug || pathway.id}?title=${encodeURIComponent(pathwayTitleStr)}`;
 
                   return (
                     <div
@@ -373,7 +374,9 @@ export const CoursesPage = () => {
 
                         {/* Title & Description */}
                         <h2 className="mt-4 text-lg font-bold text-[#101928] group-hover:text-[#CC1747] transition-colors">
-                          <Link to={courseRoute}>{pathway.title}</Link>
+                          <Link to={courseRoute} state={{ title: pathwayTitleStr }}>
+                            {pathway.title}
+                          </Link>
                         </h2>
                         <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-[#667185]">
                           {pathway.description}
@@ -424,6 +427,7 @@ export const CoursesPage = () => {
                           </button>
                           <Link
                             to={courseRoute}
+                            state={{ title: pathwayTitleStr }}
                             className="flex items-center justify-center rounded-lg border border-[#D0D5DD] bg-white py-2.5 text-xs font-semibold text-[#344054] shadow-2xs transition-colors hover:bg-gray-50 hover:text-[#101928]"
                           >
                             Details

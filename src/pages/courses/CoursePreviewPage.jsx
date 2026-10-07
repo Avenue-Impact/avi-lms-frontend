@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { PathwaysNavbar } from "@/Components/navbar/PathwaysNavbar";
 import AVIFooter from "@/Components/AVIFooter";
 import { getPathwayData, DEFAULT_PATHWAYS } from "@/data/pathwaysData";
@@ -26,9 +26,13 @@ import { useGetSuccessStories } from "@/hooks/success-stories/use-success-storie
 
 export const CoursePreviewPage = () => {
   const { courseId } = useParams();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const token = Cookies.get("token");
   const isAuthenticated = Boolean(token);
+
+  const passedTitle = location.state?.title || searchParams.get("title");
 
   // Fetch live API course details
   const { previewCourse, isLoading } = usePreviewCourses(courseId);
@@ -37,10 +41,10 @@ export const CoursePreviewPage = () => {
   // Fetch approved success stories from API
   const { data: apiSuccessStories = [] } = useGetSuccessStories();
 
-  // Resolve pathway data (dynamic from API or matched from catalog)
+  // Resolve pathway data (dynamic from API or matched from catalog, carrying clicked title)
   const pathway = useMemo(() => {
-    return getPathwayData(courseId, apiCourse);
-  }, [courseId, apiCourse]);
+    return getPathwayData(courseId, apiCourse, passedTitle);
+  }, [courseId, apiCourse, passedTitle]);
 
   // Determine course types
   const isLive = Boolean(apiCourse?.available_course_types?.live_session || pathway.type === "live" || (apiCourse?.cohorts && apiCourse.cohorts.length > 0));

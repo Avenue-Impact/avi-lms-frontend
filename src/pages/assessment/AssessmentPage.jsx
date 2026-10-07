@@ -15,12 +15,14 @@ import {
 } from "./components/AssessmentData";
 import { useFetchAllCourses } from "@/hooks/students/use-fetch-all-courses";
 import { useProfile } from "@/hooks/students/use-fetch-student-profile";
+import { submitCareerAssessmentApi } from "@/services/api";
 import {
   persistCareerAssessment,
   getAssessmentDraftAnswers,
   setAssessmentDraftAnswers,
   clearAssessmentDraftAnswers,
   getStoredAssessmentUser,
+  setStoredAssessmentUser,
 } from "@/utils/careerAssessment";
 
 export default function AssessmentPage() {
@@ -32,6 +34,7 @@ export default function AssessmentPage() {
   const [isCompleted, setIsCompleted] = useState(false);
   const [results, setResults] = useState(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [isSubmittingLead, setIsSubmittingLead] = useState(false);
   const notificationSentRef = useRef(false);
 
   const token = Cookies.get("token");
@@ -147,16 +150,36 @@ export default function AssessmentPage() {
     }
   };
 
-  const handleLeadSubmit = (leadData) => {
-    setShowAuthModal(false);
-    setStoredAssessmentUser(leadData);
+  const handleLeadSubmit = async (leadData) => {
+    setIsSubmittingLead(true);
+    try {
+      setStoredAssessmentUser(leadData);
 
-    if (currentStepIndex + 1 < totalSteps) {
-      setCurrentStepIndex((prev) => prev + 1);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } else {
       const activeAnswers = Object.keys(answers).length > 0 ? answers : getAssessmentDraftAnswers();
-      finishAssessment(activeAnswers, leadData);
+
+      // Trigger backend Salesforce sync and store email lead record upon modal submit button click
+      await submitCareerAssessmentApi({
+        email: leadData.email,
+        firstName: leadData.firstName,
+        lastName: leadData.lastName,
+        phoneNumber: leadData.phoneNumber,
+        subscribe: leadData.subscribe,
+        answers: activeAnswers,
+      }).catch((err) => console.warn("Background lead sync warning:", err));
+
+      if (currentStepIndex + 1 < totalSteps) {
+        setShowAuthModal(false);
+        setCurrentStepIndex((prev) => prev + 1);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        await finishAssessment(activeAnswers, leadData);
+        setShowAuthModal(false);
+      }
+    } catch (err) {
+      console.error("Error saving assessment lead:", err);
+      toast.error("An error occurred while saving your details. Please try again.");
+    } finally {
+      setIsSubmittingLead(false);
     }
   };
 
@@ -249,6 +272,7 @@ export default function AssessmentPage() {
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
         onSubmit={handleLeadSubmit}
+        isSubmitting={isSubmittingLead}
       />
 
       <main className="flex-1 flex flex-col justify-start pb-16">
