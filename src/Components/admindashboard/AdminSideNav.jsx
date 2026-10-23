@@ -15,7 +15,7 @@ import { DarkLogo } from "@/Components/Logo";
 import { cn } from "@/lib/utils";
 import Cookies from "js-cookie";
 import { NavLink, useLocation } from "react-router-dom";
-import { Video, BookOpen, Headphones } from "lucide-react";
+import { Video, BookOpen, Headphones, MessageCircle } from "lucide-react";
 
 // import { Sidebar, SidebarItem } from "./SideNav";
 const navItem = [
@@ -61,18 +61,24 @@ const navitem2 = [
   },
   {
     id: 4,
+    text: "WhatsApp Broadcast",
+    icon: <MessageCircle size={20} />,
+    path: "/admin/whatsapp-broadcast",
+  },
+  {
+    id: 5,
     text: "Story Management",
     icon: <BookOpen size={20} />,
     path: "/admin/success-stories",
   },
   {
-    id: 5,
+    id: 6,
     text: "Zoom Management",
     icon: <Video />,
     path: "/admin/zoom-management",
   },
   {
-    id: 6,
+    id: 7,
     text: "Helpline Management",
     icon: <Headphones size={20} />,
     path: "/admin/helpline-management",
@@ -124,11 +130,11 @@ function SideNav() {
   };
 
   return (
-    <aside className="baby fixed left-0 top-0 h-screen w-[249px] overflow-y-auto border-r border-r-[#E4E7EC] px-2 py-6 2xl:overflow-y-hidden">
+    <aside className="custom-scrollbar fixed left-0 top-0 h-screen w-[249px] overflow-y-auto border-r border-r-[#E4E7EC] px-2 py-6">
       <div>
         <DarkLogo />
       </div>
-      <div className="flex h-full flex-col justify-between">
+      <div className="flex min-h-[calc(100%-48px)] flex-col justify-between">
         <ul className="my-5 space-y-4">
           {/* First Group - Buddy Hub, Course Work, Project */}
           <div className="space-y-1 border-b border-b-[#E4E7EC] pb-3">

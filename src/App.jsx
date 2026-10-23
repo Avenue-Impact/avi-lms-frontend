@@ -11,6 +11,8 @@ import SuccessStoryForm from "./pages/SuccessStoryForm";
 import ProtectedSuccessStoryRoute from "./Components/ProtectedSuccessStoryRoute";
 import AdminSuccessStoryManagement from "./pages/admin-pages/AdminSuccessStoryManagement";
 import HelplineManagementPage from "./pages/admin-pages/helpline-management/HelplineManagementPage";
+import WhatsAppBroadcastPage from "./pages/admin-pages/whatsapp-broadcast/WhatsAppBroadcastPage";
+import NewBroadcastPage from "./pages/admin-pages/whatsapp-broadcast/NewBroadcastPage";
 import AVI from "./pages/AVI";
 import Partner from "./pages/Partner";
 import SelfPace from "./pages/SelfPace";
@@ -763,6 +765,21 @@ function App() {
                     },
                   ],
                 },
+                // WhatsApp Broadcast
+                {
+                  path: "whatsapp-broadcast",
+                  children: [
+                    {
+                      index: true,
+                      element: <WhatsAppBroadcastPage />,
+                    },
+                    {
+                      path: "new",
+                      element: <NewBroadcastPage />,
+                    },
+                  ],
+                },
+
                 {
                   path: "*",
                   element: <AdminErrorPage />,
