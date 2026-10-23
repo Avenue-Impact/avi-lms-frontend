@@ -15,7 +15,11 @@ import { DarkLogo } from "@/Components/Logo";
 import { cn } from "@/lib/utils";
 import Cookies from "js-cookie";
 import { NavLink, useLocation } from "react-router-dom";
+<<<<<<< HEAD
 import { Video, BookOpen, FileText, Headphones } from "lucide-react";
+=======
+import { Video, BookOpen, Headphones, MessageCircle } from "lucide-react";
+>>>>>>> feat/whatsapp-broadcast-messages
 
 // import { Sidebar, SidebarItem } from "./SideNav";
 const navItem = [
@@ -61,18 +65,24 @@ const navitem2 = [
   },
   {
     id: 4,
+    text: "WhatsApp Broadcast",
+    icon: <MessageCircle size={20} />,
+    path: "/admin/whatsapp-broadcast",
+  },
+  {
+    id: 5,
     text: "Story Management",
     icon: <BookOpen size={20} />,
     path: "/admin/success-stories",
   },
   {
-    id: 5,
+    id: 6,
     text: "Zoom Management",
     icon: <Video />,
     path: "/admin/zoom-management",
   },
   {
-    id: 6,
+    id: 7,
     text: "Helpline Management",
     icon: <Headphones size={20} />,
     path: "/admin/helpline-management",

@@ -3,8 +3,9 @@ import { useProfile } from "@/hooks/students/use-fetch-student-profile";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
+import { useLocation } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 import { z } from "zod";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -12,6 +13,8 @@ import { CommonButton } from "../ui/button";
 import { Form } from "../ui/form";
 import FormInput from "../ui/form-input";
 import { Skeleton } from "../ui/skeleton";
+import WhatsAppPhoneInput from "@/Components/common/WhatsAppPhoneInput";
+import toast from "react-hot-toast";
 
 // Validation schema
 const profileSchema = z.object({
@@ -22,10 +25,19 @@ const profileSchema = z.object({
 
 const EditProfileForm = () => {
   const { isLoading, data, isSuccess } = useProfile();
+  const location = useLocation();
+  const whatsappSectionRef = useRef(null);
 
   const [avatar, setAvatar] = useState({
     file: null,
     preview: null,
+  });
+
+  const [whatsappNumber, setWhatsappNumber] = useState("");
+  const [whatsappState, setWhatsappState] = useState({
+    fullNumber: "",
+    isValid: true,
+    error: null,
   });
 
   const { editProfile, isEditing } = useEditStudentProfile();
@@ -39,18 +51,33 @@ const EditProfileForm = () => {
       email: "",
     },
   });
+
   useEffect(() => {
-    isSuccess && form.setValue("firstname", data?.data?.data.firstname);
-    isSuccess && form.setValue("lastname", data?.data?.data.lastname);
-    isSuccess && form.setValue("username", data?.data?.data.username);
-    isSuccess && form.setValue("email", data?.data?.data.email);
+    if (isSuccess && data?.data?.data) {
+      const user = data.data.data;
+      form.setValue("firstname", user.firstname || "");
+      form.setValue("lastname", user.lastname || "");
+      form.setValue("username", user.username || "");
+      form.setValue("email", user.email || "");
+      const existingWA = user.whatsapp_number && user.whatsapp_number !== "NONE" ? user.whatsapp_number : "";
+      setWhatsappNumber(existingWA);
+      setWhatsappState({
+        fullNumber: existingWA,
+        isValid: true,
+        error: null,
+      });
+    }
   }, [data, form, isSuccess]);
+
+  // Focus scroll to WhatsApp section if directed from prompt modal
+  useEffect(() => {
+    if (location.state?.focusWhatsApp && whatsappSectionRef.current) {
+      whatsappSectionRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [location.state]);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-
-    console.log(file);
-
     if (file) {
       setAvatar((prev) => ({
         ...prev,
@@ -59,32 +86,43 @@ const EditProfileForm = () => {
       }));
     }
   };
-  // Handle form submission
-  // const handleSubmit = async (data) => {
-  //   console.log("data*****", data)
-  //   if (avatar.file) return editProfile({ ...data, avatar: avatar.file });
-  //   editProfile(data);
-  // };
 
-  // In EditProfileForm.jsx
-const handleSubmit = async (formData) => {
-  try {
-    const dataToUpdate = { ...formData };
-    
-    // Only include the avatar if it exists
-    if (avatar.file) {
-      dataToUpdate.avatar = avatar.file;
+  const handleUseRegisteredPhone = () => {
+    const registeredPhone = data?.data?.data?.phone || data?.data?.data?.phoneNumber;
+    if (registeredPhone) {
+      setWhatsappNumber(registeredPhone);
+      setWhatsappState({
+        fullNumber: registeredPhone,
+        isValid: true,
+        error: null,
+      });
+      toast.success("Filled with registered phone number");
     }
+  };
 
-    await editProfile(dataToUpdate);
-    
-    // Show success message or redirect
-    toast.success("Profile updated successfully");
-  } catch (error) {
-    console.error("Error updating profile:", error);
-    toast.error(error.message || "Failed to update profile");
-  }
-};
+  const handleSubmit = async (formData) => {
+    try {
+      if (whatsappState.error) {
+        toast.error("Please fix the WhatsApp phone number before saving");
+        return;
+      }
+
+      const dataToUpdate = { ...formData };
+      if (avatar.file) {
+        dataToUpdate.avatar = avatar.file;
+      }
+
+      if (whatsappState.fullNumber) {
+        dataToUpdate.whatsapp_number = whatsappState.fullNumber;
+        dataToUpdate.whatsapp_dismissed = false;
+      }
+
+      await editProfile(dataToUpdate);
+      toast.success("Profile updated successfully");
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error.message || "Failed to update profile");
+    }
+  };
 
   const { isSubmitting } = form.formState;
   if (isLoading) return <p>loading..</p>;
@@ -187,6 +225,36 @@ const handleSubmit = async (formData) => {
                   control={form.control}
                   disabled={true}
                 />
+
+                {/* WhatsApp Section */}
+                <div
+                  ref={whatsappSectionRef}
+                  className="pt-2 rounded-xl border border-transparent transition-all"
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[13px] font-semibold text-[#344054]">
+                      WhatsApp Number
+                    </span>
+                    {(data?.data?.data?.phone || data?.data?.data?.phoneNumber) && (
+                      <button
+                        type="button"
+                        onClick={handleUseRegisteredPhone}
+                        className="text-[12px] font-medium text-[#25D366] hover:text-[#1EBE5D] underline"
+                      >
+                        Use registered phone
+                      </button>
+                    )}
+                  </div>
+                  <WhatsAppPhoneInput
+                    value={whatsappNumber}
+                    onChange={(st) => {
+                      setWhatsappNumber(st.fullNumber);
+                      setWhatsappState(st);
+                    }}
+                    label=""
+                    helperText="Used for session access links, cohort broadcasts, and course reminders on WhatsApp."
+                  />
+                </div>
               </div>
 
               <CommonButton
